@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/projectSettingsUpdater.xml
+/contentModel.xml
+/.idea.RayWrapper.iml
+/modules.xml
+# Datasource local storage ignored files
+/../../../../../../../:\coding projects\C#\RayWrapper\.idea\.idea.RayWrapper\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
