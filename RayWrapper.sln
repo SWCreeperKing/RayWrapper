@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper", "RayWrapper\RayWrapper.csproj", "{40B59418-727E-4DFA-8A7C-8B355ADD4FB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTester", "RayWrapperTester\RayWrapperTester.csproj", "{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{40B59418-727E-4DFA-8A7C-8B355ADD4FB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40B59418-727E-4DFA-8A7C-8B355ADD4FB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40B59418-727E-4DFA-8A7C-8B355ADD4FB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
