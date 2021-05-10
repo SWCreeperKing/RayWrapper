@@ -18,10 +18,13 @@ namespace RayWrapper.Objs
 
         public Rectangle back;
         public Color backColor = new(50, 50, 50, 255);
+        public Action clicked;
         public Color fontColor = new(192, 192, 198, 255);
+        public float fontSize = 24;
+        public Func<int> getId = null;
+        public bool isMouseIn;
         public TextMode textMode;
         public string text;
-        public float fontSize = 24;
         public float spacing = 1.5f;
 
         public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) =>
@@ -29,6 +32,8 @@ namespace RayWrapper.Objs
 
         public void Update()
         {
+            isMouseIn = back.IsMouseIn();
+            if (isMouseIn && IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) clicked?.Invoke();
         }
 
         public void Render()

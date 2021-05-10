@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Raylib_cs;
+using RayWrapper.Objs;
 using static Raylib_cs.Raylib;
 
 namespace RayWrapper
@@ -25,6 +26,10 @@ namespace RayWrapper
 
         public static Rectangle Grow(this Rectangle rect, int changeBuy) => rect.Shrink(-changeBuy);
         public static Rectangle AdjustWH(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
+
+        public static Rectangle ExtendPos(this Rectangle rect, Vector2 v2) =>
+            new(rect.x - v2.X, rect.y - v2.Y, rect.width + v2.X, rect.height + v2.Y);
+
         public static Rectangle Clone(this Rectangle rect) => new(rect.x, rect.y, rect.width, rect.height);
         public static bool IsColliding(this Rectangle rect1, Rectangle rect2) => CheckCollisionRecs(rect1, rect2);
         public static Vector2 Center(this Rectangle rect) => new(rect.x + rect.width / 2, rect.y + rect.height / 2);
@@ -42,5 +47,35 @@ namespace RayWrapper
 
         public static Vector2 MeasureText(this Font font, string text, float fontSize = 24f, float spacing = 1.5f) =>
             MeasureTextEx(font, text, fontSize, spacing);
+
+        /// <summary>
+        /// TopRight: 1
+        /// TopLeft: 2
+        /// BottomRight: 3
+        /// BottomLeft: 4
+        /// </summary>
+        public static int GetCursorQuadrant()
+        {
+            var lines = GameBox.WindowSize / 2;
+            var cursor = GetMousePosition();
+            var quad = cursor.X > lines.X ? 1 : 2;
+            if (cursor.Y > lines.Y) quad += 2;
+            return quad;
+        }
+
+        public static void DrawTooltip(this Rectangle box, string text, int fontSize = 24, float spacing = 1.5f) =>
+            box.DrawTooltip(text, new(170, 170, 255, 240), fontSize, spacing);
+        
+        public static void DrawTooltip(this Rectangle box, string text, Color color, int fontSize = 24,
+            float spacing = 1.5f)
+        {
+            if (!box.IsMouseIn()) return;
+            var curPos = GetMousePosition();
+            var textSize = GameBox.font.MeasureText(text, fontSize, spacing);
+            var quad = GetCursorQuadrant();
+            Vector2 pos = new(curPos.X - (quad % 2 != 0 ? textSize.X : 0), curPos.Y - (quad < 3 ? textSize.Y : 0));
+            AssembleRectFromVec(pos, textSize).Grow(4).Draw(new(0, 0, 0, 240));
+            DrawTextEx(GameBox.font, text, pos, fontSize, spacing, color);
+        }
     }
 }

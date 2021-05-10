@@ -7,15 +7,8 @@ namespace RayWrapper.Vars
 {
     public interface ISave
     {
-        void LoadString(string data);
-        string SaveString();
-        string FileName();
-    }
-
-    public class SaveItem<T> : ISave
-    {
         private static (Func<string, string> encrypt, Func<string, string> decrypt) _cypher = (null, null);
-        private static bool _isCypherValid = false;
+        public static bool isCypherValid { get; private set; } = false;
 
         public static (Func<string, string> encrypt, Func<string, string> decrypt) Cypher
         {
@@ -25,7 +18,7 @@ namespace RayWrapper.Vars
                 _cypher = value;
                 if (_cypher.encrypt is null || _cypher.decrypt is null)
                 {
-                    _isCypherValid = false;
+                    isCypherValid = false;
                     return;
                 }
 
@@ -50,37 +43,43 @@ namespace RayWrapper.Vars
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("[ERROR] DECRYPTION DOES NOT RESULT THE INPUT TEXT");
                     Console.ForegroundColor = before;
-                    _isCypherValid = false;
+                    isCypherValid = false;
                     return;
                 }
-                _isCypherValid = true;
+
+                isCypherValid = true;
             }
         }
 
-        private T _t;
-        private string _fileName;
-
-        public T Reference
-        {
-            get => _t;
-            set => _t = value;
-        }
-
-        public SaveItem(T obj, string fileName)
+        public static void IsSaveInitCheck()
         {
             if (!GameBox.SaveInit)
                 throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
+        }
+        
+        void LoadString(string data);
+        string SaveString();
+        string FileName();
+    }
+
+    public class SaveItem<T> : ISave where T : ISetable
+    {
+        private T _t;
+        private string _fileName;
+
+        public SaveItem(T obj, string fileName)
+        {
+            ISave.IsSaveInitCheck();
             if (obj is null) throw new NullReferenceException();
             _t = obj;
             _fileName = fileName;
-            GameBox.SaveList.Add(this);
         }
 
-        public void LoadString(string data) => _t = JsonConvert.DeserializeObject<T>(Decrypt(data));
+        public void LoadString(string data) => _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
         public string SaveString() => Encrypt(JsonConvert.SerializeObject(_t));
         public string FileName() => _fileName;
 
-        public static string Encrypt(string str) => _isCypherValid ? _cypher.encrypt.Invoke(str) : str;
-        public static string Decrypt(string str) => _isCypherValid ? _cypher.decrypt.Invoke(str) : str;
+        public static string Encrypt(string str) => ISave.isCypherValid ? ISave.Cypher.encrypt.Invoke(str) : str;
+        public static string Decrypt(string str) => ISave.isCypherValid ? ISave.Cypher.decrypt.Invoke(str) : str;
     }
 }

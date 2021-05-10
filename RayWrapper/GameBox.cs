@@ -13,16 +13,17 @@ namespace RayWrapper.Objs
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-        public static List<ISave> SaveList = new();
+        // public static List<(object iRef, ISave s)> SaveList = new();
+        private static List<ISave> SaveList = new();
         public static string DeveloperName { get; private set; }
         public static string AppName { get; private set; }
         public static bool SaveInit { get; private set; }
 
         public static Font font = GetFontDefault();
         public static long frameTicker = 0;
+        public static Vector2 WindowSize { get; private set; }
 
         public GameLoop Scene { get; private set; }
-        public Vector2 WindowSize { get; private set; }
         public string Title { get; private set; }
         public int FPS { get; private set; }
 
@@ -83,7 +84,7 @@ namespace RayWrapper.Objs
 
         public void SaveItems()
         {
-            if (!SaveInit) throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
+            ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             SaveList.ForEach(t =>
@@ -96,7 +97,7 @@ namespace RayWrapper.Objs
 
         public void LoadItems()
         {
-            if (!SaveInit) throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
+            ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             SaveList.ForEach(t =>
@@ -111,7 +112,7 @@ namespace RayWrapper.Objs
 
         public void DeleteFile(ISave iSave)
         {
-            if (!SaveInit) throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
+            ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             var file = $"{path}/{iSave.FileName()}.RaySaveWrap";
@@ -121,8 +122,7 @@ namespace RayWrapper.Objs
 
         public void DeleteAll()
         {
-            
-            if (!SaveInit) throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
+            ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             SaveList.ForEach(t =>
@@ -131,6 +131,18 @@ namespace RayWrapper.Objs
                 if (!File.Exists(file)) return;
                 File.Delete(file);
             });
+        }
+
+        public void RegisterSaveItem<T>(T obj, string fileName) where T : ISetable =>
+            SaveList.Add(new SaveItem<T>(obj, fileName));
+
+        public void DeRegisterSaveItem<T>(T obj, string fileName) where T : ISetable =>
+            SaveList.RemoveAll(m => m.FileName() == fileName);
+
+        public void ReRegisterSaveItem<T>(T ogObj, T newObj, string fileName) where T : ISetable
+        {
+            DeRegisterSaveItem(ogObj, fileName);
+            RegisterSaveItem(newObj, fileName);
         }
     }
 }
