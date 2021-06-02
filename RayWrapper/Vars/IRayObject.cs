@@ -1,6 +1,6 @@
-﻿namespace RayWrapper.Objs
+﻿namespace RayWrapper.Vars
 {
-    public interface IGameObject
+    public interface IRayObject
     {
         public void Update();
         public void Render();

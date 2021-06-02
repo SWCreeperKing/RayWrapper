@@ -22,7 +22,10 @@
           }
         }
       },
-      "Raylib-cs/3.5.0": {
+      "Raylib-cs/3.7.0": {
+        "dependencies": {
+          "System.Numerics.Vectors": "4.5.0"
+        },
         "runtime": {
           "lib/netstandard2.1/Raylib-cs.dll": {
             "assemblyVersion": "0.0.0.0",
@@ -35,11 +38,6 @@
             "assetType": "native",
             "fileVersion": "0.0.0.0"
           },
-          "runtimes/linux-x86/native/libraylib.so": {
-            "rid": "linux-x86",
-            "assetType": "native",
-            "fileVersion": "0.0.0.0"
-          },
           "runtimes/osx-x64/native/libraylib.dylib": {
             "rid": "osx-x64",
             "assetType": "native",
@@ -48,19 +46,20 @@
           "runtimes/win-x64/native/raylib.dll": {
             "rid": "win-x64",
             "assetType": "native",
-            "fileVersion": "3.1.0.0"
+            "fileVersion": "3.7.0.0"
           },
           "runtimes/win-x86/native/raylib.dll": {
             "rid": "win-x86",
             "assetType": "native",
-            "fileVersion": "3.1.0.0"
+            "fileVersion": "3.7.0.0"
           }
         }
       },
+      "System.Numerics.Vectors/4.5.0": {},
       "RayWrapper/1.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
-          "Raylib-cs": "3.5.0"
+          "Raylib-cs": "3.7.0"
         },
         "runtime": {
           "RayWrapper.dll": {}
@@ -81,12 +80,19 @@
       "path": "newtonsoft.json/13.0.1",
       "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
     },
-    "Raylib-cs/3.5.0": {
+    "Raylib-cs/3.7.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-4yIGm0ZkSjp4W9XpyY4dv20dQv9VkCXvYBL08g6pmTLL5usAHplXEedFcDOQFaE4XBud93dv0e/dyJXLOJU1HQ==",
-      "path": "raylib-cs/3.5.0",
-      "hashPath": "raylib-cs.3.5.0.nupkg.sha512"
+      "sha512": "sha512-X1znOymMFHuS2E6W+pKoafbO4bX9aEdoJyQoQIVDmgibVAJCrmhDv5xL8JAP1aLTxMLJNIeqKZPNfr+Cf++0rA==",
+      "path": "raylib-cs/3.7.0",
+      "hashPath": "raylib-cs.3.7.0.nupkg.sha512"
+    },
+    "System.Numerics.Vectors/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
+      "path": "system.numerics.vectors/4.5.0",
+      "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
     },
     "RayWrapper/1.0.0": {
       "type": "project",

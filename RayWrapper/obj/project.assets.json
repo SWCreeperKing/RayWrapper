@@ -11,8 +11,11 @@
           "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
       },
-      "Raylib-cs/3.5.0": {
+      "Raylib-cs/3.7.0": {
         "type": "package",
+        "dependencies": {
+          "System.Numerics.Vectors": "4.5.0"
+        },
         "compile": {
           "lib/netstandard2.1/Raylib-cs.dll": {}
         },
@@ -23,10 +26,6 @@
           "runtimes/linux-x64/native/libraylib.so": {
             "assetType": "native",
             "rid": "linux-x64"
-          },
-          "runtimes/linux-x86/native/libraylib.so": {
-            "assetType": "native",
-            "rid": "linux-x86"
           },
           "runtimes/osx-x64/native/libraylib.dylib": {
             "assetType": "native",
@@ -40,6 +39,15 @@
             "assetType": "native",
             "rid": "win-x86"
           }
+        }
+      },
+      "System.Numerics.Vectors/4.5.0": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.0/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.0/_._": {}
         }
       }
     }
@@ -72,29 +80,76 @@
         "packageIcon.png"
       ]
     },
-    "Raylib-cs/3.5.0": {
-      "sha512": "4yIGm0ZkSjp4W9XpyY4dv20dQv9VkCXvYBL08g6pmTLL5usAHplXEedFcDOQFaE4XBud93dv0e/dyJXLOJU1HQ==",
+    "Raylib-cs/3.7.0": {
+      "sha512": "X1znOymMFHuS2E6W+pKoafbO4bX9aEdoJyQoQIVDmgibVAJCrmhDv5xL8JAP1aLTxMLJNIeqKZPNfr+Cf++0rA==",
       "type": "package",
-      "path": "raylib-cs/3.5.0",
+      "path": "raylib-cs/3.7.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/Raylib-cs.dll",
-        "raylib-cs.3.5.0.nupkg.sha512",
+        "lib/netstandard2.1/Raylib-cs.xml",
+        "raylib-cs.3.7.0.nupkg.sha512",
         "raylib-cs.nuspec",
         "raylib-cs_64x64.png",
         "runtimes/linux-x64/native/libraylib.so",
-        "runtimes/linux-x86/native/libraylib.so",
         "runtimes/osx-x64/native/libraylib.dylib",
         "runtimes/win-x64/native/raylib.dll",
         "runtimes/win-x86/native/raylib.dll"
+      ]
+    },
+    "System.Numerics.Vectors/4.5.0": {
+      "sha512": "QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
+      "type": "package",
+      "path": "system.numerics.vectors/4.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Numerics.Vectors.dll",
+        "lib/net46/System.Numerics.Vectors.xml",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.0/System.Numerics.Vectors.dll",
+        "lib/netstandard1.0/System.Numerics.Vectors.xml",
+        "lib/netstandard2.0/System.Numerics.Vectors.dll",
+        "lib/netstandard2.0/System.Numerics.Vectors.xml",
+        "lib/portable-net45+win8+wp8+wpa81/System.Numerics.Vectors.dll",
+        "lib/portable-net45+win8+wp8+wpa81/System.Numerics.Vectors.xml",
+        "lib/uap10.0.16299/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/System.Numerics.Vectors.dll",
+        "ref/net45/System.Numerics.Vectors.xml",
+        "ref/net46/System.Numerics.Vectors.dll",
+        "ref/net46/System.Numerics.Vectors.xml",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard1.0/System.Numerics.Vectors.dll",
+        "ref/netstandard1.0/System.Numerics.Vectors.xml",
+        "ref/netstandard2.0/System.Numerics.Vectors.dll",
+        "ref/netstandard2.0/System.Numerics.Vectors.xml",
+        "ref/uap10.0.16299/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.numerics.vectors.4.5.0.nupkg.sha512",
+        "system.numerics.vectors.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
       "Newtonsoft.Json >= 13.0.1",
-      "Raylib-cs >= 3.5.0"
+      "Raylib-cs >= 3.7.0"
     ]
   },
   "packageFolders": {
@@ -142,7 +197,7 @@
           },
           "Raylib-cs": {
             "target": "Package",
-            "version": "[3.5.0, )"
+            "version": "[3.7.0, )"
           }
         },
         "imports": [

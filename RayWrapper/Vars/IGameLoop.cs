@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using RayWrapper.Vars;
 
 namespace RayWrapper.Objs
 {
-    public abstract class GameLoop : IInitializable, IGameObject
+    public abstract class GameLoop : IInitializable, IRayObject
     {
-        private List<IGameObject> _registryBefore = new();
-        private List<IGameObject> _registryAfter = new();
+        private List<GameObject> _registryBefore = new();
+        private List<GameObject> _registryAfter = new();
 
         public void Update()
         {
@@ -21,10 +22,10 @@ namespace RayWrapper.Objs
             _registryAfter.ForEach(a => a.Render());
         }
 
-        public void RegisterGameObj(bool isBefore, params IGameObject[] igo) =>
+        public void RegisterGameObj(bool isBefore, params GameObject[] igo) =>
             (isBefore ? _registryBefore : _registryAfter).AddRange(igo);
 
-        public void DeregisterGameObj(bool isBefore, IGameObject igo) =>
+        public void DeregisterGameObj(bool isBefore, GameObject igo) =>
             (isBefore ? _registryBefore : _registryAfter).Remove(igo);
 
         public abstract void Init();

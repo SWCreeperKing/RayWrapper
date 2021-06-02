@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Raylib_cs;
-using static RayWrapper.RayWrapper;
+using RayWrapper.Vars;
+using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
-    public class Scrollbar : IGameObject
+    public class Scrollbar : GameObject
     {
         public float Value { get; private set; }
 
         public Rectangle container;
         public Rectangle bar;
+        public float barScale = 25;
         public Color containerColor = new(78, 78, 78, 255);
         public Color barColor = new(116, 116, 116, 255);
-        public int amount;
+        public float amount;
         public bool isVertical;
         private float _visibleSize;
         private float _trueSize;
@@ -28,12 +31,13 @@ namespace RayWrapper.Objs
 
         public Scrollbar(Rectangle rect, bool isVertical = true)
         {
+            initPosition = rect.Pos();
             container = rect.Clone();
-            bar = new();
+            bar = new Rectangle();
             this.isVertical = isVertical;
         }
 
-        public void MoveBar(int offset)
+        public void MoveBar(float offset)
         {
             if (isVertical) bar.y -= offset;
             else bar.x -= offset;
@@ -62,17 +66,17 @@ namespace RayWrapper.Objs
             }
         }
 
-        public void Update()
+        public override void Update()
         {
             var (size, pos, mousePos) = (container.Size(), container.Pos(), Raylib.GetMousePosition());
-            BoundsCheck();
-            if (amount <= 0) amount = 1;
             _trueSize = (isVertical ? size.Y : size.X) / amount;
             _visibleSize = _trueSize;
-            if (_visibleSize < 10) _visibleSize = 10;
+            if (_visibleSize < 10 * barScale) _visibleSize = 10 * barScale;
+            BoundsCheck();
+            if (amount <= 0) amount = 1;
             Value = (isVertical ? bar.y - pos.Y : bar.x - pos.X) /
                 ((isVertical ? size.Y : size.X) - _visibleSize) * (amount - 1);
-            if (Value < 0) Value = 0;
+            if (Value < 0 || double.IsNaN(Value)) Value = 0;
 
             var isLeft = Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON);
             if (container.IsMouseIn() && isLeft && !MouseOccupied) MouseOccupied = _occupier = true;
@@ -82,10 +86,20 @@ namespace RayWrapper.Objs
             else MoveBar((int) (bar.x - mousePos.X + _visibleSize / 2));
         }
 
-        public void Render()
+        public override void Render()
         {
             container.Draw(containerColor);
             bar.Draw(barColor);
         }
+
+        public override void PositionChange(Vector2 v2)
+        {
+            var offset = GetOffset;
+            container = container.MoveTo(v2);
+            bar = bar.MoveTo(v2);
+            MoveBar(offset);
+        }
+        
+        public float GetOffset => isVertical ? container.y - bar.y : container.x - bar.x;
     }
 }

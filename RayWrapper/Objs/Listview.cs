@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_cs;
-using static RayWrapper.RayWrapper;
+using RayWrapper.Vars;
+using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
-    public class Listview : IGameObject
+    public class Listview : GameObject
     {
+        public static float scrollSensitivityPercentage = 10;
+
         public Action<int> IndividualClick
         {
             get => _individualClick;
@@ -18,6 +21,12 @@ namespace RayWrapper.Objs
                 if (_bar is null) return;
                 UpdateLabels(_bar.Value);
             }
+        }
+
+        public float Offset
+        {
+            get => _bar.GetOffset;
+            set => _bar.MoveBar(value);
         }
 
         public Func<int> arrayLength;
@@ -41,12 +50,13 @@ namespace RayWrapper.Objs
             this.arrayLength = arrayLength;
             _itemsToShow = itemsToShow;
             var height = itemsToShow * labelHeight + (itemsToShow - 1) * _padding;
-            _bar = new(new(pos.X, pos.Y, 18, height));
-            _bounds = new(pos.X + 20, pos.Y, width - 20, height);
+            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y, 18, height)) { barScale = 2};
+            _bounds = new Rectangle(pos.X + 20, pos.Y, width - 20, height);
             for (var i = 0; i < itemsToShow + 1; i++)
-                _labels.Add(new(new(0, 0, _bounds.width, labelHeight)));
+                _labels.Add(new Label(new Rectangle(0, 0, _bounds.width, labelHeight)));
             _bar.OnMoveEvent += UpdateLabels;
             _labelHeight = labelHeight;
+            initPosition = _bounds.Pos();
             UpdateLabels(0);
         }
 
@@ -54,41 +64,58 @@ namespace RayWrapper.Objs
         {
             _bar.amount = arrayLength.Invoke() + 1 - _itemsToShow;
             var strictVal = (int) value;
-            var carry = value - strictVal; // hopefully b/t 1 and 0
-            var y = _bounds.Pos().Y - (_labelHeight + _padding) * carry;
+            var y = _bounds.Pos().Y - (_labelHeight + _padding) * (value - strictVal);
             _labels.ForEach(l => l.backColor = l.fontColor = Transparent);
-            for (var i = 0; i < _labels.Count && i <= _bar.amount + 1; i++)
+
+            for (var i = 0; i < Math.Min(_labels.Count, arrayLength.Invoke()); i++)
             {
                 var notI = i;
                 var l = _labels[i];
                 l.text = this[strictVal + i];
                 if (_individualClick is not null) l.getId = () => strictVal + notI;
-                l.NewPos(new(_bounds.x, y + (_labelHeight + _padding) * i));
+                l.NewPos(new Vector2(_bounds.x, y + (_labelHeight + _padding) * i));
                 l.backColor = backColor;
                 l.fontColor = fontColor;
             }
         }
 
-        public void Update()
+        public override void Update()
         {
             _bar.Update();
 
-            if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
-            if (_bounds.ExtendPos(new(20, 0)).IsMouseIn())
+            if (_bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn())
             {
+                var scroll = Raylib.GetMouseWheelMove();
+                if (scroll != 0)
+                {
+                    _bar.MoveBar(scroll * _bar.container.height * (scrollSensitivityPercentage / 100f));
+                    _bar.Update();
+                    UpdateLabels(_bar.Value);
+                }
+
+                if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
                 _labels.ForEach(l => l?.Update());
                 if (!_labels.Any(l => l.isMouseIn)) return;
                 _individualClick?.Invoke(_labels.Where(l => l.isMouseIn).First().getId.Invoke());
                 return;
             }
 
+            if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
             outsideClick?.Invoke();
         }
 
-        public void Render()
+        public override void Render()
         {
-            _bar.Render();
+            if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
             _bounds.MaskDraw(() => { _labels.ForEach(l => l.Render()); });
+        }
+
+        public override void PositionChange(Vector2 v2)
+        {
+            _bar.MoveTo(v2);
+            _bar.MoveBy(new Vector2(-20, 0));
+            _bounds = _bounds.MoveTo(v2);
+            UpdateLabels(_bar.Value);
         }
 
         public string this[int idx] => itemProcessing.Invoke(idx);

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Raylib_cs;
+using RayWrapper.Vars;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 
 namespace RayWrapper.Objs
 {
-    public class Button : IGameObject
+    public class Button : GameObject
     {
         public enum ButtonMode
         {
@@ -33,37 +35,53 @@ namespace RayWrapper.Objs
             remove => _clickEvent.Remove(value);
         }
 
-        public Button(Rectangle rect, string text = "Untitled Button", ButtonMode buttonMode = ButtonMode.CenterText) =>
-            (this.rect, this.text, this.buttonMode) = (rect, text, buttonMode);
+        public Button(Rectangle rect, string text = "Untitled Button", ButtonMode buttonMode = ButtonMode.CenterText)
+        {
+            ChangeColor(new Color(56, 73, 99, 255), new Color(174, 177, 181, 255));
+            (initPosition, this.rect, this.text, this.buttonMode) = (rect.Pos(), rect, text, buttonMode);
+        }
 
-        public void Update()
+        public override void Update()
         {
             adjustedRect = buttonMode == ButtonMode.SizeToText
-                ? rect.AdjustWH(GameBox.font.MeasureText(text)).Shrink(-4)
-                : new(rect.x, rect.y, rect.width, rect.height);
+                ? rect.AdjustWh(GameBox.font.MeasureText(text)).Shrink(-4)
+                : new Rectangle(rect.x, rect.y, rect.width, rect.height);
             if (isDisabled) return;
-
             if (!adjustedRect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
             _clickEvent.ForEach(a => a.Invoke());
         }
 
-        public void Render()
+        public override void Render()
         {
             if (isDisabled) adjustedRect.Draw(disabledColor);
             else if (adjustedRect.IsMouseIn()) adjustedRect.Draw(hoverColor);
             else adjustedRect.Draw(baseColor);
-            switch (buttonMode)
+            adjustedRect.MaskDraw(() =>
             {
-                case ButtonMode.SizeToText:
-                    DrawTextEx(GameBox.font, text, new(rect.x, rect.y), 24, 1.5f, fontColor);
-                    break;
-                case ButtonMode.WrapText:
-                    GameBox.font.DrawTextWrap(text, adjustedRect, fontColor);
-                    break;
-                case ButtonMode.CenterText:
-                    GameBox.font.DrawCenterText(rect.Center(), text, fontColor);
-                    break;
-            }
+                switch (buttonMode)
+                {
+                    case ButtonMode.SizeToText:
+                        DrawTextEx(GameBox.font, text, new Vector2(rect.x, rect.y), 24, 1.5f, fontColor);
+                        break;
+                    case ButtonMode.WrapText:
+                        GameBox.font.DrawTextWrap(text, adjustedRect, fontColor);
+                        break;
+                    case ButtonMode.CenterText:
+                        GameBox.font.DrawCenterText(rect.Center(), text, fontColor);
+                        break;
+                }
+            });
+        }
+
+        public override void PositionChange(Vector2 v2) => rect = rect.MoveTo(v2);
+
+        public void ChangeColor(Color color, Color fontColor)
+        {
+            this.fontColor = fontColor;
+            baseColor = color;
+            hoverColor = new Color((int) Math.Min(color.r * 1.5, 255), (int) Math.Min(color.g * 1.5, 255),
+                (int) Math.Min(color.b * 1.5, 255), color.a);
+            disabledColor = new Color((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
         }
     }
 }

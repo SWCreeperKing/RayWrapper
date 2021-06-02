@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using Raylib_cs;
+using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 
-namespace RayWrapper.Objs
+namespace RayWrapper
 {
     public class GameBox
     {
@@ -19,7 +20,7 @@ namespace RayWrapper.Objs
         public static string AppName { get; private set; }
         public static bool SaveInit { get; private set; }
 
-        public static Font font = GetFontDefault();
+        public static Font font;
         public static long frameTicker = 0;
         public static Vector2 WindowSize { get; private set; }
 
@@ -30,6 +31,7 @@ namespace RayWrapper.Objs
         public Color backgroundColor = new(32, 32, 32, 255);
 
         private List<Action> _onDispose = new();
+        private bool _isConsole;
 
         public event Action OnDispose
         {
@@ -41,6 +43,7 @@ namespace RayWrapper.Objs
         {
             (Scene, WindowSize) = (scene, windowSize);
             InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
+            font = GetFontDefault();
             SetTargetFPS(FPS = fps);
         }
 
@@ -62,6 +65,8 @@ namespace RayWrapper.Objs
 
         public void Update()
         {
+            if (IsKeyPressed(KeyboardKey.KEY_GRAVE)) _isConsole = !_isConsole;
+            if (_isConsole) return;
             Scene.Update();
         }
 
@@ -70,6 +75,7 @@ namespace RayWrapper.Objs
             BeginDrawing();
             ClearBackground(backgroundColor);
             Scene.Render();
+            if (_isConsole) new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
             EndDrawing();
         }
 

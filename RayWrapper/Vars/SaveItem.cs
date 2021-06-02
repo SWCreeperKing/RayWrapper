@@ -56,7 +56,7 @@ namespace RayWrapper.Vars
             if (!GameBox.SaveInit)
                 throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
         }
-        
+
         void LoadString(string data);
         string SaveString();
         string FileName();
