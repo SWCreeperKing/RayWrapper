@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper;
@@ -75,8 +76,9 @@ namespace RayWrapperTester
             // _sb.amount = 1000;
             // _sb.OnMoveEvent += v => Console.WriteLine(v);
 
-            var arr = new[] {"1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no"};
-            _lv = new ListView(new Vector2(40, 100), 500, i => arr[i], () => arr.Length, 12);
+            var arr = new List<string>
+                {"1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no"};
+            _lv = new ListView(new Vector2(40, 100), 500, i => arr[i], () => arr.Count, 12);
             _lv.IndividualClick = i => Console.WriteLine($"{i}: {arr[i]}");
 
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
@@ -100,7 +102,15 @@ namespace RayWrapperTester
                     AssembleRectFromVec(GameBox.WindowSize / 2, Vector2.Zero).Grow(1000)
                         .DrawTooltip("Testing Tooltip")));
 
-            _tbv.AddTab("ListView Test", _lv);
+            Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Button.ButtonMode.SizeToText);
+            listViewButton.Clicked += () =>
+            {
+                arr.Clear();
+                arr.Add("hi");
+                _lv.Refresh();
+            };
+
+            _tbv.AddTab("ListView Test", _lv, listViewButton);
             _tbv.AddTab("DropDown Test", _dd);
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
                 new Checkbox(pos + new Vector2(0, 50), "Circle") {isCircle = true});

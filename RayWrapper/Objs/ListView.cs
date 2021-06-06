@@ -77,7 +77,7 @@ namespace RayWrapper.Objs
             var y = _bounds.Pos().Y - (_labelHeight + _padding) * (value - strictVal);
             _labels.ForEach(l => l.backColor = l.fontColor = Transparent);
 
-            for (var i = 0; i < Math.Min(_labels.Count, leng); i++)
+            for (var i = 0; i < Math.Min(_labels.Count, leng - strictVal); i++)
             {
                 Console.WriteLine($"strict: {strictVal} i: {i} leng: {leng} val: {value} barVal: {_bar.Value} barAmt: {_bar.amount}");
                 var notI = i;
