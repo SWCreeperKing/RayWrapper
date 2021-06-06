@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Mime;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper;
@@ -38,7 +37,7 @@ namespace RayWrapperTester
 
         static void Main(string[] args)
         {
-            gb = new GameBox(new Program(), new Vector2(800, 480), "Hallo World");
+            gb = new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
             gb.Start();
         }
 
@@ -77,19 +76,7 @@ namespace RayWrapperTester
             // _sb.OnMoveEvent += v => Console.WriteLine(v);
 
             var arr = new[] {"1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no"};
-            _lv = new ListView(pos, 175, i =>
-            {
-                try
-                {
-                    return arr[i];
-                }
-                catch
-                {
-                    Console.WriteLine(i);
-                }
-
-                return "null";
-            }, () => arr.Length, 12);
+            _lv = new ListView(new Vector2(40, 100), 500, i => arr[i], () => arr.Length, 12);
             _lv.IndividualClick = i => Console.WriteLine($"{i}: {arr[i]}");
 
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
@@ -144,7 +131,7 @@ namespace RayWrapperTester
 
             _tbv.AddTab("AlertBox Test", b);
             _tbv.AddTab("DrawTextRecEx Test", new EmptyRender(() =>
-                DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f, 
+                DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f,
                     true, SKYBLUE, 4, 8, RED, GOLD)));
 
             RegisterGameObj(true, _tbv);

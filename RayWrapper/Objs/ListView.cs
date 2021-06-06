@@ -70,7 +70,7 @@ namespace RayWrapper.Objs
 
             // value breaks when scrollbar is not reset but array is
             //          -> bar says value should be 21 when at max its 1
-            value -= .0000001f; // forced because whole numbers
+            // value -= .0000001f; // forced because whole numbers
             var leng = arrayLength.Invoke();
             _bar.amount = leng + 1 - _itemsToShow;
             var strictVal = (int) value;
