@@ -65,12 +65,6 @@ namespace RayWrapper.Objs
 
         public void UpdateLabels(float value)
         {
-            // TODO: RECODE ALL OF THIS BECAUSE IT BAD
-            //         and maybe scroll bar too
-
-            // value breaks when scrollbar is not reset but array is
-            //          -> bar says value should be 21 when at max its 1
-            // value -= .0000001f; // forced because whole numbers
             var leng = arrayLength.Invoke();
             _bar.amount = leng + 1 - _itemsToShow;
             var strictVal = (int) value;
@@ -79,7 +73,6 @@ namespace RayWrapper.Objs
 
             for (var i = 0; i < Math.Min(_labels.Count, leng - strictVal); i++)
             {
-                Console.WriteLine($"strict: {strictVal} i: {i} leng: {leng} val: {value} barVal: {_bar.Value} barAmt: {_bar.amount}");
                 var notI = i;
                 var l = _labels[i];
                 l.text = this[strictVal + i];
