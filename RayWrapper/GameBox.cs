@@ -15,23 +15,26 @@ namespace RayWrapper
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         // public static List<(object iRef, ISave s)> SaveList = new();
-        private static List<ISave> SaveList = new();
         public static string DeveloperName { get; private set; }
         public static string AppName { get; private set; }
         public static bool SaveInit { get; private set; }
 
+        public static AlertBox alertBox = null;
         public static Font font;
-        public static long frameTicker = 0;
         public static Vector2 WindowSize { get; private set; }
+
+        private static readonly List<ISave> _saveList = new();
 
         public GameLoop Scene { get; private set; }
         public string Title { get; private set; }
         public int FPS { get; private set; }
 
-        public Color backgroundColor = new(32, 32, 32, 255);
+        public Color backgroundColor = new(40, 40, 40, 255);
 
         private List<Action> _onDispose = new();
-        private bool _isConsole;
+        private List<Scheduler> _schedulers = new();
+
+        // private bool _isConsole;
 
         public event Action OnDispose
         {
@@ -52,11 +55,10 @@ namespace RayWrapper
             Scene.Init();
             while (!WindowShouldClose())
             {
-                frameTicker++;
-                frameTicker %= FPS;
-
-                Update();
+                if (alertBox is null) Update();
+                else alertBox.Update();
                 Render();
+                _schedulers.ForEach(scheduler => scheduler.TestTime(GetTimeMs()));
             }
 
             CloseWindow();
@@ -65,8 +67,8 @@ namespace RayWrapper
 
         public void Update()
         {
-            if (IsKeyPressed(KeyboardKey.KEY_GRAVE)) _isConsole = !_isConsole;
-            if (_isConsole) return;
+            // if (IsKeyPressed(KeyboardKey.KEY_GRAVE)) MouseOccupied = _isConsole = !_isConsole;
+            // if (_isConsole) return;
             Scene.Update();
         }
 
@@ -75,7 +77,8 @@ namespace RayWrapper
             BeginDrawing();
             ClearBackground(backgroundColor);
             Scene.Render();
-            if (_isConsole) new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
+            // if (_isConsole) new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
+            alertBox?.Render();
             EndDrawing();
         }
 
@@ -93,7 +96,7 @@ namespace RayWrapper
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            SaveList.ForEach(t =>
+            _saveList.ForEach(t =>
             {
                 using var sw = File.CreateText($"{path}/{t.FileName()}.RaySaveWrap");
                 sw.Write(t.SaveString());
@@ -106,7 +109,7 @@ namespace RayWrapper
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
-            SaveList.ForEach(t =>
+            _saveList.ForEach(t =>
             {
                 var file = $"{path}/{t.FileName()}.RaySaveWrap";
                 if (!File.Exists(file)) return;
@@ -131,7 +134,7 @@ namespace RayWrapper
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
-            SaveList.ForEach(t =>
+            _saveList.ForEach(t =>
             {
                 var file = $"{path}/{t.FileName()}.RaySaveWrap";
                 if (!File.Exists(file)) return;
@@ -139,16 +142,22 @@ namespace RayWrapper
             });
         }
 
-        public void RegisterSaveItem<T>(T obj, string fileName) where T : ISetable =>
-            SaveList.Add(new SaveItem<T>(obj, fileName));
+        public void RegisterSaveItem<T>(T obj, string fileName) where T : Setable<T> =>
+            _saveList.Add(new SaveItem<T>(obj, fileName));
 
-        public void DeRegisterSaveItem<T>(T obj, string fileName) where T : ISetable =>
-            SaveList.RemoveAll(m => m.FileName() == fileName);
+        public void DeRegisterSaveItem<T>(T obj, string fileName) where T : Setable<T> =>
+            _saveList.RemoveAll(m => m.FileName() == fileName);
 
-        public void ReRegisterSaveItem<T>(T ogObj, T newObj, string fileName) where T : ISetable
+        public void ReRegisterSaveItem<T>(T ogObj, T newObj, string fileName) where T : Setable<T>
         {
             DeRegisterSaveItem(ogObj, fileName);
             RegisterSaveItem(newObj, fileName);
         }
+
+        public long GetTimeMs() => DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+        public void AddScheduler(Scheduler schedule) => _schedulers.Add(schedule);
+
+        public void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
     }
 }

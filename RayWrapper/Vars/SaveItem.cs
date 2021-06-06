@@ -62,7 +62,7 @@ namespace RayWrapper.Vars
         string FileName();
     }
 
-    public class SaveItem<T> : ISave where T : ISetable
+    public class SaveItem<T> : ISave where T : Setable<T>
     {
         private T _t;
         private string _fileName;

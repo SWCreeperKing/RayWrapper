@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Numerics;
-using System.Threading.Tasks;
 using Raylib_cs;
 using RayWrapper;
 using RayWrapper.Objs;
+using RayWrapper.Objs.TreeViewShapes;
 using RayWrapper.Vars;
 using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
@@ -22,34 +23,32 @@ namespace RayWrapperTester
         private Label _l;
 
         // private Scrollbar _sb = new(new(400, 50, 20, 380));
-        private Listview _lv;
+        private ListView _lv;
         private DropDown _dd;
 
-        public class Test : ISetable
+        private string yes =
+            "What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little \"clever\" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.";
+
+        public class Test : Setable<Test>
         {
             public int i = 6;
 
-            public void Set(ISetable set)
-            {
-                if (set is not Test ti) return;
-                i = ti.i;
-            }
+            protected override Test GetThis() => this;
         }
 
         static void Main(string[] args)
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay( /*time in ms or TimeSpan*/ 5000);
-            }); // says hi there after 5sec without stopping everything
-
             gb = new GameBox(new Program(), new Vector2(800, 480), "Hallo World");
             gb.Start();
         }
 
         public override void Init()
         {
+            var screen = GameBox.WindowSize;
             Vector2 pos = new(75, 80);
+
+            gb.AddScheduler(new Scheduler(1000,
+                () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
 
             // save testing 
             // gb.InitSaveSystem("SW_CreeperKing", "SaveTesting");
@@ -77,8 +76,8 @@ namespace RayWrapperTester
             // _sb.amount = 1000;
             // _sb.OnMoveEvent += v => Console.WriteLine(v);
 
-            var arr = new[] {"1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes"};
-            _lv = new Listview(pos, 175, i =>
+            var arr = new[] {"1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no"};
+            _lv = new ListView(pos, 175, i =>
             {
                 try
                 {
@@ -90,7 +89,7 @@ namespace RayWrapperTester
                 }
 
                 return "null";
-            }, () => arr.Length, 7);
+            }, () => arr.Length, 12);
             _lv.IndividualClick = i => Console.WriteLine($"{i}: {arr[i]}");
 
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
@@ -116,6 +115,37 @@ namespace RayWrapperTester
 
             _tbv.AddTab("ListView Test", _lv);
             _tbv.AddTab("DropDown Test", _dd);
+            _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
+                new Checkbox(pos + new Vector2(0, 50), "Circle") {isCircle = true});
+
+            TreeView tv = new();
+            tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
+            // lines
+            tv.AddNode(new Line(new Vector2(1, 1), new Vector2(1, 3), () => false),
+                new Line(new Vector2(3, 1), new Vector2(3, 3), () => true),
+                new Line(new Vector2(1, 1), new Vector2(3, 3), () => true));
+            // circles
+            tv.AddNode(new Box(new Rectangle(1, 1, 1, 1), () => false, "hi", "yo"),
+                new Box(new Rectangle(1, 3, 1, 1), () => true, "hi2", "yo2"));
+            //boxes
+            tv.AddNode(new Circle(new Rectangle(3, 1, 1, 1), () => false, "hi3", "yo3"),
+                new Circle(new Rectangle(3, 3, 1, 1), () => true, "hi4", "yo4"));
+            tv.OnClick += Console.WriteLine;
+
+            _tbv.AddTab("TreeView Test", tv);
+
+            KeyButton kb = new(pos, KeyboardKey.KEY_C);
+            kb.keyChange = key => Console.WriteLine($"New Key: {key}");
+
+            _tbv.AddTab("KeyButton Test", kb);
+
+            var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Button.ButtonMode.SizeToText);
+            b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
+
+            _tbv.AddTab("AlertBox Test", b);
+            _tbv.AddTab("DrawTextRecEx Test", new EmptyRender(() =>
+                DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f, 
+                    true, SKYBLUE, 4, 8, RED, GOLD)));
 
             RegisterGameObj(true, _tbv);
         }
@@ -136,12 +166,6 @@ namespace RayWrapperTester
         {
             var size = GameBox.WindowSize;
             DrawFPS(12, (int) (size.Y - 25));
-
-            // _scissorArea.MaskDraw(() =>
-            // {
-            //     _scissorArea.Draw(new(255, 255, 255, 10));
-            //     DrawText("Move the mouse around to reveal this text!", 190, 200, 20, LIGHTGRAY);
-            // });
         }
     }
 }

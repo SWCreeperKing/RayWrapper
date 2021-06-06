@@ -8,26 +8,38 @@ namespace RayWrapper.Objs
 {
     public class DropDown : GameObject
     {
+        public int Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                UpdateChanges();
+            }
+        }
+
+        public char arrowDown = '↓';
+        public char arrowUp = '↑';
         public int fontSize = 24;
         public bool isListVisible;
         public Action<string, int> onChange = null; // op, val
-        public Listview optionDisplay;
+        public ListView optionDisplay;
         public List<string> options;
         public Label text;
-        public int Value { get; private set; }
 
         private Vector2 _size;
+        private int _value;
 
-        public DropDown(Vector2 pos, params string[] options)
+        public DropDown(Vector2 pos, params string[] options) : base(pos)
         {
-            (initPosition, this.options) = (pos, options.ToList());
+            this.options = options.ToList();
             UpdateChanges();
         }
 
         public void UpdateChanges()
         {
             var longest = options.OrderByDescending(s => s.Length).First();
-            _size = GameBox.font.MeasureText($"^y{longest}", fontSize);
+            _size = GameBox.font.MeasureText($"^|||y{longest}", fontSize);
             var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
             text = new Label(back, options[Value]) {fontSize = fontSize};
 
@@ -59,7 +71,7 @@ namespace RayWrapper.Objs
 
         public override void Render()
         {
-            text.text = $"{(isListVisible ? "^" : "v")} {options[Value]}";
+            text.text = $"{(isListVisible ? arrowUp : arrowDown)}| {options[Value]}";
             text.Render();
             if (isListVisible) optionDisplay.Render();
         }

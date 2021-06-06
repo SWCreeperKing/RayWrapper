@@ -10,6 +10,8 @@ namespace RayWrapper.Vars
         protected Vector2 initPosition;
         protected Vector2 addedPosition;
 
+        public GameObject(Vector2 pos) => initPosition = pos;
+        
         public void MoveBy(Vector2 v2)
         {
             addedPosition += v2;

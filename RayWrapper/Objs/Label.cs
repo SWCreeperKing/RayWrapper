@@ -28,8 +28,9 @@ namespace RayWrapper.Objs
         public string text;
         public float spacing = 1.5f;
 
-        public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) =>
-            (initPosition, this.back, this.text, this.textMode) = (back.Pos(), back, text, textMode);
+        public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) :
+            base(back.Pos()) =>
+            (this.back, this.text, this.textMode) = (back, text, textMode);
 
         public override void Update()
         {

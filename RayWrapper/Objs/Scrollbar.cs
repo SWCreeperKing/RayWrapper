@@ -29,9 +29,8 @@ namespace RayWrapper.Objs
             remove => _onMove.Remove(value);
         }
 
-        public Scrollbar(Rectangle rect, bool isVertical = true)
+        public Scrollbar(Rectangle rect, bool isVertical = true) : base(rect.Pos())
         {
-            initPosition = rect.Pos();
             container = rect.Clone();
             bar = new Rectangle();
             this.isVertical = isVertical;

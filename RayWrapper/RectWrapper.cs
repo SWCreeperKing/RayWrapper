@@ -22,7 +22,11 @@ namespace RayWrapper
         public static Vector2 Size(this Rectangle rect) => new(rect.width, rect.height);
         public static string GetString(this Rectangle rect) => $"[({rect.x},{rect.y})({rect.width}x{rect.height})]";
         public static bool IsEqualTo(this Rectangle rect1, Rectangle rect2) => rect1.GetString() == rect2.GetString();
+        public static void DrawCircle(this Rectangle rect, Color color) => DrawRectangleRounded(rect, 1f, 5, color);
 
+        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) =>
+            DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
+        
         public static Rectangle Shrink(this Rectangle rect, int changeBuy) =>
             new(rect.x + changeBuy, rect.y + changeBuy, rect.width - changeBuy * 2, rect.height - changeBuy * 2);
 
@@ -40,7 +44,7 @@ namespace RayWrapper
 
         public static void DrawTooltip(this Rectangle box, string text, int fontSize = 24, float spacing = 1.5f) =>
             box.DrawTooltip(text, new Color(170, 170, 255, 200), fontSize, spacing);
-
+        
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
             BeginScissorMode((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height);
@@ -51,13 +55,7 @@ namespace RayWrapper
         public static void DrawTooltip(this Rectangle box, string text, Color color, int fontSize = 24,
             float spacing = 1.5f)
         {
-            if (!box.IsMouseIn()) return;
-            var curPos = GetMousePosition();
-            var textSize = GameBox.font.MeasureText(text, fontSize, spacing);
-            var quad = GeneralWrapper.GetCursorQuadrant();
-            Vector2 pos = new(curPos.X - (quad % 2 != 0 ? textSize.X : 0), curPos.Y - (quad > 2 ? textSize.Y : -33));
-            AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 140));
-            DrawTextEx(GameBox.font, text, pos, fontSize, spacing, color);
+            if (box.IsMouseIn()) GetMousePosition().DrawToolTipAtPoint(text, color, fontSize, spacing);
         }
     }
 }

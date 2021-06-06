@@ -8,7 +8,7 @@ namespace RayWrapper.Objs
     {
         public Action ToRender;
 
-        public EmptyRender(Action toRender) => ToRender = toRender;
+        public EmptyRender(Action toRender) : base(new Vector2()) => ToRender = toRender;
 
         public override void Update()
         {

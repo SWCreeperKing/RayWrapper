@@ -34,7 +34,7 @@ namespace RayWrapper.Objs
         private Dictionary<string, float> _tabLengths = new();
         private List<Label> _tabs = new();
 
-        public TabView(Vector2 pos, float width)
+        public TabView(Vector2 pos, float width) : base(pos)
         {
             _rect = new Rectangle(pos.X, pos.Y, width, 40);
             _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false);
@@ -51,7 +51,7 @@ namespace RayWrapper.Objs
             _bar.Update();
             try
             {
-                _tabs.ForEach(t => t.Update());
+                if (!GeneralWrapper.MouseOccupied) _tabs.ForEach(t => t.Update());
             }
             catch (InvalidOperationException)
             {

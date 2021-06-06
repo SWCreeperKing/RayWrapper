@@ -8,7 +8,7 @@ using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
-    public class Listview : GameObject
+    public class ListView : GameObject
     {
         public static float scrollSensitivityPercentage = 10;
 
@@ -28,9 +28,12 @@ namespace RayWrapper.Objs
             get => _bar.GetOffset;
             set => _bar.MoveBar(value);
         }
+        
+        public float Value => _bar.Value;
 
         public Func<int> arrayLength;
         public Color backColor = new(50, 50, 50, 255);
+        public Action click;
         public Color fontColor = new(192, 192, 198, 255);
         public Func<int, string> itemProcessing;
         public Action outsideClick;
@@ -43,8 +46,8 @@ namespace RayWrapper.Objs
         private Action<int> _individualClick;
         private int _itemsToShow;
 
-        public Listview(Vector2 pos, int width, Func<int, string> itemProcessing, Func<int> arrayLength,
-            int itemsToShow = 10, int labelHeight = 40)
+        public ListView(Vector2 pos, int width, Func<int, string> itemProcessing, Func<int> arrayLength,
+            int itemsToShow = 10, int labelHeight = 40) : base(pos)
         {
             this.itemProcessing = itemProcessing;
             this.arrayLength = arrayLength;
@@ -62,13 +65,21 @@ namespace RayWrapper.Objs
 
         public void UpdateLabels(float value)
         {
-            _bar.amount = arrayLength.Invoke() + 1 - _itemsToShow;
+            // TODO: RECODE ALL OF THIS BECAUSE IT BAD
+            //         and maybe scroll bar too
+
+            // value breaks when scrollbar is not reset but array is
+            //          -> bar says value should be 21 when at max its 1
+            value -= .0000001f; // forced because whole numbers
+            var leng = arrayLength.Invoke();
+            _bar.amount = leng + 1 - _itemsToShow;
             var strictVal = (int) value;
             var y = _bounds.Pos().Y - (_labelHeight + _padding) * (value - strictVal);
             _labels.ForEach(l => l.backColor = l.fontColor = Transparent);
 
-            for (var i = 0; i < Math.Min(_labels.Count, arrayLength.Invoke()); i++)
+            for (var i = 0; i < Math.Min(_labels.Count, leng); i++)
             {
+                Console.WriteLine($"strict: {strictVal} i: {i} leng: {leng} val: {value} barVal: {_bar.Value} barAmt: {_bar.amount}");
                 var notI = i;
                 var l = _labels[i];
                 l.text = this[strictVal + i];
@@ -94,6 +105,7 @@ namespace RayWrapper.Objs
                 }
 
                 if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+                click?.Invoke();
                 _labels.ForEach(l => l?.Update());
                 if (!_labels.Any(l => l.isMouseIn)) return;
                 _individualClick?.Invoke(_labels.Where(l => l.isMouseIn).First().getId.Invoke());
@@ -118,6 +130,8 @@ namespace RayWrapper.Objs
             UpdateLabels(_bar.Value);
         }
 
+        public void Refresh() => UpdateLabels(Value);
+        
         public string this[int idx] => itemProcessing.Invoke(idx);
     }
 }

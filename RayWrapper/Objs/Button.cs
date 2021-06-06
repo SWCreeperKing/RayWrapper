@@ -17,6 +17,7 @@ namespace RayWrapper.Objs
             WrapText
         }
 
+        public Rectangle adjustedRect;
         public Rectangle rect;
         public Color baseColor = new(56, 73, 99, 255);
         public Color hoverColor = new(99, 129, 175, 255);
@@ -27,7 +28,6 @@ namespace RayWrapper.Objs
         public bool isDisabled;
 
         private List<Action> _clickEvent = new();
-        private Rectangle adjustedRect;
 
         public event Action Clicked
         {
@@ -36,9 +36,10 @@ namespace RayWrapper.Objs
         }
 
         public Button(Rectangle rect, string text = "Untitled Button", ButtonMode buttonMode = ButtonMode.CenterText)
+            : base(rect.Pos())
         {
             ChangeColor(new Color(56, 73, 99, 255), new Color(174, 177, 181, 255));
-            (initPosition, this.rect, this.text, this.buttonMode) = (rect.Pos(), rect, text, buttonMode);
+            (this.rect, this.text, this.buttonMode) = (rect, text, buttonMode);
         }
 
         public override void Update()
