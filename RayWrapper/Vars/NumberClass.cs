@@ -52,7 +52,6 @@ namespace RayWrapper.Vars
 
         public NumberClass(string s)
         {
-            // todo: support for stage
             if ((s = s.ToLower().Replace("ee", "e1e")).Contains("e"))
             {
                 var split = s.Split('e');
@@ -199,7 +198,6 @@ namespace RayWrapper.Vars
 
         public string FormatNc(Format format)
         {
-            // todo update for stage
             if (exponent < 5) return $"{mantissa * Math.Pow(10, exponent):#,##0.##}";
             var useMan = !IsMantissaUseless(); // if take mantissa or leave it
 
@@ -208,10 +206,8 @@ namespace RayWrapper.Vars
 
             // get proper format
             // can be #.000 or #.### 
-            string GetFormatFromCount(int count, bool optional = true) =>
+            string GetFormatFromCount(int count, bool optional = false) =>
                 $"#.{string.Join("", Enumerable.Repeat(optional ? '#' : '0', count))}";
-
-            // todo: get advice on how to properly format stage
 
             string formatMantissa;
             string formatExponent;
@@ -219,7 +215,7 @@ namespace RayWrapper.Vars
             {
                 case Format.Engineering:
                     var extended = exponent % 3;
-                    formatMantissa = useMan ? $"{mantissa * Math.Pow(10, extended):##0.##}" : "";
+                    formatMantissa = useMan ? $"{mantissa * Math.Pow(10, extended):##0.00}" : "";
                     formatExponent = new NumberClass(exponent - extended).FormatNc(Format.Engineering)
                         .Replace("1e", "e");
                     return CutOff1Check($"{formatMantissa}e{formatExponent}");

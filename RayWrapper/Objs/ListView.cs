@@ -45,6 +45,7 @@ namespace RayWrapper.Objs
         private int _padding = 5;
         private Action<int> _individualClick;
         private int _itemsToShow;
+        private bool _updated;
 
         public ListView(Vector2 pos, int width, Func<int, string> itemProcessing, Func<int> arrayLength,
             int itemsToShow = 10, int labelHeight = 40) : base(pos)
@@ -87,7 +88,7 @@ namespace RayWrapper.Objs
         {
             _bar.Update();
 
-            if (_bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn())
+            if (_bounds.IsMouseIn())
             {
                 var scroll = Raylib.GetMouseWheelMove();
                 if (scroll != 0)
@@ -113,6 +114,7 @@ namespace RayWrapper.Objs
         {
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
             _bounds.MaskDraw(() => { _labels.ForEach(l => l.Render()); });
+            _updated = false;
         }
 
         public override void PositionChange(Vector2 v2)
@@ -123,8 +125,13 @@ namespace RayWrapper.Objs
             UpdateLabels(_bar.Value);
         }
 
-        public void Refresh() => UpdateLabels(Value);
-        
+        public void Refresh()
+        {
+            if (_updated) return;
+            _updated = true;
+            UpdateLabels(Value);
+        }
+
         public string this[int idx] => itemProcessing.Invoke(idx);
     }
 }

@@ -20,6 +20,7 @@ namespace RayWrapper.Objs
         public Rectangle back;
         public Color backColor = new(50, 50, 50, 255);
         public Action clicked;
+        public Action clickedOutside;
         public Color fontColor = new(192, 192, 198, 255);
         public float fontSize = 24;
         public Func<int> getId = null;
@@ -35,7 +36,9 @@ namespace RayWrapper.Objs
         public override void Update()
         {
             isMouseIn = back.IsMouseIn();
-            if (isMouseIn && IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) clicked?.Invoke();
+            var click = IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON); 
+            if (isMouseIn && click) clicked?.Invoke();
+            else if (click) clickedOutside?.Invoke();
         }
 
         public override void Render()

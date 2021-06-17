@@ -44,6 +44,9 @@ namespace RayWrapperTester
 
         public override void Init()
         {
+            GameBox.font = LoadFont("CascadiaMono.ttf");
+            SetTextureFilter(GameBox.font.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
+            
             var screen = GameBox.WindowSize;
             Vector2 pos = new(75, 80);
 
@@ -51,16 +54,7 @@ namespace RayWrapperTester
                 () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
 
             // save testing 
-            // gb.InitSaveSystem("SW_CreeperKing", "SaveTesting");
-            // var t = new Test();
-            // gb.RegisterSaveItem(t, "test item");
-            // t.i = 10;
-            // Console.WriteLine($"i = {t.i}");
-            // gb.SaveItems();
-            // t.i = 2;
-            // Console.WriteLine($"i = {t.i}");
-            // gb.LoadItems();
-            // Console.WriteLine($"i = {t.i}");
+            // SaveTesting();
 
             _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name");
             _b.Clicked += () =>
@@ -144,7 +138,22 @@ namespace RayWrapperTester
                 DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f,
                     true, SKYBLUE, 4, 8, RED, GOLD)));
 
+            _tbv.AddTab("Input Test", new InputBox(pos));
+            
             RegisterGameObj(true, _tbv);
+            
+            // W: [(%, 16)] H: [(!, 24)]
+            // (char c, int i) w = (' ', 0);
+            // (char c, int i) h = (' ', 0);
+            // for (var i = 32; i < 127; i++)
+            // {
+            //     var c = (char) i;
+            //     var wh = GameBox.font.MeasureText($"{c}");
+            //     if ((int) wh.X > w.i) w = (c, (int) wh.X);
+            //     else if ((int) wh.Y > h.i) h = (c, (int) wh.Y);
+            // }
+            //
+            // Console.WriteLine($"W: [{w}] H: [{h}]");
         }
 
         public override void UpdateLoop()
@@ -163,6 +172,28 @@ namespace RayWrapperTester
         {
             var size = GameBox.WindowSize;
             DrawFPS(12, (int) (size.Y - 25));
+        }
+
+        public void SaveTesting()
+        {
+            gb.InitSaveSystem("SW_CreeperKing", "SaveTesting");
+            var t = new Test();
+            gb.RegisterSaveItem(t, "test item");
+            t.i = 10;
+            Console.WriteLine($"i = {t.i}"); // 10
+            gb.SaveItems();
+            t.i = 2;
+            Console.WriteLine($"i = {t.i}"); // 2
+            gb.LoadItems();
+            Console.WriteLine($"i = {t.i}"); // 10
+            t.Set(new Test());
+            Console.WriteLine($"i = {t.i}"); // 6
+            gb.LoadItems();
+            Console.WriteLine($"i = {t.i}"); // 10
+            t = new Test();
+            Console.WriteLine($"i = {t.i}"); // 6 
+            gb.LoadItems();
+            Console.WriteLine($"i = {t.i}"); // 6
         }
     }
 }

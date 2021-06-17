@@ -145,5 +145,7 @@ namespace RayWrapper.Objs
         public float GetTabLength() =>
             _tabLengths.Values.Sum() + (_closable ? 25 * _tabLengths.Values.Count : 0) +
             (_tabLengths.Count - 1) * _padding;
+
+        public string GetCurrentTab() => _currentTab;
     }
 }

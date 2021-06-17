@@ -18,12 +18,11 @@ namespace RayWrapper.Objs.TreeViewShapes
             (this.pos, this.isMarked, this.toolTip, this.id, this.isVisible) =
             (pos, isMarked, toolTip, id, isVisible ?? (() => true));
 
-        public string Draw(Vector2 change, float scale)
+        public (string, Rectangle, string) Draw(Vector2 change, float scale)
         {
             var size = DrawShape((change + pos) * scale, change, scale, isMarked.Invoke(), isVisible.Invoke());
-            if (!size.IsMouseIn()) return "";
-            if (toolTip != "") size.DrawTooltip(toolTip);
-            return Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) ? id : "";
+            if (!size.IsMouseIn() || !isVisible.Invoke()) return ("", size, "");
+            return (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) ? id : "", size, toolTip);
         }
 
         public Color GetColor() => isMarked.Invoke() ? markColor.marked : markColor.unMarked;

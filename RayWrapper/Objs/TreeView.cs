@@ -33,12 +33,7 @@ namespace RayWrapper.Objs
         public override void Update()
         {
             if (GeneralWrapper.MouseOccupied) return;
-            if (Raylib.IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
-            {
-                _moveChange = new();
-                _scale = 32;
-            }
-
+            if (Raylib.IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) ResetPos();
             if (Raylib.IsMouseButtonDown(MOUSE_LEFT_BUTTON))
             {
                 var curMouse = Raylib.GetMousePosition();
@@ -59,16 +54,24 @@ namespace RayWrapper.Objs
                 ? RectWrapper.AssembleRectFromVec(new Vector2(0), GameBox.WindowSize)
                 : mask;
             IEnumerable<string> id = Array.Empty<string>();
-            id = _nodes.Select(n =>
+            var idRaw = _nodes.Select(n =>
             {
-                var s = "";
-                rect.MaskDraw(() => s = n.Draw(_moveChange, _scale));
-                return s;
-            }).Where(s => s != "");
+                var (s, r, t) = ("", new Rectangle(), "");
+                rect.MaskDraw(() => (s, r, t) = n.Draw(_moveChange, _scale));
+                return (s, r, t);
+            }).ToArray();
+            id = idRaw.Where(s => s.s != "").Select(s => s.s);
+            idRaw.Select(s => (s.r, s.t)).Where(s => s.t != "").ToList().ForEach(s => s.r.DrawTooltip(s.t));
             if (id.Any() && !GeneralWrapper.MouseOccupied) _onClick.ForEach(c => c.Invoke(id.First()));
         }
 
         public void AddNode(params TreeViewShape[] shapes) => _nodes.AddRange(shapes);
+
+        public void ResetPos()
+        {
+            _moveChange = new();
+            _scale = 32;
+        }
 
         // useless
         public override void PositionChange(Vector2 v2)

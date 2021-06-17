@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using Newtonsoft.Json;
-using RayWrapper.Objs;
 
 namespace RayWrapper.Vars
 {
@@ -28,24 +27,24 @@ namespace RayWrapper.Vars
                 for (var i = 0; i < charStop; i++) sb.Append((char) r.Next(0, 256));
                 var str = sb.ToString();
                 var enc = _cypher.encrypt.Invoke(str);
-                var dec = _cypher.decrypt.Invoke(str);
+                var dec = _cypher.decrypt.Invoke(enc);
+
+                var before = Console.ForegroundColor;
                 if (str == enc)
                 {
-                    var before = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     Console.WriteLine("[WARNING] ENCRYPTION RESULTS IN BASE STRING");
-                    Console.ForegroundColor = before;
                 }
 
                 if (str != dec)
                 {
-                    var before = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("[ERROR] DECRYPTION DOES NOT RESULT THE INPUT TEXT");
-                    Console.ForegroundColor = before;
                     isCypherValid = false;
                     return;
                 }
+
+                Console.ForegroundColor = before;
 
                 isCypherValid = true;
             }
@@ -70,8 +69,7 @@ namespace RayWrapper.Vars
         public SaveItem(T obj, string fileName)
         {
             ISave.IsSaveInitCheck();
-            if (obj is null) throw new NullReferenceException();
-            _t = obj;
+            _t = obj ?? throw new NullReferenceException();
             _fileName = fileName;
         }
 

@@ -84,7 +84,7 @@ namespace RayWrapper.Objs
             new Rectangle(0, 0, screen.X, screen.Y).Draw(new Color(0, 0, 0, 150));
             _rect.Draw(rectColor);
             font.DrawCenterText(halfScreen - new Vector2(0, _rect.height/2 - 15), title, titleColor, 30);
-            font.DrawCenterText(halfScreen - new Vector2(0, _rect.height/2 - 50), message, messageColor);
+            font.DrawCenterText(halfScreen - new Vector2(0, _rect.height/2 - 55), message, messageColor);
             close.Render();
             no.Render();
             yes.Render();
