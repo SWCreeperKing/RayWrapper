@@ -8,5 +8,9 @@
     <ItemGroup>
       <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="CascadiaMono.ttf" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
 
 </Project>
