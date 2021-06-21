@@ -78,11 +78,10 @@ namespace RayWrapper.Objs
                 var notI = i;
                 var l = _labels[i];
                 l.text = this[strictVal + i];
-                l.fontColor = colors.ContainsKey(strictVal + i) ? colors[strictVal + i] : new(192, 192, 198, 255);
                 if (_individualClick is not null) l.getId = () => strictVal + notI;
                 l.NewPos(new Vector2(_bounds.x, y + (_labelHeight + _padding) * i));
                 l.backColor = backColor;
-                l.fontColor = fontColor;
+                l.fontColor = colors.ContainsKey(strictVal + i) ? colors[strictVal + i] : fontColor;
             }
         }
 
