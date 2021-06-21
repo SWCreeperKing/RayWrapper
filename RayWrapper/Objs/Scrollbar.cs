@@ -49,20 +49,13 @@ namespace RayWrapper.Objs
             var (size, pos) = (container.Size(), container.Pos());
             (bar.width, bar.height) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
             var (hMax, wMax) = (pos.Y + size.Y, pos.X + size.X);
-            if (isVertical)
-            {
-                if (bar.y < pos.Y) bar.y = pos.Y;
-                else if (bar.y > hMax - _visibleSize) bar.y = (int) (hMax - _visibleSize);
-                if (bar.x < pos.X) bar.x = pos.X;
-                else if (bar.x > wMax) bar.x = wMax;
-            }
-            else
-            {
-                if (bar.y < pos.Y) bar.y = pos.Y;
-                else if (bar.y > hMax) bar.y = hMax;
-                if (bar.x < pos.X) bar.x = pos.X;
-                else if (bar.x > wMax - _visibleSize) bar.x = (int) (wMax - _visibleSize);
-            }
+            var newHMax = isVertical ? hMax - _visibleSize : hMax;
+            var newWMax = isVertical ? wMax : wMax - _visibleSize;
+            
+            if (bar.y < pos.Y) bar.y = pos.Y;
+            else if (bar.y > newHMax) bar.y = (int) newHMax;
+            if (bar.x < pos.X) bar.x = pos.X;
+            else if (bar.x > newWMax) bar.x = (int) newWMax;
         }
 
         public override void Update()
