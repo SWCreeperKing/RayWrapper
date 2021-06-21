@@ -28,12 +28,13 @@ namespace RayWrapper.Objs
             get => _bar.GetOffset;
             set => _bar.MoveBar(value);
         }
-        
+
         public float Value => _bar.Value;
 
         public Func<int> arrayLength;
         public Color backColor = new(50, 50, 50, 255);
         public Action click;
+        public Dictionary<int, Color> colors = new();
         public Color fontColor = new(192, 192, 198, 255);
         public Func<int, string> itemProcessing;
         public Action outsideClick;
@@ -54,7 +55,7 @@ namespace RayWrapper.Objs
             this.arrayLength = arrayLength;
             _itemsToShow = itemsToShow;
             var height = itemsToShow * labelHeight + (itemsToShow - 1) * _padding;
-            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y, 18, height)) { barScale = 2};
+            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y, 18, height)) {barScale = 2};
             _bounds = new Rectangle(pos.X + 20, pos.Y, width - 20, height);
             for (var i = 0; i < itemsToShow + 1; i++)
                 _labels.Add(new Label(new Rectangle(0, 0, _bounds.width, labelHeight)));
@@ -77,6 +78,7 @@ namespace RayWrapper.Objs
                 var notI = i;
                 var l = _labels[i];
                 l.text = this[strictVal + i];
+                l.fontColor = colors.ContainsKey(strictVal + i) ? colors[strictVal + i] : new(192, 192, 198, 255);
                 if (_individualClick is not null) l.getId = () => strictVal + notI;
                 l.NewPos(new Vector2(_bounds.x, y + (_labelHeight + _padding) * i));
                 l.backColor = backColor;
