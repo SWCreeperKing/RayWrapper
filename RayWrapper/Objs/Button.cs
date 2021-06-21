@@ -49,7 +49,7 @@ namespace RayWrapper.Objs
                 : new Rectangle(rect.x, rect.y, rect.width, rect.height);
             if (isDisabled) return;
             if (!adjustedRect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
-            _clickEvent.ForEach(a => a.Invoke());
+            Click();
         }
 
         public override void Render()
@@ -84,5 +84,7 @@ namespace RayWrapper.Objs
                 (int) Math.Min(color.b * 1.5, 255), color.a);
             disabledColor = new Color((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
         }
+
+        public void Click() => _clickEvent.ForEach(a => a.Invoke());
     }
 }
