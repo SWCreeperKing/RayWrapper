@@ -32,6 +32,7 @@ namespace RayWrapper.Objs
 
         public override void Update()
         {
+            if (GameBox.alertBox is not null) return;
             if (GeneralWrapper.MouseOccupied) return;
             if (Raylib.IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) ResetPos();
             if (Raylib.IsMouseButtonDown(MOUSE_LEFT_BUTTON))
