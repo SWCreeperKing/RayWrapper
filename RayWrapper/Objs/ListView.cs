@@ -33,9 +33,10 @@ namespace RayWrapper.Objs
 
         public Func<int> arrayLength;
         public Color backColor = new(50, 50, 50, 255);
+        public readonly Dictionary<int, Color> backColors = new();
         public Action click;
-        public Dictionary<int, Color> colors = new();
         public Color fontColor = new(192, 192, 198, 255);
+        public readonly Dictionary<int, Color> fontColors = new();
         public Func<int, string> itemProcessing;
         public Action outsideClick;
 
@@ -80,8 +81,8 @@ namespace RayWrapper.Objs
                 l.text = this[strictVal + i];
                 if (_individualClick is not null) l.getId = () => strictVal + notI;
                 l.NewPos(new Vector2(_bounds.x, y + (_labelHeight + _padding) * i));
-                l.backColor = backColor;
-                l.fontColor = colors.ContainsKey(strictVal + i) ? colors[strictVal + i] : fontColor;
+                l.backColor = backColors.ContainsKey(strictVal + i) ? backColors[strictVal + i] : backColor;
+                l.fontColor = fontColors.ContainsKey(strictVal + i) ? fontColors[strictVal + i] : fontColor;
             }
         }
 
