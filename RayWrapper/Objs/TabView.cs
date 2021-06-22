@@ -32,6 +32,7 @@ namespace RayWrapper.Objs
         private Rectangle _rect;
         private Dictionary<string, GameObject[]> _tabContents = new();
         private Dictionary<string, float> _tabLengths = new();
+        private List<string> _tabOrder = new();
         private List<Label> _tabs = new();
 
         public TabView(Vector2 pos, float width) : base(pos)
@@ -89,7 +90,7 @@ namespace RayWrapper.Objs
         {
             _tabs.Clear();
             var startX = _rect.x - offset;
-            foreach (var (name, _) in _tabContents)
+            foreach (var name in _tabOrder)
             {
                 if (startX > _rect.x || startX + _tabLengths[name] > _rect.x)
                 {
@@ -125,15 +126,27 @@ namespace RayWrapper.Objs
         public void AddTab(string tabName, params GameObject[] gobjs)
         {
             if (_tabContents.ContainsKey(tabName)) return;
+            _tabOrder.Add(tabName);
             _currentTab ??= tabName;
             _tabContents.Add(tabName, gobjs);
             _tabLengths.Add(tabName, GameBox.font.MeasureText($" {tabName} ").X);
             Refresh();
         }
 
+        public void InsertPage(string tabName, int index, params GameObject[] gobjs)
+        {
+            if (_tabContents.ContainsKey(tabName)) return;
+            _tabOrder.Insert(index, tabName);
+            _currentTab ??= tabName;
+            _tabContents.Add(tabName, gobjs);
+            _tabLengths.Add(tabName, GameBox.font.MeasureText($" {tabName} ").X);
+            Refresh();
+        }
+        
         public void RemoveTab(string tabName)
         {
             if (!_tabContents.ContainsKey(tabName)) return;
+            _tabOrder.Remove(tabName);
             _tabContents.Remove(tabName);
             _tabLengths.Remove(tabName);
             if (_currentTab == tabName) _currentTab = _tabContents.Any() ? _tabContents.Keys.First() : null;
