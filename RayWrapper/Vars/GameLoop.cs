@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using RayWrapper.Vars;
 
-namespace RayWrapper.Objs
+namespace RayWrapper.Vars
 {
     public abstract class GameLoop : IInitializable, IRayObject
     {

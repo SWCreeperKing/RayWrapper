@@ -52,11 +52,18 @@ namespace RayWrapper
             var textSize = GameBox.font.MeasureText(text, fontSize, spacing);
             var quad = GetCursorQuadrant();
             Vector2 pos = new(rawPos.X - (quad % 2 != 0 ? textSize.X : 0), rawPos.Y - (quad > 2 ? textSize.Y : -33));
-            RectWrapper.AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 140));
+            RectWrapper.AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
             DrawTextEx(GameBox.font, text, pos, fontSize, spacing, color);
         }
 
-        public static double MinMax(this double num, double max, double min) => Math.Max(Math.Min(num, max), min);
-        public static float MinMax(this float num, float max, float min) => Math.Max(Math.Min(num, max), min);
+        public static double MinMax<T>(this T n, T min, T max) =>
+            n switch
+            {
+                int dn when min is int dMin && max is int dMax => Math.Max(Math.Min(dn, dMin), dMax),
+                long dn when min is long dMin && max is long dMax => Math.Max(Math.Min(dn, dMin), dMax),
+                float dn when min is float dMin && max is float dMax => Math.Max(Math.Min(dn, dMin), dMax),
+                double dn when min is double dMin && max is double dMax => Math.Max(Math.Min(dn, dMin), dMax),
+                _ => 0
+            };
     }
 }

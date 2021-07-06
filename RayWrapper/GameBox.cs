@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Raylib_cs;
+using RayWrapper.Animation;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
@@ -14,14 +17,14 @@ namespace RayWrapper
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-        // public static List<(object iRef, ISave s)> SaveList = new();
         public static string DeveloperName { get; private set; }
         public static string AppName { get; private set; }
         public static bool SaveInit { get; private set; }
+        public static Vector2 WindowSize { get; private set; }
 
         public static AlertBox alertBox = null;
+        public static Animator animator = new();
         public static Font font;
-        public static Vector2 WindowSize { get; private set; }
 
         private static readonly List<ISave> _saveList = new();
 
@@ -33,6 +36,7 @@ namespace RayWrapper
 
         private List<Action> _onDispose = new();
         private List<Scheduler> _schedulers = new();
+        private bool isDrawing;
 
         // private bool _isConsole;
 
@@ -53,12 +57,47 @@ namespace RayWrapper
         public void Start()
         {
             Scene.Init();
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        foreach (var scheduler in _schedulers) scheduler.TestTime(GetTimeMs());
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"err: {e.Message}\n{e.StackTrace}");
+                    }
+
+                    Task.Delay(10).GetAwaiter().GetResult();
+                }
+            });
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        animator.Update();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"err: {e.Message}\n{e.StackTrace}");
+                    }
+
+                    Task.Delay(1).GetAwaiter().GetResult();
+                }
+            });
+
             while (!WindowShouldClose())
             {
                 if (alertBox is null) Update();
                 else alertBox.Update();
                 Render();
-                _schedulers.ForEach(scheduler => scheduler.TestTime(GetTimeMs()));
+                // _schedulers.ForEach(scheduler => scheduler.TestTime(GetTimeMs()));
             }
 
             CloseWindow();
@@ -75,11 +114,36 @@ namespace RayWrapper
         public void Render()
         {
             BeginDrawing();
-            ClearBackground(backgroundColor);
-            Scene.Render();
-            // if (_isConsole) new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
-            alertBox?.Render();
+            isDrawing = true;
+            try
+            {
+                ClearBackground(backgroundColor);
+                Scene.Render();
+                // if (_isConsole) new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
+                animator.Render();
+                alertBox?.Render();
+            }
+            catch (Exception e)
+            {
+                var before = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"RENDERING ERROR: {e.Message}");
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine(e.StackTrace);
+                Console.ForegroundColor = before;
+            }
+
             EndDrawing();
+            isDrawing = false;
+        }
+
+        public void Dispose()
+        {
+            if (isDrawing) EndDrawing();
+            _schedulers.Clear();
+            CloseWindow();
+            _onDispose.ForEach(a => a.Invoke());
+            Environment.Exit(0);
         }
 
         public void InitSaveSystem(string developerName, string appName)
@@ -119,12 +183,13 @@ namespace RayWrapper
             });
         }
 
-        public void DeleteFile(ISave iSave)
+        public void DeleteFile(string name)
         {
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
-            var file = $"{path}/{iSave.FileName()}.RaySaveWrap";
+            var file = $"{path}/{_saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
+            Console.WriteLine($"> DELETED {file} <");
             if (!File.Exists(file)) return;
             File.Delete(file);
         }
@@ -154,10 +219,13 @@ namespace RayWrapper
             RegisterSaveItem(newObj, fileName);
         }
 
-        public long GetTimeMs() => DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-        public void AddScheduler(Scheduler schedule) => _schedulers.Add(schedule);
+        public void AddScheduler(Scheduler schedule)
+        {
+            _schedulers.Add(schedule);
+        }
 
         public void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
+
+        public static long GetTimeMs() => DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
 }

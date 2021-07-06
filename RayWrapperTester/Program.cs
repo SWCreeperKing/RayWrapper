@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper;
+using RayWrapper.Animation;
+using RayWrapper.Animation.AnimationShapes;
 using RayWrapper.Objs;
-using RayWrapper.Objs.TreeViewShapes;
+using RayWrapper.TreeViewShapes;
 using RayWrapper.Vars;
 using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
@@ -46,12 +48,12 @@ namespace RayWrapperTester
         {
             GameBox.font = LoadFont("CascadiaMono.ttf");
             SetTextureFilter(GameBox.font.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
-            
+
             var screen = GameBox.WindowSize;
             Vector2 pos = new(75, 80);
 
-            gb.AddScheduler(new Scheduler(1000,
-                () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
+            // gb.AddScheduler(new Scheduler(100,
+            //     () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
 
             // save testing 
             // SaveTesting();
@@ -109,19 +111,23 @@ namespace RayWrapperTester
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
                 new Checkbox(pos + new Vector2(0, 50), "Circle") {isCircle = true});
 
-            TreeView tv = new();
+            TreeView tv = new(new TreeControl());
+            tv.axisOffset = new Vector2(5, 5);
             tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
-            // lines
-            tv.AddNode(new Line(new Vector2(1, 1), new Vector2(1, 3), () => false),
-                new Line(new Vector2(3, 1), new Vector2(3, 3), () => true),
-                new Line(new Vector2(1, 1), new Vector2(3, 3), () => true));
-            // circles
-            tv.AddNode(new Box(new Rectangle(1, 1, 1, 1), () => false, "hi", "yo"),
-                new Box(new Rectangle(1, 3, 1, 1), () => true, "hi2", "yo2"));
-            //boxes
-            tv.AddNode(new Circle(new Rectangle(3, 1, 1, 1), () => false, "hi3", "yo3"),
-                new Circle(new Rectangle(3, 3, 1, 1), () => true, "hi4", "yo4"));
-            tv.OnClick += Console.WriteLine;
+            // // lines
+            // tv.AddNode(new Line(new Vector2(1, 1), new Vector2(1, 3), () => false),
+            //     new Line(new Vector2(3, 1), new Vector2(3, 3), () => true),
+            //     new Line(new Vector2(1, 1), new Vector2(3, 3), () => true),
+            //     new Line(new Vector2(1, 1), new Vector2(4.5f, 8), () => true));
+            // // circles
+            // tv.AddNode(new Box(new Rectangle(1, 1, 1, 1), () => false, "hi", "yo"),
+            //     new Box(new Rectangle(1, 3, 1, 1), () => true, "hi2", "yo2"));
+            // //boxes
+            // tv.AddNode(new Circle(new Rectangle(3, 1, 1, 1), () => false, "hi3", "yo3"),
+            //     new Circle(new Rectangle(3, 3, 1, 1), () => true, "hi4", "yo4"));
+            // tv.AddNode(new Circle(new Rectangle(4, 8, 2, 1), () => false, "yeet"));
+
+            // tv.OnClick += Console.WriteLine;
 
             _tbv.AddTab("TreeView Test", tv);
 
@@ -134,14 +140,41 @@ namespace RayWrapperTester
             b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
 
             _tbv.AddTab("AlertBox Test", b);
-            _tbv.AddTab("DrawTextRecEx Test", new EmptyRender(() =>
-                DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f,
-                    true, SKYBLUE, 4, 8, RED, GOLD)));
+            // _tbv.AddTab("DrawTextRecEx Test", new EmptyRender(() =>
+            //     DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f,
+            //         true, SKYBLUE, 4, 8, RED, GOLD)));
 
             _tbv.AddTab("Input Test", new InputBox(pos));
-            
+
+            Animation ani = new AnimationBuilder()
+                .AddShape(new Square("test") {pos = screen / 2 - new Vector2(50, 50), size = new Vector2(100, 100)})
+                .AddStep(.25f)
+                .Slide("test", new Vector2(-50, -50))
+                .AddStep(.25f)
+                .Shrink("test", new Vector2(60, 60))
+                .AddStep(1)
+                .Slide("test", new Vector2(-100, 20))
+                .AddStep(.75f)
+                .Move("test", new Vector2(-200, -20))
+                .Grow("test", new Vector2(200, 20))
+                .AddStep(1)
+                .SetVisible("test", false);
+
+            Animation continueAni = new AnimationBuilder()
+                .AddShape(new Square("mover", RED)
+                    {pos = new Vector2(0, screen.Y / 2 - 25), size = new Vector2(50, 50)})
+                .Move("mover", new Vector2(screen.X, 0));
+
+            Button aniB = new(new Rectangle(20, 70, 0, 0), "Queue Animation", Button.ButtonMode.SizeToText);
+            aniB.Clicked += () => { GameBox.animator.QueueAnimation(ani); };
+
+            Button aniBC = new(new Rectangle(20, 130, 0, 0), "Add Animation", Button.ButtonMode.SizeToText);
+            aniBC.Clicked += () => { GameBox.animator.AddAnimation(continueAni); };
+
+            _tbv.AddTab("Animation Test", aniB, aniBC);
+
             RegisterGameObj(true, _tbv);
-            
+
             // W: [(%, 16)] H: [(!, 24)]
             // (char c, int i) w = (' ', 0);
             // (char c, int i) h = (' ', 0);

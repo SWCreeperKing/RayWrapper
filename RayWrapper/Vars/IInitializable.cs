@@ -1,4 +1,4 @@
-﻿namespace RayWrapper.Objs
+﻿namespace RayWrapper.Vars
 {
     public interface IInitializable
     {

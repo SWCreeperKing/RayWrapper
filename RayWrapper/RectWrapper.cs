@@ -43,7 +43,7 @@ namespace RayWrapper
             DrawRectangleLinesEx(rect, thickness, color);
 
         public static void DrawTooltip(this Rectangle box, string text, int fontSize = 24, float spacing = 1.5f) =>
-            box.DrawTooltip(text, new Color(170, 170, 255, 200), fontSize, spacing);
+            box.DrawTooltip(text, new Color(170, 170, 255, 220), fontSize, spacing);
         
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
