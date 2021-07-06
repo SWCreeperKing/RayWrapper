@@ -10,7 +10,6 @@ namespace RayWrapper.Animation.AnimationShapes
         public Vector2 size;
         public bool isVisible;
 
-        public AnimationShape startingShape;
         public AnimationShape endState;
         
         protected AnimationShape(string id) => this.id = id;

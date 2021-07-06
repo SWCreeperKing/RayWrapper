@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Raylib_cs;
 using RayWrapper.Animation.AnimationShapes;
 
 namespace RayWrapper.Animation
@@ -20,7 +22,6 @@ namespace RayWrapper.Animation
         public AnimationBuilder AddShape(AnimationShape shape)
         {
             if (_shapes.ContainsKey(shape.id)) return this;
-            shape.startingShape = shape.CopyState();
             _shapes.Add(shape.id, shape);
             return this;
         }
@@ -102,6 +103,21 @@ namespace RayWrapper.Animation
         {
             AddCustomOp(shapeId, "visTog");
             return this;
+        }
+
+        public AnimationBuilder WaitForTrigger(Func<AnimationBuilder, bool> trigger)
+        {
+            if (_steps.Count == 0) AddStep(-1);
+            else _steps[_buildingStep].duration = -1;
+            _steps[_buildingStep].continueTrigger = trigger;
+            return this;
+        }
+
+        public Rectangle GetRectOfId(string shapeId)
+        {
+            if (!_shapes.ContainsKey(shapeId)) return new Rectangle(0, 0, 0, 0);
+            var shape = _shapes[shapeId];
+            return RectWrapper.AssembleRectFromVec(shape.pos, shape.size);
         }
     }
 }

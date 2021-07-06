@@ -165,13 +165,32 @@ namespace RayWrapperTester
                     {pos = new Vector2(0, screen.Y / 2 - 25), size = new Vector2(50, 50)})
                 .Move("mover", new Vector2(screen.X, 0));
 
-            Button aniB = new(new Rectangle(20, 70, 0, 0), "Queue Animation", Button.ButtonMode.SizeToText);
+
+            Animation triggerAni = new AnimationBuilder()
+                .AddShape(new Square("block") {pos = new Vector2(25, screen.Y / 2 - 40), size = new Vector2(20, 20)})
+                .WaitForTrigger(ab => ab.GetRectOfId("block").IsMouseIn())
+                .AddStep(.5f)
+                .Move("block", new Vector2(screen.X - 55, 0))
+                .AddStep(-1)
+                .WaitForTrigger(ab => ab.GetRectOfId("block").IsMouseIn())
+                .AddStep(.5f)
+                .Move("block", new Vector2(-screen.X / 2 - 10, 0))
+                .AddStep(-1)
+                .WaitForTrigger(ab =>
+                    ab.GetRectOfId("block").IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+                .AddStep(.5f)
+                .Move("block", new Vector2(0, screen.Y / 2 + 50));
+
+            Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Button.ButtonMode.SizeToText);
             aniB.Clicked += () => { GameBox.animator.QueueAnimation(ani); };
 
-            Button aniBC = new(new Rectangle(20, 130, 0, 0), "Add Animation", Button.ButtonMode.SizeToText);
+            Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Button.ButtonMode.SizeToText);
             aniBC.Clicked += () => { GameBox.animator.AddAnimation(continueAni); };
 
-            _tbv.AddTab("Animation Test", aniB, aniBC);
+            Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Button.ButtonMode.SizeToText);
+            aniBT.Clicked += () => { GameBox.animator.QueueAnimation(triggerAni); };
+
+            _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
 
             RegisterGameObj(true, _tbv);
 

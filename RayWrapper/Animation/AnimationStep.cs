@@ -11,18 +11,24 @@ namespace RayWrapper.Animation
         public long lastTime = -1;
         public long duration;
         public long timeAccumulated;
+        public Func<AnimationBuilder, bool> continueTrigger;
         private List<(string shapeId, string op, string[] args)> _operations = new();
 
         public AnimationStep(float seconds) => duration = (long) (seconds * 1000);
 
         public bool Execute(AnimationBuilder ab)
         {
+            if (duration < 0)
+            {
+                return continueTrigger?.Invoke(ab) ?? true;
+            }
             var time = GameBox.GetTimeMs();
             if (lastTime == -1)
             {
                 lastTime = time;
                 return false;
             }
+
             var deltaTime = time - lastTime;
             timeAccumulated += deltaTime;
             var snap = timeAccumulated >= duration;
@@ -48,7 +54,6 @@ namespace RayWrapper.Animation
                         shape.Update(deltaTime, timeFactor, op, args, snap);
                         break;
                 }
-                
             }
 
             if (snap)
@@ -73,7 +78,8 @@ namespace RayWrapper.Animation
         public AnimationStep CopyStep() =>
             new(duration / 1000f)
             {
-                _operations = _operations.ToList(), lastTime = lastTime, timeAccumulated = timeAccumulated
+                _operations = _operations.ToList(), lastTime = lastTime, timeAccumulated = timeAccumulated,
+                continueTrigger = continueTrigger
             };
     }
 }
