@@ -1,3 +1,7 @@
 /.idea/
 /RayWrapper/obj/
 /RayWrapper/bin/
+/RayWrapperTester/obj/
+/RayWrapperTerser/bin/
+/RayWrapperTesterCollision/obj/
+/RayWrapperTerserCollision/bin/
