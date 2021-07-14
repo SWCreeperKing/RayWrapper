@@ -1,8 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "C:\\Users\\pizza\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\pizza\\.nuget\\packages"
-    ]
-  }
-}
