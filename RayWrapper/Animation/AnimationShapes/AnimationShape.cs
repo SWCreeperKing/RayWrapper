@@ -8,10 +8,10 @@ namespace RayWrapper.Animation.AnimationShapes
         public string id;
         public Vector2 pos;
         public Vector2 size;
-        public bool isVisible;
+        public bool isVisible = true;
 
         public AnimationShape endState;
-        
+
         protected AnimationShape(string id) => this.id = id;
 
         public void Update(long deltaTime, float timeFactor, string op, string[] args, bool snap)
@@ -19,6 +19,7 @@ namespace RayWrapper.Animation.AnimationShapes
             try
             {
                 Vector2 v2;
+                Vector2 aV2;
                 switch (op.ToLower())
                 {
                     case "move":
@@ -28,7 +29,23 @@ namespace RayWrapper.Animation.AnimationShapes
                         break;
                     case "slide":
                         v2 = new Vector2(float.Parse(args[0]), float.Parse(args[1]));
-                        var aV2 = new Vector2(Math.Abs(v2.X), Math.Abs(v2.Y));
+                        aV2 = new Vector2(Math.Abs(v2.X), Math.Abs(v2.Y));
+                        if (snap)
+                        {
+                            endState.pos += v2;
+                            endState.size += aV2;
+                        }
+                        else
+                        {
+                            pos += v2;
+                            size += aV2;
+                        }
+
+                        break;
+
+                    case "slip":
+                        v2 = new Vector2(float.Parse(args[0]), float.Parse(args[1]));
+                        aV2 = new Vector2(-Math.Abs(v2.X), -Math.Abs(v2.Y));
                         if (snap)
                         {
                             endState.pos += v2;
@@ -58,6 +75,7 @@ namespace RayWrapper.Animation.AnimationShapes
                                 break;
                             }
                         }
+
                         break;
                     case "vistog":
                         endState.isVisible = !endState.isVisible;
@@ -71,7 +89,6 @@ namespace RayWrapper.Animation.AnimationShapes
                         MiscOp(deltaTime, timeFactor, op, args, snap);
                         break;
                 }
-                
             }
             catch (FormatException)
             {
@@ -81,7 +98,7 @@ namespace RayWrapper.Animation.AnimationShapes
         }
 
         public void NewState() => endState = CopyState();
-        
+
         public abstract void DrawShape();
         public abstract AnimationShape CopyState();
 

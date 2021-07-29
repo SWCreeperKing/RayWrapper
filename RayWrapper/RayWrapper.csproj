@@ -3,11 +3,18 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Raylib-cs" Version="3.7.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="NumberClass, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\NumberClass\NumberClass\bin\Release\netcoreapp3.0\NumberClass.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

@@ -40,7 +40,9 @@ namespace RayWrapper.Animation
             _activeAnimation?.Render();
         }
 
-        public void AddAnimation(Animation anim) => _animations.Add(anim.CopyAnimation());
-        public void QueueAnimation(Animation anim) => _animationQueue.Enqueue(anim.CopyAnimation());
+        public void AddAnimation(Animation anim) => _animations.Add(anim);
+        public void CopyAddAnimation(Animation anim) => _animations.Add(anim.CopyAnimation());
+        public void QueueAnimation(Animation anim) => _animationQueue.Enqueue(anim);
+        public void CopyQueueAnimation(Animation anim) => _animationQueue.Enqueue(anim.CopyAnimation());
     }
 }

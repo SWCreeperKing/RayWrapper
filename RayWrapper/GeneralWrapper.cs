@@ -17,6 +17,12 @@ namespace RayWrapper
             float spacing = 1.5f) =>
             DrawTextEx(font, text, pos - MeasureTextEx(font, text, fontSize, spacing) / 2, fontSize, spacing, color);
 
+        public static void DrawCenterWrapText(this Font font, Rectangle rect, string text, Color color,
+            float fontSize = 24,
+            float spacing = 1.5f) =>
+            DrawTextRec(font, text, rect.MoveBy(-(MeasureTextEx(font, text, fontSize, spacing) / 2)), fontSize, spacing,
+                true, color);
+
         public static void DrawTextWrap(this Font font, string text, Rectangle rect, Color fontColor, int fontSize = 24,
             float spacing = 1.5f) =>
             DrawTextRec(font, text, rect, fontSize, spacing, true, fontColor);
@@ -65,5 +71,8 @@ namespace RayWrapper
                 double dn when min is double dMin && max is double dMax => Math.Max(Math.Min(dn, dMin), dMax),
                 _ => 0
             };
+
+        public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0) =>
+            new(color.r + r, color.g + g, color.b + b, color.a + a);
     }
 }

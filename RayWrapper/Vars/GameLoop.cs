@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
+using Raylib_cs;
 
 namespace RayWrapper.Vars
 {
@@ -17,6 +19,7 @@ namespace RayWrapper.Vars
         public void Render()
         {
             _registryBefore.ForEach(a => a.Render());
+            GameBox.RenderColliders();
             RenderLoop();
             _registryAfter.ForEach(a => a.Render());
         }
@@ -30,5 +33,8 @@ namespace RayWrapper.Vars
         public abstract void Init();
         public abstract void UpdateLoop();
         public abstract void RenderLoop();
+
+        public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>
+            GameBox.font.DrawText(text, pos, color, fontSize, spacing);
     }
 }

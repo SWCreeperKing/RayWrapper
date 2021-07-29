@@ -50,7 +50,7 @@ namespace RayWrapper.Objs
             if (scroll != 0) _scale = Math.Min(Math.Max(15, _scale + scroll), 55);
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             var rect = mask.IsEqualTo(new(0, 0, 0, 0))
                 ? RectWrapper.AssembleRectFromVec(new Vector2(0), GameBox.WindowSize)

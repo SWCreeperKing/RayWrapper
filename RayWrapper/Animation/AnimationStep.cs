@@ -12,16 +12,16 @@ namespace RayWrapper.Animation
         public long duration;
         public long timeAccumulated;
         public Func<AnimationBuilder, bool> continueTrigger;
-        private List<(string shapeId, string op, string[] args)> _operations = new();
+        public Action<AnimationBuilder> onEnd;
+        public Action<AnimationBuilder> runningTrigger;
+
+        public List<(string shapeId, string op, string[] args)> _operations = new();
 
         public AnimationStep(float seconds) => duration = (long) (seconds * 1000);
 
         public bool Execute(AnimationBuilder ab)
         {
-            if (duration < 0)
-            {
-                return continueTrigger?.Invoke(ab) ?? true;
-            }
+            if (duration < 0) return continueTrigger?.Invoke(ab) ?? true;
             var time = GameBox.GetTimeMs();
             if (lastTime == -1)
             {
@@ -40,7 +40,7 @@ namespace RayWrapper.Animation
                 if (shape is null) continue;
                 switch (op)
                 {
-                    case "grow" or "shrink" or "slide" or "move":
+                    case "grow" or "shrink" or "slide" or "move" or "slip":
                         var v2 = new Vector2(float.Parse(args[0]), float.Parse(args[1]));
                         if (snap) shape.Update(deltaTime, timeFactor, op, new[] {$"{v2.X}", $"{v2.Y}"}, true);
                         else
@@ -79,7 +79,7 @@ namespace RayWrapper.Animation
             new(duration / 1000f)
             {
                 _operations = _operations.ToList(), lastTime = lastTime, timeAccumulated = timeAccumulated,
-                continueTrigger = continueTrigger
+                continueTrigger = continueTrigger, onEnd = onEnd, runningTrigger = runningTrigger
             };
     }
 }

@@ -37,7 +37,7 @@ namespace RayWrapper.Objs
             _acceptingChange = false;
         }
 
-        public override void Render() => core.Render();
+        protected override void RenderCall() => core.Render();
 
         public override void PositionChange(Vector2 v2)
         {

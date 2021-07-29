@@ -52,7 +52,7 @@ namespace RayWrapper.Objs
             Click();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             if (isDisabled) adjustedRect.Draw(disabledColor);
             else if (adjustedRect.IsMouseIn()) adjustedRect.Draw(hoverColor);

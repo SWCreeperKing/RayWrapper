@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper", "RayWrapper\Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTester", "RayWrapperTester\RayWrapperTester.csproj", "{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTesterCollision", "RayWrapperTesterCollision\RayWrapperTesterCollision.csproj", "{9B2913EF-5AC2-4F02-8741-9DB86959761F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1224EBC-9D0F-413F-9516-2D4B262BB4F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B2913EF-5AC2-4F02-8741-9DB86959761F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B2913EF-5AC2-4F02-8741-9DB86959761F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B2913EF-5AC2-4F02-8741-9DB86959761F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B2913EF-5AC2-4F02-8741-9DB86959761F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

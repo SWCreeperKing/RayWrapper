@@ -24,14 +24,14 @@ namespace RayWrapper.Vars
         public static int SciStaticLeng = 4;
         public static Format format = Format.Scientific;
 
-        public static readonly NumberClass MaxStageValue = new NumberClass(9.99, double.MaxValue);
-        public static readonly NumberClass MaxValue = new NumberClass(9.99, double.MaxValue);
-        public static readonly NumberClass Double = new NumberClass(double.MaxValue);
-        public static readonly NumberClass Float = new NumberClass(float.MaxValue);
-        public static readonly NumberClass Long = new NumberClass(long.MaxValue);
-        public static readonly NumberClass Int = new NumberClass(int.MaxValue);
-        public static readonly NumberClass One = new NumberClass(1);
-        public static readonly NumberClass Zero = new NumberClass();
+        public static readonly NumberClass MaxStageValue = new(9.99, double.MaxValue);
+        public static readonly NumberClass MaxValue = new(9.99, double.MaxValue);
+        public static readonly NumberClass Double = new(double.MaxValue);
+        public static readonly NumberClass Float = new(float.MaxValue);
+        public static readonly NumberClass Long = new(long.MaxValue);
+        public static readonly NumberClass Int = new(int.MaxValue);
+        public static readonly NumberClass One = new(1);
+        public static readonly NumberClass Zero = new();
 
         public double mantissa;
         public double exponent;
@@ -163,8 +163,8 @@ namespace RayWrapper.Vars
         public static bool operator >=(NumberClass n1, NumberClass n2) => n1 == n2 || n1 > n2;
         public static bool operator <=(NumberClass n1, NumberClass n2) => n1 == n2 || n1 < n2;
 
-        public static implicit operator NumberClass(double d) => new NumberClass(d);
-        public static implicit operator NumberClass(string s) => new NumberClass(s);
+        public static implicit operator NumberClass(double d) => new(d);
+        public static implicit operator NumberClass(string s) => new(s);
 
         public static explicit operator int(NumberClass n) =>
             (int) (n > Int ? int.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
@@ -182,14 +182,15 @@ namespace RayWrapper.Vars
 
         public double GetRealMantissa() => exponent > 308 ? mantissa : mantissa * Math.Pow(10, exponent);
         public double GetSignedMantissa() => mantissa;
-        public NumberClass Ceiling() => new NumberClass(Math.Ceiling(mantissa), exponent);
-        public NumberClass Floor() => new NumberClass(Math.Floor(mantissa), exponent);
-        public NumberClass Round() => new NumberClass(Math.Round(mantissa), exponent);
+        public NumberClass Ceiling() => new(Math.Ceiling(mantissa), exponent);
+        public NumberClass Floor() => new(Math.Floor(mantissa), exponent);
+        public NumberClass Round() => new(Math.Round(mantissa), exponent);
         public NumberClass Max(NumberClass n) => n > this ? n : this;
         public NumberClass Min(NumberClass n) => n < this ? n : this;
-        public NumberClass Abs() => new NumberClass(Math.Abs(mantissa), exponent);
-        public NumberClass Clone() => new NumberClass(mantissa, exponent);
+        public NumberClass Abs() => new(Math.Abs(mantissa), exponent);
+        public NumberClass Clone() => new(mantissa, exponent);
         public bool IsNaN() => double.IsNaN(mantissa) || double.IsNaN(exponent);
+        public bool isNeg() => mantissa < 0;
         public override string ToString() => FormatNc(format);
         public string ToString(Func<double, double, string> format) => format.Invoke(mantissa, exponent);
 

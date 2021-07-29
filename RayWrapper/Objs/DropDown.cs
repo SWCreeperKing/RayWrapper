@@ -47,6 +47,7 @@ namespace RayWrapper.Objs
                 (int) back.width,
                 i => options[i],
                 () => options.Count, 4);
+            optionDisplay.Padding = 0;
 
             optionDisplay.IndividualClick = i =>
             {
@@ -69,7 +70,7 @@ namespace RayWrapper.Objs
             if (isListVisible) optionDisplay.Update();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             text.text = $"{(isListVisible ? arrowUp : arrowDown)}| {options[Value]}";
             text.Render();

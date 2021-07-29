@@ -22,6 +22,7 @@ namespace RayWrapper.Objs
         }
 
         public bool outline = true;
+        public bool drawIfLowTabs = false;
 
         private Scrollbar _bar;
         private bool _closable;
@@ -63,12 +64,16 @@ namespace RayWrapper.Objs
             foreach (var go in _tabContents[_currentTab]) go.Update();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
-            if (_bar.amount > 1) _bar.Render();
-            _rect.MaskDraw(() => _tabs.ForEach(t => t.Render()));
-            if (_closable) _closing.ForEach(t => t.Render());
-            if (outline) _rect.DrawHallowRect(Color.BLACK);
+            if (!(!drawIfLowTabs && _tabs.Count < 2))
+            {
+                if (_bar.amount > 1) _bar.Render();
+                _rect.MaskDraw(() => _tabs.ForEach(t => t.Render()));
+                if (_closable) _closing.ForEach(t => t.Render());
+                if (outline) _rect.DrawHallowRect(Color.BLACK);
+            }
+
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
             foreach (var go in _tabContents[_currentTab]) go.Render();
         }
@@ -142,7 +147,7 @@ namespace RayWrapper.Objs
             _tabLengths.Add(tabName, GameBox.font.MeasureText($" {tabName} ").X);
             Refresh();
         }
-        
+
         public void RemoveTab(string tabName)
         {
             if (!_tabContents.ContainsKey(tabName)) return;

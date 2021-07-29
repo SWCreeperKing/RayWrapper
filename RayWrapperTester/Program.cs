@@ -41,7 +41,7 @@ namespace RayWrapperTester
         static void Main(string[] args)
         {
             gb = new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
-            gb.Start();
+            gb.Start(false);
         }
 
         public override void Init()
@@ -165,7 +165,6 @@ namespace RayWrapperTester
                     {pos = new Vector2(0, screen.Y / 2 - 25), size = new Vector2(50, 50)})
                 .Move("mover", new Vector2(screen.X, 0));
 
-
             Animation triggerAni = new AnimationBuilder()
                 .AddShape(new Square("block") {pos = new Vector2(25, screen.Y / 2 - 40), size = new Vector2(20, 20)})
                 .WaitForTrigger(ab => ab.GetRectOfId("block").IsMouseIn())
@@ -182,13 +181,13 @@ namespace RayWrapperTester
                 .Move("block", new Vector2(0, screen.Y / 2 + 50));
 
             Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Button.ButtonMode.SizeToText);
-            aniB.Clicked += () => { GameBox.animator.QueueAnimation(ani); };
+            aniB.Clicked += () => { GameBox.animator.CopyQueueAnimation(ani); };
 
             Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Button.ButtonMode.SizeToText);
-            aniBC.Clicked += () => { GameBox.animator.AddAnimation(continueAni); };
+            aniBC.Clicked += () => { GameBox.animator.CopyAddAnimation(continueAni); };
 
             Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Button.ButtonMode.SizeToText);
-            aniBT.Clicked += () => { GameBox.animator.QueueAnimation(triggerAni); };
+            aniBT.Clicked += () => { GameBox.animator.CopyQueueAnimation(triggerAni); };
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
 

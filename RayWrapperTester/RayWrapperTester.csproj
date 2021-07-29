@@ -10,7 +10,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <Content Include="CascadiaMono.ttf" CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="CascadiaMono.ttf" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

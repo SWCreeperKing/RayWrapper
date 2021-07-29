@@ -9,6 +9,8 @@ namespace RayWrapper.Objs
 {
     public class InputBox : GameObject
     {
+        public Action<string> onEnter;
+
         private int _curPos = 0;
         private int _frameTime;
         private Label _label;
@@ -47,15 +49,16 @@ namespace RayWrapper.Objs
                     return (p, s);
                 }
             },
-            {KeyboardKey.KEY_HOME, (_, p, _, s) => (0, s)},
-            {KeyboardKey.KEY_END, (_, p, _, s) => (s.Length, s)},
+            {KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s)},
+            {KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s)},
             {
                 KeyboardKey.KEY_V, (c, p, m, s) =>
                 {
                     if (!c || s.Length >= m) return (p, s);
                     var txt = Raylib.GetClipboardText();
-                    s = s.Insert(p, txt[..Math.Min(m - s.Length, txt!.Length)] ?? "");
-                    return (p, s);
+                    var txtLeng = Math.Min(m - s.Length, txt!.Length);
+                    s = s.Insert(p, txt[..txtLeng] ?? "");
+                    return (p + txtLeng, s);
                 }
             },
             {
@@ -65,7 +68,7 @@ namespace RayWrapper.Objs
                     return (p, s);
                 }
             },
-            {KeyboardKey.KEY_SCROLL_LOCK, (c, p, _, s) => (0, "")}
+            {KeyboardKey.KEY_SCROLL_LOCK, (_, _, _, _) => (0, "")}
         };
 
         public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40) : base(pos)
@@ -79,12 +82,19 @@ namespace RayWrapper.Objs
 
         public override void Update()
         {
+            var fps = Raylib.GetFPS();
             _frameTime++;
-            _frameTime %= 60;
+            _frameTime %= fps;
 
             Input();
 
-            var flash = _frameTime % 20 > 11;
+                foreach (var (_, v) in _actions.Where(key => (Raylib.IsKeyDown(key.Key) && (_frameTime + 1) % (fps/6) == 0) || Raylib.IsKeyPressed(key.Key)))
+                    (_curPos, _text) =
+                        v.Invoke(
+                            Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
+                            Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
+
+            var flash = _frameTime % (fps * .33) > fps * .18;
             var start = 0;
             var end = Math.Min(_show, _text.Length);
             var curs = _curPos;
@@ -108,7 +118,7 @@ namespace RayWrapper.Objs
             _label.Update();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             _label.Render();
         }
@@ -117,24 +127,22 @@ namespace RayWrapper.Objs
 
         public void Input()
         {
-            if (_text.Length == _max) return;
             var (c, cc) = (Raylib.GetCharPressed(), Raylib.GetKeyPressed());
             while (c > 0 || cc > 0)
             {
-                if (_actions.ContainsKey((KeyboardKey) cc))
-                {
-                    Console.WriteLine("has");
-                    (_curPos, _text) = _actions[(KeyboardKey) cc]
-                        .Invoke(
-                            Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
-                            Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
-                }
-                
-                if (c is >= 32 and <= 125)
+                if ((KeyboardKey) cc == KeyboardKey.KEY_ENTER) onEnter.Invoke(_text);
+
+                if (c is >= 32 and <= 125 && _text.Length < _max)
                     _text = _text.Insert(_curPos++, $"{(char) c}");
 
                 (c, cc) = (Raylib.GetCharPressed(), Raylib.GetKeyPressed());
             }
+        }
+
+        public void Clear()
+        {
+            _text = "";
+            _curPos = 0;
         }
     }
 }

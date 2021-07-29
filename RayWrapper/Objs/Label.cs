@@ -41,7 +41,7 @@ namespace RayWrapper.Objs
             else if (click) clickedOutside?.Invoke();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             var adjust = back.Shrink(4);
             var textSize = MeasureTextEx(GameBox.font, text, fontSize, spacing);

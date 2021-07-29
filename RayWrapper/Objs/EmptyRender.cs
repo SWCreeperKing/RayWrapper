@@ -14,7 +14,7 @@ namespace RayWrapper.Objs
         {
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             ToRender.Invoke();
         }

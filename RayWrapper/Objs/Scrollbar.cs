@@ -78,7 +78,7 @@ namespace RayWrapper.Objs
             else MoveBar((int) (bar.x - mousePos.X + _visibleSize / 2));
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             container.Draw(containerColor);
             bar.Draw(barColor);

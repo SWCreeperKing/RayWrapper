@@ -24,6 +24,7 @@ namespace RayWrapper.Animation
         {
             if (HasEnded()) return;
             _builder.RenderShapes();
+            _currentStep?.runningTrigger?.Invoke(_builder);
         }
 
         public bool HasEnded() => _currentStep is null && _builder.IsOver();

@@ -16,17 +16,25 @@ namespace RayWrapper
         public static Rectangle AdjustWh(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
         public static Rectangle MoveTo(this Rectangle rect, Vector2 v2) => AssembleRectFromVec(v2, rect.Size());
         public static Rectangle Clone(this Rectangle rect) => new(rect.x, rect.y, rect.width, rect.height);
+        public static Rectangle SetSize(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
         public static bool IsColliding(this Rectangle rect1, Rectangle rect2) => CheckCollisionRecs(rect1, rect2);
         public static Vector2 Center(this Rectangle rect) => new(rect.x + rect.width / 2, rect.y + rect.height / 2);
         public static Vector2 Pos(this Rectangle rect) => new(rect.x, rect.y);
         public static Vector2 Size(this Rectangle rect) => new(rect.width, rect.height);
         public static string GetString(this Rectangle rect) => $"[({rect.x},{rect.y})({rect.width}x{rect.height})]";
         public static bool IsEqualTo(this Rectangle rect1, Rectangle rect2) => rect1.GetString() == rect2.GetString();
-        public static void DrawCircle(this Rectangle rect, Color color) => DrawRectangleRounded(rect, 1f, 5, color);
+        public static void DrawCircle(this Rectangle rect, Color color) => rect.DrawRounded(color, 1f);
+
+        public static void DrawRounded(this Rectangle rect, Color color, float roundness = .5f) =>
+            DrawRectangleRounded(rect, roundness, 5, color);
+
+        public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
+            int lineThickness = 3) =>
+            DrawRectangleRoundedLines(rect, roundness, 5, lineThickness, color);
 
         public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) =>
             DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
-        
+
         public static Rectangle Shrink(this Rectangle rect, int changeBuy) =>
             new(rect.x + changeBuy, rect.y + changeBuy, rect.width - changeBuy * 2, rect.height - changeBuy * 2);
 
@@ -44,7 +52,7 @@ namespace RayWrapper
 
         public static void DrawTooltip(this Rectangle box, string text, int fontSize = 24, float spacing = 1.5f) =>
             box.DrawTooltip(text, new Color(170, 170, 255, 220), fontSize, spacing);
-        
+
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
             BeginScissorMode((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height);

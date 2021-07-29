@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace RayWrapper.Vars
 {
@@ -8,41 +9,63 @@ namespace RayWrapper.Vars
         private static readonly string[] _timeChars = {"ms", "s", "m", "h", "d", "w"};
 
         public bool writeZeros = false;
-        public long[] _times = {0, 0, 0, 0, 0, 0}; //ms, s, m, h, d, w
+        public long[] times = {0, 0, 0, 0, 0, 0}; //ms, s, m, h, d, w
 
         public TimeVar(long ms)
         {
-            _times[0] = ms;
+            times[0] = ms;
             Update();
         }
 
         public void Update()
         {
-            for (var i = 0; i < _times.Length - 1; i++)
+            for (var i = 0; i < times.Length - 1; i++)
             {
-                _times[i + 1] += _times[i] / _convertTimes[i];
-                _times[i] %= _convertTimes[i];
+                times[i + 1] += times[i] / _convertTimes[i];
+                times[i] %= _convertTimes[i];
             }
         }
 
         /// <param name="index">ms = 0, s = 1, m = 2, h = 3, d = 4, w = 5</param>
         public void AddTime(int index, long amnt)
         {
-            _times[index] += amnt;
+            times[index] += amnt;
             Update();
         }
 
-        public override string ToString()
+        /// <param name="index">ms = 0, s = 1, m = 2, h = 3, d = 4, w = 5</param>
+        public double ToTime(int index)
         {
+            var times = new double[this.times.Length];
+
+            for (var i = 0; i < index; i++) times[i + 1] += (this.times[i] + times[i]) / _convertTimes[i];
+
+            for (var i = this.times.Length - 1; i > index; i--)
+                times[i - 1] += (this.times[i] + times[i]) * _convertTimes[i - 1];
+
+            return times[index] + this.times[index];
+        }
+
+        public override string ToString() => ToString(0);
+
+        public string ToString(int start, int end = -1, long min = 0)
+        {
+            if (end == -1) end = times.Length - 1;
             StringBuilder sb = new();
-            for (var i = _times.Length - 1; i >= 0; i--)
-                if (_times[i] > 0 || writeZeros)
+            for (var i = end; i >= start; i--)
+                if (times[i] > min || writeZeros)
                 {
-                    sb.Append(_times[i]).Append(_timeChars[i]);
+                    sb.Append(times[i]).Append(_timeChars[i]);
                     if (i != 0) sb.Append(' ');
                 }
-            
+
             return sb.ToString();
         }
+
+        public static implicit operator TimeVar(long ms) => new(ms);
+        public static implicit operator long(TimeVar t) => (long) t.ToTime(0);
+
+        public static TimeVar operator +(TimeVar t1, TimeVar t2) => (long) (t1.ToTime(0) + t2.ToTime(0));
+        public static TimeVar operator -(TimeVar t1, TimeVar t2) => (long) (t1.ToTime(0) - t2.ToTime(0));
     }
 }

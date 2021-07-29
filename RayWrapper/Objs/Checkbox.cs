@@ -27,7 +27,7 @@ namespace RayWrapper.Objs
             checkChange?.Invoke(isChecked);
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             var textLeng = GameBox.font.MeasureText(text).X;
             var rect = RectWrapper.AssembleRectFromVec(Position + new Vector2(5, 5), new Vector2(20, 20));

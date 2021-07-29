@@ -84,7 +84,7 @@ namespace RayWrapper.Objs
             yes.Update();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             var screen = WindowSize;
             var halfScreen = screen / 2;

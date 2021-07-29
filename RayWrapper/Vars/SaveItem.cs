@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace RayWrapper.Vars
@@ -74,7 +75,20 @@ namespace RayWrapper.Vars
         }
 
         public void LoadString(string data) => _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
-        public string SaveString() => Encrypt(JsonConvert.SerializeObject(_t));
+        public string SaveString()
+        {
+            try
+            {
+                return Encrypt(JsonConvert.SerializeObject(_t));
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine($"ERR: {e.Message} HANDLED");
+                Task.Delay(1).GetAwaiter().GetResult();
+                return SaveString();
+            }
+        }
+
         public string FileName() => _fileName;
 
         public static string Encrypt(string str) => ISave.isCypherValid ? ISave.Cypher.encrypt.Invoke(str) : str;

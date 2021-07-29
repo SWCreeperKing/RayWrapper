@@ -29,6 +29,17 @@ namespace RayWrapper.Objs
             set => _bar.MoveBar(value);
         }
 
+        public float Padding
+        {
+            get => _padding;
+            set
+            {
+                var height = _itemsToShow * _labelHeight + (_itemsToShow - 1) * (_padding = value);
+                _bar.bar = _bar.bar.SetSize(new Vector2(_bar.bar.width, height));
+                _bounds = _bounds.SetSize(new Vector2(_bounds.width, height));
+            }
+        }
+
         public float Value => _bar.Value;
 
         public Func<int> arrayLength;
@@ -40,11 +51,11 @@ namespace RayWrapper.Objs
         public Func<int, string> itemProcessing;
         public Action outsideClick;
 
+        private float _padding = 5;
         private Rectangle _bounds;
         private Scrollbar _bar;
         private List<Label> _labels = new();
         private int _labelHeight;
-        private int _padding = 5;
         private Action<int> _individualClick;
         private int _itemsToShow;
         private bool _updated;
@@ -112,7 +123,7 @@ namespace RayWrapper.Objs
             outsideClick?.Invoke();
         }
 
-        public override void Render()
+        protected override void RenderCall()
         {
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
             _bounds.MaskDraw(() => { _labels.ForEach(l => l.Render()); });
