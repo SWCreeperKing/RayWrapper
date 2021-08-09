@@ -53,13 +53,13 @@ namespace RayWrapper.Objs
             _bar.Update();
             try
             {
-                if (!GeneralWrapper.MouseOccupied) _tabs.ForEach(t => t.Update());
+                if (!GeneralWrapper.MouseOccupied) foreach (var t in _tabs) t.Update();
             }
             catch (InvalidOperationException)
             {
             }
 
-            if (_closable) _closing.ForEach(t => t.Update());
+            if (_closable) foreach (var t in _closing) t.Update();
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
             foreach (var go in _tabContents[_currentTab]) go.Update();
         }
@@ -69,8 +69,11 @@ namespace RayWrapper.Objs
             if (!(!drawIfLowTabs && _tabs.Count < 2))
             {
                 if (_bar.amount > 1) _bar.Render();
-                _rect.MaskDraw(() => _tabs.ForEach(t => t.Render()));
-                if (_closable) _closing.ForEach(t => t.Render());
+                _rect.MaskDraw(() =>
+                {
+                    foreach (var t in _tabs) t.Render();
+                });
+                if (_closable) foreach (var t in _closing) t.Render();
                 if (outline) _rect.DrawHallowRect(Color.BLACK);
             }
 
@@ -138,7 +141,7 @@ namespace RayWrapper.Objs
             Refresh();
         }
 
-        public void InsertPage(string tabName, int index, params GameObject[] gobjs)
+        public void InsertTab(string tabName, int index, params GameObject[] gobjs)
         {
             if (_tabContents.ContainsKey(tabName)) return;
             _tabOrder.Insert(index, tabName);
@@ -165,5 +168,6 @@ namespace RayWrapper.Objs
             (_tabLengths.Count - 1) * _padding;
 
         public string GetCurrentTab() => _currentTab;
+        public bool ContainsTab(string tabName) => _tabOrder.Contains(tabName);
     }
 }

@@ -85,6 +85,9 @@ namespace RayWrapper.Objs
             disabledColor = new Color((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
         }
 
-        public void Click() => _clickEvent.ForEach(a => a.Invoke());
+        public void Click()
+        {
+            foreach (var a in _clickEvent) a.Invoke();
+        }
     }
 }

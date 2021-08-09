@@ -18,7 +18,7 @@ namespace RayWrapper
     public class GameBox
     {
         //temp performance vars
-        public static readonly Dictionary<string, Func<string[], string>> ConsoleCommands = new();
+        public static readonly Dictionary<string, Func<string, string[], string>> ConsoleCommands = new();
         public static readonly List<(string, string)> CollisionLayerTags = new();
         public static readonly long[] CollisionTime = new long[100];
         public static double TimeAverage;
@@ -197,7 +197,7 @@ namespace RayWrapper
             }
 
             CloseWindow();
-            _onDispose.ForEach(a => a.Invoke());
+            foreach (var a in _onDispose) a.Invoke();
         }
 
         public void Update()
@@ -252,7 +252,7 @@ namespace RayWrapper
             if (isDrawing) EndDrawing();
             _schedulers.Clear();
             CloseWindow();
-            _onDispose.ForEach(a => a.Invoke());
+            foreach (var a in _onDispose) a.Invoke();
             Environment.Exit(0);
         }
 
@@ -278,12 +278,13 @@ namespace RayWrapper
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            _saveList.ForEach(t =>
+            foreach (var t in _saveList)
             {
                 using var sw = File.CreateText($"{path}/{t.FileName()}.RaySaveWrap");
                 sw.Write(t.SaveString());
                 sw.Close();
-            });
+            }
+
             WriteToConsole($"Saved in {new TimeVar(GetTimeMs() - start)}");
         }
 
@@ -294,14 +295,15 @@ namespace RayWrapper
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
-            _saveList.ForEach(t =>
+            foreach (var t in _saveList)
             {
                 var file = $"{path}/{t.FileName()}.RaySaveWrap";
-                if (!File.Exists(file)) return;
+                if (!File.Exists(file)) continue;
                 using var sr = new StreamReader(file);
                 t.LoadString(sr.ReadToEnd());
                 sr.Close();
-            });
+            }
+
             WriteToConsole($"Loaded in {new TimeVar(GetTimeMs() - start)}");
         }
 
@@ -321,12 +323,9 @@ namespace RayWrapper
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
-            _saveList.ForEach(t =>
-            {
-                var file = $"{path}/{t.FileName()}.RaySaveWrap";
-                if (!File.Exists(file)) return;
+            foreach (var file in _saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap")
+                .Where(file => File.Exists(file)))
                 File.Delete(file);
-            });
         }
 
         public void RegisterSaveItem<T>(T obj, string fileName) where T : Setable<T> =>
@@ -380,19 +379,21 @@ namespace RayWrapper
                             SetTargetFPS(fpsset);
                             FPS = fpsset;
                             WriteToConsole($"Fps set to [{fpsset}]");
-                        } else WriteToConsole($"[{args[0]}] <- IS NOT A VALID NUMBER");
+                        }
+                        else WriteToConsole($"[{args[0]}] <- IS NOT A VALID NUMBER");
                     }
+
                     break;
                 case "clear":
                     var len = _consoleOut.Count;
                     _consoleWriteOut = new string[20];
                     _consoleOut.Clear();
-                    var doubleClear = args.Length > 0 && args[0].ToLower()[0] == 't';  
+                    var doubleClear = args.Length > 0 && args[0].ToLower()[0] == 't';
                     if (!doubleClear) WriteToConsole($"Cleared {len} lines");
                     break;
                 default:
                     WriteToConsole(ConsoleCommands.ContainsKey(command)
-                        ? ConsoleCommands[command].Invoke(args)
+                        ? ConsoleCommands[command].Invoke(command, args)
                         : $"INVALID COMMAND: [{command}]");
                     break;
             }

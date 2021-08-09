@@ -46,8 +46,7 @@ namespace RayWrapper.Objs
             optionDisplay = new(new Vector2(back.x, back.y + back.height + 2),
                 (int) back.width,
                 i => options[i],
-                () => options.Count, 4);
-            optionDisplay.Padding = 0;
+                () => options.Count, 4, padding:0);
 
             optionDisplay.IndividualClick = i =>
             {

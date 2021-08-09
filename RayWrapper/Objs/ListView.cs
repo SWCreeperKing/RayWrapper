@@ -29,17 +29,6 @@ namespace RayWrapper.Objs
             set => _bar.MoveBar(value);
         }
 
-        public float Padding
-        {
-            get => _padding;
-            set
-            {
-                var height = _itemsToShow * _labelHeight + (_itemsToShow - 1) * (_padding = value);
-                _bar.bar = _bar.bar.SetSize(new Vector2(_bar.bar.width, height));
-                _bounds = _bounds.SetSize(new Vector2(_bounds.width, height));
-            }
-        }
-
         public float Value => _bar.Value;
 
         public Func<int> arrayLength;
@@ -61,8 +50,9 @@ namespace RayWrapper.Objs
         private bool _updated;
 
         public ListView(Vector2 pos, int width, Func<int, string> itemProcessing, Func<int> arrayLength,
-            int itemsToShow = 10, int labelHeight = 40) : base(pos)
+            int itemsToShow = 10, int labelHeight = 40, float padding = 5f) : base(pos)
         {
+            _padding = padding;
             this.itemProcessing = itemProcessing;
             this.arrayLength = arrayLength;
             _itemsToShow = itemsToShow;
@@ -83,7 +73,7 @@ namespace RayWrapper.Objs
             _bar.amount = leng + 1 - _itemsToShow;
             var strictVal = (int) value;
             var y = _bounds.Pos().Y - (_labelHeight + _padding) * (value - strictVal);
-            _labels.ForEach(l => l.backColor = l.fontColor = Transparent);
+            foreach (var l in _labels) l.backColor = l.fontColor = Transparent;
 
             for (var i = 0; i < Math.Min(_labels.Count, leng - strictVal); i++)
             {
@@ -101,7 +91,7 @@ namespace RayWrapper.Objs
         {
             _bar.Update();
 
-            if (_bounds.IsMouseIn())
+            if (_bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn())
             {
                 var scroll = Raylib.GetMouseWheelMove();
                 if (scroll != 0)
@@ -113,7 +103,7 @@ namespace RayWrapper.Objs
 
                 if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
                 click?.Invoke();
-                _labels.ForEach(l => l?.Update());
+                foreach (var l in _labels) l?.Update();
                 if (!_labels.Any(l => l.isMouseIn)) return;
                 _individualClick?.Invoke(_labels.Where(l => l.isMouseIn).First().getId.Invoke());
                 return;
@@ -126,7 +116,10 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
-            _bounds.MaskDraw(() => { _labels.ForEach(l => l.Render()); });
+            _bounds.MaskDraw(() =>
+            {
+                foreach (var l in _labels) l.Render();
+            });
             _updated = false;
         }
 

@@ -11,17 +11,17 @@ namespace RayWrapper.Vars
 
         public void Update()
         {
-            _registryBefore.ForEach(a => a.Update());
+            foreach (var a in _registryBefore) a.Update();
             UpdateLoop();
-            _registryAfter.ForEach(a => a.Update());
+            foreach (var a in _registryAfter) a.Update();
         }
 
         public void Render()
         {
-            _registryBefore.ForEach(a => a.Render());
+            foreach (var a in _registryBefore) a.Render();
             GameBox.RenderColliders();
             RenderLoop();
-            _registryAfter.ForEach(a => a.Render());
+            foreach (var a in _registryAfter) a.Render();
         }
 
         public void RegisterGameObj(bool isBefore, params GameObject[] igo) =>

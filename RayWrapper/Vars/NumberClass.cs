@@ -114,6 +114,17 @@ namespace RayWrapper.Vars
             return new NumberClass(n1.mantissa / n2.mantissa, n1.exponent - n2.exponent);
         }
 
+        // public static NumberClass operator %(NumberClass n1, NumberClass n2)
+        // {
+        //     var a = n1.Clone();
+        //     var b = n2.Clone();
+        //     if (a < 0) a *= -1;
+        //     if (b < 0) b *= -1;
+        //     var mod = a;
+        //     while (mod >= b) mod -= b;
+        //     return a < 0 ? -1 * mod : mod;
+        // }
+
         public NumberClass Pow(NumberClass n)
         {
             if (n == One || this == One || this == Zero) return this;

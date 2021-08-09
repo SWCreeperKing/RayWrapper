@@ -48,12 +48,12 @@ namespace RayWrapper.Vars
 
         public override string ToString() => ToString(0);
 
-        public string ToString(int start, int end = -1, long min = 0)
+        public string ToString(int start, int end = -1)
         {
             if (end == -1) end = times.Length - 1;
             StringBuilder sb = new();
             for (var i = end; i >= start; i--)
-                if (times[i] > min || writeZeros)
+                if (times[i] != 0 || writeZeros)
                 {
                     sb.Append(times[i]).Append(_timeChars[i]);
                     if (i != 0) sb.Append(' ');

@@ -18,6 +18,7 @@ namespace RayWrapper.Objs
         private bool _selected;
         private int _show;
         private string _text = "";
+        private long _lastTime;
 
         private Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions = new()
         {
@@ -78,6 +79,7 @@ namespace RayWrapper.Objs
             _label = new Label(
                 new Rectangle(pos.X, pos.Y, 16 * _show,
                     GameBox.font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)));
+            _lastTime = GameBox.GetTimeMs();
         }
 
         public override void Update()
@@ -88,11 +90,15 @@ namespace RayWrapper.Objs
 
             Input();
 
-                foreach (var (_, v) in _actions.Where(key => (Raylib.IsKeyDown(key.Key) && (_frameTime + 1) % (fps/6) == 0) || Raylib.IsKeyPressed(key.Key)))
-                    (_curPos, _text) =
-                        v.Invoke(
-                            Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
-                            Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
+            foreach (var (_, v) in _actions.Where(key =>
+                Raylib.IsKeyDown(key.Key) && GameBox.GetTimeMs() - _lastTime > 133))
+            {
+                (_curPos, _text) =
+                    v.Invoke(
+                        Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
+                        Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
+                _lastTime = GameBox.GetTimeMs();
+            }
 
             var flash = _frameTime % (fps * .33) > fps * .18;
             var start = 0;

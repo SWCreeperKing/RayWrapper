@@ -41,7 +41,7 @@ namespace RayWrapper.Objs
             if (isVertical) bar.y -= offset;
             else bar.x -= offset;
             BoundsCheck();
-            _onMove.ForEach(a => a.Invoke(Value));
+            foreach (var a in _onMove) a.Invoke(Value);
         }
 
         public void BoundsCheck()
