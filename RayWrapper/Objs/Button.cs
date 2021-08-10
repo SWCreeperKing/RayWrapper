@@ -30,6 +30,9 @@ namespace RayWrapper.Objs
 
         private List<Action> _clickEvent = new();
 
+        /// <summary>
+        /// this event will invoke all subscribers on button click 
+        /// </summary>
         public event Action Clicked
         {
             add => _clickEvent.Add(value);
@@ -68,29 +71,39 @@ namespace RayWrapper.Objs
                 switch (buttonMode)
                 {
                     case ButtonMode.SizeToText:
-                        DrawTextEx(GameBox.font, text, new Vector2(rect.x, rect.y), 24, 1.5f, fontColor);
+                        Text(text, rect.Pos(), fontColor);
                         break;
                     case ButtonMode.WrapText:
-                        GameBox.font.DrawTextWrap(text, adjustedRect, fontColor);
+                        TextWrap(text, adjustedRect, fontColor);
                         break;
                     case ButtonMode.CenterText:
-                        GameBox.font.DrawCenterText(rect.Center(), text, fontColor);
+                        TextCenter(text, rect, fontColor);
                         break;
                 }
             });
         }
 
+        /// <summary>
+        /// changes position of a vector2; 
+        /// </summary>
+        /// <param name="v2">the vector to move it to</param>
         public override void PositionChange(Vector2 v2) => rect = rect.MoveTo(v2);
 
+        /// <summary>
+        /// change button colors
+        /// </summary>
+        /// <param name="color">main color, auto makes hover and disabled color</param>
+        /// <param name="fontColor">color of the text</param>
         public void ChangeColor(Color color, Color fontColor)
         {
             this.fontColor = fontColor;
             baseColor = color;
-            hoverColor = new Color((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255),
-                (int)Math.Min(color.b * 1.5, 255), color.a);
-            disabledColor = new Color((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a);
+            (hoverColor, disabledColor) = color.MakeLightDark();
         }
 
+        /// <summary>
+        /// Execute all methods subscribed to the on click event
+        /// </summary>
         public void Click()
         {
             foreach (var a in _clickEvent) a.Invoke();

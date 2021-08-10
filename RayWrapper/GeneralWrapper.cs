@@ -38,6 +38,16 @@ namespace RayWrapper
             $"{key}".Replace("KEY_MENU", "KEY_R").Replace("KEY_", "").Replace("_", " ").ToLower();
 
         /// <summary>
+        /// Makes a lighter and darker version of a given color
+        /// </summary>
+        /// <param name="color">Color to make alt version for</param>
+        /// <returns>(lighter, darker)</returns>
+        public static (Color, Color) MakeLightDark(this Color color) =>
+            (new Color((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255),
+                    (int)Math.Min(color.b * 1.5, 255), color.a),
+                new Color((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a));
+
+        /// <summary>
         /// TopRight: 1
         /// TopLeft: 2
         /// BottomRight: 3

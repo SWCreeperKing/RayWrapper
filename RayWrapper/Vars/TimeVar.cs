@@ -8,7 +8,7 @@ namespace RayWrapper.Vars
         private static readonly short[] _convertTimes = { 1000, 60, 60, 24, 7 };
         private static readonly string[] _timeChars = { "ms", "s", "m", "h", "d", "w" };
 
-        public bool writeZeros = false;
+        public bool writeZeroes = false;
         public long[] times; //ms, s, m, h, d, w
 
         public TimeVar(long amt, int index = 0)
@@ -59,7 +59,7 @@ namespace RayWrapper.Vars
             if (end == -1 || end < start) end = times.Length - 1;
             StringBuilder sb = new();
             for (var i = end; i >= start; i--)
-                if (times[i] != 0 || writeZeros)
+                if (times[i] != 0 || writeZeroes)
                 {
                     sb.Append(times[i]).Append(_timeChars[i]);
                     if (i != 0) sb.Append(' ');
