@@ -7,12 +7,44 @@ namespace RayWrapper
 {
     public static class RectWrapper
     {
+        /// <summary>
+        /// Makes a <see cref="Rectangle"/> from 2 <see cref="Vector2"/>s
+        /// </summary>
+        /// <param name="pos">Position of new rectangle</param>
+        /// <param name="size">Size of new rectangle</param>
+        /// <returns>The new <see cref="Rectangle"/> of <paramref name="pos"/> and <paramref name="size"/></returns>
         public static Rectangle AssembleRectFromVec(Vector2 pos, Vector2 size) => new(pos.X, pos.Y, size.X, size.Y);
 
-        public static bool isV2In(this Rectangle rect, Vector2 v2) => CheckCollisionPointRec(v2, rect);
-        public static bool IsMouseIn(this Rectangle rect) => rect.isV2In(GetMousePosition());
+        /// <summary>
+        /// Checks if a <see cref="Vector2"/> is inside the bounds of a <see cref="Rectangle"/> 
+        /// </summary>
+        /// <param name="rect">Bounds to check with</param>
+        /// <param name="v2"><see cref="Vector2"/> to check</param>
+        /// <returns>If the <paramref name="pos"/> is in the <paramref name="rect"/></returns>
+        public static bool IsV2In(this Rectangle rect, Vector2 v2) => CheckCollisionPointRec(v2, rect);
+
+        /// <summary>
+        /// Uses <see cref="IsV2In"/> to test if <see cref="Raylib.GetMousePosition"/> is in a <see cref="Rectangle"/>
+        /// </summary>
+        /// <param name="rect"><see cref="Rectangle"/> to check with</param>
+        /// <returns>if the <see cref="Raylib.GetMousePosition"/> is in <paramref name="rect"/></returns>
+        public static bool IsMouseIn(this Rectangle rect) => rect.IsV2In(GetMousePosition());
+
+        /// <summary>
+        /// Draws a <see cref="Rectangle"/> with a <see cref="Color"/> 
+        /// </summary>
+        /// <param name="rect"><see cref="Rectangle"/> to draw</param>
+        /// <param name="color"><see cref="Color"/> to draw the <see cref="Rectangle"/></param>
         public static void Draw(this Rectangle rect, Color color) => DrawRectangleRec(rect, color);
-        public static Rectangle Grow(this Rectangle rect, int changeBuy) => rect.Shrink(-changeBuy);
+
+        /// <summary>
+        /// Grows a <see cref="Rectangle"/> from its center
+        /// </summary>
+        /// <param name="rect"><see cref="Rectangle"/> to grow</param>
+        /// <param name="changeBy">Amount to grow the rectangle by</param>
+        /// <returns>The <paramref name="rect"/> that grew from its center by <paramref name="changeBy"/></returns>
+        public static Rectangle Grow(this Rectangle rect, int changeBy) => rect.Shrink(-changeBy);
+
         public static Rectangle AdjustWh(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
         public static Rectangle MoveTo(this Rectangle rect, Vector2 v2) => AssembleRectFromVec(v2, rect.Size());
         public static Rectangle Clone(this Rectangle rect) => new(rect.x, rect.y, rect.width, rect.height);
@@ -55,7 +87,7 @@ namespace RayWrapper
 
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
-            BeginScissorMode((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height);
+            BeginScissorMode((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
             draw.Invoke();
             EndScissorMode();
         }
