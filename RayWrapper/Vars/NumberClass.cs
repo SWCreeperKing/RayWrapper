@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace RayWrapper.Vars
@@ -75,7 +76,7 @@ namespace RayWrapper.Vars
 
             var isNeg = mantissa < 0;
             if (isNeg) mantissa = -mantissa;
-            var log = (long) Math.Log10(mantissa);
+            var log = (long)Math.Log10(mantissa);
             mantissa /= Math.Pow(10, log);
             if (isNeg) mantissa = -mantissa;
             exponent += log;
@@ -88,11 +89,16 @@ namespace RayWrapper.Vars
         public static NumberClass operator +(NumberClass n1, NumberClass n2)
         {
             var delta = Math.Abs(n1.exponent - n2.exponent);
-            if (delta > 12) return n1.Max(n2);
-            if (delta == 0) return new NumberClass(n1.mantissa + n2.mantissa, n1.exponent);
-            return n1 > n2
-                ? new NumberClass(n1.GetSignedMantissa() + n2.GetSignedMantissa() / Math.Pow(10, delta), n1.exponent)
-                : new NumberClass(n2.GetSignedMantissa() + n1.GetSignedMantissa() / Math.Pow(10, delta), n2.exponent);
+            return delta switch
+            {
+                > 12 => n1.Max(n2),
+                0 => new NumberClass(n1.mantissa + n2.mantissa, n1.exponent),
+                _ => n1 > n2
+                    ? new NumberClass(n1.GetSignedMantissa() + n2.GetSignedMantissa() / Math.Pow(10, delta),
+                        n1.exponent)
+                    : new NumberClass(n2.GetSignedMantissa() + n1.GetSignedMantissa() / Math.Pow(10, delta),
+                        n2.exponent)
+            };
         }
 
         public static NumberClass operator -(NumberClass n1, NumberClass n2) =>
@@ -105,7 +111,6 @@ namespace RayWrapper.Vars
             return new NumberClass(n1.mantissa * n2.mantissa, n1.exponent + n2.exponent);
         }
 
-
         public static NumberClass operator /(NumberClass n1, NumberClass n2)
         {
             if (n2 == Zero) throw new DivideByZeroException("NumberClass: Can not divide by 0");
@@ -113,17 +118,6 @@ namespace RayWrapper.Vars
             if (n2 == One) return n1;
             return new NumberClass(n1.mantissa / n2.mantissa, n1.exponent - n2.exponent);
         }
-
-        // public static NumberClass operator %(NumberClass n1, NumberClass n2)
-        // {
-        //     var a = n1.Clone();
-        //     var b = n2.Clone();
-        //     if (a < 0) a *= -1;
-        //     if (b < 0) b *= -1;
-        //     var mod = a;
-        //     while (mod >= b) mod -= b;
-        //     return a < 0 ? -1 * mod : mod;
-        // }
 
         public NumberClass Pow(NumberClass n)
         {
@@ -144,7 +138,7 @@ namespace RayWrapper.Vars
             tempExpo += n.exponent + Math.Log10(n.exponent);
             return new NumberClass(mantissa, tempExpo);
         }
-
+        
         public NumberClass Root(long @base)
         {
             var mod = exponent % @base;
@@ -159,14 +153,23 @@ namespace RayWrapper.Vars
         public static NumberClass operator ++(NumberClass n) => n += One;
         public static NumberClass operator --(NumberClass n) => n -= One;
 
+        private int BaseNegComp(NumberClass n) =>
+            !isNeg() && n.isNeg()
+                ? 1
+                : isNeg() && !n.isNeg()
+                    ? -1
+                    : 0;
+
         public static bool operator >(NumberClass n1, NumberClass n2) =>
-            n1.exponent > n2.exponent || n1.exponent == n2.exponent && n1.mantissa > n2.mantissa;
+            n1.BaseNegComp(n2) >= 0 &&
+            (n1.exponent > n2.exponent || n1.exponent == n2.exponent && n1.mantissa > n2.mantissa);
 
         public static bool operator <(NumberClass n1, NumberClass n2) =>
-            n1.exponent < n2.exponent || n1.exponent == n2.exponent && n1.mantissa < n2.mantissa;
+            n1.BaseNegComp(n2) == -1 &&
+            (n1.exponent < n2.exponent || n1.exponent == n2.exponent && n1.mantissa < n2.mantissa);
 
         public static bool operator ==(NumberClass n1, NumberClass n2) =>
-            n1.mantissa == n2.mantissa && n1.exponent == n2.exponent;
+            n1.BaseNegComp(n2) != 0 ? false : n1.mantissa == n2.mantissa && n1.exponent == n2.exponent;
 
         public static bool operator !=(NumberClass n1, NumberClass n2) =>
             n1.mantissa != n2.mantissa || n1.exponent != n2.exponent;
@@ -178,10 +181,10 @@ namespace RayWrapper.Vars
         public static implicit operator NumberClass(string s) => new(s);
 
         public static explicit operator int(NumberClass n) =>
-            (int) (n > Int ? int.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
+            (int)(n > Int ? int.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
 
         public static explicit operator long(NumberClass n) =>
-            (long) (n > Long ? long.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
+            (long)(n > Long ? long.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
 
         public static explicit operator double(NumberClass n) =>
             n > Double
@@ -189,7 +192,7 @@ namespace RayWrapper.Vars
                 : n.mantissa * Math.Pow(10, n.exponent);
 
         public static explicit operator float(NumberClass n) =>
-            (float) (n > Float ? float.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
+            (float)(n > Float ? float.MaxValue : n.mantissa * Math.Pow(10, n.exponent));
 
         public double GetRealMantissa() => exponent > 308 ? mantissa : mantissa * Math.Pow(10, exponent);
         public double GetSignedMantissa() => mantissa;
