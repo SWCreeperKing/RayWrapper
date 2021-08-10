@@ -5,6 +5,7 @@ using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
+using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
@@ -33,6 +34,11 @@ namespace RayWrapper.Objs
         {
             add => _clickEvent.Add(value);
             remove => _clickEvent.Remove(value);
+        }
+
+        public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, new Vector2()),
+            text, ButtonMode.SizeToText)
+        {
         }
 
         public Button(Rectangle rect, string text = "Untitled Button", ButtonMode buttonMode = ButtonMode.CenterText)
@@ -80,9 +86,9 @@ namespace RayWrapper.Objs
         {
             this.fontColor = fontColor;
             baseColor = color;
-            hoverColor = new Color((int) Math.Min(color.r * 1.5, 255), (int) Math.Min(color.g * 1.5, 255),
-                (int) Math.Min(color.b * 1.5, 255), color.a);
-            disabledColor = new Color((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
+            hoverColor = new Color((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255),
+                (int)Math.Min(color.b * 1.5, 255), color.a);
+            disabledColor = new Color((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a);
         }
 
         public void Click()
