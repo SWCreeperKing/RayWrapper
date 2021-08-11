@@ -53,13 +53,17 @@ namespace RayWrapper.Objs
             _bar.Update();
             try
             {
-                if (!GeneralWrapper.MouseOccupied) foreach (var t in _tabs) t.Update();
+                if (!GeneralWrapper.MouseOccupied)
+                    foreach (var t in _tabs)
+                        t.Update();
             }
             catch (InvalidOperationException)
             {
             }
 
-            if (_closable) foreach (var t in _closing) t.Update();
+            if (_closable)
+                foreach (var t in _closing)
+                    t.Update();
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
             foreach (var go in _tabContents[_currentTab]) go.Update();
         }
@@ -73,7 +77,9 @@ namespace RayWrapper.Objs
                 {
                     foreach (var t in _tabs) t.Render();
                 });
-                if (_closable) foreach (var t in _closing) t.Render();
+                if (_closable)
+                    foreach (var t in _closing)
+                        t.Render();
                 if (outline) _rect.DrawHallowRect(Color.BLACK);
             }
 
@@ -169,5 +175,8 @@ namespace RayWrapper.Objs
 
         public string GetCurrentTab() => _currentTab;
         public bool ContainsTab(string tabName) => _tabOrder.Contains(tabName);
+
+        public GameObject[] GetTabContents(string tabName) =>
+            _tabContents.ContainsKey(tabName) ? _tabContents[tabName] : null;
     }
 }
