@@ -165,7 +165,7 @@ namespace RayWrapper.Vars
             (n1.exponent > n2.exponent || n1.exponent == n2.exponent && n1.mantissa > n2.mantissa);
 
         public static bool operator <(NumberClass n1, NumberClass n2) =>
-            n1.BaseNegComp(n2) == -1 &&
+            n1.BaseNegComp(n2) <= 0 &&
             (n1.exponent < n2.exponent || n1.exponent == n2.exponent && n1.mantissa < n2.mantissa);
 
         public static bool operator ==(NumberClass n1, NumberClass n2) =>
