@@ -97,5 +97,14 @@ namespace RayWrapper
         {
             if (box.IsMouseIn()) GetMousePosition().DrawToolTipAtPoint(text, color, fontSize, spacing);
         }
+
+        public static Rectangle MultPos(this Rectangle rect, Vector2 v2) =>
+            AssembleRectFromVec(rect.Pos() * v2, rect.Size());     
+        
+        public static Rectangle Multi(this Rectangle rect, Vector2 v2) =>
+            AssembleRectFromVec(rect.Pos() * v2, rect.Size() * v2);  
+        
+        public static Rectangle Multi(this Rectangle rect, float f) =>
+            AssembleRectFromVec(rect.Pos() * f, rect.Size() * f);
     }
 }

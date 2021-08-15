@@ -72,7 +72,8 @@ namespace RayWrapper
             DrawTextEx(GameBox.font, text, pos, fontSize, spacing, color);
         }
 
-        public static double MinMax<T>(this T n, T min, T max) =>
+        [Obsolete("Use an actual clamp i.e. Math.Clamp(), but I won't judge you if you REALLY WANT to use this")]
+        public static double Clamp<T>(this T n, T min, T max) =>
             n switch
             {
                 int dn when min is int dMin && max is int dMax => Math.Max(Math.Min(dn, dMin), dMax),
@@ -84,5 +85,14 @@ namespace RayWrapper
 
         public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0) =>
             new(color.r + r, color.g + g, color.b + b, color.a + a);
+
+        public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3) =>
+            DrawLineEx(l.v1, l.v2, thickness, color);
+
+        public static void
+            DrawLine(this (float x1, float y1, float x2, float y2) l, Color color, float thickness = 3) =>
+            (new Vector2(l.x1, l.y1), new Vector2(l.x2, l.y2)).DrawLine(color, thickness);
+
+        public static Vector2 Add(this Vector2 v2, float f) => v2 + new Vector2(f);
     }
 }

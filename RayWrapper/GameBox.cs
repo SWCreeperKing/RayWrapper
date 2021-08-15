@@ -324,7 +324,7 @@ namespace RayWrapper
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             foreach (var file in _saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap")
-                .Where(file => File.Exists(file)))
+                .Where(File.Exists))
                 File.Delete(file);
         }
 
@@ -374,7 +374,7 @@ namespace RayWrapper
                     if (args.Length < 1) WriteToConsole("To set your fps do setfps [number]");
                     else
                     {
-                        if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and < 500)
+                        if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and <= 500)
                         {
                             SetTargetFPS(fpsset);
                             FPS = fpsset;
@@ -390,6 +390,13 @@ namespace RayWrapper
                     _consoleOut.Clear();
                     var doubleClear = args.Length > 0 && args[0].ToLower()[0] == 't';
                     if (!doubleClear) WriteToConsole($"Cleared {len} lines");
+                    break;
+                case "opensavedir":
+                    if (SaveInit)
+                    {
+                        WriteToConsole($"Opening to [{GetSavePath}]");
+                        Process.Start("explorer.exe" , $@"{GetSavePath}".Replace("/", "\\"));
+                    } else WriteToConsole("Save system is not initialized");
                     break;
                 default:
                     WriteToConsole(ConsoleCommands.ContainsKey(command)

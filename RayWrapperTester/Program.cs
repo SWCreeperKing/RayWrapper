@@ -6,7 +6,8 @@ using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.AnimationShapes;
 using RayWrapper.Objs;
-using RayWrapper.TreeViewShapes;
+using RayWrapper.Objs.TreeView;
+using RayWrapper.Objs.TreeView.Shapes;
 using RayWrapper.Vars;
 using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
@@ -64,7 +65,7 @@ namespace RayWrapperTester
                 if (_buttonInc > 10) _b.isDisabled = true;
             };
             _b.Clicked += () => _buttonInc++;
-            _b.Clicked += () => _b.buttonMode = (Button.ButtonMode) (_buttonInc % 3);
+            _b.Clicked += () => _b.buttonMode = (Button.ButtonMode)(_buttonInc % 3);
 
             _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!",
                 Label.TextMode.WrapText);
@@ -73,7 +74,7 @@ namespace RayWrapperTester
             // _sb.OnMoveEvent += v => Console.WriteLine(v);
 
             var arr = new List<string>
-                {"1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no"};
+                { "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no" };
             _lv = new ListView(new Vector2(40, 100), 500, i => arr[i], () => arr.Count, 12);
             _lv.IndividualClick = i => Console.WriteLine($"{i}: {arr[i]}");
 
@@ -109,25 +110,17 @@ namespace RayWrapperTester
             _tbv.AddTab("ListView Test", _lv, listViewButton);
             _tbv.AddTab("DropDown Test", _dd);
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
-                new Checkbox(pos + new Vector2(0, 50), "Circle") {isCircle = true});
+                new Checkbox(pos + new Vector2(0, 50), "Circle") { isCircle = true });
 
-            TreeView tv = new(new TreeControl());
+            TreeView tv = new(new Box("hi", false, tooltip: "hi"),
+                new Box("hi2", new Vector2(1, 3), true, tooltip: "hi2"),
+                new Ball("hi3", new Vector2(3, 1), false, tooltip: "hi3"),
+                new Ball("hi4", new Vector2(3, 3), true, tooltip: "hi4"),
+                new Ball("hi5", new Vector2(4, 8), new Vector2(2, 1), false, tooltip: "yeet"),
+                new Line("hi", "hi2", false), new Line("hi3", "hi4", false),
+                new Line("hi", new Vector2(4.5f, 8), true) { prog = false });
             tv.axisOffset = new Vector2(5, 5);
             tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
-            // // lines
-            // tv.AddNode(new Line(new Vector2(1, 1), new Vector2(1, 3), () => false),
-            //     new Line(new Vector2(3, 1), new Vector2(3, 3), () => true),
-            //     new Line(new Vector2(1, 1), new Vector2(3, 3), () => true),
-            //     new Line(new Vector2(1, 1), new Vector2(4.5f, 8), () => true));
-            // // circles
-            // tv.AddNode(new Box(new Rectangle(1, 1, 1, 1), () => false, "hi", "yo"),
-            //     new Box(new Rectangle(1, 3, 1, 1), () => true, "hi2", "yo2"));
-            // //boxes
-            // tv.AddNode(new Circle(new Rectangle(3, 1, 1, 1), () => false, "hi3", "yo3"),
-            //     new Circle(new Rectangle(3, 3, 1, 1), () => true, "hi4", "yo4"));
-            // tv.AddNode(new Circle(new Rectangle(4, 8, 2, 1), () => false, "yeet"));
-
-            // tv.OnClick += Console.WriteLine;
 
             _tbv.AddTab("TreeView Test", tv);
 
@@ -147,7 +140,7 @@ namespace RayWrapperTester
             _tbv.AddTab("Input Test", new InputBox(pos));
 
             Animation ani = new AnimationBuilder()
-                .AddShape(new Square("test") {pos = screen / 2 - new Vector2(50, 50), size = new Vector2(100, 100)})
+                .AddShape(new Square("test") { pos = screen / 2 - new Vector2(50, 50), size = new Vector2(100, 100) })
                 .AddStep(.25f)
                 .Slide("test", new Vector2(-50, -50))
                 .AddStep(.25f)
@@ -162,11 +155,11 @@ namespace RayWrapperTester
 
             Animation continueAni = new AnimationBuilder()
                 .AddShape(new Square("mover", RED)
-                    {pos = new Vector2(0, screen.Y / 2 - 25), size = new Vector2(50, 50)})
+                    { pos = new Vector2(0, screen.Y / 2 - 25), size = new Vector2(50, 50) })
                 .Move("mover", new Vector2(screen.X, 0));
 
             Animation triggerAni = new AnimationBuilder()
-                .AddShape(new Square("block") {pos = new Vector2(25, screen.Y / 2 - 40), size = new Vector2(20, 20)})
+                .AddShape(new Square("block") { pos = new Vector2(25, screen.Y / 2 - 40), size = new Vector2(20, 20) })
                 .WaitForTrigger(ab => ab.GetRectOfId("block").IsMouseIn())
                 .AddStep(.5f)
                 .Move("block", new Vector2(screen.X - 55, 0))
@@ -222,7 +215,7 @@ namespace RayWrapperTester
         public override void RenderLoop()
         {
             var size = GameBox.WindowSize;
-            DrawFPS(12, (int) (size.Y - 25));
+            DrawFPS(12, (int)(size.Y - 25));
         }
 
         public void SaveTesting()
