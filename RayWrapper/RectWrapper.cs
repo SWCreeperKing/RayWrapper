@@ -28,7 +28,7 @@ namespace RayWrapper
         /// </summary>
         /// <param name="rect"><see cref="Rectangle"/> to check with</param>
         /// <returns>if the <see cref="Raylib.GetMousePosition"/> is in <paramref name="rect"/></returns>
-        public static bool IsMouseIn(this Rectangle rect) => rect.IsV2In(GetMousePosition());
+        public static bool IsMouseIn(this Rectangle rect) => rect.IsV2In(GameBox.MousePos);
 
         /// <summary>
         /// Draws a <see cref="Rectangle"/> with a <see cref="Color"/> 
@@ -95,7 +95,7 @@ namespace RayWrapper
         public static void DrawTooltip(this Rectangle box, string text, Color color, int fontSize = 24,
             float spacing = 1.5f)
         {
-            if (box.IsMouseIn()) GetMousePosition().DrawToolTipAtPoint(text, color, fontSize, spacing);
+            if (box.IsMouseIn()) GameBox.MousePos.DrawToolTipAtPoint(text, color, fontSize, spacing);
         }
 
         public static Rectangle MultPos(this Rectangle rect, Vector2 v2) =>

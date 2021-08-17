@@ -12,7 +12,7 @@ namespace RayWrapper.Animation.AnimationShapes
 
         public Text(string id, string text) : base(id) => this.text = text;
 
-        public override void DrawShape() => GameBox.font.DrawText(setText?.Invoke() ?? text, pos, color);
+        public override void DrawShape() => GameBox.Font.DrawText(setText?.Invoke() ?? text, pos, color);
 
         public override AnimationShape CopyState() =>
             new Text(id, text) {pos = pos, color = color, fontSize = fontSize, isVisible = isVisible, setText = setText};

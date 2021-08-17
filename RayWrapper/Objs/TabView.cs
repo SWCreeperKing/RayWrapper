@@ -143,7 +143,7 @@ namespace RayWrapper.Objs
             _tabOrder.Add(tabName);
             _currentTab ??= tabName;
             _tabContents.Add(tabName, gobjs);
-            _tabLengths.Add(tabName, GameBox.font.MeasureText($" {tabName} ").X);
+            _tabLengths.Add(tabName, GameBox.Font.MeasureText($" {tabName} ").X);
             Refresh();
         }
 
@@ -153,7 +153,7 @@ namespace RayWrapper.Objs
             _tabOrder.Insert(index, tabName);
             _currentTab ??= tabName;
             _tabContents.Add(tabName, gobjs);
-            _tabLengths.Add(tabName, GameBox.font.MeasureText($" {tabName} ").X);
+            _tabLengths.Add(tabName, GameBox.Font.MeasureText($" {tabName} ").X);
             Refresh();
         }
 

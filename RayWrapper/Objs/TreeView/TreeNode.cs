@@ -14,6 +14,7 @@ namespace RayWrapper.Objs.TreeView
         public TreeNodeTrigger isVisible;
         public Action<string> onClick;
         public string tooltip;
+        public bool noCompleteClick = true;
 
         private bool _isMouse;
 
@@ -27,8 +28,10 @@ namespace RayWrapper.Objs.TreeView
             if (isVisible is not null && !isVisible.Invoke(nodes)) return "";
             var calRect = rect.MoveBy(change).Multi(new Vector2(scale));
             var mouse = calRect.IsMouseIn();
+            var isC = isComplete.Invoke(nodes);
+            DrawShape(change, scale, isC);
+            if (noCompleteClick && isC) return mouse ? tooltip : "";
             if (mouse && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) onClick?.Invoke(name);
-            DrawShape(change, scale, isComplete.Invoke(nodes));
             return mouse ? tooltip : "";
         }
 

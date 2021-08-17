@@ -20,7 +20,7 @@ namespace RayWrapper.Objs
 
         public override void Update()
         {
-            var textLeng = GameBox.font.MeasureText(text).X;
+            var textLeng = GameBox.Font.MeasureText(text).X;
             if (!RectWrapper.AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn() ||
                 !Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
             isChecked = !isChecked;
@@ -29,7 +29,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            var textLeng = GameBox.font.MeasureText(text).X;
+            var textLeng = GameBox.Font.MeasureText(text).X;
             var rect = RectWrapper.AssembleRectFromVec(Position + new Vector2(5, 5), new Vector2(20, 20));
             var mouseIsIn = RectWrapper.AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn();
             if (!isCircle)
@@ -45,7 +45,7 @@ namespace RayWrapper.Objs
                 if (mouseIsIn) rect.DrawHallowCircle(hoverColor);
             }
 
-            GameBox.font.DrawText(text, Position + new Vector2(35, 5), textColor);
+            GameBox.Font.DrawText(text, Position + new Vector2(35, 5), textColor);
         }
 
         public override void PositionChange(Vector2 v2)

@@ -62,8 +62,8 @@ namespace RayWrapper.Objs
             yes.Update();
 
             var halfScreen = WindowSize / 2;
-            var messageSize = size == Vector2.Zero ? font.MeasureText(message, 30) : size;
-            var titleSize = font.MeasureText(title);
+            var messageSize = size == Vector2.Zero ? GameBox.Font.MeasureText(message, 30) : size;
+            var titleSize = GameBox.Font.MeasureText(title);
             var closeSize = close.adjustedRect.Size();
             var noSize = no.adjustedRect.Size();
             var yesSize = yes.adjustedRect.Size();
@@ -90,11 +90,11 @@ namespace RayWrapper.Objs
             var halfScreen = screen / 2;
             new Rectangle(0, 0, screen.X, screen.Y).Draw(new Color(0, 0, 0, 150));
             _rect.Draw(rectColor);
-            font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
+            GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
             if (size == Vector2.Zero)
-                font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 55), message, messageColor);
+                GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 55), message, messageColor);
             else
-                font.DrawTextWrap(message,
+                GameBox.Font.DrawTextWrap(message,
                     AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 55), size),
                     messageColor);
             close.Render();

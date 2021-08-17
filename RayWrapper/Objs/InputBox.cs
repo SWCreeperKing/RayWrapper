@@ -78,7 +78,7 @@ namespace RayWrapper.Objs
             _max = maxCharacters;
             _label = new Label(
                 new Rectangle(pos.X, pos.Y, 16 * _show,
-                    GameBox.font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)));
+                    GameBox.Font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)));
             _lastTime = GameBox.GetTimeMs();
         }
 

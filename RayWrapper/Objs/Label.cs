@@ -44,9 +44,9 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var adjust = back.Shrink(4);
-            var textSize = MeasureTextEx(GameBox.font, text, fontSize, spacing);
+            var textSize = MeasureTextEx(GameBox.Font, text, fontSize, spacing);
 
-            void DrawTxt(Vector2 pos) => DrawTextEx(GameBox.font, text, pos, fontSize, spacing, fontColor);
+            void DrawTxt(Vector2 pos) => DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, fontColor);
 
             if (textMode != TextMode.SizeToText) back.Draw(backColor);
 
@@ -56,14 +56,14 @@ namespace RayWrapper.Objs
                     DrawTxt(new Vector2(adjust.x, adjust.y + (adjust.height / 2 - textSize.Y / 2)));
                     break;
                 case TextMode.AlignCenter:
-                    GameBox.font.DrawCenterText(adjust.Center(), text, fontColor, fontSize, spacing);
+                    GameBox.Font.DrawCenterText(adjust.Center(), text, fontColor, fontSize, spacing);
                     break;
                 case TextMode.AlignRight:
                     DrawTxt(new Vector2(adjust.x + adjust.width - textSize.X,
                         adjust.y + (adjust.height / 2 - textSize.Y / 2)));
                     break;
                 case TextMode.WrapText:
-                    DrawTextRec(GameBox.font, text, adjust, fontSize, spacing, true, fontColor);
+                    DrawTextRec(GameBox.Font, text, adjust, fontSize, spacing, true, fontColor);
                     break;
                 case TextMode.SizeToText:
                     var rect = RectWrapper.AssembleRectFromVec(adjust.Pos(), textSize);

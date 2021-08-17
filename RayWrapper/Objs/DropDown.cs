@@ -39,7 +39,7 @@ namespace RayWrapper.Objs
         public void UpdateChanges()
         {
             var longest = options.OrderByDescending(s => s.Length).First();
-            _size = GameBox.font.MeasureText($"^|||y{longest}", fontSize);
+            _size = GameBox.Font.MeasureText($"^|||y{longest}", fontSize);
             var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
             text = new Label(back, options[Value]) {fontSize = fontSize};
 

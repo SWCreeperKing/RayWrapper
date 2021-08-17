@@ -35,12 +35,12 @@ namespace RayWrapper.Vars
         public abstract void PositionChange(Vector2 v2);
 
         public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>
-            GameBox.font.DrawText(text, pos, color, fontSize, spacing);
+            GameBox.Font.DrawText(text, pos, color, fontSize, spacing);
 
         public void TextWrap(string text, Rectangle rect, Color fontColor) =>
-            GameBox.font.DrawTextWrap(text, rect, fontColor);
+            GameBox.Font.DrawTextWrap(text, rect, fontColor);
 
         public void TextCenter(string text, Rectangle rect, Color fontColor) =>
-            GameBox.font.DrawCenterText(rect.Center(), text, fontColor);
+            GameBox.Font.DrawCenterText(rect.Center(), text, fontColor);
     }
 }

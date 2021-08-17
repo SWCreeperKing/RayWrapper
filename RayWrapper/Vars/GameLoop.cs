@@ -35,6 +35,6 @@ namespace RayWrapper.Vars
         public abstract void RenderLoop();
 
         public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>
-            GameBox.font.DrawText(text, pos, color, fontSize, spacing);
+            GameBox.Font.DrawText(text, pos, color, fontSize, spacing);
     }
 }

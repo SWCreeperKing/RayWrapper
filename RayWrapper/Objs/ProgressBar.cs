@@ -13,6 +13,8 @@ namespace RayWrapper.Objs
         public int outlineThickness = 3;
         public Color backColor = Color.BLACK;
         public Color fillColor = Color.RAYWHITE;
+        public Color toColor = Color.GOLD;
+        public Color finishedColor = Color.GREEN;
         public Func<float> percent;
 
         public ProgressBar(Rectangle rect, Func<float> percent) : base(rect.Pos())
@@ -30,7 +32,7 @@ namespace RayWrapper.Objs
             var fill = percent.Invoke();
             var newS = new Vector2(size.X * (isVertical ? 1 : fill), size.Y * (isVertical ? fill : 1));
             AssembleRectFromVec(Position, size).Grow(outlineThickness).Draw(backColor);
-            AssembleRectFromVec(Position, newS).Draw(fillColor);
+            AssembleRectFromVec(Position, newS).Draw(fill >= 1 ? finishedColor : fillColor.Percent(toColor, fill));
         }
 
         public override void PositionChange(Vector2 v2)

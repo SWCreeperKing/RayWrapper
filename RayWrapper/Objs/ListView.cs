@@ -33,12 +33,14 @@ namespace RayWrapper.Objs
 
         public Func<int> arrayLength;
         public Color backColor = new(50, 50, 50, 255);
-        public readonly Dictionary<int, Color> backColors = new();
+        public Dictionary<int, Color> backColors = new();
         public Action click;
         public Color fontColor = new(192, 192, 198, 255);
-        public readonly Dictionary<int, Color> fontColors = new();
+        public Dictionary<int, Color> fontColors = new();
         public Func<int, string> itemProcessing;
         public Action outsideClick;
+        public string tooltip = "";
+        public bool showTooltip = true;
 
         private float _padding = 5;
         private Rectangle _bounds;
@@ -120,6 +122,7 @@ namespace RayWrapper.Objs
             {
                 foreach (var l in _labels) l.Render();
             });
+            if (showTooltip && tooltip != "") _bounds.ExtendPos(new Vector2(20, 0)).DrawTooltip(tooltip);
             _updated = false;
         }
 

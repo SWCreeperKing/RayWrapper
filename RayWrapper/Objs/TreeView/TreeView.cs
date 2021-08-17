@@ -6,6 +6,7 @@ using Raylib_cs;
 using RayWrapper.Objs.TreeView.Shapes;
 using RayWrapper.Vars;
 using static Raylib_cs.MouseButton;
+using static RayWrapper.GameBox;
 
 namespace RayWrapper.Objs.TreeView
 {
@@ -29,11 +30,11 @@ namespace RayWrapper.Objs.TreeView
 
         public override void Update()
         {
-            if (GameBox.alertBox is not null || GeneralWrapper.MouseOccupied) return;
+            if (alertBox is not null || GeneralWrapper.MouseOccupied) return;
             if (Raylib.IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) ResetPos();
             if (Raylib.IsMouseButtonDown(MOUSE_LEFT_BUTTON))
             {
-                var curMouse = Raylib.GetMousePosition();
+                var curMouse = MousePos;
                 if (!_hold) _lastPos = curMouse;
                 _moveChange += (curMouse - _lastPos) / (_scale / 1.4f);
                 _lastPos = curMouse;
@@ -48,7 +49,7 @@ namespace RayWrapper.Objs.TreeView
         protected override void RenderCall()
         {
             var rect = mask.IsEqualTo(new(0, 0, 0, 0))
-                ? RectWrapper.AssembleRectFromVec(new Vector2(0), GameBox.WindowSize)
+                ? RectWrapper.AssembleRectFromVec(new Vector2(0), WindowSize)
                 : mask;
 
             var t = "";

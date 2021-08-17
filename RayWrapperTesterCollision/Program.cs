@@ -5,6 +5,7 @@ using RayWrapper.CollisionSystem;
 using RayWrapper.Vars;
 using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
 
 namespace RayWrapperTesterCollision
 {
@@ -20,9 +21,9 @@ namespace RayWrapperTesterCollision
 
         public override void Init()
         {
-            var wx = GameBox.WindowSize.X;
-            var wy = GameBox.WindowSize.Y;
-            GameBox.CollisionLayerTags.Add(("circle", "bar"));
+            var wx = WindowSize.X;
+            var wy = WindowSize.Y;
+            CollisionLayerTags.Add(("circle", "bar"));
             new Bar(new Vector2(0, 0), new Vector2(wx, 10));
             new Bar(new Vector2(0, wy - 10), new Vector2(wx, 10));
             new Bar(new Vector2(0, 0), new Vector2(10, wy)) {vert = true};
@@ -33,7 +34,7 @@ namespace RayWrapperTesterCollision
         {
             if (IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
-                for (var i = 0; i < 50; i++) new Circle(Raylib.GetMousePosition());
+                for (var i = 0; i < 50; i++) new Circle(MousePos);
             }
         }
 
@@ -42,9 +43,9 @@ namespace RayWrapperTesterCollision
             DrawFPS(12, 12);
             Text($"{Collider.count - 4}", new Vector2(12, 60), RED);
             Text($@"Collision Time
-cur: {GameBox.CurrentCollision}ms
-avg: {GameBox.TimeAverage}ms
-high: {GameBox.CollisionHigh}ms".Replace("\r", ""), new Vector2(300, 50), SKYBLUE);
+cur: {CurrentCollision}ms
+avg: {TimeAverage}ms
+high: {CollisionHigh}ms".Replace("\r", ""), new Vector2(300, 50), SKYBLUE);
         }
     }
 }

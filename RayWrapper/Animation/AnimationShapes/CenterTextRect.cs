@@ -13,7 +13,7 @@ namespace RayWrapper.Animation.AnimationShapes
         public CenterTextRect(string id, string text) : base(id) => this.text = text;
 
         public override void DrawShape() =>
-            GameBox.font.DrawCenterWrapText(RectWrapper.AssembleRectFromVec(pos, size), setText?.Invoke() ?? text,
+            GameBox.Font.DrawCenterWrapText(RectWrapper.AssembleRectFromVec(pos, size), setText?.Invoke() ?? text,
                 color);
 
         public override AnimationShape CopyState() =>

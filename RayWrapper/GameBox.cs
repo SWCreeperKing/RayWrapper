@@ -25,6 +25,8 @@ namespace RayWrapper
         public static long CollisionHigh;
         public static long CurrentCollision;
         public static int TimeKeeper;
+        public static float Scale;
+        public static Vector2 MousePos = new();
 
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -34,15 +36,25 @@ namespace RayWrapper
         public static bool SaveInit { get; private set; }
         public static Vector2 WindowSize { get; private set; }
 
+        public static Font Font
+        {
+            get => _font;
+            set
+            {
+                _font = value;
+                SetTextureFilter(_font.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
+            }
+        }
+
         public static AlertBox alertBox = null;
         public static Animator animator = new();
-        public static Font font;
 
         private static readonly List<ISave> _saveList = new();
         private static readonly List<Collider> _colliders = new();
         private static readonly List<Collider> _collidersAddQueue = new();
         private static readonly List<Collider> _collidersRemoveQueue = new();
         private static long _lastTime;
+        private static Font _font;
 
         // private static readonly List<(long, long)> CollisionMem = new();
 
@@ -59,6 +71,7 @@ namespace RayWrapper
         private List<Scheduler> _schedulers = new();
         private bool isDrawing;
         private bool _isConsole;
+        private RenderTexture2D target;
 
         public event Action OnDispose
         {
@@ -68,9 +81,11 @@ namespace RayWrapper
 
         public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60)
         {
+            SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
-            InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
-            font = GetFontDefault();
+            InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
+            target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
+            _font = GetFontDefault();
             SetTargetFPS(FPS = fps);
         }
 
@@ -202,6 +217,11 @@ namespace RayWrapper
 
         public void Update()
         {
+            var mouse = GetMousePosition();
+            Scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
+            float Calc(float m, int s, float w) => (m - (s - w * Scale) * 0.5f) / Scale;
+            MousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
+            MousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
             if (IsKeyPressed(KeyboardKey.KEY_GRAVE)) _isConsole = !_isConsole;
             else if (_isConsole)
             {
@@ -215,7 +235,7 @@ namespace RayWrapper
 
         public void Render()
         {
-            BeginDrawing();
+            BeginTextureMode(target);
             isDrawing = true;
             try
             {
@@ -225,7 +245,7 @@ namespace RayWrapper
                 {
                     new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
                     _ib.Render();
-                    font.DrawText(string.Join("\n", _consoleWriteOut), new Vector2(0, 50), Color.GREEN);
+                    _font.DrawText(string.Join("\n", _consoleWriteOut), new Vector2(0, 50), Color.GREEN);
                 }
                 else
                 {
@@ -243,6 +263,14 @@ namespace RayWrapper
                 Console.ForegroundColor = before;
             }
 
+            EndTextureMode();
+
+            BeginDrawing();
+            ClearBackground(Color.BLACK);
+            DrawTexturePro(target.texture, new Rectangle(0.0f, 0.0f, target.texture.width, -target.texture.height),
+                new Rectangle((GetScreenWidth() - WindowSize.X * Scale) * 0.5f,
+                    (GetScreenHeight() - WindowSize.Y * Scale) * 0.5f, WindowSize.X * Scale, WindowSize.Y * Scale),
+                new Vector2(0, 0), 0.0f, Color.WHITE);
             EndDrawing();
             isDrawing = false;
         }
@@ -363,7 +391,7 @@ namespace RayWrapper
             CollisionTime[TimeKeeper++] = ms;
             TimeKeeper %= CollisionTime.Length;
             CollisionHigh = Math.Max(CollisionHigh, ms);
-            TimeAverage = CollisionTime.Sum() / (double) CollisionTime.Length;
+            TimeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
         }
 
         private void ExecuteCommand(string command, params string[] args)
@@ -371,17 +399,19 @@ namespace RayWrapper
             switch (command.ToLower())
             {
                 case "setfps":
-                    if (args.Length < 1) WriteToConsole("To set your fps do setfps [number]");
-                    else
+                    if (args.Length < 1)
                     {
-                        if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and <= 500)
-                        {
-                            SetTargetFPS(fpsset);
-                            FPS = fpsset;
-                            WriteToConsole($"Fps set to [{fpsset}]");
-                        }
-                        else WriteToConsole($"[{args[0]}] <- IS NOT A VALID NUMBER");
+                        WriteToConsole("To set your fps do setfps [number]");
+                        break;
                     }
+
+                    if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and <= 500)
+                    {
+                        SetTargetFPS(fpsset);
+                        FPS = fpsset;
+                        WriteToConsole($"Fps set to [{fpsset}]");
+                    }
+                    else WriteToConsole($"[{args[0]}] <- IS NOT A VALID NUMBER");
 
                     break;
                 case "clear":
@@ -395,8 +425,34 @@ namespace RayWrapper
                     if (SaveInit)
                     {
                         WriteToConsole($"Opening to [{GetSavePath}]");
-                        Process.Start("explorer.exe" , $@"{GetSavePath}".Replace("/", "\\"));
-                    } else WriteToConsole("Save system is not initialized");
+                        Process.Start("explorer.exe", $@"{GetSavePath}".Replace("/", "\\"));
+                    }
+                    else WriteToConsole("Save system is not initialized");
+
+                    break;
+                case "resetres":
+                    if (IsWindowFullscreen())
+                    {
+                        WriteToConsole("Game can not be in fullscreen");
+                        break;
+                    }
+
+                    SetWindowSize((int)WindowSize.X, (int)WindowSize.Y);
+                    WriteToConsole($"Reset Resolution to {WindowSize}");
+                    break;
+                case "setres":
+                    if (args.Length < 2)
+                    {
+                        WriteToConsole("To set your resolution do setres [width] [height]");
+                        break;
+                    }
+
+                    if (int.TryParse(args[0], out var w) && int.TryParse(args[1], out var h))
+                    {
+                        SetWindowSize(w, h);
+                        WriteToConsole($"Set Resolution to <{w}, {h}>");
+                    } else WriteToConsole("Could not parse one of the variables");
+
                     break;
                 default:
                     WriteToConsole(ConsoleCommands.ContainsKey(command)

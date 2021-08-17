@@ -20,15 +20,15 @@ namespace RayWrapper.Objs
 
         public Rectangle adjustedRect;
         public Rectangle rect;
-        public Color baseColor = new(56, 73, 99, 255);
-        public Color hoverColor = new(99, 129, 175, 255);
-        public Color disabledColor = new(13, 17, 23, 255);
-        public Color fontColor = new(174, 177, 181, 255);
+        public Func<Color> baseColor;
+        public Func<Color> fontColor;
         public ButtonMode buttonMode;
         public string text;
         public bool isDisabled;
 
         private List<Action> _clickEvent = new();
+        private Color _baseColor = new(56, 73, 99, 255);
+        private Color _fontColor = new(174, 177, 181, 255);
 
         /// <summary>
         /// this event will invoke all subscribers on button click 
@@ -45,16 +45,13 @@ namespace RayWrapper.Objs
         }
 
         public Button(Rectangle rect, string text = "Untitled Button", ButtonMode buttonMode = ButtonMode.CenterText)
-            : base(rect.Pos())
-        {
-            ChangeColor(new Color(56, 73, 99, 255), new Color(174, 177, 181, 255));
+            : base(rect.Pos()) =>
             (this.rect, this.text, this.buttonMode) = (rect, text, buttonMode);
-        }
 
         public override void Update()
         {
             adjustedRect = buttonMode == ButtonMode.SizeToText
-                ? rect.AdjustWh(GameBox.font.MeasureText(text)).Shrink(-4)
+                ? rect.AdjustWh(GameBox.Font.MeasureText(text)).Shrink(-4)
                 : new Rectangle(rect.x, rect.y, rect.width, rect.height);
             if (isDisabled) return;
             if (!adjustedRect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
@@ -63,21 +60,24 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
+            var bc = baseColor?.Invoke() ?? _baseColor;
+            var fc = fontColor?.Invoke() ?? _fontColor;
+            var (hoverColor, disabledColor) = bc.MakeLightDark();
             if (isDisabled) adjustedRect.Draw(disabledColor);
             else if (adjustedRect.IsMouseIn()) adjustedRect.Draw(hoverColor);
-            else adjustedRect.Draw(baseColor);
+            else adjustedRect.Draw(bc);
             adjustedRect.MaskDraw(() =>
             {
                 switch (buttonMode)
                 {
                     case ButtonMode.SizeToText:
-                        Text(text, rect.Pos(), fontColor);
+                        Text(text, rect.Pos(), fc);
                         break;
                     case ButtonMode.WrapText:
-                        TextWrap(text, adjustedRect, fontColor);
+                        TextWrap(text, adjustedRect, fc);
                         break;
                     case ButtonMode.CenterText:
-                        TextCenter(text, rect, fontColor);
+                        TextCenter(text, rect, fc);
                         break;
                 }
             });
@@ -94,11 +94,10 @@ namespace RayWrapper.Objs
         /// </summary>
         /// <param name="color">main color, auto makes hover and disabled color</param>
         /// <param name="fontColor">color of the text</param>
-        public void ChangeColor(Color color, Color fontColor)
+        public void ChangeColor(Func<Color> color, Func<Color> fontColor)
         {
             this.fontColor = fontColor;
             baseColor = color;
-            (hoverColor, disabledColor) = color.MakeLightDark();
         }
 
         /// <summary>

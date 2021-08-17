@@ -47,8 +47,7 @@ namespace RayWrapperTester
 
         public override void Init()
         {
-            GameBox.font = LoadFont("CascadiaMono.ttf");
-            SetTextureFilter(GameBox.font.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
+            GameBox.Font = LoadFont("CascadiaMono.ttf");
 
             var screen = GameBox.WindowSize;
             Vector2 pos = new(75, 80);
@@ -202,7 +201,7 @@ namespace RayWrapperTester
 
         public override void UpdateLoop()
         {
-            var mouse = GetMousePosition();
+            var mouse = GameBox.MousePos;
             _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);
 
             if (IsKeyDown(KeyboardKey.KEY_LEFT)) _l.MoveBy(new Vector2(-3, 0));

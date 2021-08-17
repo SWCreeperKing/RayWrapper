@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace RayWrapper.Objs.TreeView
 {
@@ -12,7 +13,7 @@ namespace RayWrapper.Objs.TreeView
             funcTest?.Invoke() ?? prevTest is not null && nodes[prevTest].isComplete.Invoke(nodes);
 
         public static implicit operator TreeNodeTrigger(string prevToTest) => new() { prevTest = prevToTest };
-        public static implicit operator TreeNodeTrigger(Func<bool> func) => new() { funcTest = func};
-        public static implicit operator TreeNodeTrigger(bool staticBool) => new() { funcTest = () => staticBool};
+        public static implicit operator TreeNodeTrigger(Func<bool> func) => new() { funcTest = func };
+        public static implicit operator TreeNodeTrigger(bool staticBool) => new() { funcTest = () => staticBool };
     }
 }

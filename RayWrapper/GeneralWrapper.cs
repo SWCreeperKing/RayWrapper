@@ -42,7 +42,7 @@ namespace RayWrapper
         /// </summary>
         /// <param name="color">Color to make alt version for</param>
         /// <returns>(lighter, darker)</returns>
-        public static (Color, Color) MakeLightDark(this Color color) =>
+        public static (Color light, Color dark) MakeLightDark(this Color color) =>
             (new Color((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255),
                     (int)Math.Min(color.b * 1.5, 255), color.a),
                 new Color((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a));
@@ -56,7 +56,7 @@ namespace RayWrapper
         public static int GetCursorQuadrant()
         {
             var lines = GameBox.WindowSize / 2;
-            var cursor = GetMousePosition();
+            var cursor = GameBox.MousePos;
             var quad = cursor.X > lines.X ? 1 : 2;
             if (cursor.Y > lines.Y) quad += 2;
             return quad;
@@ -65,11 +65,11 @@ namespace RayWrapper
         public static void DrawToolTipAtPoint(this Vector2 rawPos, string text, Color color, float fontSize = 24,
             float spacing = 1.5f)
         {
-            var textSize = GameBox.font.MeasureText(text, fontSize, spacing);
+            var textSize = GameBox.Font.MeasureText(text, fontSize, spacing);
             var quad = GetCursorQuadrant();
             Vector2 pos = new(rawPos.X - (quad % 2 != 0 ? textSize.X : 0), rawPos.Y - (quad > 2 ? textSize.Y : -33));
             RectWrapper.AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
-            DrawTextEx(GameBox.font, text, pos, fontSize, spacing, color);
+            DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, color);
         }
 
         [Obsolete("Use an actual clamp i.e. Math.Clamp(), but I won't judge you if you REALLY WANT to use this")]
@@ -94,5 +94,11 @@ namespace RayWrapper
             (new Vector2(l.x1, l.y1), new Vector2(l.x2, l.y2)).DrawLine(color, thickness);
 
         public static Vector2 Add(this Vector2 v2, float f) => v2 + new Vector2(f);
+
+        public static Color Percent(this Color c1, Color c2, float percent)
+        {
+            int DoCalc(int c1, int c2) => (int)((1.0 - percent) * c1 + percent * c2 + 0.5);
+            return new Color(DoCalc(c1.r, c2.r), DoCalc(c1.g, c2.g), DoCalc(c1.b, c2.b), 255);
+        }
     }
 }

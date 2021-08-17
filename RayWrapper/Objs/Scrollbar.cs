@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static RayWrapper.GameBox;
 using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
@@ -60,7 +61,7 @@ namespace RayWrapper.Objs
 
         public override void Update()
         {
-            var (size, pos, mousePos) = (container.Size(), container.Pos(), Raylib.GetMousePosition());
+            var (size, pos, mousePos) = (container.Size(), container.Pos(), MousePos);
             _trueSize = (isVertical ? size.Y : size.X) / amount;
             _visibleSize = _trueSize;
             if (_visibleSize < 10 * barScale) _visibleSize = 10 * barScale;
