@@ -4,14 +4,13 @@ using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static Raylib_cs.Raylib;
 using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
     public class ListView : GameObject
     {
-        public static float scrollSensitivityPercentage = 10;
-
         public Action<int> IndividualClick
         {
             get => _individualClick;
@@ -41,6 +40,8 @@ namespace RayWrapper.Objs
         public Action outsideClick;
         public string tooltip = "";
         public bool showTooltip = true;
+        public Sound clickSound;
+        public bool randomPitch = true;
 
         private float _padding = 5;
         private Rectangle _bounds;
@@ -58,8 +59,8 @@ namespace RayWrapper.Objs
             this.itemProcessing = itemProcessing;
             this.arrayLength = arrayLength;
             _itemsToShow = itemsToShow;
-            var height = itemsToShow * labelHeight + (itemsToShow - 1) * _padding;
-            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y, 18, height)) {barScale = 2};
+            var height = (labelHeight + padding) * itemsToShow - padding;
+            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y, 18, height)) { barScale = 2 };
             _bounds = new Rectangle(pos.X + 20, pos.Y, width - 20, height);
             for (var i = 0; i < itemsToShow + 1; i++)
                 _labels.Add(new Label(new Rectangle(0, 0, _bounds.width, labelHeight)));
@@ -73,7 +74,7 @@ namespace RayWrapper.Objs
         {
             var leng = arrayLength.Invoke();
             _bar.amount = leng + 1 - _itemsToShow;
-            var strictVal = (int) value;
+            var strictVal = (int)value;
             var y = _bounds.Pos().Y - (_labelHeight + _padding) * (value - strictVal);
             foreach (var l in _labels) l.backColor = l.fontColor = Transparent;
 
@@ -95,23 +96,31 @@ namespace RayWrapper.Objs
 
             if (_bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn())
             {
-                var scroll = Raylib.GetMouseWheelMove();
+                var scroll = GetMouseWheelMove();
                 if (scroll != 0)
                 {
-                    _bar.MoveBar(scroll * _bar.container.height * (scrollSensitivityPercentage / 100f));
+                    var a = arrayLength.Invoke();
+                    var h = _bar.container.height;
+                    var h2 = (_labelHeight + _padding) * a - _padding;
+                    var r = h2 / h;
+                    var step = a / _itemsToShow; // how much to step
+                    var o = (_labelHeight + _padding) * step - _padding;
+                    _bar.MoveBar(scroll * (o / r));
                     _bar.Update();
                     UpdateLabels(_bar.Value);
                 }
 
-                if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+                if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
                 click?.Invoke();
+                if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
+                PlaySound(clickSound);
                 foreach (var l in _labels) l?.Update();
                 if (!_labels.Any(l => l.isMouseIn)) return;
                 _individualClick?.Invoke(_labels.Where(l => l.isMouseIn).First().getId.Invoke());
                 return;
             }
 
-            if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+            if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
             outsideClick?.Invoke();
         }
 

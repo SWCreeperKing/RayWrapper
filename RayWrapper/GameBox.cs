@@ -18,9 +18,11 @@ namespace RayWrapper
     public class GameBox
     {
         //temp performance vars
+        public static readonly Random Random = new();
         public static readonly Dictionary<string, Func<string, string[], string>> ConsoleCommands = new();
         public static readonly List<(string, string)> CollisionLayerTags = new();
         public static readonly long[] CollisionTime = new long[100];
+        public static bool EnableConsole = true;
         public static double TimeAverage;
         public static long CollisionHigh;
         public static long CurrentCollision;
@@ -63,14 +65,16 @@ namespace RayWrapper
         public int FPS { get; private set; }
 
         public Color backgroundColor = new(40, 40, 40, 255);
+        public Color letterboxColor = new(20, 20, 20, 255);
 
         private InputBox _ib;
         private List<string> _consoleOut = new();
         private string[] _consoleWriteOut = new string[20];
         private List<Action> _onDispose = new();
         private List<Scheduler> _schedulers = new();
-        private bool isDrawing;
+        private bool _isDrawing;
         private bool _isConsole;
+        private bool _isDebugTool;
         private RenderTexture2D target;
 
         public event Action OnDispose
@@ -206,8 +210,12 @@ namespace RayWrapper
 
             while (!WindowShouldClose())
             {
-                if (alertBox is null) Update();
-                else alertBox.Update();
+                CalcMousePos();
+                if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && EnableConsole) _isConsole = !_isConsole;
+                else if (alertBox is null && !_isConsole) Update();
+                else if (alertBox is not null && !_isConsole) alertBox.Update();
+                else if (_isConsole) _ib.Update();
+                if (!EnableConsole && _isConsole) _isConsole = false;
                 Render();
             }
 
@@ -217,18 +225,6 @@ namespace RayWrapper
 
         public void Update()
         {
-            var mouse = GetMousePosition();
-            Scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
-            float Calc(float m, int s, float w) => (m - (s - w * Scale) * 0.5f) / Scale;
-            MousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
-            MousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
-            if (IsKeyPressed(KeyboardKey.KEY_GRAVE)) _isConsole = !_isConsole;
-            else if (_isConsole)
-            {
-                _ib.Update();
-                return;
-            }
-
             animator.Update();
             Scene.Update();
         }
@@ -236,7 +232,7 @@ namespace RayWrapper
         public void Render()
         {
             BeginTextureMode(target);
-            isDrawing = true;
+            _isDrawing = true;
             try
             {
                 ClearBackground(backgroundColor);
@@ -252,6 +248,11 @@ namespace RayWrapper
                     animator.Render();
                     alertBox?.Render();
                 }
+
+                if (_isDebugTool)
+                {
+                    RectWrapper.AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip($"({MousePos.X},{MousePos.Y})");
+                }
             }
             catch (Exception e)
             {
@@ -266,18 +267,18 @@ namespace RayWrapper
             EndTextureMode();
 
             BeginDrawing();
-            ClearBackground(Color.BLACK);
+            ClearBackground(letterboxColor);
             DrawTexturePro(target.texture, new Rectangle(0.0f, 0.0f, target.texture.width, -target.texture.height),
                 new Rectangle((GetScreenWidth() - WindowSize.X * Scale) * 0.5f,
                     (GetScreenHeight() - WindowSize.Y * Scale) * 0.5f, WindowSize.X * Scale, WindowSize.Y * Scale),
                 new Vector2(0, 0), 0.0f, Color.WHITE);
             EndDrawing();
-            isDrawing = false;
+            _isDrawing = false;
         }
 
         public void Dispose()
         {
-            if (isDrawing) EndDrawing();
+            if (_isDrawing) EndDrawing();
             _schedulers.Clear();
             CloseWindow();
             foreach (var a in _onDispose) a.Invoke();
@@ -451,8 +452,29 @@ namespace RayWrapper
                     {
                         SetWindowSize(w, h);
                         WriteToConsole($"Set Resolution to <{w}, {h}>");
-                    } else WriteToConsole("Could not parse one of the variables");
+                    }
+                    else WriteToConsole("Could not parse one of the variables");
 
+                    break;
+                case "curres":
+                    WriteToConsole($"The current window resolution is <{GetScreenWidth()}, {GetScreenHeight()}>");
+                    break;
+                case "help":
+                    WriteToConsole(@" == HELP ==
+setfps [0 < n < 501] //sets fps to n
+clear (true/false) //clears screan, true will not display message
+opensavedir //opens save directory
+resetres //resets resolution to base resolution
+setres [width] [height] //sets resolution to a specific screen size
+curres //displays current resolution
+help // displays this message
+toggledebug //toggle debug tools
+ == HELP =="
+                        .Replace("\r", ""));
+                    break;
+                case "toggledebug":
+                    _isDebugTool = !_isDebugTool;
+                    WriteToConsole("Toggled debug tools");
                     break;
                 default:
                     WriteToConsole(ConsoleCommands.ContainsKey(command)
@@ -472,6 +494,15 @@ namespace RayWrapper
         {
             for (int i = _consoleOut.Count - 1, j = 0; i >= 0 && j < 20; i--, j++)
                 _consoleWriteOut[j] = _consoleOut[i];
+        }
+
+        public void CalcMousePos()
+        {
+            var mouse = GetMousePosition();
+            Scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
+            float Calc(float m, int s, float w) => (m - (s - w * Scale) * 0.5f) / Scale;
+            MousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
+            MousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
     }
 }

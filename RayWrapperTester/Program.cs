@@ -19,6 +19,7 @@ namespace RayWrapperTester
     {
         public static GameBox gb;
 
+        private float percent;
         private int _buttonInc;
         private Rectangle _scissorArea;
         private Button _b;
@@ -182,6 +183,8 @@ namespace RayWrapperTester
             aniBT.Clicked += () => { GameBox.animator.CopyQueueAnimation(triggerAni); };
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
+            _tbv.AddTab("Progress/Slider Test", new ProgressBar(new Rectangle(100, 100, 400, 30), () => percent),
+                new Slider(new Rectangle(100, 300, 400, 30)));
 
             RegisterGameObj(true, _tbv);
 
@@ -201,6 +204,9 @@ namespace RayWrapperTester
 
         public override void UpdateLoop()
         {
+            percent += .005f;
+            percent %= 1;
+
             var mouse = GameBox.MousePos;
             _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);
 

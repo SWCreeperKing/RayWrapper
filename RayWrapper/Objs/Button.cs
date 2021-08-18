@@ -25,6 +25,8 @@ namespace RayWrapper.Objs
         public ButtonMode buttonMode;
         public string text;
         public bool isDisabled;
+        public Sound clickSound;
+        public bool randomPitch = true;
 
         private List<Action> _clickEvent = new();
         private Color _baseColor = new(56, 73, 99, 255);
@@ -55,6 +57,8 @@ namespace RayWrapper.Objs
                 : new Rectangle(rect.x, rect.y, rect.width, rect.height);
             if (isDisabled) return;
             if (!adjustedRect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
+            if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
+            PlaySound(clickSound);
             Click();
         }
 

@@ -9,10 +9,11 @@ namespace RayWrapper.Animation
 {
     public class AnimationBuilder
     {
+        public Sound startSound;
         private Dictionary<string, AnimationShape> _shapes = new();
         private List<AnimationStep> _steps = new();
         private int _buildingStep;
-        public int _workingStep;
+        private int _workingStep;
 
         public void RenderShapes()
         {
@@ -20,6 +21,12 @@ namespace RayWrapper.Animation
                 shape.DrawShape();
         }
 
+        public AnimationBuilder SetStartSound(Sound s)
+        {
+            startSound = s;
+            return this;
+        }
+        
         public AnimationBuilder AddShape(AnimationShape shape)
         {
             if (_shapes.ContainsKey(shape.id)) return this;
@@ -34,6 +41,7 @@ namespace RayWrapper.Animation
             if (IsOver()) return null;
             foreach (var shape in _shapes.Values) shape.NewState();
             _steps[_workingStep].onEnd?.Invoke(this);
+            if (_workingStep == 0) Raylib.PlaySound(startSound);
             return _steps[_workingStep++];
         }
 

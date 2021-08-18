@@ -97,8 +97,10 @@ namespace RayWrapper
 
         public static Color Percent(this Color c1, Color c2, float percent)
         {
-            int DoCalc(int c1, int c2) => (int)((1.0 - percent) * c1 + percent * c2 + 0.5);
+            int DoCalc(int c1, int c2) => (int)Math.Clamp((1.0 - percent) * c1 + percent * c2 + 0.5, 0, 255);
             return new Color(DoCalc(c1.r, c2.r), DoCalc(c1.g, c2.g), DoCalc(c1.b, c2.b), 255);
         }
+
+        public static float Next(this Random r, float min, float max) => (float)(r.NextDouble() * (max - min) + min);
     }
 }

@@ -32,7 +32,11 @@ namespace RayWrapper.Objs.TreeView
         {
             if (alertBox is not null || GeneralWrapper.MouseOccupied) return;
             if (Raylib.IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) ResetPos();
-            if (Raylib.IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+            
+            var rect = mask.IsEqualTo(new(0, 0, 0, 0))
+                ? RectWrapper.AssembleRectFromVec(new Vector2(0), WindowSize)
+                : mask;
+            if (Raylib.IsMouseButtonDown(MOUSE_LEFT_BUTTON) && rect.IsMouseIn())
             {
                 var curMouse = MousePos;
                 if (!_hold) _lastPos = curMouse;
