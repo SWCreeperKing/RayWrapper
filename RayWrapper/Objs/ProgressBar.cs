@@ -16,6 +16,7 @@ namespace RayWrapper.Objs
         public Color toColor = Color.GOLD;
         public Color finishedColor = Color.GREEN;
         public Func<float> percent;
+        public bool hoverPercent = true;
 
         public ProgressBar(Rectangle rect, Func<float> percent) : base(rect.Pos())
         {
@@ -31,8 +32,10 @@ namespace RayWrapper.Objs
         {
             var fill = percent.Invoke();
             var newS = new Vector2(size.X * (isVertical ? 1 : fill), size.Y * (isVertical ? fill : 1));
-            AssembleRectFromVec(Position, size).Grow(outlineThickness).Draw(backColor);
+            var back = AssembleRectFromVec(Position, size).Grow(outlineThickness);
+            back.Draw(backColor);
             AssembleRectFromVec(Position, newS).Draw(fill >= 1 ? finishedColor : fillColor.Percent(toColor, fill));
+            if (hoverPercent) back.DrawTooltip($"{fill:##0.00%}");
         }
 
         public override void PositionChange(Vector2 v2)

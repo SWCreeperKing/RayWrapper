@@ -39,11 +39,13 @@ namespace RayWrapper.Objs
         public TabView(Vector2 pos, float width) : base(pos)
         {
             _rect = new Rectangle(pos.X, pos.Y, width, 40);
-            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false);
+            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
+            {
+                amountInvoke = () => GetTabLength() - _rect.width
+            };
             _bar.OnMoveEvent += f =>
             {
                 offset = f;
-                // offset = _bar.Value * barScale;
                 Refresh();
             };
         }
@@ -72,7 +74,7 @@ namespace RayWrapper.Objs
         {
             if (!(!drawIfLowTabs && _tabs.Count < 2))
             {
-                if (_bar.amount > 1) _bar.Render();
+                if (_bar.Amount() > 1) _bar.Render();
                 _rect.MaskDraw(() =>
                 {
                     foreach (var t in _tabs) t.Render();
@@ -94,11 +96,7 @@ namespace RayWrapper.Objs
             Refresh();
         }
 
-        public void Refresh()
-        {
-            _bar.amount = GetTabLength() - _rect.width;
-            RefreshTabs();
-        }
+        public void Refresh() => RefreshTabs();
 
         public void RefreshTabs()
         {

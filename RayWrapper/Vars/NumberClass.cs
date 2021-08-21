@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace RayWrapper.Vars
@@ -68,9 +67,9 @@ namespace RayWrapper.Vars
 
         private void Update()
         {
-            if (mantissa == 0)
+            if (mantissa is <= 0.009 and > -0.009)
             {
-                exponent = 0;
+                mantissa = exponent = 0;
                 return;
             }
 

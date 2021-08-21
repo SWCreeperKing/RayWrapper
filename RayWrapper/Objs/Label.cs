@@ -49,7 +49,7 @@ namespace RayWrapper.Objs
             void DrawTxt(Vector2 pos) => DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, fontColor);
 
             if (textMode != TextMode.SizeToText) back.Draw(backColor);
-
+            
             switch (textMode)
             {
                 case TextMode.AlignLeft:
@@ -66,8 +66,7 @@ namespace RayWrapper.Objs
                     DrawTextRec(GameBox.Font, text, adjust, fontSize, spacing, true, fontColor);
                     break;
                 case TextMode.SizeToText:
-                    var rect = RectWrapper.AssembleRectFromVec(adjust.Pos(), textSize);
-                    rect.Grow(4).Draw(backColor);
+                    RectWrapper.AssembleRectFromVec(adjust.Pos(), textSize).Grow(4).Draw(backColor);
                     DrawTxt(adjust.Pos());
                     break;
             }

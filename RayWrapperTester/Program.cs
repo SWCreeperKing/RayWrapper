@@ -104,7 +104,6 @@ namespace RayWrapperTester
             {
                 arr.Clear();
                 arr.Add("hi");
-                _lv.Refresh();
             };
 
             _tbv.AddTab("ListView Test", _lv, listViewButton);
@@ -112,11 +111,11 @@ namespace RayWrapperTester
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
                 new Checkbox(pos + new Vector2(0, 50), "Circle") { isCircle = true });
 
-            TreeView tv = new(new Box("hi", false, tooltip: "hi"),
-                new Box("hi2", new Vector2(1, 3), true, tooltip: "hi2"),
-                new Ball("hi3", new Vector2(3, 1), false, tooltip: "hi3"),
-                new Ball("hi4", new Vector2(3, 3), true, tooltip: "hi4"),
-                new Ball("hi5", new Vector2(4, 8), new Vector2(2, 1), false, tooltip: "yeet"),
+            TreeView tv = new(new Box("hi", false, tooltip: () => "hi"),
+                new Box("hi2", new Vector2(1, 3), true, tooltip: () => "hi2"),
+                new Ball("hi3", new Vector2(3, 1), false, tooltip: () => "hi3"),
+                new Ball("hi4", new Vector2(3, 3), true, tooltip: () => "hi4"),
+                new Ball("hi5", new Vector2(4, 8), new Vector2(2, 1), false, tooltip: () => "yeet"),
                 new Line("hi", "hi2", false), new Line("hi3", "hi4", false),
                 new Line("hi", new Vector2(4.5f, 8), true) { prog = false });
             tv.axisOffset = new Vector2(5, 5);
@@ -130,9 +129,11 @@ namespace RayWrapperTester
             _tbv.AddTab("KeyButton Test", kb);
 
             var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Button.ButtonMode.SizeToText);
+            var bb = new Button(AssembleRectFromVec(pos + new Vector2(0, 60), new Vector2()), "Test info", Button.ButtonMode.SizeToText);
             b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
+            bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
 
-            _tbv.AddTab("AlertBox Test", b);
+            _tbv.AddTab("AlertBox Test", b, bb);
             // _tbv.AddTab("DrawTextRecEx Test", new EmptyRender(() =>
             //     DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f,
             //         true, SKYBLUE, 4, 8, RED, GOLD)));

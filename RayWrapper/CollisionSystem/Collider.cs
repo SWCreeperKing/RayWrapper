@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using Raylib_cs;
 using RayWrapper.Vars;
 
 namespace RayWrapper.CollisionSystem
@@ -9,13 +8,12 @@ namespace RayWrapper.CollisionSystem
         public static long count;
         public static long id;
         public Vector2 velocity = Vector2.Zero;
-        public long currentId = 0;
+        public long currentId;
         public string layer;
         
         protected Collider(string layerId, Vector2 pos) : base(pos)
         {
-            layer = layerId;
-            currentId = id;
+            (layer, currentId) = (layerId, id);
             GameBox.AddColliders(this);
             id++;
             count++;

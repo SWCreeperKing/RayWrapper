@@ -17,7 +17,7 @@ namespace RayWrapper.Objs
         public float barScale = 25;
         public Color containerColor = new(78, 78, 78, 255);
         public Color barColor = new(116, 116, 116, 255);
-        public float amount;
+        public Func<float> amountInvoke;
         public bool isVertical;
         private float _visibleSize;
         private float _trueSize;
@@ -39,44 +39,51 @@ namespace RayWrapper.Objs
 
         public void MoveBar(float offset)
         {
+            CalcBarSize();
             if (isVertical) bar.y -= offset;
             else bar.x -= offset;
-            BoundsCheck();
+            CalcBarSize();
+            ClampBounds();
             foreach (var a in _onMove) a.Invoke(Value);
         }
 
-        public void BoundsCheck()
+        public void ClampBounds()
         {
             var (size, pos) = (container.Size(), container.Pos());
             (bar.width, bar.height) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
             var (hMax, wMax) = (pos.Y + size.Y, pos.X + size.X);
-            var newHMax = isVertical ? hMax - _visibleSize : hMax;
-            var newWMax = isVertical ? wMax : wMax - _visibleSize;
-            
-            if (bar.y < pos.Y) bar.y = pos.Y;
-            else if (bar.y > newHMax) bar.y = (int) newHMax;
-            if (bar.x < pos.X) bar.x = pos.X;
-            else if (bar.x > newWMax) bar.x = (int) newWMax;
+            bar.y = Math.Clamp(bar.y, pos.Y, (int)(isVertical ? hMax - _visibleSize : hMax));
+            bar.x = Math.Clamp(bar.x, pos.X, (int)(isVertical ? wMax : wMax - _visibleSize));
+        }
+
+        public void CalcVal()
+        {
+            var (size, pos) = (container.Size(), container.Pos());
+            var sub1 = isVertical ? bar.y - pos.Y : bar.x - pos.X;
+            var sub2 = Math.Max((isVertical ? size.Y : size.X) - _visibleSize, 1);
+            Value = Math.Clamp(sub1 / sub2 * (Amount() - 1), 0, float.MaxValue - 1);
+        }
+
+        public void CalcBarSize()
+        {
+            var size = container.Size();
+            _trueSize = (isVertical ? size.Y : size.X) / Amount();
+            _visibleSize = Math.Max(_trueSize, 10 * barScale);
         }
 
         public override void Update()
         {
-            var (size, pos, mousePos) = (container.Size(), container.Pos(), MousePos);
-            _trueSize = (isVertical ? size.Y : size.X) / amount;
-            _visibleSize = _trueSize;
-            if (_visibleSize < 10 * barScale) _visibleSize = 10 * barScale;
-            BoundsCheck();
-            if (amount <= 0) amount = 1;
-            Value = (isVertical ? bar.y - pos.Y : bar.x - pos.X) /
-                ((isVertical ? size.Y : size.X) - _visibleSize) * (amount - 1);
-            if (Value < 0 || double.IsNaN(Value)) Value = 0;
+            var mousePos = MousePos;
+            CalcBarSize();
+            ClampBounds();
+            CalcVal();
 
             var isLeft = Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON);
             if (container.IsMouseIn() && isLeft && !MouseOccupied) MouseOccupied = _occupier = true;
             else if (_occupier && !isLeft) MouseOccupied = _occupier = false;
             if (!_occupier) return;
-            if (isVertical) MoveBar((int) (bar.y - mousePos.Y + _visibleSize / 2));
-            else MoveBar((int) (bar.x - mousePos.X + _visibleSize / 2));
+            var posDelta = isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X;
+            MoveBar(posDelta + _visibleSize / 2);
         }
 
         protected override void RenderCall()
@@ -92,7 +99,8 @@ namespace RayWrapper.Objs
             bar = bar.MoveTo(v2);
             MoveBar(offset);
         }
-        
+
         public float GetOffset => isVertical ? container.y - bar.y : container.x - bar.x;
+        public float Amount() => Math.Max(amountInvoke.Invoke(), 1);
     }
 }

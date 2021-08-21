@@ -6,20 +6,20 @@ namespace RayWrapper.Objs.TreeView.Shapes
     public class Box : TreeNode
     {
         public Box(string name, Vector2 pos, Vector2 size, TreeNodeTrigger isComplete, TreeNodeTrigger isVisible = null,
-            Action<string> onClick = null, string tooltip = "") : base(name, pos, size, isComplete, isVisible, onClick,
+            Action<string> onClick = null, Func<string> tooltip = null) : base(name, pos, size, isComplete, isVisible, onClick,
             tooltip)
         {
         }
 
         public Box(string name, Vector2 pos, TreeNodeTrigger isComplete, TreeNodeTrigger isVisible = null,
-            Action<string> onClick = null, string tooltip = "") : base(name, pos, new Vector2(1), isComplete, isVisible,
+            Action<string> onClick = null, Func<string> tooltip = null) : base(name, pos, new Vector2(1), isComplete, isVisible,
             onClick,
             tooltip)
         {
         }
 
         public Box(string name, TreeNodeTrigger isComplete, TreeNodeTrigger isVisible = null,
-            Action<string> onClick = null, string tooltip = "") : base(name, new Vector2(1), new Vector2(1), isComplete,
+            Action<string> onClick = null, Func<string> tooltip = null) : base(name, new Vector2(1), new Vector2(1), isComplete,
             isVisible, onClick,
             tooltip)
         {

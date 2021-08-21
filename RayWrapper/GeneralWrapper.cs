@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
@@ -97,10 +98,22 @@ namespace RayWrapper
 
         public static Color Percent(this Color c1, Color c2, float percent)
         {
-            int DoCalc(int c1, int c2) => (int)Math.Clamp((1.0 - percent) * c1 + percent * c2 + 0.5, 0, 255);
+            int DoCalc(int c1, int c2) => (int)Math.Clamp((1.0 - percent) * c1 + percent * c2 + 0.5, 1, 254);
             return new Color(DoCalc(c1.r, c2.r), DoCalc(c1.g, c2.g), DoCalc(c1.b, c2.b), 255);
         }
 
         public static float Next(this Random r, float min, float max) => (float)(r.NextDouble() * (max - min) + min);
+
+        public static Vector2[] CalcVectsFromFloats(this float[] array, Rectangle rect)
+        {
+            var step = rect.width / array.Length;
+            var vects = new Vector2[array.Length];
+            for (var i = 0; i < array.Length; i++)
+                vects[i] = new Vector2(rect.x + rect.height + i * step,array[i]);
+            return vects;
+        }
+
+        public static void DrawArrAsLine(this Vector2[] array, Color color) =>
+            DrawLineStrip(array.ToArray(), array.Length, color);
     }
 }

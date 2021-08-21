@@ -2,6 +2,8 @@
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static RayWrapper.GameBox;
+using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
@@ -21,7 +23,7 @@ namespace RayWrapper.Objs
         public override void Update()
         {
             var textLeng = GameBox.Font.MeasureText(text).X;
-            if (!RectWrapper.AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn() ||
+            if (!AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn() ||
                 !Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
             isChecked = !isChecked;
             checkChange?.Invoke(isChecked);
@@ -30,8 +32,8 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var textLeng = GameBox.Font.MeasureText(text).X;
-            var rect = RectWrapper.AssembleRectFromVec(Position + new Vector2(5, 5), new Vector2(20, 20));
-            var mouseIsIn = RectWrapper.AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn();
+            var rect = AssembleRectFromVec(Position + new Vector2(5, 5), new Vector2(20, 20));
+            var mouseIsIn = AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn();
             if (!isCircle)
             {
                 if (isChecked) rect.Draw(checkedColor);

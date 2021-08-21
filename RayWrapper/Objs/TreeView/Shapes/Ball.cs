@@ -6,13 +6,13 @@ namespace RayWrapper.Objs.TreeView.Shapes
     public class Ball : TreeNode
     {
         public Ball(string name, Vector2 pos, TreeNodeTrigger isComplete, float radius = 1,
-            TreeNodeTrigger isVisible = null, Action<string> onClick = null, string tooltip = "") : base(name, pos,
+            TreeNodeTrigger isVisible = null, Action<string> onClick = null, Func<string> tooltip = null) : base(name, pos,
             new Vector2(radius), isComplete, isVisible, onClick, tooltip)
         {
         }
 
         public Ball(string name, Vector2 pos, Vector2 size, TreeNodeTrigger isComplete,
-            TreeNodeTrigger isVisible = null, Action<string> onClick = null, string tooltip = "") : base(name, pos,
+            TreeNodeTrigger isVisible = null, Action<string> onClick = null, Func<string> tooltip = null) : base(name, pos,
             size, isComplete, isVisible, onClick, tooltip)
         {
         }

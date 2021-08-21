@@ -13,13 +13,13 @@ namespace RayWrapper.Objs.TreeView
         public TreeNodeTrigger isComplete;
         public TreeNodeTrigger isVisible;
         public Action<string> onClick;
-        public string tooltip;
+        public Func<string> tooltip;
         public bool noCompleteClick = true;
 
         private bool _isMouse;
 
         public TreeNode(string name, Vector2 pos, Vector2 size, TreeNodeTrigger isComplete,
-            TreeNodeTrigger isVisible = null, Action<string> onClick = null, string tooltip = "") =>
+            TreeNodeTrigger isVisible = null, Action<string> onClick = null, Func<string> tooltip = null) =>
             (this.name, rect, this.isComplete, this.isVisible, this.onClick, this.tooltip) = (name,
                 AssembleRectFromVec(pos, size), isComplete, isVisible, onClick, tooltip);
 
@@ -30,9 +30,9 @@ namespace RayWrapper.Objs.TreeView
             var mouse = calRect.IsMouseIn();
             var isC = isComplete.Invoke(nodes);
             DrawShape(change, scale, isC);
-            if (noCompleteClick && isC) return mouse ? tooltip : "";
+            if (noCompleteClick && isC) return mouse ? tooltip?.Invoke() : "";
             if (mouse && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) onClick?.Invoke(name);
-            return mouse ? tooltip : "";
+            return mouse ? tooltip?.Invoke() : "";
         }
 
         public Vector2 Pos() => rect.Pos();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using RayWrapper.Animation.AnimationShapes;
-
-namespace RayWrapper.Animation
+﻿namespace RayWrapper.Animation
 {
     public class Animation
     {
