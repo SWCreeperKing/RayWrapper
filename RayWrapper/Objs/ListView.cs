@@ -31,14 +31,14 @@ namespace RayWrapper.Objs
         public float Value => _bar.Value;
 
         public Func<int> arrayLength;
-        public Color backColor = new(50, 50, 50, 255);
+        public ColorModule backColor = new(50, 50, 50);
         public Dictionary<int, Color> backColors = new();
         public Action click;
-        public Color fontColor = new(192, 192, 198, 255);
+        public ColorModule fontColor = new(192, 192, 198);
         public Dictionary<int, Color> fontColors = new();
         public Func<int, string> itemProcessing;
         public Action outsideClick;
-        public string tooltip = "";
+        public Actionable<string> tooltip = new("");
         public bool showTooltip = true;
         public Sound clickSound;
         public bool randomPitch = true;
@@ -78,7 +78,7 @@ namespace RayWrapper.Objs
             var labelPadding = _labelHeight + _padding;
             var y = _bounds.Pos().Y - labelPadding * (value - strictVal);
             // Console.WriteLine($"start y = {y} | _labels.Count , {leng} - {strictVal}");
-            foreach (var l in _labels) l.backColor = l.fontColor = Transparent;
+            foreach (var l in _labels) l.backColor = l.fontColor = new ColorModule(Transparent);
 
             for (var i = 0; i < Math.Min(_labels.Count, arrayLength.Invoke() - strictVal); i++)
             {
@@ -87,8 +87,10 @@ namespace RayWrapper.Objs
                 l.text = this[strictVal + i];
                 if (_individualClick is not null) l.getId = () => strictVal + notI;
                 l.NewPos(new Vector2(_bounds.x, y + labelPadding * i));
-                l.backColor = backColors.ContainsKey(strictVal + i) ? backColors[strictVal + i] : backColor;
-                l.fontColor = fontColors.ContainsKey(strictVal + i) ? fontColors[strictVal + i] : fontColor;
+                l.backColor =
+                    new ColorModule(backColors.ContainsKey(strictVal + i) ? backColors[strictVal + i] : (Color)backColor);
+                l.fontColor =
+                    new ColorModule(fontColors.ContainsKey(strictVal + i) ? fontColors[strictVal + i] : (Color)fontColor);
             }
         }
 
@@ -138,11 +140,11 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             UpdateText();
-            if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
             _bounds.MaskDraw(() =>
             {
                 foreach (var l in _labels) l.Render();
             });
+            if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
             if (showTooltip && tooltip != "") _bounds.ExtendPos(new Vector2(20, 0)).DrawTooltip(tooltip);
         }
 
@@ -154,6 +156,7 @@ namespace RayWrapper.Objs
             UpdateLabels(_bar.Value);
         }
 
+        public override Vector2 Size() => _bounds.Size();
         public float CalcHeight() => (_labelHeight + _padding) * _itemsToShow - _padding;
         public string this[int idx] => itemProcessing.Invoke(idx);
     }

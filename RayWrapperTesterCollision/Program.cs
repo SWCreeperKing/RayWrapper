@@ -15,7 +15,7 @@ namespace RayWrapperTesterCollision
 
         static void Main(string[] args)
         {
-            gb = new GameBox(new Program(), new Vector2(1280, 720), "collision testing", -1);
+            gb = new GameBox(new Program(), new Vector2(1280, 720), "collision testing", 500);
             gb.Start(true);
         }
 

@@ -18,5 +18,6 @@ namespace RayWrapper.CollisionSystem
             };
 
         public static implicit operator Rectangle(RectCollider rc) => rc.rect.MoveTo(rc.Position);
+        public override Vector2 Size() => rect.Size();
     }
 }

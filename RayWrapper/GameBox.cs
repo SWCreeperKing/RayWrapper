@@ -27,13 +27,14 @@ namespace RayWrapper
         public static long CurrentCollision;
         public static int TimeKeeper;
         public static float Scale;
-        public static Vector2 MousePos = new();
+        public static Vector2 MousePos;
+        public static string DiscordAppId = "";
 
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         public static string DeveloperName { get; private set; }
-        public static string AppName { get; private set; }
+        public static string AppName { get; private set; } = "Unknown App";
         public static bool SaveInit { get; private set; }
         public static Vector2 WindowSize { get; private set; }
 
@@ -59,7 +60,7 @@ namespace RayWrapper
 
         // private static readonly List<(long, long)> CollisionMem = new();
 
-        public GameLoop Scene { get; private set; }
+        public GameLoop Scene { get; set; }
         public string Title { get; private set; }
         public int FPS { get; private set; }
 
@@ -84,6 +85,7 @@ namespace RayWrapper
 
         public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60)
         {
+            DiscordIntegration.Init();
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
             InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
@@ -104,6 +106,7 @@ namespace RayWrapper
                     try
                     {
                         foreach (var scheduler in _schedulers) scheduler.TestTime(GetTimeMs());
+                        DiscordIntegration.UpdateActivity();
                     }
                     catch (Exception e)
                     {
@@ -197,7 +200,7 @@ namespace RayWrapper
                 });
             }
 
-            _ib = new InputBox(new Vector2(0, 10), 100, 200);
+            _ib = new InputBox(new Vector2(12, 10), 78, 200);
             _ib.onEnter = s =>
             {
                 if (s.Length < 1) return;
@@ -206,6 +209,9 @@ namespace RayWrapper
                 else ExecuteCommand(split[0], split[1..]);
                 _ib.Clear();
             };
+
+            if (DiscordAppId != "") DiscordIntegration.CheckDiscord(DiscordAppId);
+            OnDispose += DiscordIntegration.Dispose;
 
             while (!WindowShouldClose())
             {
@@ -228,6 +234,22 @@ namespace RayWrapper
             Scene.Update();
         }
 
+        public void RenderRenderTexture(RenderTexture2D texture2D, Vector2 pos, Action update, Action draw)
+        {
+            if (!_isDrawing) return;
+            var before = new Vector2(MousePos.X, MousePos.Y);
+            MousePos.X -= pos.X;
+            MousePos.Y -= pos.Y;
+            update.Invoke();
+            BeginTextureMode(texture2D);
+            draw.Invoke();
+            BeginTextureMode(target);
+            DrawTexturePro(texture2D.texture, new Rectangle(0, 0, texture2D.texture.width, -texture2D.texture.height),
+                new Rectangle(pos.X, pos.Y, texture2D.texture.width, texture2D.texture.height),
+                Vector2.Zero, 0, Color.WHITE);
+            MousePos = before;
+        }
+
         public void Render()
         {
             BeginTextureMode(target);
@@ -235,6 +257,7 @@ namespace RayWrapper
             try
             {
                 ClearBackground(backgroundColor);
+
                 Scene.Render();
                 if (_isConsole)
                 {
@@ -249,9 +272,8 @@ namespace RayWrapper
                 }
 
                 if (_isDebugTool)
-                {
-                    RectWrapper.AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip($"({MousePos.X},{MousePos.Y})");
-                }
+                    RectWrapper.AssembleRectFromVec(Vector2.Zero, WindowSize)
+                        .DrawTooltip($"({MousePos.X},{MousePos.Y})");
             }
             catch (Exception e)
             {
@@ -267,10 +289,10 @@ namespace RayWrapper
 
             BeginDrawing();
             ClearBackground(letterboxColor);
-            DrawTexturePro(target.texture, new Rectangle(0.0f, 0.0f, target.texture.width, -target.texture.height),
-                new Rectangle((GetScreenWidth() - WindowSize.X * Scale) * 0.5f,
+            DrawTexturePro(target.texture, new Rectangle(0, 0, target.texture.width, -target.texture.height),
+                new Rectangle((GetScreenWidth() - WindowSize.X * Scale) * .5f,
                     (GetScreenHeight() - WindowSize.Y * Scale) * 0.5f, WindowSize.X * Scale, WindowSize.Y * Scale),
-                new Vector2(0, 0), 0.0f, Color.WHITE);
+                Vector2.Zero, 0, Color.WHITE);
             EndDrawing();
             _isDrawing = false;
         }
@@ -290,83 +312,16 @@ namespace RayWrapper
 
         # region save system
 
+        public void InitSaveSystem(string developerName, string appName) =>
+            (DeveloperName, AppName, SaveInit) = (developerName, appName, true);
+
         public string GetSavePath => $"{CoreDir}/{DeveloperName}/{AppName}";
-
-        public void InitSaveSystem(string developerName, string appName)
-        {
-            DeveloperName = developerName;
-            AppName = appName;
-            SaveInit = true;
-        }
-
-        public void SaveItems()
-        {
-            WriteToConsole($"Saving Start @ {DateTime.Now:G}");
-            var start = GetTimeMs();
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            foreach (var t in _saveList)
-            {
-                using var sw = File.CreateText($"{path}/{t.FileName()}.RaySaveWrap");
-                sw.Write(t.SaveString());
-                sw.Close();
-            }
-
-            WriteToConsole($"Saved in {new TimeVar(GetTimeMs() - start)}");
-        }
-
-        public void LoadItems()
-        {
-            WriteToConsole($"Loading Start @ {DateTime.Now:G}");
-            var start = GetTimeMs();
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) return;
-            foreach (var t in _saveList)
-            {
-                var file = $"{path}/{t.FileName()}.RaySaveWrap";
-                if (!File.Exists(file)) continue;
-                using var sr = new StreamReader(file);
-                t.LoadString(sr.ReadToEnd());
-                sr.Close();
-            }
-
-            WriteToConsole($"Loaded in {new TimeVar(GetTimeMs() - start)}");
-        }
-
-        public void DeleteFile(string name)
-        {
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) return;
-            var file = $"{path}/{_saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
-            Console.WriteLine($"> DELETED {file} <");
-            if (!File.Exists(file)) return;
-            File.Delete(file);
-        }
-
-        public void DeleteAll()
-        {
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) return;
-            foreach (var file in _saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap")
-                .Where(File.Exists))
-                File.Delete(file);
-        }
-
-        public void RegisterSaveItem<T>(T obj, string fileName) where T : Setable<T> =>
-            _saveList.Add(new SaveItem<T>(obj, fileName));
-
-        public void DeRegisterSaveItem<T>(T obj, string fileName) where T : Setable<T> =>
-            _saveList.RemoveAll(m => m.FileName() == fileName);
-
-        public void ReRegisterSaveItem<T>(T ogObj, T newObj, string fileName) where T : Setable<T>
-        {
-            DeRegisterSaveItem(ogObj, fileName);
-            RegisterSaveItem(newObj, fileName);
-        }
+        public void SaveItems() => _saveList.SaveItems(this);
+        public void LoadItems() => _saveList.LoadItems(this);
+        public void DeleteFile(string name) => _saveList.DeleteFile(name, this);
+        public void DeleteAll() => _saveList.DeleteAll(this);
+        public void RegisterSaveItem<T>(T obj, string fileName) => _saveList.Add(new SaveItem<T>(obj, fileName));
+        public void DeRegisterSaveItem(string fileName) => _saveList.RemoveAll(m => m.FileName() == fileName);
 
         #endregion
 
@@ -387,8 +342,7 @@ namespace RayWrapper
 
         public static void AddTime(long ms)
         {
-            CurrentCollision = ms;
-            CollisionTime[TimeKeeper++] = ms;
+            CurrentCollision = CollisionTime[TimeKeeper++] = ms;
             TimeKeeper %= CollisionTime.Length;
             CollisionHigh = Math.Max(CollisionHigh, ms);
             TimeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
@@ -468,12 +422,46 @@ setres [width] [height] //sets resolution to a specific screen size
 curres //displays current resolution
 help // displays this message
 toggledebug //toggle debug tools
+discord // discord rich presence status/recheck
+setscale [scale] // sets the window size based on scale
  == HELP =="
                         .Replace("\r", ""));
                     break;
                 case "toggledebug":
                     _isDebugTool = !_isDebugTool;
                     WriteToConsole("Toggled debug tools");
+                    break;
+                case "setscale":
+                    if (args.Length < 1)
+                    {
+                        WriteToConsole("To set your window size do setscale [scale]");
+                        break;
+                    }
+
+                    if (float.TryParse(args[0], out var f))
+                    {
+                        SetWindowSize((int)(WindowSize.X * f), (int)(WindowSize.Y * f));
+                        WriteToConsole($"Set Resolution to a scale of <{f}>");
+                    }
+                    else WriteToConsole("Could not parse scale");
+
+                    break;
+                case "discord":
+                    if (DiscordAppId == "")
+                    {
+                        WriteToConsole($"Discord Integration is not set up for [{AppName}]");
+                        break;
+                    }
+
+                    if (DiscordIntegration.discordAlive)
+                    {
+                        WriteToConsole($"[{AppName}] is Connected to discord!");
+                        break;
+                    }
+
+                    WriteToConsole("Disconnected from discord, attempting to connect");
+                    DiscordIntegration.CheckDiscord(DiscordAppId);
+                    WriteToConsole(DiscordIntegration.discordAlive ? "Reconnected!" : "Failed, Try again later!");
                     break;
                 default:
                     WriteToConsole(ConsoleCommands.ContainsKey(command)

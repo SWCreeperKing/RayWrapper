@@ -22,9 +22,9 @@ namespace RayWrapper.Objs
         public Button close;
         public Button no;
         public Button yes;
-        public Color messageColor = new(70, 140, 140, 255);
-        public Color rectColor = new(60, 60, 60, 255);
-        public Color titleColor = new(70, 170, 70, 255);
+        public ColorModule messageColor = new(70, 140, 140);
+        public ColorModule rectColor = new(60, 60, 60);
+        public ColorModule titleColor = new(70, 170, 70);
         public Vector2 size;
         public Action<Result> onResult = null;
 
@@ -105,7 +105,7 @@ namespace RayWrapper.Objs
             var screen = WindowSize;
             var halfScreen = screen / 2;
             new Rectangle(0, 0, screen.X, screen.Y).Draw(new Color(0, 0, 0, 150));
-            _rect.Draw(rectColor);
+            _rect.DrawRounded(rectColor);
             GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
             if (size == Vector2.Zero)
                 GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 55), message, messageColor);
@@ -125,5 +125,7 @@ namespace RayWrapper.Objs
         public override void PositionChange(Vector2 v2)
         {
         }
+
+        public override Vector2 Size() => _rect.Size();
     }
 }

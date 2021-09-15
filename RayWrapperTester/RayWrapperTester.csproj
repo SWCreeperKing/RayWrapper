@@ -12,5 +12,10 @@
     <ItemGroup>
         <Content Include="CascadiaMono.ttf" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
 
 </Project>

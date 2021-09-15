@@ -32,7 +32,7 @@ namespace RayWrapper.Objs.TreeView
         {
             if (alertBox is not null || GeneralWrapper.MouseOccupied) return;
             if (Raylib.IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) ResetPos();
-            
+
             var rect = mask.IsEqualTo(new(0, 0, 0, 0))
                 ? RectWrapper.AssembleRectFromVec(new Vector2(0), WindowSize)
                 : mask;
@@ -77,5 +77,7 @@ namespace RayWrapper.Objs.TreeView
         public override void PositionChange(Vector2 v2)
         {
         }
+
+        public override Vector2 Size() => mask.IsEqualTo(new(0, 0, 0, 0)) ? WindowSize : mask.Size();
     }
 }

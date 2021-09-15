@@ -59,8 +59,9 @@ namespace RayWrapper.Objs
             _show = maxCharacterShow;
             _max = maxCharacters;
             _label = new Label(
-                new Rectangle(pos.X, pos.Y, 16 * _show,
-                    GameBox.Font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)));
+                    new Rectangle(pos.X, pos.Y, 16 * _show,
+                        GameBox.Font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)))
+                { outline = new Actionable<bool>(true) };
             _lastTime = GameBox.GetTimeMs();
         }
 
@@ -102,6 +103,7 @@ namespace RayWrapper.Objs
         }
 
         public override void PositionChange(Vector2 v2) => _label.MoveTo(v2);
+        public override Vector2 Size() => _label.Size();
 
         public void Input()
         {

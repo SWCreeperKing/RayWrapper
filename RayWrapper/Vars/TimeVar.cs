@@ -54,10 +54,11 @@ namespace RayWrapper.Vars
 
         public string ToString(int start, int end = -1)
         {
+            StringBuilder sb = new();
             start = Math.Clamp(start, 0, times.Length - 1);
             end = Math.Clamp(end, -1, times.Length - 1);
             if (end == -1 || end < start) end = times.Length - 1;
-            StringBuilder sb = new();
+            sb.Clear();
             for (var i = end; i >= start; i--)
                 if (times[i] != 0 || writeZeroes)
                 {

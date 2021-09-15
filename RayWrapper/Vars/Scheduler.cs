@@ -6,18 +6,19 @@ namespace RayWrapper.Vars
     {
         public long incrementMs;
         public Action onTime;
-        
+
         private long _nextTime;
 
-        public Scheduler(long incrementMs, Action onTime)
+        public Scheduler(long incrementMs, Action onTime, bool setTime = true)
         {
             this.incrementMs = incrementMs;
             this.onTime = onTime;
-            SetTime(GameBox.GetTimeMs());
+            if (setTime) SetTime(GameBox.GetTimeMs());
+            else _nextTime = GameBox.GetTimeMs();
         }
 
         public void SetTime(long time) => _nextTime = time + incrementMs;
-        
+
         public void TestTime(long time)
         {
             if (time < _nextTime) return;

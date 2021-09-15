@@ -11,7 +11,6 @@ namespace RayWrapper.Animation.AnimationShapes
         }
 
         public Circle(string id, Color color) : base(id) => this.color = color;
-
         public override void DrawShape() => RectWrapper.AssembleRectFromVec(pos, size).DrawCircle(color);
 
         public override AnimationShape CopyState() =>

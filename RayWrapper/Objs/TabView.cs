@@ -28,7 +28,7 @@ namespace RayWrapper.Objs
         private bool _closable;
         private List<Label> _closing = new();
         private string _currentTab;
-        private float offset;
+        private float _offset;
         private int _padding = 7;
         private Rectangle _rect;
         private Dictionary<string, GameObject[]> _tabContents = new();
@@ -40,12 +40,10 @@ namespace RayWrapper.Objs
         {
             _rect = new Rectangle(pos.X, pos.Y, width, 40);
             _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
-            {
-                amountInvoke = () => GetTabLength() - _rect.width
-            };
+                { amountInvoke = () => GetTabLength() - _rect.width };
             _bar.OnMoveEvent += f =>
             {
-                offset = f;
+                _offset = f;
                 Refresh();
             };
         }
@@ -74,7 +72,6 @@ namespace RayWrapper.Objs
         {
             if (!(!drawIfLowTabs && _tabs.Count < 2))
             {
-                if (_bar.Amount() > 1) _bar.Render();
                 _rect.MaskDraw(() =>
                 {
                     foreach (var t in _tabs) t.Render();
@@ -83,6 +80,7 @@ namespace RayWrapper.Objs
                     foreach (var t in _closing)
                         t.Render();
                 if (outline) _rect.DrawHallowRect(Color.BLACK);
+                if (_bar.Amount() > 1) _bar.Render();
             }
 
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
@@ -96,42 +94,49 @@ namespace RayWrapper.Objs
             Refresh();
         }
 
+        public override Vector2 Size() => _rect.Size();
         public void Refresh() => RefreshTabs();
 
         public void RefreshTabs()
         {
             _tabs.Clear();
-            var startX = _rect.x - offset;
+            var startX = _rect.x - _offset;
+            var heightOff = outline ? 3 : 0;
             foreach (var name in _tabOrder)
             {
-                if (startX > _rect.x || startX + _tabLengths[name] > _rect.x)
+                if (startX + _tabLengths[name] + 25 <= _rect.x )
                 {
-                    Label l = new(new Rectangle(startX, _rect.y, _tabLengths[name], 40), name, Label.TextMode
-                        .AlignCenter);
-                    if (name == _currentTab) l.backColor = new Color(70, 70, 70, 255);
-                    l.clicked = () =>
+                    startX += _tabLengths[name] + _padding + (_closable ? 25 : 0);
+                    continue;
+                }
+                if (startX + _tabLengths[name] > _rect.x)
+                {
+                    Label l = new(new Rectangle(startX, _rect.y + heightOff, _tabLengths[name], 40 - heightOff * 2),
+                        name, Label.TextMode.AlignCenter)
                     {
-                        _currentTab = name;
-                        Refresh();
+                        clicked = () =>
+                        {
+                            _currentTab = name;
+                            Refresh();
+                        },
+                        outline = true
                     };
+                    if (name == _currentTab) l.backColor = new ColorModule(95);
+                    else l.hoverBackColor = new ColorModule(65);
                     _tabs.Add(l);
                 }
 
                 startX += _tabLengths[name];
 
-                if (_closable)
+                if (_closable && startX + 25 > _rect.x)
                 {
-                    if (startX > _rect.x || startX + 25 > _rect.x)
-                    {
-                        Label l = new(new Rectangle(startX, _rect.y, 25, 40), "x", Label.TextMode.AlignCenter);
-                        l.backColor = Color.RED;
-                        l.clicked = () => RemoveTab(name);
-                        _tabs.Add(l);
-                    }
-
+                    Label l = new(new Rectangle(startX, _rect.y + heightOff, 25, 40 - heightOff * 2), "x",
+                            Label.TextMode.AlignCenter)
+                        { backColor = Color.RED, clicked = () => RemoveTab(name), outline = true };
+                    _tabs.Add(l);
                     startX += 25 + _padding;
                 }
-                else startX += _padding;
+                else startX += _padding + (_closable ? 25 : 0);
             }
         }
 

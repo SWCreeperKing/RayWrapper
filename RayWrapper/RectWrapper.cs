@@ -55,10 +55,18 @@ namespace RayWrapper
         public static Vector2 Size(this Rectangle rect) => new(rect.width, rect.height);
         public static string GetString(this Rectangle rect) => $"[({rect.x},{rect.y})({rect.width}x{rect.height})]";
         public static bool IsEqualTo(this Rectangle rect1, Rectangle rect2) => rect1.GetString() == rect2.GetString();
-        public static void DrawCircle(this Rectangle rect, Color color) => rect.DrawRounded(color, 1f);
 
-        public static void DrawRounded(this Rectangle rect, Color color, float roundness = .5f) =>
-            DrawRectangleRounded(rect, roundness, 5, color);
+        public static void DrawCircle(this Rectangle rect, Color color, int segments = 10) =>
+            rect.DrawRounded(color, 1, segments);
+
+        public static void DrawGradiant(this Rectangle rect, Color c1, Color c2, bool isVertical = false)
+        {
+            if (isVertical) DrawRectangleGradientV((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, c1, c2);
+            else DrawRectangleGradientH((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, c1, c2);
+        }
+
+        public static void DrawRounded(this Rectangle rect, Color color, float roundness = .5f, int segments = 10) =>
+            DrawRectangleRounded(rect, roundness, segments, color);
 
         public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
             int lineThickness = 3) =>

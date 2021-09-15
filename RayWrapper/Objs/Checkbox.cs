@@ -9,21 +9,31 @@ namespace RayWrapper.Objs
 {
     public class Checkbox : GameObject
     {
+        public string Text
+        {
+            get => _text;
+            set => _textLeng = MeasureText(_text = value).X;
+        }
+        
         public Action<bool> checkChange;
         public Color checkedColor = new(60, 170, 80, 255);
         public Color emptyColor = new(170, 170, 170, 255);
         public Color hoverColor = new(255, 255, 255, 255);
         public bool isChecked;
         public bool isCircle;
-        public string text;
         public Color textColor = new(192, 192, 198, 255);
 
-        public Checkbox(Vector2 pos, string text = "Untitled Checkbox") : base(pos) => this.text = text;
+        private readonly Vector2 _posOff = new(5);
+        private readonly Vector2 _size = new(20);
+        private readonly Vector2 _textOff = new(35, 5);
+        private string _text;
+        private float _textLeng;
+
+        public Checkbox(Vector2 pos, string text = "Untitled Checkbox") : base(pos) => Text = text;
 
         public override void Update()
         {
-            var textLeng = GameBox.Font.MeasureText(text).X;
-            if (!AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn() ||
+            if (!AssembleRectFromVec(Position, new Vector2(35 + _textLeng, 40)).IsMouseIn() ||
                 !Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
             isChecked = !isChecked;
             checkChange?.Invoke(isChecked);
@@ -31,14 +41,13 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            var textLeng = GameBox.Font.MeasureText(text).X;
-            var rect = AssembleRectFromVec(Position + new Vector2(5, 5), new Vector2(20, 20));
-            var mouseIsIn = AssembleRectFromVec(Position, new Vector2(35 + textLeng, 40)).IsMouseIn();
+            var rect = AssembleRectFromVec(Position + _posOff, _size);
+            var mouseIsIn = AssembleRectFromVec(Position, new Vector2(35 + _textLeng, 40)).IsMouseIn();
             if (!isCircle)
             {
-                if (isChecked) rect.Draw(checkedColor);
-                rect.DrawHallowRect(emptyColor);
-                if (mouseIsIn) rect.DrawHallowRect(hoverColor);
+                if (isChecked) rect.DrawRounded(checkedColor, .35f);
+                rect.DrawRoundedLines(emptyColor, .35f);
+                if (mouseIsIn) rect.DrawRoundedLines(hoverColor, .35f);
             }
             else
             {
@@ -47,11 +56,13 @@ namespace RayWrapper.Objs
                 if (mouseIsIn) rect.DrawHallowCircle(hoverColor);
             }
 
-            GameBox.Font.DrawText(text, Position + new Vector2(35, 5), textColor);
+            Text(_text, Position + _textOff, textColor);
         }
 
         public override void PositionChange(Vector2 v2)
         {
         }
+
+        public override Vector2 Size() => _size + MeasureText(_text);
     }
 }

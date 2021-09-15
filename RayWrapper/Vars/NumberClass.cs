@@ -103,20 +103,21 @@ namespace RayWrapper.Vars
         public static NumberClass operator -(NumberClass n1, NumberClass n2) =>
             n1 + new NumberClass(-n2.mantissa, n2.exponent);
 
-        public static NumberClass operator *(NumberClass n1, NumberClass n2)
-        {
-            if (n1 == Zero || n2 == Zero) return Zero;
-            if (n1 == One || n2 == One) return n1.Max(n2);
-            return new NumberClass(n1.mantissa * n2.mantissa, n1.exponent + n2.exponent);
-        }
+        public static NumberClass operator *(NumberClass n1, NumberClass n2) =>
+            n1 == Zero || n2 == Zero
+                ? Zero
+                : n1 == One || n2 == One
+                    ? n1.Max(n2)
+                    : new NumberClass(n1.mantissa * n2.mantissa, n1.exponent + n2.exponent);
 
-        public static NumberClass operator /(NumberClass n1, NumberClass n2)
-        {
-            if (n2 == Zero) throw new DivideByZeroException("NumberClass: Can not divide by 0");
-            if (n1 == Zero) return Zero;
-            if (n2 == One) return n1;
-            return new NumberClass(n1.mantissa / n2.mantissa, n1.exponent - n2.exponent);
-        }
+        public static NumberClass operator /(NumberClass n1, NumberClass n2) =>
+            n2 == Zero
+                ? throw new DivideByZeroException("NumberClass: Can not divide by 0")
+                : n1 == Zero
+                    ? Zero
+                    : n2 == One
+                        ? n1
+                        : new NumberClass(n1.mantissa / n2.mantissa, n1.exponent - n2.exponent);
 
         public NumberClass Pow(NumberClass n)
         {

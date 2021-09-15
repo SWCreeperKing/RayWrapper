@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -15,6 +18,7 @@ namespace RayWrapper.Vars
             get => _cypher;
             set
             {
+                var flawless = true;
                 _cypher = value;
                 if (_cypher.encrypt is null || _cypher.decrypt is null)
                 {
@@ -25,7 +29,7 @@ namespace RayWrapper.Vars
                 StringBuilder sb = new();
                 Random r = new();
                 var charStop = r.Next(100, 151);
-                for (var i = 0; i < charStop; i++) sb.Append((char) r.Next(0, 256));
+                for (var i = 0; i < charStop; i++) sb.Append((char)r.Next(0, 256));
                 var str = sb.ToString();
                 var enc = _cypher.encrypt.Invoke(str);
                 var dec = _cypher.decrypt.Invoke(enc);
@@ -35,6 +39,7 @@ namespace RayWrapper.Vars
                 {
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     Console.WriteLine("[WARNING] ENCRYPTION RESULTS IN BASE STRING");
+                    flawless = false;
                 }
 
                 if (str != dec)
@@ -45,8 +50,9 @@ namespace RayWrapper.Vars
                     return;
                 }
 
+                Console.WriteLine(
+                    $"[INFO] Encryption Analysis Completed {(flawless ? "Flawlessly!" : "And Resulted In NO Change!")}");
                 Console.ForegroundColor = before;
-
                 isCypherValid = true;
             }
         }
@@ -62,7 +68,7 @@ namespace RayWrapper.Vars
         string FileName();
     }
 
-    public class SaveItem<T> : ISave where T : Setable<T>
+    public class SaveItem<T> : ISave
     {
         private T _t;
         private string _fileName;
@@ -75,6 +81,7 @@ namespace RayWrapper.Vars
         }
 
         public void LoadString(string data) => _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
+
         public string SaveString()
         {
             try
@@ -93,5 +100,66 @@ namespace RayWrapper.Vars
 
         public static string Encrypt(string str) => ISave.isCypherValid ? ISave.Cypher.encrypt.Invoke(str) : str;
         public static string Decrypt(string str) => ISave.isCypherValid ? ISave.Cypher.decrypt.Invoke(str) : str;
+    }
+
+    public static class SaveExt
+    {
+        public static void SaveToFile(this ISave t, string path)
+        {
+            using var sw = File.CreateText($"{path}/{t.FileName()}.RaySaveWrap");
+            sw.Write(t.SaveString());
+            sw.Close();
+        }
+
+        public static void LoadToFile(this ISave t, string path)
+        {
+            var file = $"{path}/{t.FileName()}.RaySaveWrap";
+            if (!File.Exists(file)) return;
+            using var sr = new StreamReader(file);
+            t.LoadString(sr.ReadToEnd());
+            sr.Close();
+        }
+        
+        public static void SaveItems(this List<ISave> saveList, GameBox gb)
+        {
+            gb.WriteToConsole($"Saving Start @ {DateTime.Now:G}");
+            var start = GameBox.GetTimeMs();
+            ISave.IsSaveInitCheck();
+            var path = gb.GetSavePath;
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            foreach (var t in saveList) t.SaveToFile(path);
+            gb.WriteToConsole($"Saved in {new TimeVar(GameBox.GetTimeMs() - start)}");
+        }
+        
+        public static void LoadItems(this List<ISave> saveList, GameBox gb)
+        {
+            gb.WriteToConsole($"Loading Start @ {DateTime.Now:G}");
+            var start = GameBox.GetTimeMs();
+            ISave.IsSaveInitCheck();
+            var path = gb.GetSavePath;
+            if (!Directory.Exists(path)) return;
+            foreach (var t in saveList) t.LoadToFile(path);
+            gb.WriteToConsole($"Loaded in {new TimeVar(GameBox.GetTimeMs() - start)}");
+        }
+        
+        public static void DeleteFile(this List<ISave> saveList, string name, GameBox gb)
+        {
+            ISave.IsSaveInitCheck();
+            var path = gb.GetSavePath;
+            if (!Directory.Exists(path)) return;
+            var file = $"{path}/{saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
+            Console.WriteLine($"> DELETED {file} <");
+            if (!File.Exists(file)) return;
+            File.Delete(file);
+        }
+        
+        public static void DeleteAll(this List<ISave> saveList, GameBox gb)
+        {
+            ISave.IsSaveInitCheck();
+            var path = gb.GetSavePath;
+            if (!Directory.Exists(path)) return;
+            foreach (var file in saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap").Where(File.Exists))
+                File.Delete(file);
+        }
     }
 }

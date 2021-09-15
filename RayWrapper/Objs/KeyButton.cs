@@ -8,7 +8,7 @@ namespace RayWrapper.Objs
     public class KeyButton : GameObject
     {
         public Button core;
-        public KeyboardKey key; 
+        public KeyboardKey key;
         public Action<KeyboardKey> keyChange;
 
         private bool _acceptingChange;
@@ -17,12 +17,11 @@ namespace RayWrapper.Objs
         {
             this.key = key;
             core = new Button(RectWrapper.AssembleRectFromVec(pos, new Vector2(0, 0)), $" {this.key.GetString()} ",
-                Button.ButtonMode.SizeToText);
-            core.Clicked += () =>
+                Button.ButtonMode.SizeToText)
             {
-                core.text = _acceptingChange ? $" {key.GetString()} " : " _ ";
-                _acceptingChange = !_acceptingChange;
+                text = new Actionable<string>("", () => !_acceptingChange ? $" {this.key.GetString()} " : " _ ")
             };
+            core.Clicked += () => _acceptingChange = !_acceptingChange;
         }
 
         public override void Update()
@@ -31,9 +30,8 @@ namespace RayWrapper.Objs
             if (!_acceptingChange) return;
             var pressed = Raylib.GetKeyPressed();
             if (pressed == 0) return;
-            key = (KeyboardKey) pressed;
+            key = (KeyboardKey)pressed;
             keyChange.Invoke(key);
-            core.text = $" {key.GetString()} ";
             _acceptingChange = false;
         }
 
@@ -42,5 +40,7 @@ namespace RayWrapper.Objs
         public override void PositionChange(Vector2 v2)
         {
         }
+
+        public override Vector2 Size() => core.Size();
     }
 }

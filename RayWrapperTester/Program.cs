@@ -33,11 +33,9 @@ namespace RayWrapperTester
         private string yes =
             "What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little \"clever\" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.";
 
-        public class Test : Setable<Test>
+        public class Test
         {
             public int i = 6;
-
-            protected override Test GetThis() => this;
         }
 
         static void Main(string[] args)
@@ -56,14 +54,13 @@ namespace RayWrapperTester
             // gb.AddScheduler(new Scheduler(100,
             //     () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
 
-            // save testing 
+            // save testing
+            // Console.WriteLine("save testing start");
             // SaveTesting();
+            // Console.WriteLine("save testing over");
 
             _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name");
-            _b.Clicked += () =>
-            {
-                if (_buttonInc > 10) _b.isDisabled = true;
-            };
+            _b.isDisabled = new(false, () => _buttonInc > 10);
             _b.Clicked += () => _buttonInc++;
             _b.Clicked += () => _b.buttonMode = (Button.ButtonMode)(_buttonInc % 3);
 
@@ -129,7 +126,8 @@ namespace RayWrapperTester
             _tbv.AddTab("KeyButton Test", kb);
 
             var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Button.ButtonMode.SizeToText);
-            var bb = new Button(AssembleRectFromVec(pos + new Vector2(0, 60), new Vector2()), "Test info", Button.ButtonMode.SizeToText);
+            var bb = new Button(AssembleRectFromVec(pos + new Vector2(0, 60), new Vector2()), "Test info",
+                Button.ButtonMode.SizeToText);
             b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
             bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
 
@@ -184,8 +182,21 @@ namespace RayWrapperTester
             aniBT.Clicked += () => { GameBox.animator.CopyQueueAnimation(triggerAni); };
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
-            _tbv.AddTab("Progress/Slider Test", new ProgressBar(new Rectangle(100, 100, 400, 30), () => percent),
-                new Slider(new Rectangle(100, 300, 400, 30)));
+            _tbv.AddTab("Progress/Slider Test", new ProgressBar(100, 100, 400, 30, () => percent),
+                new Slider(100, 300, 400, 30));
+
+            var rt2d = LoadRenderTexture(250, 250);
+            Button bRend = new(new Vector2(60, 90), "test");
+            _tbv.AddTab("Render 2d test", new EmptyRender(() =>
+            {
+                gb.RenderRenderTexture(rt2d, new Vector2(40, 80), () => bRend.Update(),
+                    () =>
+                    {
+                        ClearBackground(RED);
+                        bRend.Render();
+                        GameBox.MousePos.DrawToolTipAtPoint($"{GameBox.MousePos}", BLUE);
+                    });
+            }));
 
             RegisterGameObj(true, _tbv);
 

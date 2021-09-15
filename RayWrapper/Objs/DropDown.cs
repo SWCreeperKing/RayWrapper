@@ -41,7 +41,7 @@ namespace RayWrapper.Objs
             var longest = options.OrderByDescending(s => s.Length).First();
             _size = GameBox.Font.MeasureText($"^|||y{longest}", fontSize);
             var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
-            text = new Label(back, options[Value]) {fontSize = fontSize};
+            text = new Label(back, options[Value]) {fontSize = fontSize, outline = new Actionable<bool>(true)};
 
             optionDisplay = new(new Vector2(back.x, back.y + back.height + 2),
                 (int) back.width,
@@ -71,9 +71,9 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
+            if (isListVisible) optionDisplay.Render();
             text.text = $"{(isListVisible ? arrowUp : arrowDown)}| {options[Value]}";
             text.Render();
-            if (isListVisible) optionDisplay.Render();
         }
 
         public override void PositionChange(Vector2 v2)
@@ -82,5 +82,7 @@ namespace RayWrapper.Objs
             optionDisplay.MoveTo(v2);
             optionDisplay.MoveBy(new Vector2(0, text.back.height + 2));
         }
+
+        public override Vector2 Size() => optionDisplay.Size() + text.Size();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Raylib_cs;
 
 namespace RayWrapper.Vars
@@ -6,7 +7,8 @@ namespace RayWrapper.Vars
     public abstract class GameObject : IRayObject
     {
         public Vector2 Position => initPosition + addedPosition;
-        public bool isVisible = true;
+        public Func<bool> isVisible = () => true;
+        public Vector2 SizeFrom0 => Position + Size();
         protected Vector2 initPosition;
         protected Vector2 addedPosition;
 
@@ -26,13 +28,14 @@ namespace RayWrapper.Vars
 
         public void Render()
         {
-            if (!isVisible) return;
+            if (!isVisible.Invoke()) return;
             RenderCall();
         }
 
         public abstract void Update();
         protected abstract void RenderCall();
         public abstract void PositionChange(Vector2 v2);
+        public abstract Vector2 Size();
 
         public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>
             GameBox.Font.DrawText(text, pos, color, fontSize, spacing);
@@ -42,5 +45,8 @@ namespace RayWrapper.Vars
 
         public void TextCenter(string text, Rectangle rect, Color fontColor) =>
             GameBox.Font.DrawCenterText(rect.Center(), text, fontColor);
+
+        public Vector2 MeasureText(string text, float fontSize = 24f, float spacing = 1.5f) =>
+            GameBox.Font.MeasureText(text, fontSize, spacing);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 
@@ -98,7 +99,7 @@ namespace RayWrapper
 
         public static Color Percent(this Color c1, Color c2, float percent)
         {
-            int DoCalc(int c1, int c2) => (int)Math.Clamp((1.0 - percent) * c1 + percent * c2 + 0.5, 1, 254);
+            int DoCalc(int c1, int c2) => Math.Clamp((int)((1.0 - percent) * c1 + percent * c2 + 0.5), 1, 254);
             return new Color(DoCalc(c1.r, c2.r), DoCalc(c1.g, c2.g), DoCalc(c1.b, c2.b), 255);
         }
 
@@ -109,11 +110,35 @@ namespace RayWrapper
             var step = rect.width / array.Length;
             var vects = new Vector2[array.Length];
             for (var i = 0; i < array.Length; i++)
-                vects[i] = new Vector2(rect.x + rect.height + i * step,array[i]);
+                vects[i] = new Vector2(rect.x + rect.height + i * step, array[i]);
             return vects;
         }
 
         public static void DrawArrAsLine(this Vector2[] array, Color color) =>
             DrawLineStrip(array.ToArray(), array.Length, color);
+
+        public static Texture2D Texture(this Image i) => LoadTextureFromImage(i);
+
+        public static void Draw(this Texture2D t, Vector2 pos, Color tint, float rot = 0, float scale = 1) =>
+            DrawTextureEx(t, pos, rot, scale, tint);
+
+        public static void DrawPro(this Texture2D t, Vector2 pos, int rotation = 0) =>
+            DrawTexturePro(t, new Rectangle(0, 0, t.width, t.height), new Rectangle(pos.X, pos.Y, t.width, t.height),
+                new Vector2(t.width/2f, t.height/2f), rotation, Color.WHITE);
+        
+        public static void Set<T>(this T t, T overrider)
+        {
+            foreach (var field in typeof(T).GetRuntimeFields())
+            {
+                try
+                {
+                    field.SetValue(t, field.GetValue(overrider));
+                }
+                catch (TargetException e)
+                {
+                    Console.WriteLine($"FIELD: {field.Name} CORRUPT? {e.Message}");
+                }
+            }
+        }
     }
 }

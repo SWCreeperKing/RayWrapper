@@ -22,9 +22,10 @@ namespace RayWrapper.Objs
         {
         }
 
+        public override Vector2 Size() => rect.Size();
+
         public void UpdateGraphValues()
         {
-            
         }
     }
 }

@@ -15,10 +15,13 @@ namespace RayWrapper.Objs
         public Rectangle container;
         public Rectangle bar;
         public float barScale = 25;
-        public Color containerColor = new(78, 78, 78, 255);
-        public Color barColor = new(116, 116, 116, 255);
+        public ColorModule containerColor = new(78, 78, 78);
+        public ColorModule barColor = new(116, 116, 116);
+        public ColorModule outlineColor = new(Color.BLACK);
         public Func<float> amountInvoke;
         public bool isVertical;
+        public bool outline = true;
+        
         private float _visibleSize;
         private float _trueSize;
         private bool _occupier;
@@ -88,8 +91,13 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            container.Draw(containerColor);
-            bar.Draw(barColor);
+            container.DrawRounded(containerColor, .4f);
+            bar.DrawRounded(barColor, .4f);
+            if (outline)
+            {
+                container.DrawRoundedLines(outlineColor, .4f);
+                bar.DrawRoundedLines(outlineColor, .4f);
+            }
         }
 
         public override void PositionChange(Vector2 v2)
@@ -100,6 +108,7 @@ namespace RayWrapper.Objs
             MoveBar(offset);
         }
 
+        public override Vector2 Size() => container.Size();
         public float GetOffset => isVertical ? container.y - bar.y : container.x - bar.x;
         public float Amount() => Math.Max(amountInvoke.Invoke(), 1);
     }
