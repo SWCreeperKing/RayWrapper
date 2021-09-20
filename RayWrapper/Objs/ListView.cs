@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
@@ -46,7 +45,7 @@ namespace RayWrapper.Objs
         private float _padding = 5;
         private Rectangle _bounds;
         private Scrollbar _bar;
-        private List<Label> _labels = new();
+        private Label[] _labels;
         private int _labelHeight;
         private Action<int> _individualClick;
         private int _itemsToShow;
@@ -65,8 +64,13 @@ namespace RayWrapper.Objs
                 amountInvoke = () => this.arrayLength.Invoke() + 1 - _itemsToShow
             };
             _bounds = new Rectangle(pos.X + 20, pos.Y, width - 20, height);
-            for (var i = 0; i < itemsToShow + 1; i++)
-                _labels.Add(new Label(new Rectangle(0, 0, _bounds.width, labelHeight)));
+
+            _labels = new Label[itemsToShow + 1];
+            for (var i = 0; i < _labels.Length; i++)
+                _labels[i] = new Label(new Rectangle(0, 0, _bounds.width, labelHeight))
+                {
+                    useBaseHover = new Actionable<bool>(() => _individualClick is not null)
+                };
             _bar.OnMoveEvent += UpdateLabels;
             initPosition = _bounds.Pos();
             UpdateLabels(0);
@@ -80,24 +84,26 @@ namespace RayWrapper.Objs
             // Console.WriteLine($"start y = {y} | _labels.Count , {leng} - {strictVal}");
             foreach (var l in _labels) l.backColor = l.fontColor = new ColorModule(Transparent);
 
-            for (var i = 0; i < Math.Min(_labels.Count, arrayLength.Invoke() - strictVal); i++)
+            for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - strictVal); i++)
             {
                 var notI = i;
                 var l = _labels[i];
                 l.text = this[strictVal + i];
-                if (_individualClick is not null) l.getId = () => strictVal + notI;
-                l.NewPos(new Vector2(_bounds.x, y + labelPadding * i));
+                if (_individualClick is not null) l.clicked = () => _individualClick(strictVal + notI);
+                l.MoveTo(new Vector2(_bounds.x, y + labelPadding * i));
                 l.backColor =
-                    new ColorModule(backColors.ContainsKey(strictVal + i) ? backColors[strictVal + i] : (Color)backColor);
+                    new ColorModule(
+                        backColors.ContainsKey(strictVal + i) ? backColors[strictVal + i] : (Color)backColor);
                 l.fontColor =
-                    new ColorModule(fontColors.ContainsKey(strictVal + i) ? fontColors[strictVal + i] : (Color)fontColor);
+                    new ColorModule(
+                        fontColors.ContainsKey(strictVal + i) ? fontColors[strictVal + i] : (Color)fontColor);
             }
         }
 
         private void UpdateText()
         {
             var value = _bar.Value;
-            for (var i = 0; i < Math.Min(_labels.Count, arrayLength.Invoke() - (int)value); i++)
+            for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - (int)value); i++)
                 _labels[i].text = this[(int)value + i];
         }
 
@@ -110,7 +116,7 @@ namespace RayWrapper.Objs
                 UpdateLabels(Value);
             }
 
-            if (_bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn())
+            if (_bounds.IsMouseIn())
             {
                 var scroll = GetMouseWheelMove();
                 if (scroll != 0)
@@ -128,12 +134,10 @@ namespace RayWrapper.Objs
                 if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
                 PlaySound(clickSound);
                 foreach (var l in _labels) l?.Update();
-                if (!_labels.Any(l => l.isMouseIn)) return;
-                _individualClick?.Invoke(_labels.Where(l => l.isMouseIn).First().getId.Invoke());
                 return;
             }
 
-            if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+            if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) || _bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn()) return;
             outsideClick?.Invoke();
         }
 

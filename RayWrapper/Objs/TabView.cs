@@ -35,6 +35,8 @@ namespace RayWrapper.Objs
         private Dictionary<string, float> _tabLengths = new();
         private List<string> _tabOrder = new();
         private List<Label> _tabs = new();
+        private Color _baseColor = new(95, 95, 95, 255);
+        private Color _hoverColor = new(65, 65, 65, 255);
 
         public TabView(Vector2 pos, float width) : base(pos)
         {
@@ -104,11 +106,12 @@ namespace RayWrapper.Objs
             var heightOff = outline ? 3 : 0;
             foreach (var name in _tabOrder)
             {
-                if (startX + _tabLengths[name] + 25 <= _rect.x )
+                if (startX + _tabLengths[name] + 25 <= _rect.x)
                 {
                     startX += _tabLengths[name] + _padding + (_closable ? 25 : 0);
                     continue;
                 }
+
                 if (startX + _tabLengths[name] > _rect.x)
                 {
                     Label l = new(new Rectangle(startX, _rect.y + heightOff, _tabLengths[name], 40 - heightOff * 2),
@@ -119,10 +122,9 @@ namespace RayWrapper.Objs
                             _currentTab = name;
                             Refresh();
                         },
-                        outline = true
+                        useBaseHover = new Actionable<bool>(name != _currentTab),
+                        outline = true, backColor = new(() => name == _currentTab ? _baseColor : _hoverColor)
                     };
-                    if (name == _currentTab) l.backColor = new ColorModule(95);
-                    else l.hoverBackColor = new ColorModule(65);
                     _tabs.Add(l);
                 }
 
@@ -131,8 +133,10 @@ namespace RayWrapper.Objs
                 if (_closable && startX + 25 > _rect.x)
                 {
                     Label l = new(new Rectangle(startX, _rect.y + heightOff, 25, 40 - heightOff * 2), "x",
-                            Label.TextMode.AlignCenter)
-                        { backColor = Color.RED, clicked = () => RemoveTab(name), outline = true };
+                        Label.TextMode.AlignCenter)
+                    {
+                        backColor = Color.RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true,
+                    };
                     _tabs.Add(l);
                     startX += 25 + _padding;
                 }

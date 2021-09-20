@@ -12,6 +12,7 @@ namespace RayWrapper.Vars
         public static implicit operator T(Actionable<T> t) => t.valFunc is null ? t.val : t.valFunc.Invoke() ?? t.val;
         public static implicit operator Actionable<T>(T t) => new(t);
         public static implicit operator Actionable<T>(Func<T> t) => new(t);
+        public override string ToString() => (valFunc is null ? val : valFunc.Invoke() ?? val).ToString();
     }
 }
 

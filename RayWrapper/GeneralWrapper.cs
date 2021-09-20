@@ -39,15 +39,12 @@ namespace RayWrapper
         public static string GetString(this KeyboardKey key) =>
             $"{key}".Replace("KEY_MENU", "KEY_R").Replace("KEY_", "").Replace("_", " ").ToLower();
 
-        /// <summary>
-        /// Makes a lighter and darker version of a given color
-        /// </summary>
-        /// <param name="color">Color to make alt version for</param>
-        /// <returns>(lighter, darker)</returns>
-        public static (Color light, Color dark) MakeLightDark(this Color color) =>
-            (new Color((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255),
-                    (int)Math.Min(color.b * 1.5, 255), color.a),
-                new Color((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a));
+        public static Color MakeLighter(this Color color) =>
+            new((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255), (int)Math.Min(color.b * 1.5, 255),
+                color.a);
+
+        public static Color MakeDarker(this Color color) =>
+            new((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a);
 
         /// <summary>
         /// TopRight: 1
@@ -124,8 +121,8 @@ namespace RayWrapper
 
         public static void DrawPro(this Texture2D t, Vector2 pos, int rotation = 0) =>
             DrawTexturePro(t, new Rectangle(0, 0, t.width, t.height), new Rectangle(pos.X, pos.Y, t.width, t.height),
-                new Vector2(t.width/2f, t.height/2f), rotation, Color.WHITE);
-        
+                new Vector2(t.width / 2f, t.height / 2f), rotation, Color.WHITE);
+
         public static void Set<T>(this T t, T overrider)
         {
             foreach (var field in typeof(T).GetRuntimeFields())

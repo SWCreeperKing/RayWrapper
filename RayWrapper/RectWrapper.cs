@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
@@ -93,11 +95,14 @@ namespace RayWrapper
         public static void DrawTooltip(this Rectangle box, string text, int fontSize = 24, float spacing = 1.5f) =>
             box.DrawTooltip(text, new Color(170, 170, 255, 220), fontSize, spacing);
 
+        private static int maskingLayer = 0;
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
+            maskingLayer++;
             BeginScissorMode((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
             draw.Invoke();
-            EndScissorMode();
+            if (maskingLayer == 1) EndScissorMode();
+            maskingLayer--;
         }
 
         public static void DrawTooltip(this Rectangle box, string text, Color color, int fontSize = 24,

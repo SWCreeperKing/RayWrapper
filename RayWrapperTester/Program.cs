@@ -59,11 +59,13 @@ namespace RayWrapperTester
             // SaveTesting();
             // Console.WriteLine("save testing over");
 
-            _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name");
-            _b.isDisabled = new(false, () => _buttonInc > 10);
+            _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name")
+            {
+                Mode = new(() => (Label.TextMode)(_buttonInc % 3)),
+                isDisabled = new(false, () => _buttonInc > 10)
+            };
             _b.Clicked += () => _buttonInc++;
-            _b.Clicked += () => _b.buttonMode = (Button.ButtonMode)(_buttonInc % 3);
-
+            
             _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!",
                 Label.TextMode.WrapText);
 
@@ -96,7 +98,7 @@ namespace RayWrapperTester
                     AssembleRectFromVec(GameBox.WindowSize / 2, Vector2.Zero).Grow(1000)
                         .DrawTooltip("Testing Tooltip")));
 
-            Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Button.ButtonMode.SizeToText);
+            Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Label.TextMode.SizeToText);
             listViewButton.Clicked += () =>
             {
                 arr.Clear();
@@ -125,9 +127,9 @@ namespace RayWrapperTester
 
             _tbv.AddTab("KeyButton Test", kb);
 
-            var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Button.ButtonMode.SizeToText);
+            var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Label.TextMode.SizeToText);
             var bb = new Button(AssembleRectFromVec(pos + new Vector2(0, 60), new Vector2()), "Test info",
-                Button.ButtonMode.SizeToText);
+                Label.TextMode.SizeToText);
             b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
             bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
 
@@ -172,13 +174,13 @@ namespace RayWrapperTester
                 .AddStep(.5f)
                 .Move("block", new Vector2(0, screen.Y / 2 + 50));
 
-            Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Button.ButtonMode.SizeToText);
+            Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Label.TextMode.SizeToText);
             aniB.Clicked += () => { GameBox.animator.CopyQueueAnimation(ani); };
 
-            Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Button.ButtonMode.SizeToText);
+            Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Label.TextMode.SizeToText);
             aniBC.Clicked += () => { GameBox.animator.CopyAddAnimation(continueAni); };
 
-            Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Button.ButtonMode.SizeToText);
+            Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Label.TextMode.SizeToText);
             aniBT.Clicked += () => { GameBox.animator.CopyQueueAnimation(triggerAni); };
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);

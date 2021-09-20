@@ -21,7 +21,7 @@ namespace RayWrapper.Objs
         public Func<float> amountInvoke;
         public bool isVertical;
         public bool outline = true;
-        
+
         private float _visibleSize;
         private float _trueSize;
         private bool _occupier;
@@ -91,8 +91,9 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            container.DrawRounded(containerColor, .4f);
-            bar.DrawRounded(barColor, .4f);
+            var hover = !MouseOccupied && container.IsMouseIn() || _occupier;
+            container.DrawRounded(hover ? ((Color)containerColor).MakeLighter() : containerColor, .4f);
+            bar.DrawRounded(hover ? ((Color)barColor).MakeLighter() : barColor, .4f);
             if (outline)
             {
                 container.DrawRoundedLines(outlineColor, .4f);
