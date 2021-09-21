@@ -13,8 +13,10 @@ namespace RayWrapper.Objs.TreeView
         public TreeNodeTrigger isComplete;
         public TreeNodeTrigger isVisible;
         public Action<string> onClick;
+        public Action<string> onRClick;
         public Func<string> tooltip;
         public bool noCompleteClick = true;
+        public bool noIncompleteRClick = true;
 
         private bool _isMouse;
 
@@ -30,13 +32,15 @@ namespace RayWrapper.Objs.TreeView
             var mouse = calRect.IsMouseIn();
             var isC = isComplete.Invoke(nodes);
             DrawShape(change, scale, isC);
+            if (mouse && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_RIGHT_BUTTON) && noIncompleteRClick ^ !isC)
+                onRClick?.Invoke(name);
             if (noCompleteClick && isC) return mouse ? tooltip?.Invoke() : "";
             if (mouse && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) onClick?.Invoke(name);
             return mouse ? tooltip?.Invoke() : "";
         }
 
         public Vector2 Pos() => rect.Pos();
-        
+
         public abstract void DrawShape(Vector2 change, float scale, bool isCheck);
     }
 }
