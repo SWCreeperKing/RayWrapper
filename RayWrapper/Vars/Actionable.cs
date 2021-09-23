@@ -15,4 +15,3 @@ namespace RayWrapper.Vars
         public override string ToString() => (valFunc is null ? val : valFunc.Invoke() ?? val).ToString();
     }
 }
-

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
-using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 using static RayWrapper.Objs.Label;
 using static RayWrapper.RectWrapper;

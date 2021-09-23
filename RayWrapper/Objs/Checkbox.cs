@@ -2,7 +2,6 @@
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
-using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs

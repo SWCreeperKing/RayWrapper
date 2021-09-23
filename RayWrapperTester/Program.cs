@@ -7,7 +7,8 @@ using RayWrapper.Animation;
 using RayWrapper.Animation.AnimationShapes;
 using RayWrapper.Objs;
 using RayWrapper.Objs.TreeView;
-using RayWrapper.Objs.TreeView.Shapes;
+using RayWrapper.Objs.TreeView.TreeNodeChain;
+using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShape;
 using RayWrapper.Vars;
 using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
@@ -65,7 +66,7 @@ namespace RayWrapperTester
                 isDisabled = new(false, () => _buttonInc > 10)
             };
             _b.Clicked += () => _buttonInc++;
-            
+
             _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!",
                 Label.TextMode.WrapText);
 
@@ -110,13 +111,11 @@ namespace RayWrapperTester
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
                 new Checkbox(pos + new Vector2(0, 50), "Circle") { isCircle = true });
 
-            TreeView tv = new(new Box("hi", false, tooltip: () => "hi"),
-                new Box("hi2", new Vector2(1, 3), true, tooltip: () => "hi2"),
-                new Ball("hi3", new Vector2(3, 1), false, tooltip: () => "hi3"),
-                new Ball("hi4", new Vector2(3, 3), true, tooltip: () => "hi4"),
-                new Ball("hi5", new Vector2(4, 8), new Vector2(2, 1), false, tooltip: () => "yeet"),
-                new Line("hi", "hi2", false), new Line("hi3", "hi4", false),
-                new Line("hi", new Vector2(4.5f, 8), true) { prog = false });
+            TreeView tv = new(new NodeChain(new Box(Vector2.One, () => "hi"),
+                new Box(new Vector2(1, 3), () => "hi2") { completed = true },
+                new Ball(new Vector2(3, 1), () => "hi3"),
+                new Ball(new Vector2(3, 3), () => "hi4") { completed = true },
+                new Ball(new Vector2(4, 8), new Vector2(2, 1), () => "yeet")) { nonSequential = true });
             tv.axisOffset = new Vector2(5, 5);
             tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
 

@@ -85,6 +85,9 @@ namespace RayWrapper
         public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0) =>
             new(color.r + r, color.g + g, color.b + b, color.a + a);
 
+        public static void DrawLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3) =>
+            DrawLineEx(v1, v2, thickness, color);    
+        
         public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3) =>
             DrawLineEx(l.v1, l.v2, thickness, color);
 
@@ -137,5 +140,9 @@ namespace RayWrapper
                 }
             }
         }
+
+        public static bool IsVectInVects(this Vector2 vect, Vector2 pos, Vector2 size, float scale = 1) =>
+            pos.X * scale < vect.X && pos.Y * scale < vect.Y && vect.X < (pos.X + size.X) * scale &&
+            vect.Y < (pos.Y + size.Y) * scale;
     }
 }
