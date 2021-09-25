@@ -17,6 +17,7 @@ namespace RayWrapper.Objs
         public int outlineThickness = 3;
         public ColorModule backColor = new(Color.BLACK);
         public ColorModule fillColor = new(Color.RAYWHITE);
+        public ColorModule hoverColor = new(150);
         public Action<float> onDone;
 
         public Slider(Rectangle rect) : base(rect.Pos()) => size = rect.Size();
@@ -43,8 +44,11 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var newS = new Vector2(size.X * (isVertical ? 1 : value), size.Y * (isVertical ? value : 1));
-            AssembleRectFromVec(Position, size).Grow(outlineThickness).DrawRounded(backColor);
+            var rect = AssembleRectFromVec(Position, size).Grow(outlineThickness);
+            rect.DrawRounded(backColor);
             AssembleRectFromVec(Position, newS).DrawRounded(fillColor);
+            if (isInUse && !isUsing) return;
+            if (rect.IsMouseIn() || isUsing) rect.DrawRoundedLines(hoverColor);
         }
 
         public override void PositionChange(Vector2 v2)

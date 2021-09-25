@@ -7,6 +7,8 @@ namespace RayWrapper
 {
     public static class RectWrapper
     {
+        public static Rectangle Zero = new(0, 0, 0, 0);
+        
         /// <summary>
         /// Makes a <see cref="Rectangle"/> from 2 <see cref="Vector2"/>s
         /// </summary>

@@ -4,7 +4,7 @@ using Raylib_cs;
 
 namespace RayWrapper.Vars
 {
-    public abstract class GameObject : IRayObject
+    public abstract class GameObject
     {
         public Vector2 Position => initPosition + addedPosition;
         public Func<bool> isVisible = () => true;

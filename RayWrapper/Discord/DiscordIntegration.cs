@@ -49,15 +49,23 @@ namespace RayWrapper
 
         public static void UpdateActivity()
         {
-            if (!discordAlive) return;
-            discord.UpdateStartTime(now);
-            if (details is not null) discord.UpdateDetails(details.Invoke());
-            if (state is not null) discord.UpdateState(state.Invoke());
-            if (largeImage is not null && largeText is not null)
-                discord.UpdateLargeAsset(largeImage.Invoke(), largeText.Invoke());
-            if (smallImage is not null && smallText is not null)
-                discord.UpdateSmallAsset(smallImage.Invoke(), smallText.Invoke());
-            discord.Invoke();
+            try
+            {
+                if (!discordAlive) return;
+                discord.UpdateStartTime(now);
+                if (details is not null) discord.UpdateDetails(details.Invoke());
+                if (state is not null) discord.UpdateState(state.Invoke());
+                if (largeImage is not null && largeText is not null)
+                    discord.UpdateLargeAsset(largeImage.Invoke(), largeText.Invoke());
+                if (smallImage is not null && smallText is not null)
+                    discord.UpdateSmallAsset(smallImage.Invoke(), smallText.Invoke());
+                discord.Invoke();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"DISCORD ERR: {e}");
+                discordAlive = false;
+            }
         }
 
         public static void Dispose()

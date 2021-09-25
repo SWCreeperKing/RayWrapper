@@ -4,7 +4,7 @@ using Raylib_cs;
 
 namespace RayWrapper.Vars
 {
-    public abstract class GameLoop : IInitializable, IRayObject
+    public abstract class GameLoop
     {
         private List<GameObject> _registryBefore = new();
         private List<GameObject> _registryAfter = new();
