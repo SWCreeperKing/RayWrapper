@@ -15,27 +15,25 @@ namespace RayWrapper
 {
     public class GameBox
     {
-        //temp performance vars
+        public static readonly string CoreDir =
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+        #region temp collsion performance vars
+
         public static readonly Random Random = new();
         public static readonly Dictionary<string, Func<string, string[], string>> ConsoleCommands = new();
         public static readonly List<(string, string)> CollisionLayerTags = new();
         public static readonly long[] CollisionTime = new long[100];
-        public static bool EnableConsole = true;
-        public static double TimeAverage;
-        public static long CollisionHigh;
-        public static long CurrentCollision;
-        public static int TimeKeeper;
-        public static float Scale;
-        public static Vector2 MousePos;
-        public static string DiscordAppId = "";
 
-        public static readonly string CoreDir =
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        #endregion
 
         public static string DeveloperName { get; private set; }
         public static string AppName { get; private set; } = "Unknown App";
         public static bool SaveInit { get; private set; }
         public static Vector2 WindowSize { get; private set; }
+        public static GameLoop Scene { get; set; }
+        public static string Title { get; private set; }
+        public static int FPS { get; private set; }
 
         public static Font Font
         {
@@ -47,8 +45,18 @@ namespace RayWrapper
             }
         }
 
+        public static bool EnableConsole = true;
+        public static double TimeAverage;
+        public static long CollisionHigh;
+        public static long CurrentCollision;
+        public static int TimeKeeper;
+        public static float Scale;
+        public static Vector2 MousePos;
+        public static string DiscordAppId = "";
         public static AlertBox alertBox = null;
         public static Animator animator = new();
+        public static ColorModule backgroundColor = new(40);
+        public static ColorModule letterboxColor = new(20);
 
         private static readonly List<ISave> _saveList = new();
         private static readonly List<Collider> _colliders = new();
@@ -56,25 +64,15 @@ namespace RayWrapper
         private static readonly List<Collider> _collidersRemoveQueue = new();
         private static long _lastTime;
         private static Font _font;
-
-        // private static readonly List<(long, long)> CollisionMem = new();
-
-        public GameLoop Scene { get; set; }
-        public string Title { get; private set; }
-        public int FPS { get; private set; }
-
-        public Color backgroundColor = new(40, 40, 40, 255);
-        public Color letterboxColor = new(20, 20, 20, 255);
-
-        private InputBox _ib;
-        private List<string> _consoleOut = new();
-        private string[] _consoleWriteOut = new string[20];
-        private List<Action> _onDispose = new();
-        private List<Scheduler> _schedulers = new();
-        private bool _isDrawing;
-        private bool _isConsole;
-        private bool _isDebugTool;
-        private RenderTexture2D target;
+        private static InputBox _ib;
+        private static List<string> _consoleOut = new();
+        private static string[] _consoleWriteOut = new string[20];
+        private static List<Action> _onDispose = new();
+        private static List<Scheduler> _schedulers = new();
+        private static bool _isDrawing;
+        private static bool _isConsole;
+        private static bool _isDebugTool;
+        private static RenderTexture2D target; // todo: shiftf6 -> rename to proper name (_target)
 
         public event Action OnDispose
         {
@@ -347,7 +345,7 @@ namespace RayWrapper
             TimeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
         }
 
-        private void ExecuteCommand(string command, params string[] args)
+        private void ExecuteCommand(string command, params string[] args) // todo: learn how to do that command module discord bots do
         {
             switch (command.ToLower())
             {
