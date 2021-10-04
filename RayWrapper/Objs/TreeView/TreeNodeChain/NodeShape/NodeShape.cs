@@ -22,7 +22,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShape
             (this.position, this.size, this.tooltip) = (position, size, tooltip);
 
         public virtual bool IsMouseIn(Vector2 off, float scale) =>
-            GameBox.MousePos.IsVectInVects(off + position * scale, size * scale);
+            GameBox.mousePos.IsVectInVects(off + position * scale, size * scale);
 
         public virtual void DrawOnHover(Vector2 off, float scale) => DrawShape(off, scale);
         public virtual Vector2 Center(Vector2 off, float scale) => position * scale + off + size / 2 * scale;

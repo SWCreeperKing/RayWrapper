@@ -34,7 +34,7 @@ namespace RayWrapperTesterCollision
         {
             if (IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
-                for (var i = 0; i < 50; i++) new Circle(MousePos);
+                for (var i = 0; i < 50; i++) new Circle(mousePos);
             }
         }
 
@@ -43,9 +43,9 @@ namespace RayWrapperTesterCollision
             DrawFPS(12, 12);
             Text($"{Collider.count - 4}", new Vector2(12, 60), RED);
             Text($@"Collision Time
-cur: {CurrentCollision}ms
-avg: {TimeAverage}ms
-high: {CollisionHigh}ms".Replace("\r", ""), new Vector2(300, 50), SKYBLUE);
+cur: {currentCollision}ms
+avg: {timeAverage}ms
+high: {collisionHigh}ms".Replace("\r", ""), new Vector2(300, 50), SKYBLUE);
         }
     }
 }

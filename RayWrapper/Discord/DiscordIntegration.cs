@@ -1,5 +1,7 @@
 ﻿using System;
 using DiscordRPC;
+using static RayWrapper.GameConsole.CommandLineColor;
+using static RayWrapper.GameConsole.GameConsole;
 
 namespace RayWrapper
 {
@@ -17,8 +19,9 @@ namespace RayWrapper
 
         public static void Init() => now = DateTime.UtcNow;
         
-        public static void CheckDiscord(string appId)
+        public static void CheckDiscord(string appId, bool retry = true)
         {
+            if (appId == "") return;
             discordAlive = true;
             try
             {
@@ -39,11 +42,22 @@ namespace RayWrapper
 
                 discord.SetPresence(rp);
                 UpdateActivity();
+                singleConsole.WriteToConsole($"{CYAN}Discord Connected");
             }
             catch (Exception e)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"DISCORD ERR: {e}");
+                Console.ResetColor();
+                singleConsole.WriteToConsole($"{RED}Discord Failed to connect");
                 discordAlive = false;
+
+                if (retry)
+                {
+                    singleConsole.WriteToConsole($"{YELLOW}Retrying Discord connection");
+                    Console.WriteLine("RETRYING TO CHECK IF FLUKE");
+                    CheckDiscord(appId, false);
+                } else singleConsole.WriteToConsole($"{DARKRED}Retry failed, use the 'discord' command to retry again");
             }
         }
 
@@ -64,6 +78,7 @@ namespace RayWrapper
             catch (Exception e)
             {
                 Console.WriteLine($"DISCORD ERR: {e}");
+                singleConsole.WriteToConsole($"{RED}Discord connection threw error");
                 discordAlive = false;
             }
         }

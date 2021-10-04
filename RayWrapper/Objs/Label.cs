@@ -3,6 +3,7 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
@@ -50,7 +51,7 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var adjust = back.Shrink(4);
-            var hover = useBaseHover && Rect.IsMouseIn();
+            var hover = useBaseHover && Rect.IsMouseIn() && !IsMouseOccupied;
             Color realFc = hover ? ((Color)fontColor).MakeLighter() : fontColor;
             Color realBc = hover ? ((Color)backColor).MakeLighter() : backColor;
             CheckText();
@@ -87,7 +88,7 @@ namespace RayWrapper.Objs
             }
 
             var t = (string)(tooltip ?? "");
-            if (Rect.IsMouseIn() && t != "") Rect.DrawTooltip(t);
+            if (Rect.IsMouseIn() && t != "" && !IsMouseOccupied) Rect.DrawTooltip(t);
         }
 
         public void CheckText()

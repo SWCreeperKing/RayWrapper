@@ -5,6 +5,7 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
 
 namespace RayWrapper.Objs
 {
@@ -62,27 +63,28 @@ namespace RayWrapper.Objs
                     new Rectangle(pos.X, pos.Y, 16 * _show,
                         GameBox.Font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)))
                 { outline = new Actionable<bool>(true) };
-            _lastTime = GameBox.GetTimeMs();
+            _lastTime = GetTimeMs();
         }
 
         public override void Update()
         {
-            var fps = GetFPS();
-            _frameTime++;
-            _frameTime %= fps;
-
-            Input();
-
-            foreach (var (_, v) in _actions.Where(key =>
-                IsKeyDown(key.Key) && GameBox.GetTimeMs() - _lastTime > 133))
+            if (IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) _selected = _label.Rect.IsMouseIn() && !_selected;
+            if (_selected)
             {
-                (_curPos, _text) =
-                    v.Invoke(
-                        IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
-                        IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
-                _lastTime = GameBox.GetTimeMs();
+                Input();
+                foreach (var (_, v) in _actions.Where(key => IsKeyDown(key.Key) && GetTimeMs() - _lastTime > 133))
+                {
+                    (_curPos, _text) =
+                        v.Invoke(
+                            IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
+                            IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
+                    _lastTime = GetTimeMs();
+                }
             }
-
+            
+            var fps = GetFPS();
+            _frameTime %= fps;
+            _frameTime++;
             var flash = _frameTime % (fps * .33) > fps * .18;
             var start = 0;
             var end = Math.Min(_show, _text.Length);
@@ -90,18 +92,13 @@ namespace RayWrapper.Objs
 
             if (curs >= _show / 2)
                 (start, curs, end) = (curs - _show / 2, _show / 2, Math.Min(_text.Length, _curPos + _show / 2));
-
             if (start > _max - _show) (start, curs) = (_max - _show, _curPos - (_max - _show));
 
-            _label.text = $" {_text[start..end].Insert(curs, flash ? " " : "|")}";
+            _label.text = $"> {(_selected ? _text[start..end].Insert(curs, flash ? " " : "|") : _text[start..end])}";
             _label.Update();
         }
 
-        protected override void RenderCall()
-        {
-            _label.Render();
-        }
-
+        protected override void RenderCall() => _label.Render();
         public override void PositionChange(Vector2 v2) => _label.MoveTo(v2);
         public override Vector2 Size() => _label.Size();
 
@@ -110,15 +107,13 @@ namespace RayWrapper.Objs
             var (c, cc) = (GetCharPressed(), GetKeyPressed());
             while (c > 0 || cc > 0)
             {
-                if ((KeyboardKey)cc == KeyboardKey.KEY_ENTER) onEnter.Invoke(_text);
-
-                if (c is >= 32 and <= 125 && _text.Length < _max)
-                    _text = _text.Insert(_curPos++, $"{(char)c}");
-
+                if ((KeyboardKey)cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
+                if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char)c}");
                 (c, cc) = (GetCharPressed(), GetKeyPressed());
             }
         }
 
         public void Clear() => (_text, _curPos) = ("", 0);
+        public void SetText(string text) => (_text, _curPos) = (text, text.Length);
     }
 }

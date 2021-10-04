@@ -11,7 +11,7 @@ namespace RayWrapper.Vars
 
         public Scheduler(long incrementMs, Action onTime, bool setTime = true)
         {
-            (this.incrementMs, this.onTime) = (incrementMs, onTime)
+            (this.incrementMs, this.onTime) = (incrementMs, onTime);
             if (setTime) SetTime(GameBox.GetTimeMs());
             else _nextTime = GameBox.GetTimeMs();
         }

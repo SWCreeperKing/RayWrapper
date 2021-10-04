@@ -55,7 +55,7 @@ namespace RayWrapper.Objs
             _bar.Update();
             try
             {
-                if (!GeneralWrapper.MouseOccupied)
+                if (!GameBox.IsMouseOccupied)
                     foreach (var t in _tabs)
                         t.Update();
             }

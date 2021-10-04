@@ -4,6 +4,7 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
 using static RayWrapper.Objs.Label;
 using static RayWrapper.RectWrapper;
 
@@ -87,14 +88,11 @@ namespace RayWrapper.Objs
         public override void PositionChange(Vector2 v2) => baseL.PositionChange(v2);
 
         public override Vector2 Size() => baseL.Size();
-        //
-        // public void ChangeColor(ColorModule color, ColorModule fontColor) =>
-        //     (this.fontColor, baseColor) = (fontColor, color);
-
+        
         private Color GetColor(ColorModule c) =>
             isDisabled
                 ? ((Color)c).MakeDarker()
-                : Rect.IsMouseIn()
+                : Rect.IsMouseIn() && !IsMouseOccupied
                     ? ((Color)c).MakeLighter()
                     : c;
 

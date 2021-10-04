@@ -10,7 +10,6 @@ namespace RayWrapper
     public static class GeneralWrapper
     {
         public static readonly Color Transparent = new(0, 0, 0, 0);
-        public static bool MouseOccupied { get; set; }
 
         public static Vector2 Max(this Vector2 v2) => new(Math.Max(v2.X, v2.Y));
         public static Vector2 Max(this Vector2 v2, Vector2 v22) => new(Math.Max(v2.X, v22.X), Math.Max(v2.Y, v22.Y));
@@ -55,7 +54,7 @@ namespace RayWrapper
         public static int GetCursorQuadrant()
         {
             var lines = GameBox.WindowSize / 2;
-            var cursor = GameBox.MousePos;
+            var cursor = GameBox.mousePos;
             var quad = cursor.X > lines.X ? 1 : 2;
             if (cursor.Y > lines.Y) quad += 2;
             return quad;

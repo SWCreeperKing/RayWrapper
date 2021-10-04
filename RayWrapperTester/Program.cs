@@ -195,7 +195,7 @@ namespace RayWrapperTester
                     {
                         ClearBackground(RED);
                         bRend.Render();
-                        GameBox.MousePos.DrawToolTipAtPoint($"{GameBox.MousePos}", BLUE);
+                        GameBox.mousePos.DrawToolTipAtPoint($"{GameBox.mousePos}", BLUE);
                     });
             }));
 
@@ -220,7 +220,7 @@ namespace RayWrapperTester
             percent += .005f;
             percent %= 1;
 
-            var mouse = GameBox.MousePos;
+            var mouse = GameBox.mousePos;
             _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);
 
             if (IsKeyDown(KeyboardKey.KEY_LEFT)) _l.MoveBy(new Vector2(-3, 0));

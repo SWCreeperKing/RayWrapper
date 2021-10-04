@@ -3,14 +3,13 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
     public class Slider : GameObject
     {
-        public static bool isInUse;
-        public bool isUsing;
         public bool isVertical;
         public Vector2 size;
         public float value;
@@ -27,17 +26,17 @@ namespace RayWrapper.Objs
 
         public override void Update()
         {
-            if (isInUse && !isUsing) return;
+            if (IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && AssembleRectFromVec(Position, size).IsMouseIn())
-                isInUse = isUsing = true;
-            else if (!IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && isUsing)
+                mouseOccupier = this;
+            else if (!IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && mouseOccupier == this)
             {
-                isInUse = isUsing = false;
+                mouseOccupier = null;
                 onDone?.Invoke(value);
             }
 
-            if (!isInUse) return;
-            var mouse = GameBox.MousePos;
+            if (mouseOccupier != this) return;
+            var mouse = mousePos;
             value = Math.Clamp(mouse.X - Position.X, 0, size.X) / size.X;
         }
 
@@ -47,8 +46,8 @@ namespace RayWrapper.Objs
             var rect = AssembleRectFromVec(Position, size).Grow(outlineThickness);
             rect.DrawRounded(backColor);
             AssembleRectFromVec(Position, newS).DrawRounded(fillColor);
-            if (isInUse && !isUsing) return;
-            if (rect.IsMouseIn() || isUsing) rect.DrawRoundedLines(hoverColor);
+            if (IsMouseOccupied && mouseOccupier != this) return;
+            if (rect.IsMouseIn() || mouseOccupier == this) rect.DrawRoundedLines(hoverColor);
         }
 
         public override void PositionChange(Vector2 v2)

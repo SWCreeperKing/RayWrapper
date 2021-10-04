@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 using Raylib_cs;
 using RayWrapper.Animation;
 using RayWrapper.CollisionSystem;
+using RayWrapper.GameConsole;
 using RayWrapper.Objs;
+using RayWrapper.Objs.Slot;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameConsole.GameConsole;
 
 namespace RayWrapper
 {
@@ -21,9 +24,12 @@ namespace RayWrapper
         #region temp collsion performance vars
 
         public static readonly Random Random = new();
-        public static readonly Dictionary<string, Func<string, string[], string>> ConsoleCommands = new();
         public static readonly List<(string, string)> CollisionLayerTags = new();
         public static readonly long[] CollisionTime = new long[100];
+        public static double timeAverage;
+        public static long collisionHigh;
+        public static long currentCollision;
+        public static int timeKeeper;
 
         #endregion
 
@@ -33,7 +39,38 @@ namespace RayWrapper
         public static Vector2 WindowSize { get; private set; }
         public static GameLoop Scene { get; set; }
         public static string Title { get; private set; }
-        public static int FPS { get; private set; }
+        public static GameBox Gb => _instance;
+        public static bool IsMouseOccupied => mouseOccupier != null;
+        public static bool enableConsole = true;
+        public static float scale;
+        public static Vector2 mousePos;
+        public static string discordAppId = "";
+        public static AlertBox alertBox = null;
+        public static Animator animator = new();
+        public static ColorModule backgroundColor = new(40);
+        public static ColorModule letterboxColor = new(20);
+        public static bool isDebugTool;
+        public static List<Slot> dragCollision = new();
+        public static GameObject mouseOccupier;
+
+        private static readonly List<ISave> SaveList = new();
+        private static readonly List<Collider> Colliders = new();
+        private static readonly List<Collider> CollidersAddQueue = new();
+        private static readonly List<Collider> CollidersRemoveQueue = new();
+        private static long _lastTime;
+        private static Font _font;
+        private static List<Action> _onDispose = new();
+        private static List<Scheduler> _schedulers = new();
+        private static bool _isDrawing;
+        private static bool _isConsole;
+        private static RenderTexture2D _target;
+        private static GameBox _instance;
+
+        public static int FPS
+        {
+            get => GetFPS();
+            set => SetTargetFPS(value);
+        }
 
         public static Font Font
         {
@@ -45,36 +82,7 @@ namespace RayWrapper
             }
         }
 
-        public static bool EnableConsole = true;
-        public static double TimeAverage;
-        public static long CollisionHigh;
-        public static long CurrentCollision;
-        public static int TimeKeeper;
-        public static float Scale;
-        public static Vector2 MousePos;
-        public static string DiscordAppId = "";
-        public static AlertBox alertBox = null;
-        public static Animator animator = new();
-        public static ColorModule backgroundColor = new(40);
-        public static ColorModule letterboxColor = new(20);
-
-        private static readonly List<ISave> _saveList = new();
-        private static readonly List<Collider> _colliders = new();
-        private static readonly List<Collider> _collidersAddQueue = new();
-        private static readonly List<Collider> _collidersRemoveQueue = new();
-        private static long _lastTime;
-        private static Font _font;
-        private static InputBox _ib;
-        private static List<string> _consoleOut = new();
-        private static string[] _consoleWriteOut = new string[20];
-        private static List<Action> _onDispose = new();
-        private static List<Scheduler> _schedulers = new();
-        private static bool _isDrawing;
-        private static bool _isConsole;
-        private static bool _isDebugTool;
-        private static RenderTexture2D target; // todo: shiftf6 -> rename to proper name (_target)
-
-        public event Action OnDispose
+        public static event Action OnDispose
         {
             add => _onDispose.Add(value);
             remove => _onDispose.Remove(value);
@@ -82,12 +90,20 @@ namespace RayWrapper
 
         public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60)
         {
+            if (_instance is not null) throw new ApplicationException("Only 1 instance of GameBox can be created");
+            _instance = this;
             DiscordIntegration.Init();
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
             InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
-            target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
+            _target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
             _font = GetFontDefault();
+            if (singleConsole is null)
+            {
+                singleConsole = new GameConsole.GameConsole();
+                CommandRegister.RegisterCommand<DefaultCommands>();
+            }
+
             SetTargetFPS(FPS = fps);
         }
 
@@ -118,35 +134,35 @@ namespace RayWrapper
             {
                 Task.Run(() =>
                 {
-                    var groups = _colliders.GroupBy(c => c.layer).ToDictionary(c => c.Key, c => c);
+                    var groups = Colliders.GroupBy(c => c.layer).ToDictionary(c => c.Key, c => c);
                     List<(long, long)> collisionMem = new();
                     while (true)
                     {
                         try
                         {
                             var startTime = GetTimeMs();
-                            if (_collidersAddQueue.Count > 0 || _collidersRemoveQueue.Count > 0)
+                            if (CollidersAddQueue.Count > 0 || CollidersRemoveQueue.Count > 0)
                             {
-                                if (_collidersAddQueue.Count > 0)
+                                if (CollidersAddQueue.Count > 0)
                                 {
-                                    _colliders.AddRange(_collidersAddQueue);
-                                    _collidersAddQueue.Clear();
+                                    Colliders.AddRange(CollidersAddQueue);
+                                    CollidersAddQueue.Clear();
                                 }
 
-                                if (_collidersRemoveQueue.Count > 0)
+                                if (CollidersRemoveQueue.Count > 0)
                                 {
-                                    _colliders.RemoveAll(c => _collidersRemoveQueue.Contains(c));
-                                    _collidersRemoveQueue.Clear();
+                                    Colliders.RemoveAll(c => CollidersRemoveQueue.Contains(c));
+                                    CollidersRemoveQueue.Clear();
                                 }
 
-                                groups = _colliders.GroupBy(c => c.layer).ToDictionary(c => c.Key, c => c);
+                                groups = Colliders.GroupBy(c => c.layer).ToDictionary(c => c.Key, c => c);
                             }
 
                             var time = GetTimeMs();
                             var deltaTime = time - _lastTime;
                             _lastTime = time;
 
-                            foreach (var collider in _colliders.Where(c => c.velocity != Vector2.Zero))
+                            foreach (var collider in Colliders.Where(c => c.velocity != Vector2.Zero))
                                 collider.MoveBy(collider.velocity * deltaTime);
 
                             if (groups.Count > 1)
@@ -197,35 +213,38 @@ namespace RayWrapper
                 });
             }
 
-            _ib = new InputBox(new Vector2(12, 10), 78, 200);
-            _ib.onEnter = s =>
-            {
-                if (s.Length < 1) return;
-                var split = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (split.Length == 1) ExecuteCommand(s);
-                else ExecuteCommand(split[0], split[1..]);
-                _ib.Clear();
-            };
-
-            if (DiscordAppId != "") DiscordIntegration.CheckDiscord(DiscordAppId);
+            if (discordAppId != "") DiscordIntegration.CheckDiscord(discordAppId);
             OnDispose += DiscordIntegration.Dispose;
 
-            while (!WindowShouldClose())
+            try
             {
-                CalcMousePos();
-                if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && EnableConsole) _isConsole = !_isConsole;
-                else if (alertBox is null && !_isConsole) Update();
-                else if (alertBox is not null && !_isConsole) alertBox.Update();
-                else if (_isConsole) _ib.Update();
-                if (!EnableConsole && _isConsole) _isConsole = false;
-                Render();
+                while (!WindowShouldClose())
+                {
+                    CalcMousePos();
+                    if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && enableConsole) _isConsole = !_isConsole;
+                    else if (alertBox is null && !_isConsole) Update();
+                    else if (alertBox is not null && !_isConsole) alertBox.Update();
+                    else if (_isConsole) singleConsole.Update();
+                    if (!enableConsole && _isConsole) _isConsole = false;
+                    Render();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("AN ERROR HAS OCCURED");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(e);
+                Console.ResetColor();
+                Console.WriteLine("press any key to continue");
+                Console.ReadKey();
+                Dispose();
             }
 
             CloseWindow();
             foreach (var a in _onDispose) a.Invoke();
         }
 
-        public void Update()
+        private void Update()
         {
             animator.Update();
             Scene.Update();
@@ -234,43 +253,38 @@ namespace RayWrapper
         public void RenderRenderTexture(RenderTexture2D texture2D, Vector2 pos, Action update, Action draw)
         {
             if (!_isDrawing) return;
-            var before = new Vector2(MousePos.X, MousePos.Y);
-            MousePos.X -= pos.X;
-            MousePos.Y -= pos.Y;
+            var before = new Vector2(mousePos.X, mousePos.Y);
+            mousePos.X -= pos.X;
+            mousePos.Y -= pos.Y;
             update.Invoke();
             BeginTextureMode(texture2D);
             draw.Invoke();
-            BeginTextureMode(target);
+            BeginTextureMode(_target);
             DrawTexturePro(texture2D.texture, new Rectangle(0, 0, texture2D.texture.width, -texture2D.texture.height),
                 new Rectangle(pos.X, pos.Y, texture2D.texture.width, texture2D.texture.height),
                 Vector2.Zero, 0, Color.WHITE);
-            MousePos = before;
+            mousePos = before;
         }
 
         public void Render()
         {
-            BeginTextureMode(target);
+            BeginTextureMode(_target);
             _isDrawing = true;
             try
             {
                 ClearBackground(backgroundColor);
 
                 Scene.Render();
-                if (_isConsole)
-                {
-                    new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
-                    _ib.Render();
-                    _font.DrawText(string.Join("\n", _consoleWriteOut), new Vector2(0, 50), Color.GREEN);
-                }
+                if (_isConsole) singleConsole.Render();
                 else
                 {
                     animator.Render();
                     alertBox?.Render();
                 }
 
-                if (_isDebugTool)
+                if (isDebugTool)
                     RectWrapper.AssembleRectFromVec(Vector2.Zero, WindowSize)
-                        .DrawTooltip($"({MousePos.X},{MousePos.Y})");
+                        .DrawTooltip($"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}");
             }
             catch (Exception e)
             {
@@ -286,9 +300,9 @@ namespace RayWrapper
 
             BeginDrawing();
             ClearBackground(letterboxColor);
-            DrawTexturePro(target.texture, new Rectangle(0, 0, target.texture.width, -target.texture.height),
-                new Rectangle((GetScreenWidth() - WindowSize.X * Scale) * .5f,
-                    (GetScreenHeight() - WindowSize.Y * Scale) * 0.5f, WindowSize.X * Scale, WindowSize.Y * Scale),
+            DrawTexturePro(_target.texture, new Rectangle(0, 0, _target.texture.width, -_target.texture.height),
+                new Rectangle((GetScreenWidth() - WindowSize.X * scale) * .5f,
+                    (GetScreenHeight() - WindowSize.Y * scale) * 0.5f, WindowSize.X * scale, WindowSize.Y * scale),
                 Vector2.Zero, 0, Color.WHITE);
             EndDrawing();
             _isDrawing = false;
@@ -312,13 +326,13 @@ namespace RayWrapper
         public void InitSaveSystem(string developerName, string appName) =>
             (DeveloperName, AppName, SaveInit) = (developerName, appName, true);
 
-        public string GetSavePath => $"{CoreDir}/{DeveloperName}/{AppName}";
-        public void SaveItems() => _saveList.SaveItems(this);
-        public void LoadItems() => _saveList.LoadItems(this);
-        public void DeleteFile(string name) => _saveList.DeleteFile(name, this);
-        public void DeleteAll() => _saveList.DeleteAll(this);
-        public void RegisterSaveItem<T>(T obj, string fileName) => _saveList.Add(new SaveItem<T>(obj, fileName));
-        public void DeRegisterSaveItem(string fileName) => _saveList.RemoveAll(m => m.FileName() == fileName);
+        public static string GetSavePath => $"{CoreDir}/{DeveloperName}/{AppName}";
+        public void SaveItems() => SaveList.SaveItems(this);
+        public void LoadItems() => SaveList.LoadItems(this);
+        public void DeleteFile(string name) => SaveList.DeleteFile(name, this);
+        public void DeleteAll() => SaveList.DeleteAll(this);
+        public void RegisterSaveItem<T>(T obj, string fileName) => SaveList.Add(new SaveItem<T>(obj, fileName));
+        public void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
         #endregion
 
@@ -326,7 +340,7 @@ namespace RayWrapper
         {
             try
             {
-                foreach (var c in _colliders) c.Render();
+                foreach (var c in Colliders) c.Render();
             }
             catch
             {
@@ -334,159 +348,26 @@ namespace RayWrapper
             }
         }
 
-        public static void AddColliders(params Collider[] c) => _collidersAddQueue.AddRange(c);
-        public static void RemoveColliders(params Collider[] c) => _collidersRemoveQueue.AddRange(c);
+        public static void AddColliders(params Collider[] c) => CollidersAddQueue.AddRange(c);
+        public static void RemoveColliders(params Collider[] c) => CollidersRemoveQueue.AddRange(c);
 
         public static void AddTime(long ms)
         {
-            CurrentCollision = CollisionTime[TimeKeeper++] = ms;
-            TimeKeeper %= CollisionTime.Length;
-            CollisionHigh = Math.Max(CollisionHigh, ms);
-            TimeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
-        }
-
-        private void ExecuteCommand(string command, params string[] args) // todo: learn how to do that command module discord bots do
-        {
-            switch (command.ToLower())
-            {
-                case "setfps":
-                    if (args.Length < 1)
-                    {
-                        WriteToConsole("To set your fps do setfps [number]");
-                        break;
-                    }
-
-                    if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and <= 500)
-                    {
-                        SetTargetFPS(fpsset);
-                        FPS = fpsset;
-                        WriteToConsole($"Fps set to [{fpsset}]");
-                    }
-                    else WriteToConsole($"[{args[0]}] <- IS NOT A VALID NUMBER");
-
-                    break;
-                case "clear":
-                    var len = _consoleOut.Count;
-                    _consoleWriteOut = new string[20];
-                    _consoleOut.Clear();
-                    var doubleClear = args.Length > 0 && args[0].ToLower()[0] == 't';
-                    if (!doubleClear) WriteToConsole($"Cleared {len} lines");
-                    break;
-                case "opensavedir":
-                    if (SaveInit)
-                    {
-                        WriteToConsole($"Opening to [{GetSavePath}]");
-                        Process.Start("explorer.exe", $@"{GetSavePath}".Replace("/", "\\"));
-                    }
-                    else WriteToConsole("Save system is not initialized");
-
-                    break;
-                case "resetres":
-                    if (IsWindowFullscreen())
-                    {
-                        WriteToConsole("Game can not be in fullscreen");
-                        break;
-                    }
-
-                    SetWindowSize((int)WindowSize.X, (int)WindowSize.Y);
-                    WriteToConsole($"Reset Resolution to {WindowSize}");
-                    break;
-                case "setres":
-                    if (args.Length < 2)
-                    {
-                        WriteToConsole("To set your resolution do setres [width] [height]");
-                        break;
-                    }
-
-                    if (int.TryParse(args[0], out var w) && int.TryParse(args[1], out var h))
-                    {
-                        SetWindowSize(w, h);
-                        WriteToConsole($"Set Resolution to <{w}, {h}>");
-                    }
-                    else WriteToConsole("Could not parse one of the variables");
-
-                    break;
-                case "curres":
-                    WriteToConsole($"The current window resolution is <{GetScreenWidth()}, {GetScreenHeight()}>");
-                    break;
-                case "help":
-                    WriteToConsole(@" == HELP ==
-setfps [0 < n < 501] //sets fps to n
-clear (true/false) //clears screan, true will not display message
-opensavedir //opens save directory
-resetres //resets resolution to base resolution
-setres [width] [height] //sets resolution to a specific screen size
-curres //displays current resolution
-help // displays this message
-toggledebug //toggle debug tools
-discord // discord rich presence status/recheck
-setscale [scale] // sets the window size based on scale
- == HELP =="
-                        .Replace("\r", ""));
-                    break;
-                case "toggledebug":
-                    _isDebugTool = !_isDebugTool;
-                    WriteToConsole("Toggled debug tools");
-                    break;
-                case "setscale":
-                    if (args.Length < 1)
-                    {
-                        WriteToConsole("To set your window size do setscale [scale]");
-                        break;
-                    }
-
-                    if (float.TryParse(args[0], out var f))
-                    {
-                        SetWindowSize((int)(WindowSize.X * f), (int)(WindowSize.Y * f));
-                        WriteToConsole($"Set Resolution to a scale of <{f}>");
-                    }
-                    else WriteToConsole("Could not parse scale");
-
-                    break;
-                case "discord":
-                    if (DiscordAppId == "")
-                    {
-                        WriteToConsole($"Discord Integration is not set up for [{AppName}]");
-                        break;
-                    }
-
-                    if (DiscordIntegration.discordAlive)
-                    {
-                        WriteToConsole($"[{AppName}] is Connected to discord!");
-                        break;
-                    }
-
-                    WriteToConsole("Disconnected from discord, attempting to connect");
-                    DiscordIntegration.CheckDiscord(DiscordAppId);
-                    WriteToConsole(DiscordIntegration.discordAlive ? "Reconnected!" : "Failed, Try again later!");
-                    break;
-                default:
-                    WriteToConsole(ConsoleCommands.ContainsKey(command)
-                        ? ConsoleCommands[command].Invoke(command, args)
-                        : $"INVALID COMMAND: [{command}]");
-                    break;
-            }
-        }
-
-        public void WriteToConsole(string text)
-        {
-            _consoleOut.Add(text);
-            UpdateConsoleOut();
-        }
-
-        public void UpdateConsoleOut()
-        {
-            for (int i = _consoleOut.Count - 1, j = 0; i >= 0 && j < 20; i--, j++)
-                _consoleWriteOut[j] = _consoleOut[i];
+            currentCollision = CollisionTime[timeKeeper++] = ms;
+            timeKeeper %= CollisionTime.Length;
+            collisionHigh = Math.Max(collisionHigh, ms);
+            timeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
         }
 
         public void CalcMousePos()
         {
             var mouse = GetMousePosition();
-            Scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
-            float Calc(float m, int s, float w) => (m - (s - w * Scale) * 0.5f) / Scale;
-            MousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
-            MousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
+            scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
+            float Calc(float m, int s, float w) => (m - (s - w * scale) * 0.5f) / scale;
+            mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
+            mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
+
+        public static void OpenLink(string url) => Process.Start("explorer.exe", url);
     }
 }

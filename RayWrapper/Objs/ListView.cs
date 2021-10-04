@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
@@ -31,10 +30,10 @@ namespace RayWrapper.Objs
 
         public Func<int> arrayLength;
         public ColorModule backColor = new(50, 50, 50);
-        public Dictionary<int, Color> backColors = new();
+        public Func<int, Color> backColors;
         public Action click;
         public ColorModule fontColor = new(192, 192, 198);
-        public Dictionary<int, Color> fontColors = new();
+        public Func<int, Color> fontColors;
         public Func<int, string> itemProcessing;
         public Action outsideClick;
         public Actionable<string> tooltip = new("");
@@ -93,10 +92,10 @@ namespace RayWrapper.Objs
                 l.MoveTo(new Vector2(_bounds.x, y + labelPadding * i));
                 l.backColor =
                     new ColorModule(
-                        backColors.ContainsKey(strictVal + i) ? backColors[strictVal + i] : (Color)backColor);
+                        backColors?.Invoke(strictVal + i) ?? (Color)backColor);
                 l.fontColor =
                     new ColorModule(
-                        fontColors.ContainsKey(strictVal + i) ? fontColors[strictVal + i] : (Color)fontColor);
+                        fontColors?.Invoke(strictVal + i) ?? (Color)fontColor);
             }
         }
 

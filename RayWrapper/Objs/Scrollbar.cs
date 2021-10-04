@@ -24,7 +24,6 @@ namespace RayWrapper.Objs
 
         private float _visibleSize;
         private float _trueSize;
-        private bool _occupier;
         private List<Action<float>> _onMove = new();
 
         public event Action<float> OnMoveEvent
@@ -76,29 +75,27 @@ namespace RayWrapper.Objs
 
         public override void Update()
         {
-            var mousePos = MousePos;
+            var mousePos = GameBox.mousePos;
             CalcBarSize();
             ClampBounds();
             CalcVal();
 
             var isLeft = Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON);
-            if (container.IsMouseIn() && isLeft && !MouseOccupied) MouseOccupied = _occupier = true;
-            else if (_occupier && !isLeft) MouseOccupied = _occupier = false;
-            if (!_occupier) return;
+            if (container.IsMouseIn() && isLeft && !IsMouseOccupied) mouseOccupier = this;
+            else if (mouseOccupier == this && !isLeft) mouseOccupier = null;
+            if (mouseOccupier != this) return;
             var posDelta = isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X;
             MoveBar(posDelta + _visibleSize / 2);
         }
 
         protected override void RenderCall()
         {
-            var hover = !MouseOccupied && container.IsMouseIn() || _occupier;
+            var hover = IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn();
             container.DrawRounded(hover ? ((Color)containerColor).MakeLighter() : containerColor, .4f);
             bar.DrawRounded(hover ? ((Color)barColor).MakeLighter() : barColor, .4f);
-            if (outline)
-            {
-                container.DrawRoundedLines(outlineColor, .4f);
-                bar.DrawRoundedLines(outlineColor, .4f);
-            }
+            if (!outline) return;
+            container.DrawRoundedLines(outlineColor, .4f);
+            bar.DrawRoundedLines(outlineColor, .4f);
         }
 
         public override void PositionChange(Vector2 v2)

@@ -20,7 +20,6 @@ namespace RayWrapper.Objs.TreeView
         public readonly List<NodeChain> chains = new();
 
         private Vector2 _lastPos;
-        private bool _hold;
         private Vector2 _moveChange;
         private float _scale = 32;
 
@@ -28,18 +27,18 @@ namespace RayWrapper.Objs.TreeView
 
         public override void Update()
         {
-            if (alertBox is not null || MouseOccupied) return;
+            if (alertBox is not null || IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();
             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask.IsEqualTo(Zero)
                 ? AssembleRectFromVec(new Vector2(0), WindowSize)
                 : mask).IsMouseIn())
             {
-                var curMouse = MousePos;
-                if (!_hold) _lastPos = curMouse;
+                var curMouse = mousePos;
+                if (mouseOccupier != this) _lastPos = curMouse;
                 _moveChange += (curMouse - _lastPos) / (_scale / 1.4f);
-                (_lastPos, _hold) = (curMouse, true);
+                (_lastPos, mouseOccupier) = (curMouse, this);
             }
-            else _hold = false;
+            else mouseOccupier = null;
 
             var scroll = GetMouseWheelMove();
             if (scroll != 0) _scale = Math.Min(Math.Max(15, _scale + scroll), 55);

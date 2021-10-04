@@ -2,6 +2,7 @@
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
@@ -41,7 +42,7 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var rect = AssembleRectFromVec(Position + _posOff, _size);
-            var mouseIsIn = AssembleRectFromVec(Position, new Vector2(35 + _textLeng, 40)).IsMouseIn();
+            var mouseIsIn = AssembleRectFromVec(Position, new Vector2(35 + _textLeng, 40)).IsMouseIn() && !IsMouseOccupied;
             if (!isCircle)
             {
                 if (isChecked) rect.DrawRounded(checkedColor, .35f);

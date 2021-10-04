@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using static RayWrapper.GameBox;
+using static RayWrapper.GameConsole.CommandLineColor;
+using static RayWrapper.GameConsole.GameConsole;
 
 namespace RayWrapper.Vars
 {
@@ -59,7 +62,7 @@ namespace RayWrapper.Vars
 
         public static void IsSaveInitCheck()
         {
-            if (!GameBox.SaveInit)
+            if (!SaveInit)
                 throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
         }
 
@@ -122,30 +125,30 @@ namespace RayWrapper.Vars
         
         public static void SaveItems(this List<ISave> saveList, GameBox gb)
         {
-            gb.WriteToConsole($"Saving Start @ {DateTime.Now:G}");
-            var start = GameBox.GetTimeMs();
+            singleConsole.WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
+            var start = GetTimeMs();
             ISave.IsSaveInitCheck();
-            var path = gb.GetSavePath;
+            var path = GetSavePath;
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             foreach (var t in saveList) t.SaveToFile(path);
-            gb.WriteToConsole($"Saved in {new TimeVar(GameBox.GetTimeMs() - start)}");
+            singleConsole.WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
         }
         
         public static void LoadItems(this List<ISave> saveList, GameBox gb)
         {
-            gb.WriteToConsole($"Loading Start @ {DateTime.Now:G}");
-            var start = GameBox.GetTimeMs();
+            singleConsole.WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
+            var start = GetTimeMs();
             ISave.IsSaveInitCheck();
-            var path = gb.GetSavePath;
+            var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             foreach (var t in saveList) t.LoadToFile(path);
-            gb.WriteToConsole($"Loaded in {new TimeVar(GameBox.GetTimeMs() - start)}");
+            singleConsole.WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
         }
         
         public static void DeleteFile(this List<ISave> saveList, string name, GameBox gb)
         {
             ISave.IsSaveInitCheck();
-            var path = gb.GetSavePath;
+            var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             var file = $"{path}/{saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
             Console.WriteLine($"> DELETED {file} <");
@@ -156,7 +159,7 @@ namespace RayWrapper.Vars
         public static void DeleteAll(this List<ISave> saveList, GameBox gb)
         {
             ISave.IsSaveInitCheck();
-            var path = gb.GetSavePath;
+            var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             foreach (var file in saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap").Where(File.Exists))
                 File.Delete(file);

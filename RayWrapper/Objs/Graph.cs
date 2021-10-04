@@ -10,6 +10,8 @@ namespace RayWrapper.Objs
 
         public Graph(Rectangle rect) : base(rect.Pos()) => this.rect = rect;
 
+        // todo: eventually
+        
         public override void Update()
         {
         }
