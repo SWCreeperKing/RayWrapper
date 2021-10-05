@@ -19,27 +19,34 @@ namespace RayWrapper.Objs
             WrapText
         }
 
-        public Rectangle Rect => AssembleRectFromVec(back.Pos(), Size());
-
-        private Rectangle back;
         public ColorModule backColor = new(50);
-        public ColorModule fontColor = new(192);
         public Action clicked;
+        public ColorModule fontColor = new(192);
         public float fontSize = 24;
         public bool outline = false;
         public ColorModule outlineColor = new(Color.BLACK);
-        public Actionable<TextMode> textMode;
-        public Actionable<string> text;
-        public Actionable<string> tooltip;
         public float spacing = 1.5f;
+        public Actionable<string> text;
+        public Actionable<TextMode> textMode;
+        public Actionable<string> tooltip;
         public Actionable<bool> useBaseHover = false;
 
+        private Rectangle _back;
         private string _textCache;
         private Vector2 _textSizeCache;
 
-        public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) :
-            base(back.Pos()) =>
-            (this.back, this.text, this.textMode) = (back, text, textMode);
+        public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) =>
+            (_back, this.text, this.textMode) = (back, text, textMode);
+
+        public Rectangle Rect => AssembleRectFromVec(_back.Pos(), Size);
+
+        public override Vector2 Position
+        {
+            get => _back.Pos();
+            set => _back = _back.MoveTo(value);
+        }
+
+        public override Vector2 Size => textMode == TextMode.SizeToText ? _textSizeCache : _back.Size();
 
         public override void Update()
         {
@@ -50,11 +57,12 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            var adjust = back.Shrink(4);
+            var adjust = _back.Shrink(4);
             var hover = useBaseHover && Rect.IsMouseIn() && !IsMouseOccupied;
             Color realFc = hover ? ((Color)fontColor).MakeLighter() : fontColor;
             Color realBc = hover ? ((Color)backColor).MakeLighter() : backColor;
             CheckText();
+
             void DrawTxt(Vector2 pos) => DrawTextEx(GameBox.Font, _textCache, pos, fontSize, spacing, realFc);
 
             void DrawBack(Rectangle rect)
@@ -63,7 +71,7 @@ namespace RayWrapper.Objs
                 if (outline) rect.DrawRoundedLines(outlineColor, .25f);
             }
 
-            if (textMode != TextMode.SizeToText) DrawBack(back);
+            if (textMode != TextMode.SizeToText) DrawBack(_back);
 
             switch ((TextMode)textMode)
             {
@@ -96,8 +104,5 @@ namespace RayWrapper.Objs
             if (_textCache is not null && _textCache == text) return;
             _textSizeCache = MeasureTextEx(GameBox.Font, _textCache = text, fontSize, spacing);
         }
-
-        public override void PositionChange(Vector2 v2) => back = back.MoveTo(v2);
-        public override Vector2 Size() => textMode == TextMode.SizeToText ? _textSizeCache : back.Size();
     }
 }

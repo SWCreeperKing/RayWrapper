@@ -9,6 +9,48 @@ namespace RayWrapper.Objs
 {
     public class TabView : GameObject
     {
+        public override Vector2 Position
+        {
+            get => _rect.Pos();
+            set
+            {
+                _rect = _rect.MoveTo(value);
+                _bar.Position = value + new Vector2(0, 40);
+                Refresh();
+            }
+        }
+
+        public override Vector2 Size => _rect.Size();
+
+        public bool drawIfLowTabs = false;
+        public bool outline = true;
+
+        private readonly Scrollbar _bar;
+        private readonly Color _baseColor = new(95, 95, 95, 255);
+        private bool _closable;
+        private readonly List<Label> _closing = new();
+        private string _currentTab;
+        private readonly Color _hoverColor = new(65, 65, 65, 255);
+        private float _offset;
+        private readonly int _padding = 7;
+        private Rectangle _rect;
+        private readonly Dictionary<string, GameObject[]> _tabContents = new();
+        private readonly Dictionary<string, float> _tabLengths = new();
+        private readonly List<string> _tabOrder = new();
+        private readonly List<Label> _tabs = new();
+
+        public TabView(Vector2 pos, float width)
+        {
+            _rect = new Rectangle(pos.X, pos.Y, width, 40);
+            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
+                { amountInvoke = () => GetTabLength() - _rect.width };
+            _bar.OnMoveEvent += f =>
+            {
+                _offset = f;
+                Refresh();
+            };
+        }
+
         public bool Closable
         {
             get => _closable;
@@ -19,35 +61,6 @@ namespace RayWrapper.Objs
                 _bar.Update();
                 _bar.MoveBar(0);
             }
-        }
-
-        public bool outline = true;
-        public bool drawIfLowTabs = false;
-
-        private Scrollbar _bar;
-        private bool _closable;
-        private List<Label> _closing = new();
-        private string _currentTab;
-        private float _offset;
-        private int _padding = 7;
-        private Rectangle _rect;
-        private Dictionary<string, GameObject[]> _tabContents = new();
-        private Dictionary<string, float> _tabLengths = new();
-        private List<string> _tabOrder = new();
-        private List<Label> _tabs = new();
-        private Color _baseColor = new(95, 95, 95, 255);
-        private Color _hoverColor = new(65, 65, 65, 255);
-
-        public TabView(Vector2 pos, float width) : base(pos)
-        {
-            _rect = new Rectangle(pos.X, pos.Y, width, 40);
-            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
-                { amountInvoke = () => GetTabLength() - _rect.width };
-            _bar.OnMoveEvent += f =>
-            {
-                _offset = f;
-                Refresh();
-            };
         }
 
         public override void Update()
@@ -89,14 +102,6 @@ namespace RayWrapper.Objs
             foreach (var go in _tabContents[_currentTab]) go.Render();
         }
 
-        public override void PositionChange(Vector2 v2)
-        {
-            _rect = _rect.MoveTo(v2);
-            _bar.MoveTo(v2 + new Vector2(0, 40));
-            Refresh();
-        }
-
-        public override Vector2 Size() => _rect.Size();
         public void Refresh() => RefreshTabs();
 
         public void RefreshTabs()
@@ -123,7 +128,8 @@ namespace RayWrapper.Objs
                             Refresh();
                         },
                         useBaseHover = new Actionable<bool>(name != _currentTab),
-                        outline = true, backColor = new(() => name == _currentTab ? _baseColor : _hoverColor)
+                        outline = true,
+                        backColor = new ColorModule(() => name == _currentTab ? _baseColor : _hoverColor)
                     };
                     _tabs.Add(l);
                 }
@@ -135,7 +141,7 @@ namespace RayWrapper.Objs
                     Label l = new(new Rectangle(startX, _rect.y + heightOff, 25, 40 - heightOff * 2), "x",
                         Label.TextMode.AlignCenter)
                     {
-                        backColor = Color.RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true,
+                        backColor = Color.RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true
                     };
                     _tabs.Add(l);
                     startX += 25 + _padding;

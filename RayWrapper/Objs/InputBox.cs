@@ -11,18 +11,7 @@ namespace RayWrapper.Objs
 {
     public class InputBox : GameObject
     {
-        public Action<string> onEnter;
-
-        private int _curPos;
-        private int _frameTime;
-        private Label _label;
-        private int _max;
-        private bool _selected;
-        private int _show;
-        private string _text = "";
-        private long _lastTime;
-
-        private Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions = new()
+        private readonly Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions = new()
         {
             { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
             { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
@@ -55,7 +44,25 @@ namespace RayWrapper.Objs
             { KeyboardKey.KEY_SCROLL_LOCK, (_, _, _, _) => (0, "") }
         };
 
-        public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40) : base(pos)
+        public override Vector2 Position
+        {
+            get => _label.Position;
+            set => _label.Position = value;
+        }
+
+        public override Vector2 Size => _label.Size;
+
+        private int _curPos;
+        private int _frameTime;
+        private readonly Label _label;
+        private long _lastTime;
+        private readonly int _max;
+        private bool _selected;
+        private readonly int _show;
+        private string _text = "";
+        public Action<string> onEnter;
+
+        public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40)
         {
             _show = maxCharacterShow;
             _max = maxCharacters;
@@ -81,7 +88,7 @@ namespace RayWrapper.Objs
                     _lastTime = GetTimeMs();
                 }
             }
-            
+
             var fps = GetFPS();
             _frameTime %= fps;
             _frameTime++;
@@ -99,8 +106,6 @@ namespace RayWrapper.Objs
         }
 
         protected override void RenderCall() => _label.Render();
-        public override void PositionChange(Vector2 v2) => _label.MoveTo(v2);
-        public override Vector2 Size() => _label.Size();
 
         public void Input()
         {

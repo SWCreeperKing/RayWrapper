@@ -6,6 +6,7 @@ using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.AnimationShapes;
 using RayWrapper.Objs;
+using RayWrapper.Objs.Slot;
 using RayWrapper.Objs.TreeView;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShape;
@@ -81,16 +82,23 @@ namespace RayWrapperTester
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
                 "option option", "option setting", "option N");
 
-            _tbv = new(new Vector2(0), GameBox.WindowSize.X);
+            _tbv = new(Vector2.Zero, GameBox.WindowSize.X);
             _tbv.AddTab("Button Test", _b,
                 new EmptyRender(() =>
                     DrawText($"Hello, world! [i] is {_buttonInc}", 12, 60, 20, new Color(174, 177, 181, 255))));
 
             _tbv.AddTab("Label Test", _l);
 
+            RectItem ri = new(new Vector2(400), new Vector2(75)) { slotDependent = false, id = "blue", color = BLUE };
+            CircleItem ci = new(new Vector2(400, 475), new Vector2(75)) { color = RED, id = "red" };
+            Slot sl = new(new Vector2(800, 300), new Vector2(75)) { color = PURPLE};
+            Slot sl1 = new(new Vector2(875, 300), new Vector2(75)) { color = BLUE, idRestriction = "blue" };
+            Slot sl2 = new(new Vector2(950, 300), new Vector2(75)) { color = RED, idRestriction = "red" };
+            _tbv.AddTab("Slot Test", ri, ci, sl, sl1, sl2);
+
             _tbv.AddTab("Mask Test", new EmptyRender(() => _scissorArea.MaskDraw(() =>
             {
-                _scissorArea.Draw(new(255, 255, 255, 10));
+                _scissorArea.Draw(new Color(255, 255, 255, 10));
                 DrawText("Move the mouse around to reveal this text!", 190, 200, 20, LIGHTGRAY);
             })));
 
@@ -223,10 +231,10 @@ namespace RayWrapperTester
             var mouse = GameBox.mousePos;
             _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);
 
-            if (IsKeyDown(KeyboardKey.KEY_LEFT)) _l.MoveBy(new Vector2(-3, 0));
-            else if (IsKeyDown(KeyboardKey.KEY_RIGHT)) _l.MoveBy(new Vector2(3, 0));
-            if (IsKeyDown(KeyboardKey.KEY_UP)) _l.MoveBy(new Vector2(0, -3));
-            else if (IsKeyDown(KeyboardKey.KEY_DOWN)) _l.MoveBy(new Vector2(0, 3));
+            if (IsKeyDown(KeyboardKey.KEY_LEFT)) _l.Position += new Vector2(-3, 0);
+            else if (IsKeyDown(KeyboardKey.KEY_RIGHT)) _l.Position += new Vector2(3, 0);
+            if (IsKeyDown(KeyboardKey.KEY_UP)) _l.Position += new Vector2(0, -3);
+            else if (IsKeyDown(KeyboardKey.KEY_DOWN)) _l.Position += new Vector2(0, 3);
             if (IsKeyPressed(KeyboardKey.KEY_SPACE)) _tbv.Closable = !_tbv.Closable;
         }
 

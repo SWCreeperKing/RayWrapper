@@ -16,19 +16,19 @@ namespace RayWrapper.Objs
             Close
         }
 
-        public string message;
-        public string title;
-        public bool informationBox;
         public Button close;
-        public Button no;
-        public Button yes;
+        public bool informationBox;
+        public string message;
         public ColorModule messageColor = new(70, 140, 140);
-        public ColorModule rectColor = new(60, 60, 60);
-        public ColorModule titleColor = new(70, 170, 70);
-        public Vector2 size;
+        public Button no;
         public Action<Result> onResult = null;
-
-        private Rectangle _rect;
+        public ColorModule rectColor = new(60, 60, 60);
+        public Vector2 size;
+        public string title;
+        public ColorModule titleColor = new(70, 170, 70);
+        public Button yes;
+        
+        private readonly Rectangle _rect;
 
         public AlertBox(string title, string message, bool informationBox = false) : this(title, message, Vector2.Zero,
             informationBox)
@@ -36,7 +36,7 @@ namespace RayWrapper.Objs
         }
 
         /// <param name="size">Custom size for the Message Text</param>
-        public AlertBox(string title, string message, Vector2 size, bool informationBox = false) : base(new Vector2())
+        public AlertBox(string title, string message, Vector2 size, bool informationBox = false)
         {
             (this.title, this.message, this.size, this.informationBox) = (title, message, size, informationBox);
 
@@ -63,9 +63,9 @@ namespace RayWrapper.Objs
             var halfScreen = WindowSize / 2;
             var messageSize = size == Vector2.Zero ? GameBox.Font.MeasureText(message, 30) : size;
             var titleSize = GameBox.Font.MeasureText(title);
-            var closeSize = close.Size();
-            var noSize = informationBox ? Vector2.Zero : no.Size();
-            var yesSize = informationBox ? Vector2.Zero : yes.Size();
+            var closeSize = close.Size;
+            var noSize = informationBox ? Vector2.Zero : no.Size;
+            var yesSize = informationBox ? Vector2.Zero : yes.Size;
             var backLeng = informationBox
                 ? Math.Max(Math.Max(titleSize.X, messageSize.X), closeSize.X)
                 : Math.Max(Math.Max(titleSize.X, messageSize.X), yesSize.X + noSize.X + 20) + closeSize.X;
@@ -78,12 +78,15 @@ namespace RayWrapper.Objs
 
             if (!informationBox)
             {
-                close.MoveTo(new Vector2(_rect.x + (_rect.width - closeSize.X) - 8, _rect.y + 3));
-                no.MoveTo(bottom + new Vector2(10, -3));
-                yes.MoveTo(bottom - new Vector2(yesSize.X + 10, 3));
+                close.Position = new Vector2(_rect.x + (_rect.width - closeSize.X) - 8, _rect.y + 3);
+                no.Position = bottom + new Vector2(10, -3);
+                yes.Position = bottom - new Vector2(yesSize.X + 10, 3);
             }
-            else close.MoveTo(bottom - new Vector2(closeSize.X / 2, 3));
+            else close.Position = bottom - new Vector2(closeSize.X / 2, 3);
         }
+
+        public override Vector2 Position { get; set; }
+        public override Vector2 Size => _rect.Size();
 
         public override void Update()
         {
@@ -114,11 +117,5 @@ namespace RayWrapper.Objs
 
         public void Show() => alertBox = this;
         public void Hide() => alertBox = null;
-
-        public override void PositionChange(Vector2 v2)
-        {
-        }
-
-        public override Vector2 Size() => _rect.Size();
     }
 }

@@ -4,39 +4,54 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static RayWrapper.GameBox;
-using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
     public class Scrollbar : GameObject
     {
-        public float Value { get; private set; }
-
-        public Rectangle container;
-        public Rectangle bar;
-        public float barScale = 25;
-        public ColorModule containerColor = new(78, 78, 78);
-        public ColorModule barColor = new(116, 116, 116);
-        public ColorModule outlineColor = new(Color.BLACK);
         public Func<float> amountInvoke;
+        public Rectangle bar;
+        public ColorModule barColor = new(116, 116, 116);
+        public float barScale = 25;
+        public Rectangle container;
+        public ColorModule containerColor = new(78, 78, 78);
         public bool isVertical;
         public bool outline = true;
-
-        private float _visibleSize;
+        public ColorModule outlineColor = new(Color.BLACK);
+        
+        private readonly List<Action<float>> _onMove = new();
         private float _trueSize;
-        private List<Action<float>> _onMove = new();
+        private float _visibleSize;
+
+        public Scrollbar(Rectangle rect, bool isVertical = true)
+        {
+            container = rect.Clone();
+            bar = new Rectangle();
+            this.isVertical = isVertical;
+        }
+
+        public float Value { get; private set; }
+
+        public override Vector2 Position
+        {
+            get => container.Pos();
+            set
+            {
+                var offset = GetOffset;
+                container = container.MoveTo(value);
+                bar = bar.MoveTo(value);
+                MoveBar(offset);
+            }
+        }
+
+        public override Vector2 Size => container.Size();
+
+        public float GetOffset => isVertical ? container.y - bar.y : container.x - bar.x;
 
         public event Action<float> OnMoveEvent
         {
             add => _onMove.Add(value);
             remove => _onMove.Remove(value);
-        }
-
-        public Scrollbar(Rectangle rect, bool isVertical = true) : base(rect.Pos())
-        {
-            container = rect.Clone();
-            bar = new Rectangle();
-            this.isVertical = isVertical;
         }
 
         public void MoveBar(float offset)
@@ -98,16 +113,6 @@ namespace RayWrapper.Objs
             bar.DrawRoundedLines(outlineColor, .4f);
         }
 
-        public override void PositionChange(Vector2 v2)
-        {
-            var offset = GetOffset;
-            container = container.MoveTo(v2);
-            bar = bar.MoveTo(v2);
-            MoveBar(offset);
-        }
-
-        public override Vector2 Size() => container.Size();
-        public float GetOffset => isVertical ? container.y - bar.y : container.x - bar.x;
         public float Amount() => Math.Max(amountInvoke.Invoke(), 1);
     }
 }

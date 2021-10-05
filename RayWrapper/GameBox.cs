@@ -163,7 +163,7 @@ namespace RayWrapper
                             _lastTime = time;
 
                             foreach (var collider in Colliders.Where(c => c.velocity != Vector2.Zero))
-                                collider.MoveBy(collider.velocity * deltaTime);
+                                collider.Position += collider.velocity * deltaTime;
 
                             if (groups.Count > 1)
                                 foreach (var (s1, s2) in CollisionLayerTags)
@@ -203,7 +203,7 @@ namespace RayWrapper
                                 }
 
                             Task.Run(() => AddTime(GetTimeMs() - startTime));
-                            Task.Delay(5).GetAwaiter().GetResult();
+                            Task.Delay(1).GetAwaiter().GetResult();
                         }
                         catch (Exception e)
                         {

@@ -5,6 +5,8 @@ namespace RayWrapper.CollisionSystem
 {
     public abstract class RectCollider : Collider
     {
+        public override Vector2 Size => rect.Size();
+
         public Rectangle rect;
 
         public RectCollider(string layerId, Vector2 pos, Rectangle rect) : base(layerId, pos) => this.rect = rect;
@@ -18,6 +20,5 @@ namespace RayWrapper.CollisionSystem
             };
 
         public static implicit operator Rectangle(RectCollider rc) => rc.rect.MoveTo(rc.Position);
-        public override Vector2 Size() => rect.Size();
     }
 }

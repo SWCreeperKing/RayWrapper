@@ -19,10 +19,13 @@ namespace RayWrapper.GameConsole
         private static List<string> _lines = new();
         private static Dictionary<int, Color> _colors = new();
 
+        public override Vector2 Position { get; set; }
+        public override Vector2 Size { get; }
+        
         public ListView history;
         public InputBox ib;
 
-        public GameConsole() : base(Vector2.Zero)
+        public GameConsole()
         {
             if (singleConsole is not null)
                 throw new ApplicationException("Only 1 instance of GameConsole can be created");
@@ -66,13 +69,6 @@ namespace RayWrapper.GameConsole
             history.Render();
             ib.Render();
         }
-
-        [Obsolete]
-        public override void PositionChange(Vector2 v2)
-        {
-        }
-
-        [Obsolete] public override Vector2 Size() => Vector2.Zero;
 
         public void WriteToConsole(params string[] texts)
         {

@@ -1,41 +1,22 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using Raylib_cs;
 
 namespace RayWrapper.Vars
 {
     public abstract class GameObject
     {
-        public Vector2 Position => initPosition + addedPosition;
-        public Func<bool> isVisible = () => true;
-        public Vector2 SizeFrom0 => Position + Size();
-        protected Vector2 initPosition;
-        protected Vector2 addedPosition;
-
-        public GameObject(Vector2 pos) => initPosition = pos;
-
-        public void MoveBy(Vector2 v2)
-        {
-            addedPosition += v2;
-            PositionChange(Position);
-        }
-
-        public void MoveTo(Vector2 v2)
-        {
-            addedPosition = v2 - initPosition;
-            PositionChange(Position);
-        }
+        public Actionable<bool> isVisible = true;
+        public abstract Vector2 Position { get; set; }
+        public abstract Vector2 Size { get; }
 
         public void Render()
         {
-            if (!isVisible.Invoke()) return;
+            if (!isVisible) return;
             RenderCall();
         }
 
         public abstract void Update();
         protected abstract void RenderCall();
-        public abstract void PositionChange(Vector2 v2);
-        public abstract Vector2 Size();
 
         public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>
             GameBox.Font.DrawText(text, pos, color, fontSize, spacing);

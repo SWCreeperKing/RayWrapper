@@ -9,15 +9,19 @@ namespace RayWrapper.Objs
 {
     public class DropDown : GameObject
     {
-        public int Value
+        public override Vector2 Position
         {
-            get => _value;
+            get => _pos;
             set
             {
-                _value = value;
+                _pos = value;
+                text.Position = value;
+                optionDisplay.Position = value + new Vector2(0, text.Rect.height + 2);
                 UpdateChanges();
             }
         }
+
+        public override Vector2 Size => optionDisplay.Size + text.Size;
 
         public char arrowDown = '↓';
         public char arrowUp = '↑';
@@ -29,12 +33,23 @@ namespace RayWrapper.Objs
         public Label text;
 
         private Vector2 _size;
+        private Vector2 _pos;
         private int _value;
 
-        public DropDown(Vector2 pos, params string[] options) : base(pos)
+        public DropDown(Vector2 pos, params string[] options)
         {
-            this.options = options.ToList();
+            (_pos, this.options) = (pos, options.ToList());
             UpdateChanges();
+        }
+
+        public int Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                UpdateChanges();
+            }
         }
 
         public void UpdateChanges()
@@ -42,16 +57,15 @@ namespace RayWrapper.Objs
             var longest = options.OrderByDescending(s => s.Length).First();
             _size = GameBox.Font.MeasureText($"^|||y{longest}", fontSize);
             var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
-            Color c1 = new(50, 50, 50, 255);
-            Color c2 = new(192, 192, 198, 255);
             text = new Label(back, options[Value])
             {
                 fontSize = fontSize, outline = new Actionable<bool>(true),
                 clicked = () => isListVisible = !isListVisible, useBaseHover = true,
-                backColor = new ColorModule(() => c1), fontColor = new ColorModule(() => c2)
+                backColor = new ColorModule(50), fontColor = new ColorModule(192)
             };
 
-            optionDisplay = new(new Vector2(back.x, back.y + back.height + 2), (int)back.width, i => options[i],
+            optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), (int)back.width,
+                i => options[i],
                 () => options.Count, 4, padding: 0)
             {
                 IndividualClick = i =>
@@ -79,14 +93,5 @@ namespace RayWrapper.Objs
             text.text = $"{(isListVisible ? arrowUp : arrowDown)}| {options[Value]}";
             text.Render();
         }
-
-        public override void PositionChange(Vector2 v2)
-        {
-            text.MoveTo(v2);
-            optionDisplay.MoveTo(v2);
-            optionDisplay.MoveBy(new Vector2(0, text.Rect.height + 2));
-        }
-
-        public override Vector2 Size() => optionDisplay.Size() + text.Size();
     }
 }

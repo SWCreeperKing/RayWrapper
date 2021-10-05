@@ -5,6 +5,7 @@ namespace RayWrapper.CollisionSystem
 {
     public abstract class CircleCollider : Collider
     {
+        public override Vector2 Size => new(radius * 2);
         public float radius;
 
         protected CircleCollider(string layerId, Vector2 pos, float radius) : base(layerId, pos) => this.radius = radius;
@@ -16,7 +17,5 @@ namespace RayWrapper.CollisionSystem
                 RectCollider rc => Raylib.CheckCollisionCircleRec(Position, radius, rc),
                 _ => false
             };
-
-        public override Vector2 Size() => new(radius * 2, radius * 2);
     }
 }

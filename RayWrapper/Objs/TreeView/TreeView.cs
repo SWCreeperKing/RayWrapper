@@ -15,6 +15,9 @@ namespace RayWrapper.Objs.TreeView
 {
     public class TreeView : GameObject
     {
+        public override Vector2 Position { get; set; }
+        public override Vector2 Size => mask.IsEqualTo(Zero) ? WindowSize : mask.Size();
+
         public Rectangle mask = Zero;
         public Vector2 axisOffset = Vector2.Zero;
         public readonly List<NodeChain> chains = new();
@@ -23,14 +26,14 @@ namespace RayWrapper.Objs.TreeView
         private Vector2 _moveChange;
         private float _scale = 32;
 
-        public TreeView(params NodeChain[] chains) : base(new Vector2()) => this.chains.AddRange(chains);
+        public TreeView(params NodeChain[] chains) => this.chains.AddRange(chains);
 
         public override void Update()
         {
             if (alertBox is not null || IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();
             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask.IsEqualTo(Zero)
-                ? AssembleRectFromVec(new Vector2(0), WindowSize)
+                ? AssembleRectFromVec(Vector2.Zero, WindowSize)
                 : mask).IsMouseIn())
             {
                 var curMouse = mousePos;
@@ -57,13 +60,6 @@ namespace RayWrapper.Objs.TreeView
             if (t.Any()) rect.DrawTooltip(t.First());
         }
 
-        // useless
-        [Obsolete]
-        public override void PositionChange(Vector2 v2)
-        {
-        }
-
         public void ResetPos() => (_moveChange, _scale) = (Vector2.Zero, _scale = 32);
-        public override Vector2 Size() => mask.IsEqualTo(new(0, 0, 0, 0)) ? WindowSize : mask.Size();
     }
 }

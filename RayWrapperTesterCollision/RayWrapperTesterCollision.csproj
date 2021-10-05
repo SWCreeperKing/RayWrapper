@@ -7,48 +7,48 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
+        <ProjectReference Include="..\RayWrapper\RayWrapper.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="obj\project.assets.json" />
-      <Content Include="obj\project.nuget.cache" />
-      <Content Include="obj\project.packagespec.json" />
-      <Content Include="obj\RayWrapperTesterCollision.csproj.nuget.dgspec.json" />
-      <Content Include="obj\RayWrapperTesterCollision.csproj.nuget.g.props" />
-      <Content Include="obj\RayWrapperTesterCollision.csproj.nuget.g.targets" />
-      <Content Include="obj\Release\net5.0\apphost.exe" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.AssemblyInfoInputs.cache" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.assets.cache" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csproj.CopyComplete" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csproj.CoreCompileInputs.cache" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csproj.FileListAbsolute.txt" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csprojAssemblyReference.cache" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.dll" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.GeneratedMSBuildEditorConfig.editorconfig" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.genruntimeconfig.cache" />
-      <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.pdb" />
-      <Content Include="obj\Release\net5.0\ref\RayWrapperTesterCollision.dll" />
-      <Content Include="obj\rider.project.restore.info" />
+        <Content Include="obj\project.assets.json"/>
+        <Content Include="obj\project.nuget.cache"/>
+        <Content Include="obj\project.packagespec.json"/>
+        <Content Include="obj\RayWrapperTesterCollision.csproj.nuget.dgspec.json"/>
+        <Content Include="obj\RayWrapperTesterCollision.csproj.nuget.g.props"/>
+        <Content Include="obj\RayWrapperTesterCollision.csproj.nuget.g.targets"/>
+        <Content Include="obj\Release\net5.0\apphost.exe"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.AssemblyInfoInputs.cache"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.assets.cache"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csproj.CopyComplete"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csproj.CoreCompileInputs.cache"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csproj.FileListAbsolute.txt"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.csprojAssemblyReference.cache"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.dll"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.GeneratedMSBuildEditorConfig.editorconfig"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.genruntimeconfig.cache"/>
+        <Content Include="obj\Release\net5.0\RayWrapperTesterCollision.pdb"/>
+        <Content Include="obj\Release\net5.0\ref\RayWrapperTesterCollision.dll"/>
+        <Content Include="obj\rider.project.restore.info"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="obj\Release\net5.0\.NETCoreApp,Version=v5.0.AssemblyAttributes.cs" />
-      <Compile Include="obj\Release\net5.0\RayWrapperTesterCollision.AssemblyInfo.cs" />
-      <Compile Remove="obj\**" />
+        <Compile Include="obj\Release\net5.0\.NETCoreApp,Version=v5.0.AssemblyAttributes.cs"/>
+        <Compile Include="obj\Release\net5.0\RayWrapperTesterCollision.AssemblyInfo.cs"/>
+        <Compile Remove="obj\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="obj\**" />
+        <EmbeddedResource Remove="obj\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="obj\**" />
+        <None Remove="obj\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="DiscordRichPresence" Version="1.0.175"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
     </ItemGroup>
 
 </Project>

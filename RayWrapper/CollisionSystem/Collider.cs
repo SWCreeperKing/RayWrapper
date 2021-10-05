@@ -5,15 +5,19 @@ namespace RayWrapper.CollisionSystem
 {
     public abstract class Collider : GameObject
     {
+        public override Vector2 Position { get => _pos; set => _pos = value; }
+
         public static long count;
         public static long id;
         public Vector2 velocity = Vector2.Zero;
         public long currentId;
         public string layer;
+
+        private Vector2 _pos;
         
-        protected Collider(string layerId, Vector2 pos) : base(pos)
+        protected Collider(string layerId, Vector2 pos)
         {
-            (layer, currentId) = (layerId, id);
+            (_pos, layer, currentId) = (pos, layerId, id);
             GameBox.AddColliders(this);
             id++;
             count++;
@@ -33,10 +37,6 @@ namespace RayWrapper.CollisionSystem
                 count--;
             }
             else RenderShape(Position);
-        }
-
-        public override void PositionChange(Vector2 v2)
-        {
         }
 
         public abstract bool CheckCollision(Collider c);
