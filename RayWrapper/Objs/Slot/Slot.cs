@@ -1,37 +1,13 @@
-﻿using System;
-using System.Numerics;
-using Raylib_cs;
-using RayWrapper.Vars;
-using static RayWrapper.RectWrapper;
+﻿using System.Numerics;
 
 namespace RayWrapper.Objs.Slot
 {
-    public class Slot : GameObject
+    public class Slot : SlotBase
     {
-        public override Vector2 Position
-        {
-            get => rect.Pos();
-            set => rect = rect.MoveTo(value);
-        }
-
-        public override Vector2 Size => rect.Size();
-
-        public ColorModule color = new(102);
-        public Actionable<string> idRestriction = null;
-        public bool occupied = false;
-        public Rectangle rect;
-        public int thickness = 3;
-
-        public Slot(Vector2 pos, Vector2 size)
-        {
-            rect = AssembleRectFromVec(pos, size);
-            if (!GameBox.dragCollision.Contains(this)) GameBox.dragCollision.Add(this);
-        }
-
-        public override void Update()
+        public Slot(Vector2 pos, Vector2 size) : base(pos, size)
         {
         }
 
-        protected override void RenderCall() => rect.DrawHallowRect(color, thickness);
+        protected override void Draw() => rect.DrawHallowRect(color, thickness);
     }
 }

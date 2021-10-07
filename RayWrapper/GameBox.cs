@@ -51,7 +51,7 @@ namespace RayWrapper
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
         public static bool isDebugTool;
-        public static List<Slot> dragCollision = new();
+        public static List<SlotBase> dragCollision = new();
         public static GameObject mouseOccupier;
         public static ScreenGrid screenGrid;
 

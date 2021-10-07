@@ -18,4 +18,9 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="Images/*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+        <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+    </ItemGroup>
+
 </Project>

@@ -23,7 +23,7 @@ namespace RayWrapper.Objs.Slot
         public Vector2 baseSize;
         public Vector2 beforeCords;
         public Rectangle rect;
-        public Slot slot;
+        public SlotBase slot;
         public bool drawPhantom = true;
         public bool slotDependent = true;
 

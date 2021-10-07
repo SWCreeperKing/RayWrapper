@@ -91,10 +91,17 @@ namespace RayWrapperTester
 
             RectItem ri = new(new Vector2(400), new Vector2(75)) { slotDependent = false, id = "blue", color = BLUE };
             CircleItem ci = new(new Vector2(400, 475), new Vector2(75)) { color = RED, id = "red" };
+            ImageObj io = new(new Vector2(400, 550), "Images/Untitled.png");
+            ImageObj io2 = new(new Vector2(1025, 300), "Images/Untitled.png");
+            io.SetSize(new Vector2(75));
+            io2.SetSize(new Vector2(75));
+            io2.imageAlpha = 100;
+            ImageItem ii = new(io) {slotDependent = false};
             Slot sl = new(new Vector2(800, 300), new Vector2(75)) { color = PURPLE };
             Slot sl1 = new(new Vector2(875, 300), new Vector2(75)) { color = BLUE, idRestriction = "blue" };
             Slot sl2 = new(new Vector2(950, 300), new Vector2(75)) { color = RED, idRestriction = "red" };
-            _tbv.AddTab("Slot Test", ri, ci, sl, sl1, sl2);
+            ImageSlot imSl = new(io2) { color = YELLOW};
+            _tbv.AddTab("Slot Test", imSl, ri, ci, ii, sl, sl1, sl2);
 
             _tbv.AddTab("Mask Test", new EmptyRender(() => _scissorArea.MaskDraw(() =>
             {

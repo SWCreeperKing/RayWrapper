@@ -143,5 +143,8 @@ namespace RayWrapper
         public static bool IsVectInVects(this Vector2 vect, Vector2 pos, Vector2 size, float scale = 1) =>
             pos.X * scale < vect.X && pos.Y * scale < vect.Y && vect.X < (pos.X + size.X) * scale &&
             vect.Y < (pos.Y + size.Y) * scale;
+
+        public static Vector2 Size(this Image img) => img.Texture().Size();
+        public static Vector2 Size(this Texture2D t2d) => new(t2d.width, t2d.height);
     }
 }
