@@ -9,6 +9,9 @@ namespace RayWrapper.Vars
         public abstract Vector2 Position { get; set; }
         public abstract Vector2 Size { get; }
 
+        public float FullLength => Position.X + Size.X;
+        public float FullHeight => Position.Y + Size.Y;
+        
         public void Render()
         {
             if (!isVisible) return;

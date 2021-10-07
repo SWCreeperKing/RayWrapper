@@ -13,6 +13,7 @@ using RayWrapper.Objs.Slot;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
+using static RayWrapper.RectWrapper;
 
 namespace RayWrapper
 {
@@ -52,11 +53,9 @@ namespace RayWrapper
         public static bool isDebugTool;
         public static List<Slot> dragCollision = new();
         public static GameObject mouseOccupier;
+        public static ScreenGrid screenGrid;
 
         private static readonly List<ISave> SaveList = new();
-        private static readonly List<Collider> Colliders = new();
-        private static readonly List<Collider> CollidersAddQueue = new();
-        private static readonly List<Collider> CollidersRemoveQueue = new();
         private static long _lastTime;
         private static Font _font;
         private static List<Action> _onDispose = new();
@@ -95,6 +94,7 @@ namespace RayWrapper
             DiscordIntegration.Init();
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
+            screenGrid = new ScreenGrid();
             InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
             _target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
             _font = GetFontDefault();
@@ -132,78 +132,15 @@ namespace RayWrapper
 
             if (initCollision)
             {
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
-                    var groups = Colliders.GroupBy(c => c.layer).ToDictionary(c => c.Key, c => c);
-                    List<(long, long)> collisionMem = new();
                     while (true)
                     {
                         try
                         {
                             var startTime = GetTimeMs();
-                            if (CollidersAddQueue.Count > 0 || CollidersRemoveQueue.Count > 0)
-                            {
-                                if (CollidersAddQueue.Count > 0)
-                                {
-                                    Colliders.AddRange(CollidersAddQueue);
-                                    CollidersAddQueue.Clear();
-                                }
-
-                                if (CollidersRemoveQueue.Count > 0)
-                                {
-                                    Colliders.RemoveAll(c => CollidersRemoveQueue.Contains(c));
-                                    CollidersRemoveQueue.Clear();
-                                }
-
-                                groups = Colliders.GroupBy(c => c.layer).ToDictionary(c => c.Key, c => c);
-                            }
-
-                            var time = GetTimeMs();
-                            var deltaTime = time - _lastTime;
-                            _lastTime = time;
-
-                            foreach (var collider in Colliders.Where(c => c.velocity != Vector2.Zero))
-                                collider.Position += collider.velocity * deltaTime;
-
-                            if (groups.Count > 1)
-                                foreach (var (s1, s2) in CollisionLayerTags)
-                                foreach (var ci in groups[s1])
-                                foreach (var cj in groups[s2])
-                                {
-                                    var key1 = (ci.currentId, cj.currentId);
-                                    var key2 = (cj.currentId, ci.currentId);
-                                    if (ci.CheckCollision(cj))
-                                    {
-                                        if (collisionMem.Contains(key1)) ci.InCollision(cj);
-                                        else
-                                        {
-                                            ci.FirstCollision(cj);
-                                            collisionMem.Add(key1);
-                                        }
-
-                                        if (collisionMem.Contains(key2)) cj.InCollision(ci);
-                                        else
-                                        {
-                                            cj.FirstCollision(ci);
-                                            collisionMem.Add(key2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (collisionMem.Contains(key1))
-                                        {
-                                            ci.ExitCollision(cj);
-                                            collisionMem.Remove(key1);
-                                        }
-
-                                        if (!collisionMem.Contains(key2)) continue;
-                                        cj.ExitCollision(ci);
-                                        collisionMem.Remove(key2);
-                                    }
-                                }
-
-                            Task.Run(() => AddTime(GetTimeMs() - startTime));
-                            Task.Delay(1).GetAwaiter().GetResult();
+                            await screenGrid.Update();
+                            await Task.Run(() => AddTime(GetTimeMs() - startTime));
                         }
                         catch (Exception e)
                         {
@@ -273,7 +210,8 @@ namespace RayWrapper
             try
             {
                 ClearBackground(backgroundColor);
-
+                
+                screenGrid.Draw(isDebugTool);
                 Scene.Render();
                 if (_isConsole) singleConsole.Render();
                 else
@@ -283,8 +221,8 @@ namespace RayWrapper
                 }
 
                 if (isDebugTool)
-                    RectWrapper.AssembleRectFromVec(Vector2.Zero, WindowSize)
-                        .DrawTooltip($"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}");
+                    AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip(
+                        $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}");
             }
             catch (Exception e)
             {
@@ -335,21 +273,6 @@ namespace RayWrapper
         public void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
         #endregion
-
-        public static void RenderColliders()
-        {
-            try
-            {
-                foreach (var c in Colliders) c.Render();
-            }
-            catch
-            {
-                RenderColliders();
-            }
-        }
-
-        public static void AddColliders(params Collider[] c) => CollidersAddQueue.AddRange(c);
-        public static void RemoveColliders(params Collider[] c) => CollidersRemoveQueue.AddRange(c);
 
         public static void AddTime(long ms)
         {

@@ -17,5 +17,7 @@ namespace RayWrapper.CollisionSystem
                 RectCollider rc => Raylib.CheckCollisionCircleRec(Position, radius, rc),
                 _ => false
             };
+
+        public override bool SampleCollision(Rectangle c) => Raylib.CheckCollisionCircleRec(Position, radius, c);
     }
 }

@@ -8,6 +8,14 @@ namespace RayWrapper.Objs
 {
     public class ProgressBar : GameObject
     {
+        public override Vector2 Position
+        {
+            get => _pos;
+            set => _pos = value;
+        }
+
+        public override Vector2 Size => AssembleRectFromVec(Position, size).Grow(outlineThickness).Size();
+
         public ColorModule backColor = new(Color.BLACK);
         public ColorModule fillColor = new(Color.RAYWHITE);
         public ColorModule finishedColor = new(Color.GREEN);
@@ -18,23 +26,15 @@ namespace RayWrapper.Objs
         public Vector2 size;
         public ColorModule toColor = new(Color.GOLD);
         public bool useGradient = true;
-
+        
         private Vector2 _pos;
 
         public ProgressBar(Rectangle rect, Func<float> percent) =>
             (this.percent, _pos, size) = (percent, rect.Pos(), rect.Size());
 
         public ProgressBar(float x, float y, float width, float height, Func<float> percent) =>
-            (this.percent, size) = (percent, new Vector2(width, height));
-
-        public override Vector2 Position
-        {
-            get => _pos;
-            set => _pos = value;
-        }
-
-        public override Vector2 Size => AssembleRectFromVec(Position, size).Grow(outlineThickness).Size();
-
+            (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
+        
         public override void Update()
         {
         }

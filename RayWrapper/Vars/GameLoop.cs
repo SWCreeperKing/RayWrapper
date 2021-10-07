@@ -19,7 +19,6 @@ namespace RayWrapper.Vars
         public void Render()
         {
             foreach (var a in _registryBefore) a.Render();
-            GameBox.RenderColliders();
             RenderLoop();
             foreach (var a in _registryAfter) a.Render();
         }

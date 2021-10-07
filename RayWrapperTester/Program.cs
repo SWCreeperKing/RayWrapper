@@ -91,7 +91,7 @@ namespace RayWrapperTester
 
             RectItem ri = new(new Vector2(400), new Vector2(75)) { slotDependent = false, id = "blue", color = BLUE };
             CircleItem ci = new(new Vector2(400, 475), new Vector2(75)) { color = RED, id = "red" };
-            Slot sl = new(new Vector2(800, 300), new Vector2(75)) { color = PURPLE};
+            Slot sl = new(new Vector2(800, 300), new Vector2(75)) { color = PURPLE };
             Slot sl1 = new(new Vector2(875, 300), new Vector2(75)) { color = BLUE, idRestriction = "blue" };
             Slot sl2 = new(new Vector2(950, 300), new Vector2(75)) { color = RED, idRestriction = "red" };
             _tbv.AddTab("Slot Test", ri, ci, sl, sl1, sl2);
@@ -104,8 +104,7 @@ namespace RayWrapperTester
 
             _tbv.AddTab("Tooltip Test",
                 new EmptyRender(() =>
-                    AssembleRectFromVec(GameBox.WindowSize / 2, Vector2.Zero).Grow(1000)
-                        .DrawTooltip("Testing Tooltip")));
+                    AssembleRectFromVec(Vector2.Zero, GameBox.WindowSize).DrawTooltip("Testing Tooltip")));
 
             Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Label.TextMode.SizeToText);
             listViewButton.Clicked += () =>

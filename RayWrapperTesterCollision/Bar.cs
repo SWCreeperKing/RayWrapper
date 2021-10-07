@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Raylib_cs;
 using RayWrapper;
 using RayWrapper.CollisionSystem;
@@ -17,7 +18,7 @@ namespace RayWrapperTesterCollision
 
         public override void FirstCollision(Collider c)
         {
-            if (c is not Circle cc) return;
+            if (c is not Circle) return;
             if (vert) c.velocity.X = -c.velocity.X;
             else c.velocity.Y = -c.velocity.Y;
         }
