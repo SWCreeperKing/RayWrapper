@@ -54,6 +54,8 @@ namespace RayWrapper
         public static List<SlotBase> dragCollision = new();
         public static GameObject mouseOccupier;
         public static ScreenGrid screenGrid;
+        public static TextureFilter fontTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
+        public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
 
         private static readonly List<ISave> SaveList = new();
         private static long _lastTime;
@@ -77,7 +79,7 @@ namespace RayWrapper
             set
             {
                 _font = value;
-                SetTextureFilter(_font.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
+                SetTextureFilter(_font.texture, fontTextureFilter);
             }
         }
 
@@ -236,7 +238,7 @@ namespace RayWrapper
 
             EndTextureMode();
             
-            SetTextureFilter(_target.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
+            SetTextureFilter(_target.texture, targetTextureFilter);
 
             BeginDrawing();
             ClearBackground(letterboxColor);
