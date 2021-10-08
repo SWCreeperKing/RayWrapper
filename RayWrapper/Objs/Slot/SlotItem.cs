@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Numerics;
 using Raylib_cs;
-using RayWrapper.CollisionSystem;
 using RayWrapper.Vars;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
@@ -92,7 +91,6 @@ namespace RayWrapper.Objs.Slot
         // currentlySlotted is null if no slotitem is present in slotbase or cant be slotted
         public virtual void OnSlotAttempt(SlotItem currentlySlotted)
         {
-            
         }
     }
 }

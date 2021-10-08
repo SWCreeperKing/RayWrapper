@@ -18,8 +18,8 @@ namespace RayWrapper.Objs
         public ImageMatrix(Image img) => _img = img;
 
         // rect is the slice of the bigger texture (i think)
-        public void AddSlice(Enum e, Vector2 pos, Rectangle rect) =>
-            _slices.Add(e, new ImageObj(pos, ImageFromImage(_img, rect)));
+        public void AddSlice(Enum e, Rectangle rect) =>
+            _slices.Add(e, new ImageObj(Vector2.Zero, ImageFromImage(_img, rect)));
 
         public ImageObj this[Enum e] => _slices[e];
         ~ImageMatrix() => UnloadImage(_img);
