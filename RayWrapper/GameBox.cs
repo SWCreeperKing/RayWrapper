@@ -56,6 +56,7 @@ namespace RayWrapper
         public static ScreenGrid screenGrid;
         public static TextureFilter fontTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
+        public static bool f11Fullscreen = true;
 
         private static readonly List<ISave> SaveList = new();
         private static long _lastTime;
@@ -185,6 +186,7 @@ namespace RayWrapper
 
         private void Update()
         {
+            if (f11Fullscreen && IsKeyPressed(KeyboardKey.KEY_F11)) ToggleFullscreen();
             animator.Update();
             Scene.Update();
         }
