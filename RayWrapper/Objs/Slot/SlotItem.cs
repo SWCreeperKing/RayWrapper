@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using Raylib_cs;
+using RayWrapper.CollisionSystem;
 using RayWrapper.Vars;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
@@ -20,14 +21,13 @@ namespace RayWrapper.Objs.Slot
         public override Vector2 Size => rect.Size();
 
         public string id;
-        public Vector2 baseSize;
         public Vector2 beforeCords;
         public Rectangle rect;
         public SlotBase slot;
         public bool drawPhantom = true;
         public bool slotDependent = true;
 
-        public SlotItem(Vector2 pos, Vector2 size) => rect = RectWrapper.AssembleRectFromVec(pos, baseSize = size);
+        public SlotItem(Vector2 pos, Vector2 size) => rect = RectWrapper.AssembleRectFromVec(pos, size);
 
         public override void Update()
         {
@@ -50,14 +50,21 @@ namespace RayWrapper.Objs.Slot
                         if (slot != null)
                         {
                             slot.occupied = false;
+                            slot.siOccupier = null;
                             slot = null;
                         }
 
                         slot = candidate;
                         slot.occupied = true;
+                        slot.siOccupier = this;
                         Position = slot.Position;
+                        OnSlotAttempt(null);
                     }
-                    else Position = beforeCords;
+                    else
+                    {
+                        OnSlotAttempt(candidate.occupied ? candidate.siOccupier : null);
+                        Position = beforeCords;
+                    }
                 }
                 else if (slotDependent) Position = beforeCords;
                 else if (slot != null)
@@ -80,5 +87,12 @@ namespace RayWrapper.Objs.Slot
         }
 
         public abstract void Draw(Vector2 pos, Vector2 size, int alpha);
+
+        // currentlySlotted is the slotitem that occupies the current slotbase
+        // currentlySlotted is null if no slotitem is present in slotbase or cant be slotted
+        public virtual void OnSlotAttempt(SlotItem currentlySlotted)
+        {
+            
+        }
     }
 }
