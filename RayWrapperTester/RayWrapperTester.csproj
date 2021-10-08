@@ -19,8 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-<!--        <Content Include="Images/*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />-->
-<!--        <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />-->
+        <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

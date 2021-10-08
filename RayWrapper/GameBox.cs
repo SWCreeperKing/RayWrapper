@@ -214,7 +214,7 @@ namespace RayWrapper
             try
             {
                 ClearBackground(backgroundColor);
-                
+
                 screenGrid.Draw(isDebugTool);
                 Scene.Render();
                 if (_isConsole) singleConsole.Render();
@@ -239,7 +239,7 @@ namespace RayWrapper
             }
 
             EndTextureMode();
-            
+
             SetTextureFilter(_target.texture, targetTextureFilter);
 
             BeginDrawing();
@@ -296,6 +296,9 @@ namespace RayWrapper
             mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
             mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
+
+        public static void LoadFont(string font, int fontSize = 96, int toChar = 3000) =>
+            Font = LoadFontEx(font, fontSize, null, toChar);
 
         public static void OpenLink(string url) => Process.Start("explorer.exe", url);
     }
