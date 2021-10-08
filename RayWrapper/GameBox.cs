@@ -77,7 +77,7 @@ namespace RayWrapper
             set
             {
                 _font = value;
-                SetTextureFilter(_font.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
+                SetTextureFilter(_font.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
             }
         }
 
@@ -236,7 +236,7 @@ namespace RayWrapper
 
             EndTextureMode();
             
-            SetTextureFilter(_target.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
+            SetTextureFilter(_target.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
 
             BeginDrawing();
             ClearBackground(letterboxColor);
