@@ -235,6 +235,8 @@ namespace RayWrapper
             }
 
             EndTextureMode();
+            
+            SetTextureFilter(_target.texture, TextureFilter.TEXTURE_FILTER_TRILINEAR);
 
             BeginDrawing();
             ClearBackground(letterboxColor);

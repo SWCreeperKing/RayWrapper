@@ -92,5 +92,7 @@ namespace RayWrapper.Objs.Slot
         public virtual void OnSlotAttempt(SlotItem currentlySlotted)
         {
         }
+        
+        
     }
 }

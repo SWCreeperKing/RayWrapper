@@ -6,21 +6,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RayWrapper\RayWrapper.csproj"/>
+        <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="CascadiaMono.ttf" CopyToOutputDirectory="PreserveNewest"/>
+        <Content Include="CascadiaMono.ttf" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DiscordRichPresence" Version="1.0.175"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Images/*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+<!--        <Content Include="Images/*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />-->
+<!--        <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />-->
     </ItemGroup>
 
 </Project>
