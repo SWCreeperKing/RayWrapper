@@ -26,7 +26,8 @@ namespace RayWrapper.Objs
         public Vector2 size;
         public ColorModule toColor = new(Color.GOLD);
         public bool useGradient = true;
-        
+        public Func<string> customTooltip = null;
+
         private Vector2 _pos;
 
         public ProgressBar(Rectangle rect, Func<float> percent) =>
@@ -34,7 +35,7 @@ namespace RayWrapper.Objs
 
         public ProgressBar(float x, float y, float width, float height, Func<float> percent) =>
             (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
-        
+
         public override void Update()
         {
         }
@@ -54,7 +55,9 @@ namespace RayWrapper.Objs
                 else AssembleRectFromVec(Position, newS).DrawGradiant(fillColor, toColor);
             }
 
-            if (hoverPercent) back.DrawTooltip(fill >= 1 ? "100%" : $"{fill:##0.00%}");
+            if (!hoverPercent) return;
+            if (customTooltip is null) back.DrawTooltip(fill >= 1 ? "100%" : $"{fill:##0.00%}");
+            else customTooltip.Invoke();
         }
     }
 }
