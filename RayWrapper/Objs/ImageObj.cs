@@ -37,11 +37,19 @@ namespace RayWrapper.Objs
         private Rectangle _destRect;
         private Texture2D _imgText;
 
-        public ImageObj(Vector2 pos, string imageFile) : this(pos, Raylib.LoadImage(imageFile))
+        public ImageObj(string imageFile) : this(Raylib.LoadImage(imageFile), Vector2.Zero)
+        {
+        }
+        
+        public ImageObj(string imageFile, Vector2 pos) : this(Raylib.LoadImage(imageFile), pos)
         {
         }
 
-        public ImageObj(Vector2 pos, Image img)
+        public ImageObj(Image img) : this(img, Vector2.Zero)
+        {
+        }
+
+        public ImageObj(Image img, Vector2 pos)
         {
             (_pos, _img) = (pos, img);
             _imageRect = AssembleRectFromVec(Vector2.Zero, _img.Size());
