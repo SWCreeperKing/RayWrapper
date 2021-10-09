@@ -297,7 +297,7 @@ namespace RayWrapper
             mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
 
-        public static void LoadFont(string font, int fontSize = 96, int toChar = 3000) =>
+        public static void LoadFont(string font, int fontSize = 96, int toChar = 255) =>
             Font = LoadFontEx(font, fontSize, null, toChar);
 
         public static void OpenLink(string url) => Process.Start("explorer.exe", url);
