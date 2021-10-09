@@ -89,8 +89,7 @@ namespace RayWrapper.Objs.Slot
 
         public void SetSlot(SlotBase slot)
         {
-            var idR = slot.idRestriction;
-            if (slot.occupied || idR is not null || idR == id) return;
+            if (slot.occupied || slot.idRestriction is not null && slot.idRestriction == id) return;
             this.slot = slot;
             slot.occupied = true;
             slot.siOccupier = this;

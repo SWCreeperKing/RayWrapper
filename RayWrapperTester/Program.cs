@@ -101,6 +101,7 @@ namespace RayWrapperTester
             Slot sl1 = new(new Vector2(875, 300), new Vector2(75)) { color = BLUE, idRestriction = "blue" };
             Slot sl2 = new(new Vector2(950, 300), new Vector2(75)) { color = RED, idRestriction = "red" };
             ImageSlot imSl = new(io2) { color = YELLOW};
+            ii.SetSlot(imSl);
             _tbv.AddTab("Slot Test", imSl, ri, ci, ii, sl, sl1, sl2);
 
             _tbv.AddTab("Mask Test", new EmptyRender(() => _scissorArea.MaskDraw(() =>
