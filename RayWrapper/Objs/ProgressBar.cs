@@ -18,13 +18,13 @@ namespace RayWrapper.Objs
 
         public ColorModule backColor = new(Color.BLACK);
         public ColorModule fillColor = new(Color.RAYWHITE);
+        public ColorModule toColor = new(Color.GOLD);
         public ColorModule finishedColor = new(Color.GREEN);
         public bool hoverPercent = true;
         public bool isVertical;
         public int outlineThickness = 3;
         public Func<float> percent;
         public Vector2 size;
-        public ColorModule toColor = new(Color.GOLD);
         public bool useGradient = true;
         public Func<string> customTooltip = null;
 
@@ -57,7 +57,7 @@ namespace RayWrapper.Objs
 
             if (!hoverPercent) return;
             if (customTooltip is null) back.DrawTooltip(fill >= 1 ? "100%" : $"{fill:##0.00%}");
-            else customTooltip.Invoke();
+            else back.DrawTooltip(customTooltip.Invoke());
         }
     }
 }
