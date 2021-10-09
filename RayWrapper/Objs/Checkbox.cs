@@ -40,7 +40,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _size + MeasureText(_text);
 
-        public override void Update()
+        public override void UpdateCall()
         {
             if (!AssembleRectFromVec(Position, new Vector2(35 + _textLeng, 40)).IsMouseIn() ||
                 !Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;

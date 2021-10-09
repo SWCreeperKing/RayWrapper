@@ -11,7 +11,7 @@ namespace RayWrapper.Objs
         public Action toRender;
         public EmptyRender(Action toRender) => this.toRender = toRender;
 
-        public override void Update()
+        public override void UpdateCall()
         {
         }
 

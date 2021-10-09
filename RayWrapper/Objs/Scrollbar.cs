@@ -88,7 +88,7 @@ namespace RayWrapper.Objs
             _visibleSize = Math.Max(_trueSize, 10 * barScale);
         }
 
-        public override void Update()
+        public override void UpdateCall()
         {
             var mousePos = GameBox.mousePos;
             CalcBarSize();

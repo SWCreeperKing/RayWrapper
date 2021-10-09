@@ -63,7 +63,7 @@ namespace RayWrapper.Objs
             }
         }
 
-        public override void Update()
+        public override void UpdateCall()
         {
             _bar.Update();
             try

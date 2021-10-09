@@ -28,7 +28,7 @@ namespace RayWrapper.Objs.TreeView
 
         public TreeView(params NodeChain[] chains) => this.chains.AddRange(chains);
 
-        public override void Update()
+        public override void UpdateCall()
         {
             if (alertBox is not null || IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();

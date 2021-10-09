@@ -24,7 +24,6 @@ namespace RayWrapper.Vars
         public static int SciStaticLeng = 4;
         public static Format format = Format.Scientific;
 
-        public static readonly NumberClass MaxStageValue = new(9.99, double.MaxValue);
         public static readonly NumberClass MaxValue = new(9.99, double.MaxValue);
         public static readonly NumberClass Double = new(double.MaxValue);
         public static readonly NumberClass Float = new(float.MaxValue);

@@ -81,7 +81,7 @@ namespace RayWrapper.Objs
             };
         }
 
-        public override void Update()
+        public override void UpdateCall()
         {
             text.Update();
             if (isListVisible) optionDisplay.Update();

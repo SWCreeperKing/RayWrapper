@@ -59,7 +59,7 @@ namespace RayWrapper.CollisionSystem
         public void Draw(bool debug)
         {
             for (var i = 0; i < subCol.Count; i++) subCol[i].Render();
-            if (!debug) return;
+            if (!debug || !isCollisionSystem) return;
             foreach (var rect in rects.Values) rect.DrawHallowRect(Color.GREEN);
         }
 

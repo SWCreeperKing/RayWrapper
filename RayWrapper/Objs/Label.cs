@@ -48,7 +48,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => textMode == TextMode.SizeToText ? _textSizeCache : _back.Size();
 
-        public override void Update()
+        public override void UpdateCall()
         {
             CheckText();
             if (!Rect.IsMouseIn() || !IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;

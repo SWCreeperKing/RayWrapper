@@ -118,7 +118,7 @@ namespace RayWrapper.Objs
                 _labels[i].text = this[(int)value + i];
         }
 
-        public override void Update()
+        public override void UpdateCall()
         {
             _bar.Update();
             if (_lastLength != arrayLength.Invoke() || _lastValue != _bar.Value)

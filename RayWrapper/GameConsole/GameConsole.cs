@@ -57,7 +57,7 @@ namespace RayWrapper.GameConsole
             };
         }
 
-        public override void Update()
+        public override void UpdateCall()
         {
             history.Update();
             ib.Update();

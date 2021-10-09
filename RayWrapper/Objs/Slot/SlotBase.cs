@@ -31,7 +31,7 @@ namespace RayWrapper.Objs.Slot
             if (!GameBox.dragCollision.Contains(this)) GameBox.dragCollision.Add(this);
         }
 
-        public override void Update()
+        public override void UpdateCall()
         {
         }
 

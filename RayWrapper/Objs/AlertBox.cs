@@ -88,7 +88,7 @@ namespace RayWrapper.Objs
         public override Vector2 Position { get; set; }
         public override Vector2 Size => _rect.Size();
 
-        public override void Update()
+        public override void UpdateCall()
         {
             close.Update();
             if (informationBox) return;

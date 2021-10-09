@@ -16,9 +16,16 @@ namespace RayWrapper.Vars
         {
             if (!isVisible) return;
             RenderCall();
+            if (GameBox.isDebugTool) RectWrapper.AssembleRectFromVec(Position, Size).DrawHallowRect(Color.RED);
         }
 
-        public abstract void Update();
+        public void Update()
+        {
+            // for later use
+            UpdateCall();
+        }
+        
+        public abstract void UpdateCall();
         protected abstract void RenderCall();
 
         public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>

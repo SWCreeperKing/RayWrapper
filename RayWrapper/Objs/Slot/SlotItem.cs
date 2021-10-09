@@ -28,7 +28,7 @@ namespace RayWrapper.Objs.Slot
 
         public SlotItem(Vector2 pos, Vector2 size) => rect = RectWrapper.AssembleRectFromVec(pos, size);
 
-        public override void Update()
+        public override void UpdateCall()
         {
             if (rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !IsMouseOccupied)
             {
@@ -87,12 +87,20 @@ namespace RayWrapper.Objs.Slot
 
         public abstract void Draw(Vector2 pos, Vector2 size, int alpha);
 
+        public void SetSlot(SlotBase slot)
+        {
+            var idR = slot.idRestriction;
+            if (slot.occupied || idR is not null || idR == id) return;
+            this.slot = slot;
+            slot.occupied = true;
+            slot.siOccupier = this;
+            Position = slot.Position;
+        }
+
         // currentlySlotted is the slotitem that occupies the current slotbase
         // currentlySlotted is null if no slotitem is present in slotbase or cant be slotted
         public virtual void OnSlotAttempt(SlotItem currentlySlotted)
         {
         }
-        
-        
     }
 }

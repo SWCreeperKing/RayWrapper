@@ -57,6 +57,7 @@ namespace RayWrapper
         public static TextureFilter fontTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
         public static bool f11Fullscreen = true;
+        public static bool isCollisionSystem;
 
         private static readonly List<ISave> SaveList = new();
         private static long _lastTime;
@@ -112,6 +113,7 @@ namespace RayWrapper
 
         public void Start(bool initCollision)
         {
+            isCollisionSystem = initCollision;
             Scene.Init();
             _lastTime = GetTimeMs();
 
