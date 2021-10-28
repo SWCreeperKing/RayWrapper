@@ -4,6 +4,7 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static RayWrapper.GameBox;
+using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper.Objs
 {
@@ -12,16 +13,17 @@ namespace RayWrapper.Objs
         public Func<float> amountInvoke;
         public Rectangle bar;
         public ColorModule barColor = new(116, 116, 116);
-        public float barScale = 25;
+        public int minSizePercent = 20;
         public Rectangle container;
         public ColorModule containerColor = new(78, 78, 78);
         public bool isVertical;
         public bool outline = true;
         public ColorModule outlineColor = new(Color.BLACK);
-        
+
         private readonly List<Action<float>> _onMove = new();
         private float _trueSize;
         private float _visibleSize;
+        private Vector2 _lastMouse = Vector2.Zero;
 
         public Scrollbar(Rectangle rect, bool isVertical = true)
         {
@@ -59,13 +61,13 @@ namespace RayWrapper.Objs
             CalcBarSize();
             if (isVertical) bar.y -= offset;
             else bar.x -= offset;
-            CalcBarSize();
             ClampBounds();
             foreach (var a in _onMove) a.Invoke(Value);
         }
 
         public void ClampBounds()
         {
+            CalcBarSize();
             var (size, pos) = (container.Size(), container.Pos());
             (bar.width, bar.height) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
             var (hMax, wMax) = (pos.Y + size.Y, pos.X + size.X);
@@ -84,11 +86,12 @@ namespace RayWrapper.Objs
         public void CalcBarSize()
         {
             var size = container.Size();
-            _trueSize = (isVertical ? size.Y : size.X) / Amount();
-            _visibleSize = Math.Max(_trueSize, 10 * barScale);
+            var rSize = isVertical ? size.Y : size.X;
+            _trueSize = rSize / Amount();
+            _visibleSize = Math.Max(_trueSize, rSize * (minSizePercent/100f));
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             var mousePos = GameBox.mousePos;
             CalcBarSize();
@@ -96,15 +99,31 @@ namespace RayWrapper.Objs
             CalcVal();
 
             var isLeft = Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON);
-            if (container.IsMouseIn() && isLeft && !IsMouseOccupied) mouseOccupier = this;
+
+            if (bar.IsMouseIn() && isLeft && !IsMouseOccupied)
+            {
+                _lastMouse = GameBox.mousePos;
+                mouseOccupier = this;
+            }
             else if (mouseOccupier == this && !isLeft) mouseOccupier = null;
-            if (mouseOccupier != this) return;
-            var posDelta = isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X;
-            MoveBar(posDelta + _visibleSize / 2);
+
+            if (mouseOccupier != this)
+            {
+                if (!IsMouseOccupied && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) &&
+                    container.IsMouseIn())
+                    MoveBar((isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X) + _visibleSize / 2);
+
+                _lastMouse = Vector2.Zero;
+                return;
+            }
+
+            MoveBar(isVertical ? _lastMouse.Y - mousePos.Y : _lastMouse.X - mousePos.X);
+            _lastMouse = GameBox.mousePos;
         }
 
         protected override void RenderCall()
         {
+            if (Amount() == 1) return;
             var hover = IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn();
             container.DrawRounded(hover ? ((Color)containerColor).MakeLighter() : containerColor, .4f);
             bar.DrawRounded(hover ? ((Color)barColor).MakeLighter() : barColor, .4f);
@@ -113,6 +132,6 @@ namespace RayWrapper.Objs
             bar.DrawRoundedLines(outlineColor, .4f);
         }
 
-        public float Amount() => Math.Max(amountInvoke.Invoke(), 1);
+        public float Amount() => Math.Max(amountInvoke?.Invoke() ?? 0, 1);
     }
 }

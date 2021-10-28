@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using static RayWrapper.GameBox;
 using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.GameConsole;
+using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper.Vars
 {
@@ -21,42 +22,23 @@ namespace RayWrapper.Vars
             get => _cypher;
             set
             {
-                var flawless = true;
                 _cypher = value;
-                if (_cypher.encrypt is null || _cypher.decrypt is null)
-                {
-                    isCypherValid = false;
-                    return;
-                }
-
+                if (_cypher.encrypt is null || _cypher.decrypt is null) isCypherValid = false;
+                if (!isCypherValid) return;
                 StringBuilder sb = new();
                 Random r = new();
                 var charStop = r.Next(100, 151);
                 for (var i = 0; i < charStop; i++) sb.Append((char)r.Next(0, 256));
                 var str = sb.ToString();
-                var enc = _cypher.encrypt.Invoke(str);
-                var dec = _cypher.decrypt.Invoke(enc);
-
-                var before = Console.ForegroundColor;
-                if (str == enc)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("[WARNING] ENCRYPTION RESULTS IN BASE STRING");
-                    flawless = false;
-                }
-
-                if (str != dec)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("[ERROR] DECRYPTION DOES NOT RESULT THE INPUT TEXT");
-                    isCypherValid = false;
-                    return;
-                }
-
-                Console.WriteLine(
-                    $"[INFO] Encryption Analysis Completed {(flawless ? "Flawlessly!" : "And Resulted In NO Change!")}");
-                Console.ForegroundColor = before;
-                isCypherValid = true;
+                var enc = _cypher.encrypt!.Invoke(str);
+                var dec = _cypher.decrypt!.Invoke(enc);
+                var flawless = str != enc;
+                if (!flawless) Logger.Log(Warning, "ENCRYPTION RESULTS IN BASE STRING");
+                isCypherValid = str == dec;
+                Logger.Log(isCypherValid ? Info : Error,
+                    isCypherValid
+                        ? $"Encryption Analysis Completed {(flawless ? "Flawlessly!" : "And Resulted In NO Change!")}"
+                        : "DECRYPTION DOES NOT RESULT THE INPUT TEXT");
             }
         }
 
@@ -93,7 +75,7 @@ namespace RayWrapper.Vars
             }
             catch (InvalidOperationException e)
             {
-                Console.WriteLine($"ERR: {e.Message} HANDLED");
+                Logger.Log(Warning, $"ERR: {e.Message} HANDLED");
                 Task.Delay(1).GetAwaiter().GetResult();
                 return SaveString();
             }
@@ -122,7 +104,7 @@ namespace RayWrapper.Vars
             t.LoadString(sr.ReadToEnd());
             sr.Close();
         }
-        
+
         public static void SaveItems(this List<ISave> saveList, GameBox gb)
         {
             singleConsole.WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
@@ -133,7 +115,7 @@ namespace RayWrapper.Vars
             foreach (var t in saveList) t.SaveToFile(path);
             singleConsole.WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
         }
-        
+
         public static void LoadItems(this List<ISave> saveList, GameBox gb)
         {
             singleConsole.WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
@@ -144,7 +126,7 @@ namespace RayWrapper.Vars
             foreach (var t in saveList) t.LoadToFile(path);
             singleConsole.WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
         }
-        
+
         public static void DeleteFile(this List<ISave> saveList, string name, GameBox gb)
         {
             ISave.IsSaveInitCheck();
@@ -155,7 +137,7 @@ namespace RayWrapper.Vars
             if (!File.Exists(file)) return;
             File.Delete(file);
         }
-        
+
         public static void DeleteAll(this List<ISave> saveList, GameBox gb)
         {
             ISave.IsSaveInitCheck();

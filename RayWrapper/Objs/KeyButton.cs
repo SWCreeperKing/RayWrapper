@@ -32,7 +32,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => core.Size;
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             core.Update();
             if (!_acceptingChange) return;

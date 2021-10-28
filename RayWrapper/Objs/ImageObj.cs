@@ -57,7 +57,7 @@ namespace RayWrapper.Objs
             Change();
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
         }
 

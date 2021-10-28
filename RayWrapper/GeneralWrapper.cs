@@ -3,7 +3,9 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Raylib_cs;
+using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.RectWrapper;
 
 namespace RayWrapper
 {
@@ -66,7 +68,7 @@ namespace RayWrapper
             var textSize = GameBox.Font.MeasureText(text, fontSize, spacing);
             var quad = GetCursorQuadrant();
             Vector2 pos = new(rawPos.X - (quad % 2 != 0 ? textSize.X : 0), rawPos.Y - (quad > 2 ? textSize.Y : -33));
-            RectWrapper.AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
+            AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
             DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, color);
         }
 
@@ -115,8 +117,11 @@ namespace RayWrapper
             return vects;
         }
 
-        public static void DrawArrAsLine(this Vector2[] array, Color color) =>
-            DrawLineStrip(array.ToArray(), array.Length, color);
+        public static void DrawArrAsLine(this Vector2[] array, Color color, int thickness = 3)
+        {
+            for (var i = 1; i < array.Length; i++) array[i - 1].DrawLine(array[i], color, thickness);
+        }
+
 
         public static Texture2D Texture(this Image i) => LoadTextureFromImage(i);
 
@@ -137,7 +142,7 @@ namespace RayWrapper
                 }
                 catch (TargetException e)
                 {
-                    Console.WriteLine($"FIELD: {field.Name} CORRUPT? {e.Message}");
+                    Logger.Log(Logger.Level.Warning, $"FIELD: {field.Name} CORRUPT? {e.Message}");
                 }
             }
         }
@@ -148,5 +153,14 @@ namespace RayWrapper
 
         public static Vector2 Size(this Image img) => img.Texture().Size();
         public static Vector2 Size(this Texture2D t2d) => new(t2d.width, t2d.height);
+        
+        public static void MaskDraw(this Vector2 pos, Vector2 size, Action draw)
+        {
+            maskingLayer++;
+            BeginScissorMode((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
+            draw.Invoke();
+            if (maskingLayer == 1) EndScissorMode();
+            maskingLayer--;
+        }
     }
 }

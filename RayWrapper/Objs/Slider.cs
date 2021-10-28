@@ -34,7 +34,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _size + new Vector2(outlineThickness);
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             if (IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && AssembleRectFromVec(Position, _size).IsMouseIn())

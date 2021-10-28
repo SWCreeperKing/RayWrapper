@@ -4,23 +4,22 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper;
 using RayWrapper.Animation;
-using RayWrapper.Animation.AnimationShapes;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
 using RayWrapper.Objs.TreeView;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShape;
 using RayWrapper.Vars;
+using RayWrapperTester.Animations;
 using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapperTester
 {
     class Program : GameLoop
     {
-        public static GameBox gb;
-
         private float percent;
         private int _buttonInc;
         private Rectangle _scissorArea;
@@ -40,17 +39,13 @@ namespace RayWrapperTester
             public int i = 6;
         }
 
-        static void Main(string[] args)
-        {
-            gb = new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
-            gb.Start(false);
-        }
+        static void Main(string[] args) => new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
 
         public override void Init()
         {
             GameBox.Font = LoadFont("CascadiaMono.ttf");
 
-            var screen = GameBox.WindowSize;
+            var screen = WindowSize;
             Vector2 pos = new(75, 80);
 
             // gb.AddScheduler(new Scheduler(100,
@@ -82,7 +77,7 @@ namespace RayWrapperTester
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
                 "option option", "option setting", "option N");
 
-            _tbv = new(Vector2.Zero, GameBox.WindowSize.X);
+            _tbv = new(Vector2.Zero, WindowSize.X);
             _tbv.AddTab("Button Test", _b,
                 new EmptyRender(() =>
                     DrawText($"Hello, world! [i] is {_buttonInc}", 12, 60, 20, new Color(174, 177, 181, 255))));
@@ -96,11 +91,11 @@ namespace RayWrapperTester
             io.SetSize(new Vector2(75));
             io2.SetSize(new Vector2(75));
             io2.imageAlpha = 100;
-            ImageItem ii = new(io) {slotDependent = false};
+            ImageItem ii = new(io) { slotDependent = false };
             Slot sl = new(new Vector2(800, 300), new Vector2(75)) { color = PURPLE };
             Slot sl1 = new(new Vector2(875, 300), new Vector2(75)) { color = BLUE, idRestriction = "blue" };
             Slot sl2 = new(new Vector2(950, 300), new Vector2(75)) { color = RED, idRestriction = "red" };
-            ImageSlot imSl = new(io2) { color = YELLOW};
+            ImageSlot imSl = new(io2) { color = YELLOW };
             ii.SetSlot(imSl);
             _tbv.AddTab("Slot Test", imSl, ri, ci, ii, sl, sl1, sl2);
 
@@ -112,7 +107,7 @@ namespace RayWrapperTester
 
             _tbv.AddTab("Tooltip Test",
                 new EmptyRender(() =>
-                    AssembleRectFromVec(Vector2.Zero, GameBox.WindowSize).DrawTooltip("Testing Tooltip")));
+                    AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip("Testing Tooltip")));
 
             Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Label.TextMode.SizeToText);
             listViewButton.Clicked += () =>
@@ -139,6 +134,15 @@ namespace RayWrapperTester
             KeyButton kb = new(pos, KeyboardKey.KEY_C);
             kb.keyChange = key => Console.WriteLine($"New Key: {key}");
 
+            ScrollView sv = new(new Rectangle(200, 200, 700, 500));
+            Label l = new(Vector2.Zero, "Text1");
+            Label l2 = new(new Vector2(500), "Text2");
+            Label l3 = new(new Vector2(1000, 100), "Text3");
+            sv.AddObj(l);
+            sv.AddObj(l2);
+            sv.AddObj(l3);
+            _tbv.AddTab("ScrollView Test", sv);
+
             _tbv.AddTab("KeyButton Test", kb);
 
             var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Label.TextMode.SizeToText);
@@ -154,67 +158,33 @@ namespace RayWrapperTester
 
             _tbv.AddTab("Input Test", new InputBox(pos));
 
-            Animation ani = new AnimationBuilder()
-                .AddShape(new Square("test") { pos = screen / 2 - new Vector2(50, 50), size = new Vector2(100, 100) })
-                .AddStep(.25f)
-                .Slide("test", new Vector2(-50, -50))
-                .AddStep(.25f)
-                .Shrink("test", new Vector2(60, 60))
-                .AddStep(1)
-                .Slide("test", new Vector2(-100, 20))
-                .AddStep(.75f)
-                .Move("test", new Vector2(-200, -20))
-                .Grow("test", new Vector2(200, 20))
-                .AddStep(1)
-                .SetVisible("test", false);
-
-            Animation continueAni = new AnimationBuilder()
-                .AddShape(new Square("mover", RED)
-                    { pos = new Vector2(0, screen.Y / 2 - 25), size = new Vector2(50, 50) })
-                .Move("mover", new Vector2(screen.X, 0));
-
-            Animation triggerAni = new AnimationBuilder()
-                .AddShape(new Square("block") { pos = new Vector2(25, screen.Y / 2 - 40), size = new Vector2(20, 20) })
-                .WaitForTrigger(ab => ab.GetRectOfId("block").IsMouseIn())
-                .AddStep(.5f)
-                .Move("block", new Vector2(screen.X - 55, 0))
-                .AddStep(-1)
-                .WaitForTrigger(ab => ab.GetRectOfId("block").IsMouseIn())
-                .AddStep(.5f)
-                .Move("block", new Vector2(-screen.X / 2 - 10, 0))
-                .AddStep(-1)
-                .WaitForTrigger(ab =>
-                    ab.GetRectOfId("block").IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
-                .AddStep(.5f)
-                .Move("block", new Vector2(0, screen.Y / 2 + 50));
-
             Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Label.TextMode.SizeToText);
-            aniB.Clicked += () => { GameBox.animator.CopyQueueAnimation(ani); };
+            aniB.Clicked += () => Animator.AddToAnimationQueue(new TestAnimation1());
 
             Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Label.TextMode.SizeToText);
-            aniBC.Clicked += () => { GameBox.animator.CopyAddAnimation(continueAni); };
-
+            aniBC.Clicked += () => Animator.AddAnimation(new Mover());
+            
             Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Label.TextMode.SizeToText);
-            aniBT.Clicked += () => { GameBox.animator.CopyQueueAnimation(triggerAni); };
+            aniBT.Clicked += () => Animator.AddToAnimationQueue(new InteractionAnimation());
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
-            _tbv.AddTab("Progress/Slider Test", new ProgressBar(100, 100, 400, 30, () => percent),
-                new Slider(100, 300, 400, 30));
+            var pb = new ProgressBar(100, 100, 400, 30, () => percent);
+            _tbv.AddTab("Progress/Slider Test", pb, new Slider(100, 300, 400, 30));
 
             var rt2d = LoadRenderTexture(250, 250);
             Button bRend = new(new Vector2(60, 90), "test");
             _tbv.AddTab("Render 2d test", new EmptyRender(() =>
             {
-                gb.RenderRenderTexture(rt2d, new Vector2(40, 80), () => bRend.Update(),
+                Gb.RenderRenderTexture(rt2d, new Vector2(40, 80), () => bRend.Update(),
                     () =>
                     {
                         ClearBackground(RED);
                         bRend.Render();
-                        GameBox.mousePos.DrawToolTipAtPoint($"{GameBox.mousePos}", BLUE);
+                        mousePos.DrawToolTipAtPoint($"{mousePos}", BLUE);
                     });
             }));
 
-            RegisterGameObj(true, _tbv);
+            RegisterGameObj(_tbv);
 
             // W: [(%, 16)] H: [(!, 24)]
             // (char c, int i) w = (' ', 0);
@@ -235,7 +205,7 @@ namespace RayWrapperTester
             percent += .005f;
             percent %= 1;
 
-            var mouse = GameBox.mousePos;
+            var mouse = mousePos;
             _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);
 
             if (IsKeyDown(KeyboardKey.KEY_LEFT)) _l.Position += new Vector2(-3, 0);
@@ -247,29 +217,29 @@ namespace RayWrapperTester
 
         public override void RenderLoop()
         {
-            var size = GameBox.WindowSize;
+            var size = WindowSize;
             DrawFPS(12, (int)(size.Y - 25));
         }
 
         public void SaveTesting()
         {
-            gb.InitSaveSystem("SW_CreeperKing", "SaveTesting");
+            Gb.InitSaveSystem("SW_CreeperKing", "SaveTesting");
             var t = new Test();
-            gb.RegisterSaveItem(t, "test item");
+            Gb.RegisterSaveItem(t, "test item");
             t.i = 10;
             Console.WriteLine($"i = {t.i}"); // 10
-            gb.SaveItems();
+            Gb.SaveItems();
             t.i = 2;
             Console.WriteLine($"i = {t.i}"); // 2
-            gb.LoadItems();
+            Gb.LoadItems();
             Console.WriteLine($"i = {t.i}"); // 10
             t.Set(new Test());
             Console.WriteLine($"i = {t.i}"); // 6
-            gb.LoadItems();
+            Gb.LoadItems();
             Console.WriteLine($"i = {t.i}"); // 10
             t = new Test();
             Console.WriteLine($"i = {t.i}"); // 6 
-            gb.LoadItems();
+            Gb.LoadItems();
             Console.WriteLine($"i = {t.i}"); // 6
         }
     }

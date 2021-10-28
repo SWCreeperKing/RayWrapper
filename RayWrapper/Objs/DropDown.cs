@@ -21,7 +21,7 @@ namespace RayWrapper.Objs
             }
         }
 
-        public override Vector2 Size => optionDisplay.Size + text.Size;
+        public override Vector2 Size =>  text.Size + new Vector2(0, optionDisplay.Size.Y);
 
         public char arrowDown = '↓';
         public char arrowUp = '↑';
@@ -66,7 +66,7 @@ namespace RayWrapper.Objs
 
             optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), (int)back.width,
                 i => options[i],
-                () => options.Count, 4, padding: 0)
+                () => options.Count, 4, padding: 2)
             {
                 IndividualClick = i =>
                 {
@@ -81,7 +81,7 @@ namespace RayWrapper.Objs
             };
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             text.Update();
             if (isListVisible) optionDisplay.Update();

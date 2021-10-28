@@ -19,6 +19,21 @@ namespace RayWrapper.Objs
             WrapText
         }
 
+        public Rectangle Rect => _rect;
+
+        public override Vector2 Position
+        {
+            get => _back.Pos();
+            set
+            {
+                _back = _back.MoveTo(value);
+                ReCalc();
+            }
+        }
+
+        public override Vector2 Size =>
+            textMode == TextMode.SizeToText ? _textSizeCache + new Vector2(8) : _back.Size();
+
         public ColorModule backColor = new(50);
         public Action clicked;
         public ColorModule fontColor = new(192);
@@ -35,29 +50,33 @@ namespace RayWrapper.Objs
         private string _textCache;
         private Vector2 _textSizeCache;
 
+        // textmode cache
+        private Rectangle _rect;
+        private Rectangle _sizedRect;
+        private Rectangle _adj;
+        private Vector2 _sizedPos;
+        private Vector2 _alignLeft;
+        private Vector2 _alignCenter;
+        private Vector2 _alignRight;
+
         public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) =>
             (_back, this.text, this.textMode) = (back, text, textMode);
 
-        public Rectangle Rect => AssembleRectFromVec(_back.Pos(), Size);
-
-        public override Vector2 Position
+        public Label(Vector2 pos, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft)
         {
-            get => _back.Pos();
-            set => _back = _back.MoveTo(value);
+            (this.text, this.textMode) = (text, textMode);
+            CheckText();
+            _back = AssembleRectFromVec(pos, _textSizeCache).Grow(4);
         }
 
-        public override Vector2 Size => textMode == TextMode.SizeToText ? _textSizeCache : _back.Size();
-
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
-            CheckText();
             if (!Rect.IsMouseIn() || !IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
             clicked?.Invoke();
         }
 
         protected override void RenderCall()
         {
-            var adjust = _back.Shrink(4);
             var hover = useBaseHover && Rect.IsMouseIn() && !IsMouseOccupied;
             Color realFc = hover ? ((Color)fontColor).MakeLighter() : fontColor;
             Color realBc = hover ? ((Color)backColor).MakeLighter() : backColor;
@@ -76,22 +95,20 @@ namespace RayWrapper.Objs
             switch ((TextMode)textMode)
             {
                 case TextMode.AlignLeft:
-                    DrawTxt(new Vector2(adjust.x, adjust.y + (adjust.height / 2 - _textSizeCache.Y / 2)));
+                    DrawTxt(_alignLeft);
                     break;
                 case TextMode.AlignCenter:
-                    GameBox.Font.DrawCenterText(adjust.Center(), _textCache, realFc, fontSize, spacing);
+                    GameBox.Font.DrawCenterText(_alignCenter, _textCache, realFc, fontSize, spacing);
                     break;
                 case TextMode.AlignRight:
-                    DrawTxt(new Vector2(adjust.x + adjust.width - _textSizeCache.X,
-                        adjust.y + (adjust.height / 2 - _textSizeCache.Y / 2)));
+                    DrawTxt(_alignRight);
                     break;
                 case TextMode.WrapText:
-                    DrawTextRec(GameBox.Font, _textCache, adjust, fontSize, spacing, true, realFc);
+                    DrawTextRec(GameBox.Font, _textCache, _adj, fontSize, spacing, true, realFc);
                     break;
                 case TextMode.SizeToText:
-                    var rect = AssembleRectFromVec(adjust.Pos(), _textSizeCache).Grow(4);
-                    DrawBack(rect);
-                    DrawTxt(adjust.Pos());
+                    DrawBack(_sizedRect);
+                    DrawTxt(_sizedPos);
                     break;
             }
 
@@ -103,6 +120,19 @@ namespace RayWrapper.Objs
         {
             if (_textCache is not null && _textCache == text) return;
             _textSizeCache = MeasureTextEx(GameBox.Font, _textCache = text, fontSize, spacing);
+            ReCalc();
+        }
+
+        public void ReCalc()
+        {
+            _adj = _back.Shrink(4);
+            _sizedRect = AssembleRectFromVec(_adj.Pos(), _textSizeCache).Grow(4);
+            _sizedPos = _adj.Pos();
+            _alignLeft = new Vector2(_adj.x, _adj.y + (_adj.height / 2 - _textSizeCache.Y / 2));
+            _alignCenter = _adj.Center();
+            _alignRight = new Vector2(_adj.x + _adj.width - _textSizeCache.X,
+                _adj.y + (_adj.height / 2 - _textSizeCache.Y / 2));
+            _rect = AssembleRectFromVec(_back.Pos(), Size);
         }
     }
 }

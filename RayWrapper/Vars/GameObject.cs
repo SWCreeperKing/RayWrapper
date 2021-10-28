@@ -1,5 +1,10 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 using Raylib_cs;
+using static Raylib_cs.Raylib;
+using static RayWrapper.GameBox;
+using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Vars
 {
@@ -11,33 +16,41 @@ namespace RayWrapper.Vars
 
         public float FullLength => Position.X + Size.X;
         public float FullHeight => Position.Y + Size.Y;
-        
-        public void Render()
-        {
-            if (!isVisible) return;
-            RenderCall();
-            if (GameBox.isDebugTool) RectWrapper.AssembleRectFromVec(Position, Size).DrawHallowRect(Color.RED);
-        }
+
+        private Rectangle _rect = Zero;
+        private Vector2 _freezeV2 = Vector2.Zero;
+        private List<GameObject> _registry = new();
 
         public void Update()
         {
-            // for later use
+            _rect = AssembleRectFromVec(Position, Size);
+            if (debugContext == this && _rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
+                isDebugTool) debugContext = null;
+            else if (_rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
+                     isDebugTool) debugContext = this;
+            foreach (var a in _registry) a.Update();
             UpdateCall();
         }
-        
-        public abstract void UpdateCall();
+
+        public void Render()
+        {
+            if (!isVisible) return;
+            foreach (var a in _registry) a.Render();
+            RenderCall();
+            if (isDebugTool) DrawDebugHitbox();
+        }
+
+        protected abstract void UpdateCall();
         protected abstract void RenderCall();
 
-        public void Text(string text, Vector2 pos, Color color, int fontSize = 24, float spacing = 1.5f) =>
-            GameBox.Font.DrawText(text, pos, color, fontSize, spacing);
+        protected virtual void DrawDebugHitbox() =>
+            _rect.DrawHallowRect(debugContext == this ? Color.GREEN : Color.RED);
 
-        public void TextWrap(string text, Rectangle rect, Color fontColor, int fontSize = 24, float spacing = 1.5f) =>
-            GameBox.Font.DrawTextWrap(text, rect, fontColor, fontSize, spacing);
-
-        public void TextCenter(string text, Rectangle rect, Color fontColor, int fontSize = 24, float spacing = 1.5f) =>
-            GameBox.Font.DrawCenterText(rect.Center(), text, fontColor, fontSize, spacing);
-
-        public Vector2 MeasureText(string text, float fontSize = 24f, float spacing = 1.5f) =>
-            GameBox.Font.MeasureText(text, fontSize, spacing);
+        public Rectangle GetDebugRect() => _rect;
+        public void RegisterGameObj(params GameObject[] igo) => _registry.AddRange(igo);
+        public void DeregisterGameObj(GameObject igo) => _registry.Remove(igo);
+        public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);
+        public Vector2 GetReserveV2() => _freezeV2;
+        public void SetPositionAsReserveV2() => Position = _freezeV2;
     }
 }

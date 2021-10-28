@@ -89,7 +89,7 @@ namespace RayWrapper.Objs
             remove => _clickEvent.Remove(value);
         }
 
-        public override void UpdateCall() => baseL.Update();
+        protected override void UpdateCall() => baseL.Update();
         protected override void RenderCall() => baseL.Render();
 
         private Color GetColor(ColorModule c) =>

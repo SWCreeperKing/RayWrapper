@@ -21,7 +21,7 @@ namespace RayWrapper.GameConsole
 
         public override Vector2 Position { get; set; }
         public override Vector2 Size { get; }
-        
+
         public ListView history;
         public InputBox ib;
 
@@ -36,6 +36,7 @@ namespace RayWrapper.GameConsole
             ib.onEnter = s =>
             {
                 if (s.Length < 1) return;
+                Logger.Log(Logger.Level.Info, $"from user: {s}");
                 var split = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 var write = split.Length == 1
                     ? CommandRegister.ExecuteCommand(s)
@@ -57,7 +58,7 @@ namespace RayWrapper.GameConsole
             };
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             history.Update();
             ib.Update();
@@ -72,6 +73,8 @@ namespace RayWrapper.GameConsole
 
         public void WriteToConsole(params string[] texts)
         {
+            Logger.Log(Logger.Level.Info,
+                $"from GameConsole: {string.Join("\n\t>", texts.Select(s => Regex.IsMatch(s, regString) ? s[(s.IndexOf('|') + 1)..] : s))}");
             int ToColor(string text) => Math.Clamp(int.Parse(text), 0, 255);
             if (!texts.Any())
             {

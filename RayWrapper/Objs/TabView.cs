@@ -24,6 +24,7 @@ namespace RayWrapper.Objs
 
         public bool drawIfLowTabs = false;
         public bool outline = true;
+        public Action<string, int> tabChanged = null;
 
         private readonly Scrollbar _bar;
         private readonly Color _baseColor = new(95, 95, 95, 255);
@@ -63,7 +64,7 @@ namespace RayWrapper.Objs
             }
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             _bar.Update();
             try
@@ -125,6 +126,7 @@ namespace RayWrapper.Objs
                         clicked = () =>
                         {
                             _currentTab = name;
+                            tabChanged?.Invoke(name, _tabOrder.IndexOf(name));
                             Refresh();
                         },
                         useBaseHover = new Actionable<bool>(name != _currentTab),

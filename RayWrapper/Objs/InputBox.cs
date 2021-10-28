@@ -73,7 +73,7 @@ namespace RayWrapper.Objs
             _lastTime = GetTimeMs();
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             if (IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) _selected = _label.Rect.IsMouseIn() && !_selected;
             if (_selected)

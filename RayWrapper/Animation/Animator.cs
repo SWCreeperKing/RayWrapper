@@ -4,45 +4,46 @@ using System.Linq;
 
 namespace RayWrapper.Animation
 {
-    public class Animator
+    public static class Animator
     {
-        // main control
-        private Queue<Animation> _animationQueue = new();
-        private List<Animation> _animations = new();
-        private Animation _activeAnimation;
-        
-        public void Update()
-        {
-            try
-            {
-                List<Animation> remove = new();
-                foreach (var animation in _animations)
-                {
-                    animation.Update();
-                    if (animation.HasEnded()) remove.Add(animation);
-                }
+        private static Queue<Animation> _animationQueue = new();
+        private static List<Animation> _animationList = new();
 
-                _animations = _animations.Except(remove).ToList();
-            }
-            catch (ArgumentException)
-            {
-            }
+        public static void AddToAnimationQueue(Animation ani) => _animationQueue.Enqueue(ani);
 
-            if (_animationQueue.Count < 1 && _activeAnimation is null) return;
-            _activeAnimation ??= _animationQueue.Dequeue();
-            _activeAnimation.Update();
-            if (_activeAnimation.HasEnded()) _activeAnimation = null;
-        }
-        
-        public void Render()
+        public static void AddAnimation(Animation ani)
         {
-            foreach (var animation in _animations) animation.Render();
-            _activeAnimation?.Render();
+            _animationList.Add(ani);
+            ani.InitAnimation();
         }
 
-        public void AddAnimation(Animation anim) => _animations.Add(anim);
-        public void CopyAddAnimation(Animation anim) => _animations.Add(anim.CopyAnimation());
-        public void QueueAnimation(Animation anim) => _animationQueue.Enqueue(anim);
-        public void CopyQueueAnimation(Animation anim) => _animationQueue.Enqueue(anim.CopyAnimation());
+        private static Animation _queuedAnimation;
+
+        public static void Update()
+        {
+            var remove = _animationList.Where(a => a.UpdateAnimation());
+            if (remove.Any())
+            {
+                foreach (var animation in remove) animation.onEnd?.Invoke();
+                _animationList.RemoveAll(a => remove.Contains(a));
+            }
+
+            if (_queuedAnimation is null)
+            {
+                if (_animationQueue.Count == 0) return;
+                _queuedAnimation = _animationQueue.Dequeue();
+                _queuedAnimation.InitAnimation();
+            }
+
+            if (!_queuedAnimation.UpdateAnimation()) return;
+            _queuedAnimation.onEnd?.Invoke();
+            _queuedAnimation = null;
+        }
+
+        public static void Render()
+        {
+            _queuedAnimation?.Render();
+            foreach (var animation in _animationList) animation.Render();
+        }
     }
 }

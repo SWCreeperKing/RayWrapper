@@ -19,7 +19,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => rect.Size();
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
         }
 

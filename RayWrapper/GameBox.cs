@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DiscordRPC.Logging;
 using Raylib_cs;
 using RayWrapper.Animation;
 using RayWrapper.CollisionSystem;
@@ -14,6 +16,7 @@ using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.RectWrapper;
+using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper
 {
@@ -47,7 +50,7 @@ namespace RayWrapper
         public static Vector2 mousePos;
         public static string discordAppId = "";
         public static AlertBox alertBox = null;
-        public static Animator animator = new();
+        // public static Animator animator = new();
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
         public static bool isDebugTool;
@@ -58,16 +61,17 @@ namespace RayWrapper
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
         public static bool f11Fullscreen = true;
         public static bool isCollisionSystem;
+        public static GameObject debugContext = null;
 
         private static readonly List<ISave> SaveList = new();
-        private static long _lastTime;
         private static Font _font;
-        private static List<Action> _onDispose = new();
         private static List<Scheduler> _schedulers = new();
         private static bool _isDrawing;
         private static bool _isConsole;
         private static RenderTexture2D _target;
         private static GameBox _instance;
+        private static bool _initDiscord;
+        private static bool _initCollision;
 
         public static int FPS
         {
@@ -85,21 +89,16 @@ namespace RayWrapper
             }
         }
 
-        public static event Action OnDispose
-        {
-            add => _onDispose.Add(value);
-            remove => _onDispose.Remove(value);
-        }
-
-        public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60)
+        public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60, string iconPath = "")
         {
             if (_instance is not null) throw new ApplicationException("Only 1 instance of GameBox can be created");
+            SetTraceLogCallback(Logger.RayLog);
             _instance = this;
-            DiscordIntegration.Init();
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
             screenGrid = new ScreenGrid();
             InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
+            if (iconPath != "") SetWindowIcon(LoadImage(iconPath));
             _target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
             _font = GetFontDefault();
             if (singleConsole is null)
@@ -109,14 +108,11 @@ namespace RayWrapper
             }
 
             SetTargetFPS(FPS = fps);
+            Start();
         }
 
-        public void Start(bool initCollision)
+        private void Start()
         {
-            isCollisionSystem = initCollision;
-            Scene.Init();
-            _lastTime = GetTimeMs();
-
             Task.Run(() =>
             {
                 while (true)
@@ -124,40 +120,17 @@ namespace RayWrapper
                     try
                     {
                         foreach (var scheduler in _schedulers) scheduler.TestTime(GetTimeMs());
-                        DiscordIntegration.UpdateActivity();
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"err: {e.Message}\n{e.StackTrace}");
+                        Logger.Log(Error, e.ToString());
                     }
 
                     Task.Delay(10).GetAwaiter().GetResult();
                 }
             });
-
-            if (initCollision)
-            {
-                Task.Run(async () =>
-                {
-                    while (true)
-                    {
-                        try
-                        {
-                            var startTime = GetTimeMs();
-                            await screenGrid.Update();
-                            await Task.Run(() => AddTime(GetTimeMs() - startTime));
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine($"Err: {e.Message}\n{e.StackTrace}");
-                        }
-                    }
-                });
-            }
-
-            if (discordAppId != "") DiscordIntegration.CheckDiscord(discordAppId);
-            OnDispose += DiscordIntegration.Dispose;
-
+            
+            Scene.Init();
             try
             {
                 while (!WindowShouldClose())
@@ -173,23 +146,61 @@ namespace RayWrapper
             }
             catch (Exception e)
             {
-                Console.WriteLine("AN ERROR HAS OCCURED");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(e);
-                Console.ResetColor();
-                Console.WriteLine("press any key to continue");
-                Console.ReadKey();
-                Dispose();
+                Logger.Log(Error, e.ToString());
             }
 
-            CloseWindow();
-            foreach (var a in _onDispose) a.Invoke();
+            Dispose();
+        }
+
+        public void InitDiscord()
+        {
+            if (_initDiscord) return;
+            _initDiscord = true;
+            DiscordIntegration.Init();
+            if (discordAppId != "") DiscordIntegration.CheckDiscord(discordAppId);
+            AddScheduler(new Scheduler(100, DiscordIntegration.UpdateActivity));
+        }
+
+        public void InitCollision()
+        {
+            if (_initCollision) return;
+            _initCollision = true;
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var startTime = GetTimeMs();
+                        await screenGrid.Update();
+                        await Task.Run(() => AddTime(GetTimeMs() - startTime));
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(Error, e.ToString());
+                    }
+                }
+            });
         }
 
         private void Update()
         {
-            if (f11Fullscreen && IsKeyPressed(KeyboardKey.KEY_F11)) ToggleFullscreen();
-            animator.Update();
+            if (f11Fullscreen && IsKeyPressed(KeyboardKey.KEY_F11))
+            {
+                var mon = GetCurrentMonitor();
+                if (IsWindowFullscreen()) SetWindowSize((int)WindowSize.X, (int)WindowSize.Y);
+                else SetWindowSize(GetMonitorWidth(mon), GetMonitorHeight(mon));
+                ToggleFullscreen();
+            }
+
+            Animator.Update();
+
+            if (IsKeyPressed(KeyboardKey.KEY_F3))
+            {
+                isDebugTool = !isDebugTool;
+                singleConsole.WriteToConsole($"toggled debug via F3: {isDebugTool}");
+            }
+            
             Scene.Update();
         }
 
@@ -222,22 +233,17 @@ namespace RayWrapper
                 if (_isConsole) singleConsole.Render();
                 else
                 {
-                    animator.Render();
+                    Animator.Render();
                     alertBox?.Render();
                 }
 
                 if (isDebugTool)
                     AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip(
-                        $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}");
+                        $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : "")}");
             }
             catch (Exception e)
             {
-                var before = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"RENDERING ERROR: {e.Message}");
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(e.StackTrace);
-                Console.ForegroundColor = before;
+                Logger.Log(Error, $"Render Error:\n\t{e}");
             }
 
             EndTextureMode();
@@ -259,7 +265,8 @@ namespace RayWrapper
             if (_isDrawing) EndDrawing();
             _schedulers.Clear();
             CloseWindow();
-            foreach (var a in _onDispose) a.Invoke();
+            Scene.Dispose();
+            Logger.CheckWrite();
             Environment.Exit(0);
         }
 

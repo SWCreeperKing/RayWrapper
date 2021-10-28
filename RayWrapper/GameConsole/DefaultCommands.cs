@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.GameConsole.CommandLineColor;
@@ -92,6 +93,13 @@ namespace RayWrapper.GameConsole
             singleConsole.WriteToConsole("Disconnected from discord, attempting to connect");
             DiscordIntegration.CheckDiscord(discordAppId);
             return DiscordIntegration.discordAlive ? "Reconnected!" : "Failed, Try again later!";
+        }
+
+        [Command("printstat"), Help("Creates a status file from the logger")]
+        public static string PrintStatus(string[] args)
+        {
+            Logger.WriteLog(false);
+            return $"{CYAN}Created status file at: {Logger.statusSave}";
         }
     }
 }

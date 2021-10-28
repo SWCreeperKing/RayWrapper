@@ -7,8 +7,9 @@ namespace RayWrapper
 {
     public static class RectWrapper
     {
+        public static int maskingLayer = 0;
         public static Rectangle Zero = new(0, 0, 0, 0);
-        
+
         /// <summary>
         /// Makes a <see cref="Rectangle"/> from 2 <see cref="Vector2"/>s
         /// </summary>
@@ -95,7 +96,6 @@ namespace RayWrapper
         public static void DrawTooltip(this Rectangle box, string text, int fontSize = 24, float spacing = 1.5f) =>
             box.DrawTooltip(text, new Color(170, 170, 255, 220), fontSize, spacing);
 
-        private static int maskingLayer = 0;
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
             maskingLayer++;

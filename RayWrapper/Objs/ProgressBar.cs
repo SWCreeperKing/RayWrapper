@@ -36,7 +36,7 @@ namespace RayWrapper.Objs
         public ProgressBar(float x, float y, float width, float height, Func<float> percent) =>
             (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
         }
 

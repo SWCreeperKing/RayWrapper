@@ -32,7 +32,7 @@ namespace RayWrapper.CollisionSystem
             count++;
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             for (var i = 0; i < collisionMem.Count; i++)
             {

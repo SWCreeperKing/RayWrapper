@@ -52,13 +52,13 @@ namespace RayWrapper.Objs
                 yes = new Button(Vector2.Zero, "yes");
                 no.Clicked += () => Clicked(Result.No);
                 yes.Clicked += () => Clicked(Result.Yes);
-                no.Update();
-                yes.Update();
+                no.baseL.CheckText();
+                yes.baseL.CheckText();
             }
 
             close = new Button(Vector2.Zero, informationBox ? "close" : "x");
             close.Clicked += () => Clicked(Result.Close);
-            close.Update();
+            close.baseL.CheckText();
 
             var halfScreen = WindowSize / 2;
             var messageSize = size == Vector2.Zero ? GameBox.Font.MeasureText(message, 30) : size;
@@ -88,7 +88,7 @@ namespace RayWrapper.Objs
         public override Vector2 Position { get; set; }
         public override Vector2 Size => _rect.Size();
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             close.Update();
             if (informationBox) return;
@@ -107,7 +107,7 @@ namespace RayWrapper.Objs
                 GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 55), message, messageColor);
             else
                 GameBox.Font.DrawTextWrap(message,
-                    AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 55), size),
+                    AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),
                     messageColor);
             close.Render();
             if (informationBox) return;

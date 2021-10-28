@@ -53,7 +53,6 @@ namespace RayWrapper.Objs
             var height = CalcHeight();
             _bar = new Scrollbar(new Rectangle(pos.X, pos.Y, 18, height))
             {
-                barScale = 2,
                 amountInvoke = () => this.arrayLength.Invoke() + 1 - _itemsToShow
             };
             _bounds = new Rectangle(pos.X + 20, pos.Y, width - 20, height);
@@ -118,7 +117,7 @@ namespace RayWrapper.Objs
                 _labels[i].text = this[(int)value + i];
         }
 
-        public override void UpdateCall()
+        protected override void UpdateCall()
         {
             _bar.Update();
             if (_lastLength != arrayLength.Invoke() || _lastValue != _bar.Value)

@@ -1,30 +1,75 @@
-﻿namespace RayWrapper.Animation
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using RayWrapper.Animation.Transitions;
+using RayWrapper.Vars;
+
+namespace RayWrapper.Animation
 {
-    public class Animation
+    public abstract class Animation
     {
-        // contains and controls animation steps
-        private AnimationBuilder _builder;
-        private AnimationStep _currentStep;
+        public int animationStep;
+        public long stepTime;
+        public long animationTime;
+        public List<Func<bool>> stepConditions = new();
+        public Action onInit = null;
+        public Action onEnd = null;
 
-        public Animation(AnimationBuilder builder) => _builder = builder;
+        private long _lastTime = -1;
+        private List<GameObject> _register = new();
+        private Dictionary<int, List<Transition>> _transitions = new();
 
-        public void Update()
+        public virtual void Animate(long deltaTime)
         {
-            _currentStep ??= _builder.GetNextStep();
-            if (HasEnded()) return;
-            var done = _currentStep.Execute(_builder);
-            if (done) _currentStep = null;
+        }
+
+        public virtual void Draw()
+        {
+        }
+
+        public void InitAnimation()
+        {
+            if (!_transitions.ContainsKey(0)) return;
+            foreach (var transition in _transitions[animationStep]) transition.InitTransition();
+            onInit?.Invoke();
+        }
+
+        public bool UpdateAnimation()
+        {
+            if (stepConditions.Count <= animationStep && !_transitions.ContainsKey(animationStep)) return true;
+            if (_lastTime == -1) _lastTime = GameBox.GetTimeMs();
+            var deltaTime = GameBox.GetTimeMs() - _lastTime;
+            _lastTime = GameBox.GetTimeMs();
+            stepTime += deltaTime;
+            animationTime += deltaTime;
+            Animate(deltaTime);
+            if (_transitions.ContainsKey(animationStep) && !_transitions[animationStep].All(t => t.overFlag))
+            {
+                foreach (var transition in _transitions[animationStep]) transition.Update(deltaTime);
+                return false;
+            }
+
+            if (stepConditions.Count > animationStep && !stepConditions[animationStep].Invoke()) return false;
+            animationStep++;
+            stepTime = 0;
+            if (!_transitions.ContainsKey(animationStep)) return false;
+            foreach (var transition in _transitions[animationStep])
+                transition.InitTransition();
+            return false;
         }
 
         public void Render()
         {
-            if (HasEnded()) return;
-            _builder.RenderShapes();
-            _currentStep?.runningTrigger?.Invoke(_builder);
+            Draw();
+            foreach (var go in _register) go.Render();
         }
 
-        public bool HasEnded() => _currentStep is null && _builder.IsOver();
+        public void AddToRegister(params GameObject[] go) => _register.AddRange(go);
 
-        public Animation CopyAnimation() => new(_builder.CopyBuilder());
+        public void AddTransition(int stage, params Transition[] tran)
+        {
+            if (!_transitions.ContainsKey(stage)) _transitions.Add(stage, new List<Transition>());
+            _transitions[stage].AddRange(tran);
+        }
     }
 }
