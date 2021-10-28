@@ -32,7 +32,13 @@ namespace RayWrapper.Vars
 
         public void AddScene(Scene scene) => _scenes.Add(scene);
 
-        public void SetScene(int scene)
+        public void InsertScene(Scene scene, int index)
+        {
+            if (_currentScene >= index) _currentScene++;
+            _scenes.Insert(index , scene);
+        }
+
+        public void ChangeScene(int scene)
         {
             if (!_scenes.Any() || scene == _currentScene) return;
             _currentScene = Math.Clamp(scene, 0, _scenes.Count - 1);
