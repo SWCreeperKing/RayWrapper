@@ -11,15 +11,23 @@ namespace RayWrapper.Objs
 {
     public class InputBox : GameObject
     {
+        // func: isControl?, cursor pos, max leng, current text
+        // func return: (cursorpos, text)
         private readonly Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions = new()
         {
             { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
             { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
             {
-                KeyboardKey.KEY_BACKSPACE, (_, p, _, s) =>
+                KeyboardKey.KEY_BACKSPACE, (c, p, _, s) =>
                 {
-                    if (p > 0) s = s.Remove(p-- - 1, 1);
-                    return (p, s);
+                    if (!c)
+                    {
+                        if (p > 0) s = s.Remove(p-- - 1, 1);
+                        return (p, s);
+                    }
+
+                    var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
+                    return (lastSpace, s.Remove(lastSpace, p - lastSpace));
                 }
             },
             { KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s) },
@@ -40,8 +48,7 @@ namespace RayWrapper.Objs
                     if (c) SetClipboardText(s);
                     return (p, s);
                 }
-            },
-            { KeyboardKey.KEY_SCROLL_LOCK, (_, _, _, _) => (0, "") }
+            }
         };
 
         public override Vector2 Position
@@ -61,6 +68,7 @@ namespace RayWrapper.Objs
         private readonly int _show;
         private string _text = "";
         public Action<string> onEnter;
+        public Action<string> onExit;
 
         public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40)
         {
@@ -75,7 +83,18 @@ namespace RayWrapper.Objs
 
         protected override void UpdateCall()
         {
-            if (IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) _selected = _label.Rect.IsMouseIn() && !_selected;
+            var isLeft = IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
+            switch (isLeft)
+            {
+                case true when !_label.Rect.IsMouseIn() && _selected:
+                    _selected = false;
+                    onExit?.Invoke(_text);
+                    break;
+                case true when !_selected && _label.Rect.IsMouseIn():
+                    _selected = true;
+                    break;
+            }
+            
             if (_selected)
             {
                 Input();

@@ -1,21 +1,8 @@
-﻿namespace RayWrapper.Objs
+﻿namespace RayWrapper.Vars
 {
-    public abstract class Scene
+    public class Scene : GameObjReg
     {
-        protected bool isInit;
-
-        public void Init()
-        {
-            if (isInit) return;
-            InitCall();
-            isInit = true;
-        }
-
-        public virtual void InitCall()
-        {
-        }
-        
-        public abstract void UpdateCall();
-        public abstract void RenderCall();
+        public void Update() => UpdateReg();
+        public void Render() => RenderReg();
     }
 }

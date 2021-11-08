@@ -21,29 +21,33 @@ namespace RayWrapper.Objs
         }
 
         public override Vector2 Size => _bounds.Size();
-        
-        public Func<int> arrayLength;
-        public ColorModule backColor = new(50, 50, 50);
-        public Func<int, Color> backColors;
-        public Action click;
+
+        public Actionable<string> tooltip = new("");
+        public ColorModule backColor = new(50);
+        public ColorModule fontColor = new(192);
+        public ColorModule selectColor = new(60, 60, 100);
         public Sound clickSound;
-        public ColorModule fontColor = new(192, 192, 198);
+        public Func<int> arrayLength;
+        public Func<int, Color> backColors;
         public Func<int, Color> fontColors;
         public Func<int, string> itemProcessing;
+        public Action click;
         public Action outsideClick;
         public bool randomPitch = true;
         public bool showTooltip = true;
-        public Actionable<string> tooltip = new("");
+        public bool rememberLast = true;
+        public bool selectedToggle;
 
-        private readonly float _padding = 5;
+        private readonly Label[] _labels;
         private readonly Scrollbar _bar;
+        private readonly float _padding = 5;
         private readonly int _itemsToShow;
         private readonly int _labelHeight;
-        private readonly Label[] _labels;
         private Rectangle _bounds;
         private Action<int> _individualClick;
-        private int _lastLength;
         private float _lastValue;
+        private int _lastLength;
+        private int _lastSelect = -1;
 
         public ListView(Vector2 pos, int width, Func<int, string> itemProcessing, Func<int> arrayLength,
             int itemsToShow = 10, int labelHeight = 40, float padding = 5f)
@@ -97,16 +101,24 @@ namespace RayWrapper.Objs
             for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - strictVal); i++)
             {
                 var notI = i;
+                var place = strictVal + notI;
                 var l = _labels[i];
-                l.text = this[strictVal + i];
-                if (_individualClick is not null) l.clicked = () => _individualClick(strictVal + notI);
+                l.text = new Actionable<string>(() =>this[place]);
+                if (_individualClick is not null)
+                    l.clicked = () =>
+                    {
+                        if (_lastSelect == place && selectedToggle) _lastSelect = -1;
+                        else _lastSelect = place;
+                        _individualClick(place);
+                    };
                 l.Position = new Vector2(_bounds.x, y + labelPadding * i);
                 l.backColor =
-                    new ColorModule(
-                        backColors?.Invoke(strictVal + i) ?? (Color)backColor);
+                    new ColorModule(() =>
+                        place == _lastSelect && _individualClick is not null
+                            ? (Color)selectColor
+                            : backColors?.Invoke(place) ?? (Color)backColor);
                 l.fontColor =
-                    new ColorModule(
-                        fontColors?.Invoke(strictVal + i) ?? (Color)fontColor);
+                    new ColorModule(fontColors?.Invoke(place) ?? (Color)fontColor);
             }
         }
 
@@ -114,7 +126,10 @@ namespace RayWrapper.Objs
         {
             var value = _bar.Value;
             for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - (int)value); i++)
+            {
                 _labels[i].text = this[(int)value + i];
+                _labels[i].fontColor = new ColorModule(fontColors?.Invoke((int)value + i) ?? (Color)fontColor);
+            }
         }
 
         protected override void UpdateCall()
@@ -164,5 +179,14 @@ namespace RayWrapper.Objs
         }
 
         public float CalcHeight() => (_labelHeight + _padding) * _itemsToShow - _padding;
+        public void Deselect() => _lastSelect = -1;
+
+        public void Select(int select, bool doOnClick = false)
+        {
+            _lastSelect = select;
+            if (!doOnClick) return;
+            click?.Invoke();
+            IndividualClick?.Invoke(select);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Raylib_cs;
 using RayWrapper;
 using RayWrapper.Animation;
+using RayWrapper.Animation.SinglePerposeObjects;
 using RayWrapper.Animation.Transitions;
 using RayWrapper.Objs;
 using static RayWrapper.GameBox;

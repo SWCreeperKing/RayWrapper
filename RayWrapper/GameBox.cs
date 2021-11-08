@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Text.RegularExpressions;
+using System.Text;
 using System.Threading.Tasks;
-using DiscordRPC.Logging;
 using Raylib_cs;
 using RayWrapper.Animation;
 using RayWrapper.CollisionSystem;
+using RayWrapper.Discord;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
@@ -49,7 +50,9 @@ namespace RayWrapper
         public static float scale;
         public static Vector2 mousePos;
         public static string discordAppId = "";
+
         public static AlertBox alertBox = null;
+
         // public static Animator animator = new();
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
@@ -62,6 +65,9 @@ namespace RayWrapper
         public static bool f11Fullscreen = true;
         public static bool isCollisionSystem;
         public static GameObject debugContext = null;
+        public static List<string> tooltip = new();
+        public static ColorModule baseTooltipColor = new Color(170, 170, 255, 220);
+        public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
 
         private static readonly List<ISave> SaveList = new();
         private static Font _font;
@@ -89,7 +95,8 @@ namespace RayWrapper
             }
         }
 
-        public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60, string iconPath = "")
+        public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60,
+            string iconPath = "")
         {
             if (_instance is not null) throw new ApplicationException("Only 1 instance of GameBox can be created");
             SetTraceLogCallback(Logger.RayLog);
@@ -108,6 +115,7 @@ namespace RayWrapper
             }
 
             SetTargetFPS(FPS = fps);
+            SetWindowSize((int)windowSize.X, (int)windowSize.Y);
             Start();
         }
 
@@ -129,7 +137,7 @@ namespace RayWrapper
                     Task.Delay(10).GetAwaiter().GetResult();
                 }
             });
-            
+
             Scene.Init();
             try
             {
@@ -200,7 +208,7 @@ namespace RayWrapper
                 isDebugTool = !isDebugTool;
                 singleConsole.WriteToConsole($"toggled debug via F3: {isDebugTool}");
             }
-            
+
             Scene.Update();
         }
 
@@ -224,32 +232,36 @@ namespace RayWrapper
         {
             BeginTextureMode(_target);
             _isDrawing = true;
-            try
+            ClearBackground(backgroundColor);
+
+            screenGrid.Draw(isDebugTool);
+            Scene.Render();
+            if (_isConsole) singleConsole.Render();
+            else
             {
-                ClearBackground(backgroundColor);
-
-                screenGrid.Draw(isDebugTool);
-                Scene.Render();
-                if (_isConsole) singleConsole.Render();
-                else
-                {
-                    Animator.Render();
-                    alertBox?.Render();
-                }
-
-                if (isDebugTool)
-                    AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip(
-                        $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : "")}");
+                Animator.Render();
+                alertBox?.Render();
             }
-            catch (Exception e)
+
+            if (isDebugTool)
+                tooltip.Add(
+                    $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : "")}");
+
+            if (tooltip.Any())
             {
-                Logger.Log(Error, $"Render Error:\n\t{e}");
+                var text = string.Join("\n", tooltip);
+                var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
+                if (mousePos.Y > WindowSize.Y / 2) quad += 2;
+                var textSize = Font.MeasureText(text);
+                Vector2 pos = new(mousePos.X - (quad % 2 != 0 ? textSize.X : 0),
+                    mousePos.Y - (quad > 2 ? textSize.Y : -33));
+                AssembleRectFromVec(pos, textSize).Grow(4).Draw(baseTooltipBackColor);
+                Font.DrawText(text, pos, baseTooltipColor);
+                tooltip.Clear();
             }
 
             EndTextureMode();
-
             SetTextureFilter(_target.texture, targetTextureFilter);
-
             BeginDrawing();
             ClearBackground(letterboxColor);
             DrawTexturePro(_target.texture, new Rectangle(0, 0, _target.texture.width, -_target.texture.height),
@@ -279,7 +291,7 @@ namespace RayWrapper
         public void InitSaveSystem(string developerName, string appName) =>
             (DeveloperName, AppName, SaveInit) = (developerName, appName, true);
 
-        public static string GetSavePath => $"{CoreDir}/{DeveloperName}/{AppName}";
+        public static string GetSavePath => File.Exists("UseLocalPath") ? $"{AppName}" : $"{CoreDir}/{DeveloperName}/{AppName}";
         public void SaveItems() => SaveList.SaveItems(this);
         public void LoadItems() => SaveList.LoadItems(this);
         public void DeleteFile(string name) => SaveList.DeleteFile(name, this);

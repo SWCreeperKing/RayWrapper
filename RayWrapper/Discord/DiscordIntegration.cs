@@ -5,7 +5,7 @@ using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.Vars.Logger.Level;
 
-namespace RayWrapper
+namespace RayWrapper.Discord
 {
     public class DiscordIntegration
     {

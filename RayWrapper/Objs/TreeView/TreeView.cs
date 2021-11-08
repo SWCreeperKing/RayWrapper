@@ -8,7 +8,6 @@ using RayWrapper.Vars;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameBox;
-using static RayWrapper.GeneralWrapper;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs.TreeView
@@ -50,14 +49,12 @@ namespace RayWrapper.Objs.TreeView
         protected override void RenderCall()
         {
             if (!chains.Any()) return;
-            var rect = mask.IsEqualTo(Zero)
+            (mask.IsEqualTo(Zero)
                 ? AssembleRectFromVec(Vector2.Zero, WindowSize)
-                : mask;
-            List<string> possibleT = new();
-            rect.MaskDraw(() =>
-                possibleT.AddRange(chains.Select(c => c.Draw((_moveChange + axisOffset) * _scale, _scale))));
-            var t = possibleT.Where(s => s != "");
-            if (t.Any()) rect.DrawTooltip(t.First());
+                : mask).MaskDraw(() =>
+            {
+                foreach (var nodeChain in chains) nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale);
+            });
         }
 
         public void ResetPos() => (_moveChange, _scale) = (Vector2.Zero, _scale = 32);

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RayWrapper.Objs.Slot
+﻿namespace RayWrapper.Objs.Slot
 {
     public class ImageSlot : Slot
     {

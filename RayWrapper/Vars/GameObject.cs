@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Numerics;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameBox;
@@ -8,7 +6,7 @@ using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Vars
 {
-    public abstract class GameObject
+    public abstract class GameObject : GameObjReg
     {
         public Actionable<bool> isVisible = true;
         public abstract Vector2 Position { get; set; }
@@ -19,7 +17,6 @@ namespace RayWrapper.Vars
 
         private Rectangle _rect = Zero;
         private Vector2 _freezeV2 = Vector2.Zero;
-        private List<GameObject> _registry = new();
 
         public void Update()
         {
@@ -28,15 +25,15 @@ namespace RayWrapper.Vars
                 isDebugTool) debugContext = null;
             else if (_rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
                      isDebugTool) debugContext = this;
-            foreach (var a in _registry) a.Update();
             UpdateCall();
+            UpdateReg();
         }
 
         public void Render()
         {
             if (!isVisible) return;
-            foreach (var a in _registry) a.Render();
             RenderCall();
+            RenderReg();
             if (isDebugTool) DrawDebugHitbox();
         }
 
@@ -47,8 +44,6 @@ namespace RayWrapper.Vars
             _rect.DrawHallowRect(debugContext == this ? Color.GREEN : Color.RED);
 
         public Rectangle GetDebugRect() => _rect;
-        public void RegisterGameObj(params GameObject[] igo) => _registry.AddRange(igo);
-        public void DeregisterGameObj(GameObject igo) => _registry.Remove(igo);
         public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);
         public Vector2 GetReserveV2() => _freezeV2;
         public void SetPositionAsReserveV2() => Position = _freezeV2;

@@ -2,7 +2,7 @@
 using System.Numerics;
 using static RayWrapper.RectWrapper;
 
-namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShape
+namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
 {
     public class Box : NodeShape
     {

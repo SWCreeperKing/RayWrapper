@@ -1,5 +1,4 @@
-﻿using System;
-using RayWrapper.Vars;
+﻿using RayWrapper.Vars;
 
 namespace RayWrapper.Animation.Transitions
 {

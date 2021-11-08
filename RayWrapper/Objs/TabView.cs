@@ -35,7 +35,7 @@ namespace RayWrapper.Objs
         private float _offset;
         private readonly int _padding = 7;
         private Rectangle _rect;
-        private readonly Dictionary<string, GameObject[]> _tabContents = new();
+        private readonly Dictionary<string, Scene> _tabContents = new();
         private readonly Dictionary<string, float> _tabLengths = new();
         private readonly List<string> _tabOrder = new();
         private readonly List<Label> _tabs = new();
@@ -81,7 +81,7 @@ namespace RayWrapper.Objs
                 foreach (var t in _closing)
                     t.Update();
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
-            foreach (var go in _tabContents[_currentTab]) go.Update();
+          _tabContents[_currentTab].Update();
         }
 
         protected override void RenderCall()
@@ -100,7 +100,7 @@ namespace RayWrapper.Objs
             }
 
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
-            foreach (var go in _tabContents[_currentTab]) go.Render();
+            _tabContents[_currentTab].Render();
         }
 
         public void Refresh() => RefreshTabs();
@@ -157,7 +157,9 @@ namespace RayWrapper.Objs
             if (_tabContents.ContainsKey(tabName)) return;
             _tabOrder.Add(tabName);
             _currentTab ??= tabName;
-            _tabContents.Add(tabName, gobjs);
+            var s = new Scene();
+            s.RegisterGameObj(gobjs);
+            _tabContents.Add(tabName, s);
             _tabLengths.Add(tabName, GameBox.Font.MeasureText($" {tabName} ").X);
             Refresh();
         }
@@ -167,7 +169,9 @@ namespace RayWrapper.Objs
             if (_tabContents.ContainsKey(tabName)) return;
             _tabOrder.Insert(index, tabName);
             _currentTab ??= tabName;
-            _tabContents.Add(tabName, gobjs);
+            var s = new Scene();
+            s.RegisterGameObj(gobjs);
+            _tabContents.Add(tabName, s);
             _tabLengths.Add(tabName, GameBox.Font.MeasureText($" {tabName} ").X);
             Refresh();
         }
@@ -184,6 +188,12 @@ namespace RayWrapper.Objs
             _bar.MoveBar(0);
         }
 
+        public void AddToTab(string tabName, params GameObject[] gobjs)
+        {
+            if (!_tabContents.ContainsKey(tabName)) return;
+            _tabContents[tabName].RegisterGameObj(gobjs);
+        }
+        
         public float GetTabLength() =>
             _tabLengths.Values.Sum() + (_closable ? 25 * _tabLengths.Values.Count : 0) +
             (_tabLengths.Count - 1) * _padding;
@@ -192,6 +202,6 @@ namespace RayWrapper.Objs
         public bool ContainsTab(string tabName) => _tabOrder.Contains(tabName);
 
         public GameObject[] GetTabContents(string tabName) =>
-            _tabContents.ContainsKey(tabName) ? _tabContents[tabName] : null;
+            _tabContents.ContainsKey(tabName) ? _tabContents[tabName].GetRegistry() : null;
     }
 }

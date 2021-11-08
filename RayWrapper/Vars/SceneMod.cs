@@ -1,13 +1,12 @@
 ﻿using System.Numerics;
-using RayWrapper.Vars;
 
-namespace RayWrapper.Objs.HView
+namespace RayWrapper.Vars
 {
-    public class HView<T> : GameObject where T : HViewItem
+    public abstract class SceneMod : GameObject
     {
         public override Vector2 Position { get; set; }
         public override Vector2 Size { get; }
-        
+
         protected override void UpdateCall()
         {
         }

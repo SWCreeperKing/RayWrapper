@@ -2,7 +2,7 @@
 using Raylib_cs;
 using RayWrapper.Vars;
 
-namespace RayWrapper.Objs
+namespace RayWrapper.Animation.SinglePerposeObjects
 {
     /// <summary>
     /// Mostly just use for transitions :p

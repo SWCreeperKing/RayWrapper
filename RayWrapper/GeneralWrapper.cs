@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Raylib_cs;
@@ -53,24 +52,24 @@ namespace RayWrapper
         /// BottomRight: 3
         /// BottomLeft: 4
         /// </summary>
-        public static int GetCursorQuadrant()
-        {
-            var lines = GameBox.WindowSize / 2;
-            var cursor = GameBox.mousePos;
-            var quad = cursor.X > lines.X ? 1 : 2;
-            if (cursor.Y > lines.Y) quad += 2;
-            return quad;
-        }
-
-        public static void DrawToolTipAtPoint(this Vector2 rawPos, string text, Color color, float fontSize = 24,
-            float spacing = 1.5f)
-        {
-            var textSize = GameBox.Font.MeasureText(text, fontSize, spacing);
-            var quad = GetCursorQuadrant();
-            Vector2 pos = new(rawPos.X - (quad % 2 != 0 ? textSize.X : 0), rawPos.Y - (quad > 2 ? textSize.Y : -33));
-            AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
-            DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, color);
-        }
+        // public static int GetCursorQuadrant()
+        // {
+        //     var lines = GameBox.WindowSize / 2;
+        //     var cursor = GameBox.mousePos;
+        //     var quad = cursor.X > lines.X ? 1 : 2;
+        //     if (cursor.Y > lines.Y) quad += 2;
+        //     return quad;
+        // }
+        //
+        // public static void DrawToolTipAtPoint(this Vector2 rawPos, string text, Color color, float fontSize = 24,
+        //     float spacing = 1.5f)
+        // {
+        //     var textSize = GameBox.Font.MeasureText(text, fontSize, spacing);
+        //     var quad = GetCursorQuadrant();
+        //     Vector2 pos = new(rawPos.X - (quad % 2 != 0 ? textSize.X : 0), rawPos.Y - (quad > 2 ? textSize.Y : -33));
+        //     AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
+        //     DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, color);
+        // }
 
         [Obsolete("Use an actual clamp i.e. Math.Clamp(), but I won't judge you if you REALLY WANT to use this")]
         public static double Clamp<T>(this T n, T min, T max) =>

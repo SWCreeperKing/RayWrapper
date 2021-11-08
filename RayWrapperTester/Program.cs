@@ -8,7 +8,7 @@ using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
 using RayWrapper.Objs.TreeView;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
-using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShape;
+using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
 using RayWrapperTester.Animations;
 using static Raylib_cs.Color;
@@ -121,11 +121,11 @@ namespace RayWrapperTester
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
                 new Checkbox(pos + new Vector2(0, 50), "Circle") { isCircle = true });
 
-            TreeView tv = new(new NodeChain(new Box(Vector2.One, () => "hi"),
+            TreeView tv = new(new NodeChain(new Box(Vector2.One, () => "hi") { completed = true },
                 new Box(new Vector2(1, 3), () => "hi2") { completed = true },
-                new Ball(new Vector2(3, 1), () => "hi3"),
+                new Ball(new Vector2(3, 1), () => "hi3") { completed = true },
                 new Ball(new Vector2(3, 3), () => "hi4") { completed = true },
-                new Ball(new Vector2(4, 8), new Vector2(2, 1), () => "yeet")) { nonSequential = true });
+                new Ball(new Vector2(4, 8), new Vector2(2, 1), () => "yeet")));
             tv.axisOffset = new Vector2(5, 5);
             tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
 
@@ -163,7 +163,7 @@ namespace RayWrapperTester
 
             Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Label.TextMode.SizeToText);
             aniBC.Clicked += () => Animator.AddAnimation(new Mover());
-            
+
             Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Label.TextMode.SizeToText);
             aniBT.Clicked += () => Animator.AddToAnimationQueue(new InteractionAnimation());
 
@@ -180,7 +180,8 @@ namespace RayWrapperTester
                     {
                         ClearBackground(RED);
                         bRend.Render();
-                        mousePos.DrawToolTipAtPoint($"{mousePos}", BLUE);
+                        GameBox.tooltip.Add($"{mousePos}");
+                        // mousePos.DrawToolTipAtPoint($"{mousePos}", BLUE);
                     });
             }));
 

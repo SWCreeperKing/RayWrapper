@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static RayWrapper.RectWrapper;

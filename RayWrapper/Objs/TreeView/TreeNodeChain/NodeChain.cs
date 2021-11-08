@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Raylib_cs;
+using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain
@@ -9,99 +11,81 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
     {
         public ColorModule lineColor = new(0);
         public ColorModule completedLineColor = new(255);
-        public bool nonSequential = false;
-        public List<NodeShape.NodeShape> nodes = new();
-        public NodeShape.NodeShape branched;
+        public List<NodeShape> nodes = new();
+        public NodeShape branched = null;
 
-        private List<NodeChain> branches = new();
+        private Dictionary<NodeShape, List<NodeChain>> branches = new();
 
-        public NodeChain(params NodeShape.NodeShape[] nodes) => this.nodes.AddRange(nodes);
+        public NodeChain(params NodeShape[] nodes) => this.nodes.AddRange(nodes);
 
-        public string Draw(Vector2 off, float scale, bool startContext = true)
+        public void Draw(Vector2 off, float scale)
         {
-            var tool = "";
-            var context = true;
-            var branchedN = branches.Select(b => (b.branched, b)).ToArray();
-            Dictionary<NodeShape.NodeShape, List<NodeShape.NodeShape>> nbs = new();
-            if (branchedN.Any())
-            {
-                foreach (var (ns, b) in branchedN)
-                {
-                    if (!b.nodes.Any()) continue;
-                    if (nbs.ContainsKey(ns)) nbs[ns].Add(b.nodes[0]);
-                    else nbs.Add(ns, new List<NodeShape.NodeShape> { b.nodes[0] });
-                }
-            }
-
-            for (var i = 1; i < nodes.Count; i++)
-            {
-                var nxt = i != nodes.Count - 1 && (bool)nodes[i + 1].completed;
-                if (i == 1)
-                {
-                    nodes[i - 1].Update(off, scale, !nonSequential, startContext, nodes[i].completed);
-                    context = nodes[i - 1].completed;
-                }
-
-                if (nbs.ContainsKey(nodes[i]))
-                    nxt = nxt || nbs[nodes[i]].Select(n => (bool)n.completed).Aggregate((b1, b2) => b1 || b2);
-                nodes[i].Update(off, scale, !nonSequential, context, nxt);
-                context = nodes[i].completed;
-            }
-
-            void UpdateString(string s) => tool = s != "" ? s : tool;
-            var centers = nodes.Select(n => (n.Center(off, scale), n.completed)).ToArray();
-            foreach (var nodeChain in branches) UpdateString(nodeChain.Draw(off, scale));
-            if (!nodes.Any()) return tool;
+            Update(off, scale);
+            if (branched is not null && !branched.completed) return;
+            void DrawLine(Vector2 c1, Vector2 c2, Color cColor, float scale) => c1.DrawLine(c2, cColor, .25f * scale);
             if (nodes.Count == 1)
             {
-                var n = nodes[0];
-                n.Update(off, scale, !nonSequential, branched is null ? true : branched.completed, false);
-                if (branched is not null)
-                {
-                    if (!branched.completed && !nonSequential) return tool;
-                    var c = branched.Center(off, scale);
-                    c.DrawLine(n.Center(off, scale), n.completed ? completedLineColor : lineColor, .25f * scale);
-                }
-
-                UpdateString(n.Draw(off, scale));
-                return tool;
+                nodes[0].Draw(off, scale);
+                return;
             }
-
-            for (var i = 1; i < centers.Length; i++)
+            for (var i = 1; i < nodes.Count; i++)
             {
-                var (c1, cV) = centers[i - 1];
-                if (branched is not null && i == 1)
+                var n1 = nodes[i - 1];
+                if (!n1.completed)
                 {
-                    if (!branched.completed && !nonSequential) break;
-                    var c = branched.Center(off, scale);
-                    c.DrawLine(c1, cV ? completedLineColor : lineColor, .25f * scale);
+                    n1.Draw(off, scale);
+                    return;
                 }
 
-                if (!cV && !nonSequential)
+                var n2 = nodes[i];
+                var n1C = n1.Center(off, scale);
+                DrawLine(n1C, n2.Center(off, scale), n2.completed ? completedLineColor : lineColor, scale);
+                if (branches.ContainsKey(n1))
                 {
-                    UpdateString(nodes[i - 1].Draw(off, scale));
-                    if (!nonSequential) break;
+                    foreach (var branch in branches[n1])
+                    {
+                        if (!nodes.Any()) continue;
+                        var n3 = branch.nodes[0];
+                        DrawLine(n1C, n3.Center(off, scale), n3.completed ? completedLineColor : lineColor, scale);
+                        branch.Draw(off, scale);
+                    }
                 }
 
-                var (c2, cB) = centers[i];
-                c1.DrawLine(c2, cB ? completedLineColor : lineColor, .25f * scale);
-                UpdateString(nodes[i].Draw(off, scale));
-                if (cV) UpdateString(nodes[i - 1].Draw(off, scale));
+                n1.Draw(off, scale);
+                if (i == nodes.Count - 1) n2.Draw(off, scale);
             }
-
-            if (nonSequential) UpdateString(nodes[centers.Length - 1].Draw(off, scale));
-
-            return tool;
         }
 
+        public void Update(Vector2 off, float scale)
+        {
+            if (nodes.Count == 1)
+            {
+                nodes[0].Update(off, scale, true, false);
+                return;
+            }
+            for (var i = 1; i < nodes.Count; i++)
+            {
+                var n = nodes[i - 1];
+                bool nxt = nodes[i].completed;
+                if (branches.ContainsKey(n))
+                {
+                    foreach (var branch in branches[n]) branch.Update(off, scale);
+                    nxt = nxt || branches[n].Where(b => b.nodes.Any()).Any(b => b.nodes[0].completed);
+                }
+                n.Update(off, scale, i == 1 ? true : nodes[i - 2].completed, nxt);
+                if (i == nodes.Count - 1) nodes[i].Update(off, scale, n.completed, false);
+            }
+        }
+        
         public void Add(NodeChain nc) => nodes.AddRange(nc.nodes);
-        public void Add(NodeShape.NodeShape ns) => nodes.Add(ns);
+        public void Add(NodeShape ns) => nodes.Add(ns);
 
         public void AddBranch(NodeChain nc)
         {
-            var brancher = nodes[^1];
-            nc.branched = brancher;
-            branches.Add(nc);
+            var node = nodes[^1];
+            nc.branched = node;
+            if (!branches.ContainsKey(node)) branches.Add(node, new List<NodeChain>());
+            branches[node].Add(nc);
         }
     }
 }

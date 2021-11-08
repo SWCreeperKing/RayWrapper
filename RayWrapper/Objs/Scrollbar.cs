@@ -4,7 +4,6 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static RayWrapper.GameBox;
-using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper.Objs
 {

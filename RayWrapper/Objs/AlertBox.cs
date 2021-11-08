@@ -78,14 +78,15 @@ namespace RayWrapper.Objs
 
             if (!informationBox)
             {
-                close.Position = new Vector2(_rect.x + (_rect.width - closeSize.X) - 8, _rect.y + 3);
+                close.Position = new Vector2(_rect.x + (_rect.width - closeSize.X) - 3, _rect.y + 3);
                 no.Position = bottom + new Vector2(10, -3);
                 yes.Position = bottom - new Vector2(yesSize.X + 10, 3);
             }
             else close.Position = bottom - new Vector2(closeSize.X / 2, 3);
         }
 
-        public override Vector2 Position { get; set; }
+        // yes, the set does nothing
+        public override Vector2 Position { get => _rect.Pos(); set => _rect.MoveTo(value); }
         public override Vector2 Size => _rect.Size();
 
         protected override void UpdateCall()
@@ -104,7 +105,7 @@ namespace RayWrapper.Objs
             _rect.Draw(rectColor);
             GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
             if (size == Vector2.Zero)
-                GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 55), message, messageColor);
+                GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
             else
                 GameBox.Font.DrawTextWrap(message,
                     AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),

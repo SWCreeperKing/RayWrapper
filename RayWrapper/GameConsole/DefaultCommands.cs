@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using RayWrapper.Discord;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameBox;
