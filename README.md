@@ -24,6 +24,7 @@ some notable features
 - discord rich presence support
 - a very bad collision system
 - a not as bad animation system
+- internal logger and crash log system
 
 small example
 ---
