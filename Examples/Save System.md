@@ -14,12 +14,6 @@ public class Program : GameLoop
         // for every object you want to save
         // its best to nest save objects to not create ALOT of files
         Gb.RegisterSaveItem(obj, "file name");
-        
-        // to load:
-        Gb.LoadItems();
-        
-        // to save:
-        Gb.SaveItem();
     }
     
     public override void UpdateLoop()
@@ -32,7 +26,18 @@ public class Program : GameLoop
 }
 ```
 
-adding encryption is very easy to ad
+to save/load items do:
+make sure to execute AFTER the save items are registered in the init
+
+```c#
+// load
+Gb.LoadItems();
+
+// save
+Gb.SaveItem();
+```
+
+adding encryption is very easy to add
 you should put this before the init of gamebox if you want to set
 the encryption
 
