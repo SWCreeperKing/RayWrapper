@@ -5,7 +5,7 @@ schedulers are for timing events
 it is very easy to add a scheduler, however you should use low ms times with caution
 
 ```c#
-GameBox.Gb.AddScheduler(new Scheduler(timeInMsToRepeat, onTime: () => {
+GameBox.AddScheduler(new Scheduler(timeInMsToRepeat, onTime: () => {
     // what you want to happpen when it repeats
 }, setTime: true by default
  /*if set time is false then the scheduler will execute the onTime event on Init*/))

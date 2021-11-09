@@ -175,7 +175,7 @@ namespace RayWrapperTester
             Button bRend = new(new Vector2(60, 90), "test");
             _tbv.AddTab("Render 2d test", new EmptyRender(() =>
             {
-                Gb.RenderRenderTexture(rt2d, new Vector2(40, 80), () => bRend.Update(),
+                RenderRenderTexture(rt2d, new Vector2(40, 80), () => bRend.Update(),
                     () =>
                     {
                         ClearBackground(RED);
@@ -224,23 +224,23 @@ namespace RayWrapperTester
 
         public void SaveTesting()
         {
-            Gb.InitSaveSystem("SW_CreeperKing", "SaveTesting");
+            InitSaveSystem("SW_CreeperKing", "SaveTesting");
             var t = new Test();
-            Gb.RegisterSaveItem(t, "test item");
+            RegisterSaveItem(t, "test item");
             t.i = 10;
             Console.WriteLine($"i = {t.i}"); // 10
-            Gb.SaveItems();
+            SaveItems();
             t.i = 2;
             Console.WriteLine($"i = {t.i}"); // 2
-            Gb.LoadItems();
+            LoadItems();
             Console.WriteLine($"i = {t.i}"); // 10
             t.Set(new Test());
             Console.WriteLine($"i = {t.i}"); // 6
-            Gb.LoadItems();
+            LoadItems();
             Console.WriteLine($"i = {t.i}"); // 10
             t = new Test();
             Console.WriteLine($"i = {t.i}"); // 6 
-            Gb.LoadItems();
+            LoadItems();
             Console.WriteLine($"i = {t.i}"); // 6
         }
     }

@@ -6,7 +6,7 @@ in the `Init()` of your `GameLoop` do the following:
 
 ```C#
 GameBox.discordAppId = // this should be the app id used for richpresence
-GameBox.Gb.InitDiscord();
+GameBox.InitDiscord();
 ```
 now you need to set discord integration stuff, there are alot of values you can play with for discord integration
 

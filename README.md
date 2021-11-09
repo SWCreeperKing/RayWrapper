@@ -1,4 +1,4 @@
-﻿This is a Wrapper for Raylib-cs
+﻿This is a Wrapper for the C# port (Raylib-cs) of RayLib, a 'bare-bones' graphics library
 
 Made with .Net5
 

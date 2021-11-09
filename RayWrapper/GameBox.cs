@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Raylib_cs;
 using RayWrapper.Animation;
+using RayWrapper.Animation.Transitions;
 using RayWrapper.CollisionSystem;
 using RayWrapper.Discord;
 using RayWrapper.GameConsole;
@@ -43,7 +44,7 @@ namespace RayWrapper
         public static Vector2 WindowSize { get; private set; }
         public static GameLoop Scene { get; set; }
         public static string Title { get; private set; }
-        public static GameBox Gb => _instance;
+        // public static GameBox Gb => _instance;
         public static bool IsMouseOccupied => mouseOccupier != null;
         public static bool enableConsole = true;
         public static float scale;
@@ -52,7 +53,6 @@ namespace RayWrapper
 
         public static AlertBox alertBox = null;
 
-        // public static Animator animator = new();
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
         public static bool isDebugTool;
@@ -74,9 +74,10 @@ namespace RayWrapper
         private static bool _isDrawing;
         private static bool _isConsole;
         private static RenderTexture2D _target;
-        private static GameBox _instance;
+        // private static GameBox _instance;
         private static bool _initDiscord;
         private static bool _initCollision;
+        private static bool _hasInit;
 
         public static int FPS
         {
@@ -97,9 +98,9 @@ namespace RayWrapper
         public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60,
             string iconPath = "")
         {
-            if (_instance is not null) throw new ApplicationException("Only 1 instance of GameBox can be created");
+            if (_hasInit) throw new ApplicationException("Only 1 instance of GameBox can be created");
             SetTraceLogCallback(Logger.RayLog);
-            _instance = this;
+            _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
             screenGrid = new ScreenGrid();
@@ -118,7 +119,7 @@ namespace RayWrapper
             Start();
         }
 
-        private void Start()
+        private static void Start()
         {
             Task.Run(() =>
             {
@@ -159,7 +160,7 @@ namespace RayWrapper
             Dispose();
         }
 
-        public void InitDiscord()
+        public static void InitDiscord()
         {
             if (_initDiscord) return;
             _initDiscord = true;
@@ -168,7 +169,7 @@ namespace RayWrapper
             AddScheduler(new Scheduler(100, DiscordIntegration.UpdateActivity));
         }
 
-        public void InitCollision()
+        public static void InitCollision()
         {
             if (_initCollision) return;
             _initCollision = true;
@@ -190,7 +191,7 @@ namespace RayWrapper
             });
         }
 
-        private void Update()
+        private static void Update()
         {
             if (f11Fullscreen && IsKeyPressed(KeyboardKey.KEY_F11))
             {
@@ -211,7 +212,7 @@ namespace RayWrapper
             Scene.Update();
         }
 
-        public void RenderRenderTexture(RenderTexture2D texture2D, Vector2 pos, Action update, Action draw)
+        public static void RenderRenderTexture(RenderTexture2D texture2D, Vector2 pos, Action update, Action draw)
         {
             if (!_isDrawing) return;
             var before = new Vector2(mousePos.X, mousePos.Y);
@@ -227,7 +228,7 @@ namespace RayWrapper
             mousePos = before;
         }
 
-        public void Render()
+        private static void Render()
         {
             BeginTextureMode(_target);
             _isDrawing = true;
@@ -271,7 +272,7 @@ namespace RayWrapper
             _isDrawing = false;
         }
 
-        public void Dispose()
+        private static void Dispose()
         {
             if (_isDrawing) EndDrawing();
             _schedulers.Clear();
@@ -281,22 +282,22 @@ namespace RayWrapper
             Environment.Exit(0);
         }
 
-        public void AddScheduler(Scheduler schedule) => _schedulers.Add(schedule);
-        public void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
+        public static void AddScheduler(Scheduler schedule) => _schedulers.Add(schedule);
+        public static void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
         public static long GetTimeMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
         # region save system
 
-        public void InitSaveSystem(string developerName, string appName) =>
+        public static void InitSaveSystem(string developerName, string appName) =>
             (DeveloperName, AppName, SaveInit) = (developerName, appName, true);
 
         public static string GetSavePath => File.Exists("UseLocalPath") ? $"{AppName}" : $"{CoreDir}/{DeveloperName}/{AppName}";
-        public void SaveItems() => SaveList.SaveItems(this);
-        public void LoadItems() => SaveList.LoadItems(this);
-        public void DeleteFile(string name) => SaveList.DeleteFile(name, this);
-        public void DeleteAll() => SaveList.DeleteAll(this);
-        public void RegisterSaveItem<T>(T obj, string fileName) => SaveList.Add(new SaveItem<T>(obj, fileName));
-        public void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
+        public static void SaveItems() => SaveList.SaveItems();
+        public static void LoadItems() => SaveList.LoadItems();
+        public static void DeleteFile(string name) => SaveList.DeleteFile(name);
+        public static void DeleteAll() => SaveList.DeleteAll();
+        public static void RegisterSaveItem<T>(T obj, string fileName) => SaveList.Add(new SaveItem<T>(obj, fileName));
+        public static void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
         #endregion
 
@@ -308,7 +309,7 @@ namespace RayWrapper
             timeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
         }
 
-        public void CalcMousePos()
+        public static void CalcMousePos()
         {
             var mouse = GetMousePosition();
             scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);

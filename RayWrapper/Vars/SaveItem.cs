@@ -105,7 +105,7 @@ namespace RayWrapper.Vars
             sr.Close();
         }
 
-        public static void SaveItems(this List<ISave> saveList, GameBox gb)
+        public static void SaveItems(this List<ISave> saveList)
         {
             singleConsole.WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
             var start = GetTimeMs();
@@ -116,7 +116,7 @@ namespace RayWrapper.Vars
             singleConsole.WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
         }
 
-        public static void LoadItems(this List<ISave> saveList, GameBox gb)
+        public static void LoadItems(this List<ISave> saveList)
         {
             singleConsole.WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
             var start = GetTimeMs();
@@ -127,7 +127,7 @@ namespace RayWrapper.Vars
             singleConsole.WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
         }
 
-        public static void DeleteFile(this List<ISave> saveList, string name, GameBox gb)
+        public static void DeleteFile(this IEnumerable<ISave> saveList, string name)
         {
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
@@ -138,7 +138,7 @@ namespace RayWrapper.Vars
             File.Delete(file);
         }
 
-        public static void DeleteAll(this List<ISave> saveList, GameBox gb)
+        public static void DeleteAll(this IEnumerable<ISave> saveList)
         {
             ISave.IsSaveInitCheck();
             var path = GetSavePath;

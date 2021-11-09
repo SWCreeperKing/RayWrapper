@@ -19,7 +19,7 @@ namespace RayWrapperTesterCollision
 
         public override void Init()
         {
-            Gb.InitCollision();
+            InitCollision();
             var wx = WindowSize.X;
             var wy = WindowSize.Y;
             CollisionLayerTags.Add(("circle", "bar"));
