@@ -27,7 +27,7 @@ public class Program : GameLoop
 ```
 
 to save/load items do:
-make sure to execute AFTER the save items are registered in the init
+make sure to execute AFTER the save items are registered in `Init()`
 
 ```c#
 // load

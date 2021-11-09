@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Incremental_Unlimited_PC.Data.Vars
+namespace RayWrapper.Vars
 {
     public class Flags<T>
     {
