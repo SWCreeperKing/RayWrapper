@@ -25,23 +25,28 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => rect.Size();
 
-        public TextMode mode => TextMode.Normal;
+        public TextMode mode = TextMode.Normal;
         public Actionable<string> text;
         public Rectangle rect;
         public ColorModule color;
         public float fontSize;
         public float spacing;
-        
+
         private Vector2 _pos;
         private string _cachedText;
 
         public Text(Actionable<string> text, Vector2 pos, ColorModule color = null, float fontSize = 24,
             float spacing = 1.5f)
         {
-            (this.text, this._pos, this.color, this.fontSize, this.spacing, _cachedText) =
+            (this.text, _pos, this.color, this.fontSize, this.spacing, _cachedText) =
                 (text, pos, color ?? Color.SKYBLUE, fontSize, spacing, text);
             rect = RectWrapper.AssembleRectFromVec(pos, MeasureText());
         }
+
+        public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, float fontSize = 24,
+            float spacing = 1.5f) =>
+            (this.rect, this.text, _pos, this.color, this.fontSize, this.spacing, _cachedText) = (rect, text,
+                rect.Pos(), color ?? Color.SKYBLUE, fontSize, spacing, text);
 
         protected override void UpdateCall()
         {

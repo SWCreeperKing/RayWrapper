@@ -38,7 +38,7 @@ public class Program : GameLoop
     {
         // game object init
         // if you have objects that just need to render and update
-        // then use RegisterGameObject()
+        // then use RegisterGameObj()
     }
     
     // tip: DO NOT init new objects everytime in Update/Render Loops
