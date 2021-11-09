@@ -12,4 +12,8 @@
         <PackageReference Include="Raylib-cs" Version="3.7.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Examples" />
+    </ItemGroup>
+
 </Project>

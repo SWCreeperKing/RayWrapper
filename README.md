@@ -14,9 +14,10 @@ paths:
 - RayWrapperTester (testing program)
 - RayWrapperTesterCollision (collision testing program)
 
-some notable features
+## some notable features
+
 ---
-- in game console (can add custom commands)
+- in game console (can add custom commands, use ` to access console)
 - a built in save system using Newtonsoft.Json
 - bad code
 - NumberClass is included (A big number lib)
@@ -26,7 +27,8 @@ some notable features
 - a not as bad animation system
 - internal logger and crash log system
 
-small example
+## raw template example
+
 ---
 
 ```C#
