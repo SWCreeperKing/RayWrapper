@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Raylib_cs;
 using RayWrapper.Animation;
-using RayWrapper.Animation.Transitions;
 using RayWrapper.CollisionSystem;
 using RayWrapper.Discord;
 using RayWrapper.GameConsole;
@@ -43,7 +44,9 @@ namespace RayWrapper
         public static bool SaveInit { get; private set; }
         public static Vector2 WindowSize { get; private set; }
         public static GameLoop Scene { get; set; }
+
         public static string Title { get; private set; }
+
         // public static GameBox Gb => _instance;
         public static bool IsMouseOccupied => mouseOccupier != null;
         public static bool enableConsole = true;
@@ -73,7 +76,9 @@ namespace RayWrapper
         private static List<Scheduler> _schedulers = new();
         private static bool _isDrawing;
         private static bool _isConsole;
+
         private static RenderTexture2D _target;
+
         // private static GameBox _instance;
         private static bool _initDiscord;
         private static bool _initCollision;
@@ -291,7 +296,9 @@ namespace RayWrapper
         public static void InitSaveSystem(string developerName, string appName) =>
             (DeveloperName, AppName, SaveInit) = (developerName, appName, true);
 
-        public static string GetSavePath => File.Exists("UseLocalPath") ? $"{AppName}" : $"{CoreDir}/{DeveloperName}/{AppName}";
+        public static string GetSavePath =>
+            File.Exists("UseLocalPath") ? $"{AppName}" : $"{CoreDir}/{DeveloperName}/{AppName}";
+
         public static void SaveItems() => SaveList.SaveItems();
         public static void LoadItems() => SaveList.LoadItems();
         public static void DeleteFile(string name) => SaveList.DeleteFile(name);
@@ -322,5 +329,21 @@ namespace RayWrapper
             Font = LoadFontEx(font, fontSize, null, toChar);
 
         public static void OpenLink(string url) => Process.Start("explorer.exe", url);
+
+        public static dynamic LoadJsonFromWeb(string site, out bool isSuccessful)
+        {
+            isSuccessful = true;
+            try
+            {
+                return JsonConvert.DeserializeObject(new WebClient().DownloadString(site));
+            }
+            catch
+            {
+                // ignored
+            }
+
+            isSuccessful = false;
+            return null;
+        }
     }
 }

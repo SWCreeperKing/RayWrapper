@@ -4,7 +4,17 @@
         <TargetFramework>net5.0</TargetFramework>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PackageId>RayWrapper</PackageId>
+        <Authors>SW_CreeperKing</Authors>
+        <Description>This is a Wrapper Project for Raylib-cs</Description>
+        <PackageTags>Raylib-cs wrapper</PackageTags>
+        <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
         <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <DebugSymbols>true</DebugSymbols>
+        <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
+        <AppxSymbolPackageOutput>snupkg</AppxSymbolPackageOutput>
+        <PackageLicenseUrl>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</PackageLicenseUrl>
     </PropertyGroup>
 
     <ItemGroup>
