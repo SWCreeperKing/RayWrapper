@@ -272,7 +272,7 @@ namespace RayWrapper
             _isDrawing = false;
         }
 
-        private static void Dispose()
+        public static void Dispose()
         {
             if (_isDrawing) EndDrawing();
             _schedulers.Clear();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Raylib_cs;
@@ -133,7 +134,7 @@ namespace RayWrapper
 
         public static void Set<T>(this T t, T overrider)
         {
-            foreach (var field in typeof(T).GetRuntimeFields())
+            foreach (var field in typeof(T).GetRuntimeFields().Where(f => !f.IsStatic))
             {
                 try
                 {

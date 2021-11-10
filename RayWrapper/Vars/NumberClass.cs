@@ -19,7 +19,7 @@ namespace RayWrapper.Vars
             Engineering,
         }
 
-        public static float Version { get; } = .25f;
+        public static readonly float Version  = .25f;
         public static bool CutOff1E = true; // format; 1e1e30 => 1ee30 
         public static int SciStaticLeng = 4;
         public static Format format = Format.Scientific;

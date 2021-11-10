@@ -4,16 +4,13 @@
         <TargetFramework>net5.0</TargetFramework>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Raylib-cs" Version="3.7.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Examples" />
     </ItemGroup>
 
 </Project>
