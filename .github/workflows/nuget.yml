@@ -1,0 +1,40 @@
+name: "NuGet Deploy"
+
+on: 
+  push:
+    tags:
+      - 'v*'
+  
+env:
+  PROJECT_PATH: 'RayWrapper/RayWrapper.csproj'
+  PACK_OUT: ${{ github.workspace }}\output
+  NUGET_SOURCE: 'https://api.nuget.org/v3/index.json'
+  
+jobs: 
+  deploy:
+    name: 'Deploy'
+    runs-on: windows-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        
+      - name: 'Install dotnet'
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 'dotnet 5.0.x'
+        
+      - name: 'Restore packages'
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+        
+      - name: 'Build project'
+        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+        
+      - name: 'Get version'
+        id: version
+        uses: battila7/get-version-action@v2
+        
+      - name: 'Pack project'
+        run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --no-build --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACK_OUT }}
+        
+      - name: 'Push package'
+        run: dotnet nuget push ${{ env.PACK_OUT }}\*.nupkg -k ${{ secrets.NUGET_AUTH }} -s ${{ env.NUGET_SOURCE }}
