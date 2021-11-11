@@ -19,7 +19,7 @@ namespace RayWrapper.Vars
             Engineering,
         }
 
-        public static readonly float Version  = .25f;
+        public static readonly float Version = .25f;
         public static bool CutOff1E = true; // format; 1e1e30 => 1ee30 
         public static int SciStaticLeng = 4;
         public static Format format = Format.Scientific;
@@ -51,7 +51,7 @@ namespace RayWrapper.Vars
 
         public NumberClass(string s)
         {
-            if ((s = s.ToLower().Replace("ee", "e1e")).Contains("e"))
+            if ((s = s.ToLower().Replace("ee", "e1e")).Contains('e'))
             {
                 var split = s.Split('e');
                 if (split.Length == 2) (mantissa, exponent) = (double.Parse(split[0]), double.Parse(split[1]));
@@ -66,10 +66,13 @@ namespace RayWrapper.Vars
 
         private void Update()
         {
-            if (mantissa is <= 0.009 and > -0.009)
+            switch (mantissa)
             {
-                mantissa = exponent = 0;
-                return;
+                case <= 0.0009 and > -0.0009:
+                    mantissa = exponent = 0;
+                    return;
+                case < 1 and > 0 when exponent == 0:
+                    return;
             }
 
             var isNeg = mantissa < 0;
@@ -106,7 +109,9 @@ namespace RayWrapper.Vars
             n1 == Zero || n2 == Zero
                 ? Zero
                 : n1 == One || n2 == One
-                    ? n1.Max(n2)
+                    ? n1 == One
+                        ? n2
+                        : n1
                     : new NumberClass(n1.mantissa * n2.mantissa, n1.exponent + n2.exponent);
 
         public static NumberClass operator /(NumberClass n1, NumberClass n2) =>
@@ -137,7 +142,7 @@ namespace RayWrapper.Vars
             tempExpo += n.exponent + Math.Log10(n.exponent);
             return new NumberClass(mantissa, tempExpo);
         }
-        
+
         public NumberClass Root(long @base)
         {
             var mod = exponent % @base;
@@ -229,7 +234,7 @@ namespace RayWrapper.Vars
             {
                 case Format.Engineering:
                     var extended = exponent % 3;
-                    formatMantissa = useMan ? $"{mantissa * Math.Pow(10, extended):##0.00}" : "";
+                    formatMantissa = useMan ? $"{mantissa * Math.Pow(10, extended):##0.00#}" : "";
                     formatExponent = new NumberClass(exponent - extended).FormatNc(Format.Engineering)
                         .Replace("1e", "e");
                     return CutOff1Check($"{formatMantissa}e{formatExponent}");
