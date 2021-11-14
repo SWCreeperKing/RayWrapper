@@ -14,6 +14,7 @@ namespace RayWrapper.Vars
 
         public float FullLength => Position.X + Size.X;
         public float FullHeight => Position.Y + Size.Y;
+        public bool updateReturnIfNonVis;
 
         private Rectangle _rect = Zero;
         private Vector2 _freezeV2 = Vector2.Zero;
@@ -25,6 +26,7 @@ namespace RayWrapper.Vars
                 isDebugTool) debugContext = null;
             else if (_rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
                      isDebugTool) debugContext = this;
+            if (updateReturnIfNonVis && !isVisible) return;
             UpdateCall();
             UpdateReg();
         }

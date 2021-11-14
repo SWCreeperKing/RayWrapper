@@ -19,7 +19,7 @@ namespace RayWrapper.Vars
             Engineering,
         }
 
-        public static readonly float Version = .25f;
+        public static readonly float Version = .26f;
         public static bool CutOff1E = true; // format; 1e1e30 => 1ee30 
         public static int SciStaticLeng = 4;
         public static Format format = Format.Scientific;
@@ -32,6 +32,8 @@ namespace RayWrapper.Vars
         public static readonly NumberClass One = new(1);
         public static readonly NumberClass Zero = new();
 
+        private static readonly Regex RegReplace = new Regex(@"e(1|1.0*)e");
+        
         public double mantissa;
         public double exponent;
 
@@ -66,18 +68,12 @@ namespace RayWrapper.Vars
 
         private void Update()
         {
-            switch (mantissa)
-            {
-                case <= 0.0009 and > -0.0009:
-                    mantissa = exponent = 0;
-                    return;
-                case < 1 and > 0 when exponent == 0:
-                    return;
-            }
+            mantissa = Math.Round(mantissa, 5);
 
             var isNeg = mantissa < 0;
             if (isNeg) mantissa = -mantissa;
             var log = (long)Math.Log10(mantissa);
+            if (log < 0) log = (long)Math.Max(0, Math.Min(log, exponent));
             mantissa /= Math.Pow(10, log);
             if (isNeg) mantissa = -mantissa;
             exponent += log;
@@ -221,7 +217,7 @@ namespace RayWrapper.Vars
             var useMan = !IsMantissaUseless(); // if take mantissa or leave it
 
             // does not catch engineering but w.e. is probs fine
-            string CutOff1Check(string s) => !CutOff1E ? s : Regex.Replace(s, @"e(1|1.0*)e", "ee");
+            string CutOff1Check(string s) => !CutOff1E ? s : RegReplace.Replace(s, "ee");
 
             // get proper format
             // can be #.000 or #.### 
@@ -241,7 +237,7 @@ namespace RayWrapper.Vars
                 case Format.ScientificStatic:
                     // format to keep numclass the same leng
                     formatExponent = new NumberClass(exponent).FormatNc(Format.Scientific);
-                    formatMantissa = useMan ? $"{mantissa.ToString(GetFormatFromCount(SciStaticLeng, false))}" : "";
+                    formatMantissa = useMan ? $"{mantissa.ToString(GetFormatFromCount(SciStaticLeng))}" : "";
                     return CutOff1Check($"{formatMantissa}e{formatExponent}");
                 default:
                     formatMantissa = useMan

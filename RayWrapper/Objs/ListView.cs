@@ -31,11 +31,13 @@ namespace RayWrapper.Objs
         public Func<int, Color> backColors;
         public Func<int, Color> fontColors;
         public Func<int, string> itemProcessing;
+        public Func<int, string> indivTooltip;
         public Action click;
         public Action outsideClick;
         public bool randomPitch = true;
         public bool showTooltip = true;
         public bool rememberLast = true;
+        public bool useSelection = true;
         public bool selectedToggle;
 
         private readonly Label[] _labels;
@@ -65,7 +67,7 @@ namespace RayWrapper.Objs
             for (var i = 0; i < _labels.Length; i++)
                 _labels[i] = new Label(new Rectangle(0, 0, _bounds.width, labelHeight))
                 {
-                    useBaseHover = new Actionable<bool>(() => _individualClick is not null)
+                    useBaseHover = new Actionable<bool>(() => _individualClick is not null), updateReturnIfNonVis = true
                 };
             _bar.OnMoveEvent += UpdateLabels;
             UpdateLabels(0);
@@ -96,20 +98,22 @@ namespace RayWrapper.Objs
             var strictVal = (int)value;
             var labelPadding = _labelHeight + _padding;
             var y = _bounds.Pos().Y - labelPadding * (value - strictVal);
-            foreach (var l in _labels) l.backColor = l.fontColor = new ColorModule(Transparent);
+            foreach (var l in _labels) l.isVisible = false;
 
             for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - strictVal); i++)
             {
                 var notI = i;
                 var place = strictVal + notI;
                 var l = _labels[i];
+                l.isVisible = true;
                 l.text = new Actionable<string>(() =>this[place]);
                 if (_individualClick is not null)
                     l.clicked = () =>
                     {
+                        _individualClick(place);
+                        if (!useSelection)  return;
                         if (_lastSelect == place && selectedToggle) _lastSelect = -1;
                         else _lastSelect = place;
-                        _individualClick(place);
                     };
                 l.Position = new Vector2(_bounds.x, y + labelPadding * i);
                 l.backColor =
@@ -119,6 +123,8 @@ namespace RayWrapper.Objs
                             : backColors?.Invoke(place) ?? (Color)backColor);
                 l.fontColor =
                     new ColorModule(fontColors?.Invoke(place) ?? (Color)fontColor);
+                if (indivTooltip is null) continue;
+                l.tooltip = indivTooltip.Invoke(place);
             }
         }
 

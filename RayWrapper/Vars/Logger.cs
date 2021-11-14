@@ -73,6 +73,14 @@ namespace RayWrapper.Vars
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
             }, RayForm($"from raylib: {text}", args));
 
+        public static void Log(string text) => Log(Debug, text);
+
+        public static T LogReturn<T>(T t)
+        {
+            Log(t.ToString());
+            return t;
+        }
+        
         public static void Log(Level level, string text)
         {
             if (level == Error) hasError = true;

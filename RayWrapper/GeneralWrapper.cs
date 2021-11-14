@@ -71,7 +71,6 @@ namespace RayWrapper
         //     AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
         //     DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, color);
         // }
-
         [Obsolete("Use an actual clamp i.e. Math.Clamp(), but I won't judge you if you REALLY WANT to use this")]
         public static double Clamp<T>(this T n, T min, T max) =>
             n switch
@@ -90,6 +89,9 @@ namespace RayWrapper
 
         public static void DrawLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3) =>
             DrawLineEx(v1, v2, thickness, color);
+
+        public static void DrawBezLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3) =>
+            DrawLineBezier(v1, v2, thickness, color);
 
         public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3) =>
             DrawLineEx(l.v1, l.v2, thickness, color);
@@ -122,6 +124,10 @@ namespace RayWrapper
             for (var i = 1; i < array.Length; i++) array[i - 1].DrawLine(array[i], color, thickness);
         }
 
+        public static void DrawArrAsBezLine(this Vector2[] array, Color color, int thickness = 3)
+        {
+            for (var i = 1; i < array.Length; i++) array[i - 1].DrawBezLine(array[i], color, thickness);
+        }
 
         public static Texture2D Texture(this Image i) => LoadTextureFromImage(i);
 
@@ -153,7 +159,7 @@ namespace RayWrapper
 
         public static Vector2 Size(this Image img) => img.Texture().Size();
         public static Vector2 Size(this Texture2D t2d) => new(t2d.width, t2d.height);
-        
+
         public static void MaskDraw(this Vector2 pos, Vector2 size, Action draw)
         {
             maskingLayer++;
@@ -162,5 +168,19 @@ namespace RayWrapper
             if (maskingLayer == 1) EndScissorMode();
             maskingLayer--;
         }
+
+        public static void DrawCircle(this Vector2 v2, float r, Color? color = null) =>
+            DrawCircleV(v2, r, color ?? Color.WHITE);
+
+        public static Vector2 FixVector(this Vector2 v2) => new Vector2(v2.X.Fix(), v2.Y.Fix());
+
+        public static bool IsFixable(this float f) => float.IsNaN(f) || float.IsInfinity(f);
+
+        public static float Fix(this float f) =>
+            f.IsFixable()
+                ? float.IsNegative(f)
+                    ? float.MinValue
+                    : float.MaxValue
+                : f;
     }
 }

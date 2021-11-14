@@ -31,6 +31,20 @@ namespace RayWrapperTester
         private ListView _lv;
         private DropDown _dd;
 
+        private Graph graf;
+
+        private Func<float, Vector2>[] grafFunc =
+        {
+            dx => new Vector2(dx * 10, (float)Math.Sin(dx)),
+            dx => new Vector2((float)(dx * Math.Cos(dx)), (float)(dx * Math.Sin(dx))),
+            dx => new Vector2(dx, (float)Math.Log(dx)),
+            dx => new Vector2(dx, (float)Math.Exp(dx)),
+            dx => new Vector2(dx / 5f - 5, (float)Math.Tan(dx / 5f - 5)),
+            dx => new Vector2(dx, (float)Math.Sin(Math.Pow(dx, 2)))
+        };
+
+        private int currGraf;
+
         private string yes =
             "What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little \"clever\" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.";
 
@@ -180,10 +194,17 @@ namespace RayWrapperTester
                     {
                         ClearBackground(RED);
                         bRend.Render();
-                        GameBox.tooltip.Add($"{mousePos}");
+                        tooltip.Add($"{mousePos}");
                         // mousePos.DrawToolTipAtPoint($"{mousePos}", BLUE);
                     });
             }));
+
+            graf = new(new Rectangle(50, 100, 1000, 400));
+            _tbv.AddTab("Graphy", graf,
+                new Text(new Actionable<string>(() => $"A: {graf.Amount()}"), new Vector2(120, 520)));
+            graf.minConstraint = new Actionable<float>(() => currGraf == 4 ? -6 : float.MinValue);
+            graf.maxConstraint = new Actionable<float>(() => currGraf == 4 ? 6 : float.MaxValue);
+            graf.ExecuteFunction(grafFunc[0]);
 
             RegisterGameObj(_tbv);
 
@@ -214,6 +235,11 @@ namespace RayWrapperTester
             if (IsKeyDown(KeyboardKey.KEY_UP)) _l.Position += new Vector2(0, -3);
             else if (IsKeyDown(KeyboardKey.KEY_DOWN)) _l.Position += new Vector2(0, 3);
             if (IsKeyPressed(KeyboardKey.KEY_SPACE)) _tbv.Closable = !_tbv.Closable;
+
+            if (!IsKeyPressed(KeyboardKey.KEY_R)) return;
+            currGraf++;
+            currGraf %= grafFunc.Length;
+            graf.ExecuteFunction(grafFunc[currGraf]);
         }
 
         public override void RenderLoop()
