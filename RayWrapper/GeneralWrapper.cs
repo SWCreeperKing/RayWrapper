@@ -47,41 +47,6 @@ namespace RayWrapper
         public static Color MakeDarker(this Color color) =>
             new((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a);
 
-        /// <summary>
-        /// TopRight: 1
-        /// TopLeft: 2
-        /// BottomRight: 3
-        /// BottomLeft: 4
-        /// </summary>
-        // public static int GetCursorQuadrant()
-        // {
-        //     var lines = GameBox.WindowSize / 2;
-        //     var cursor = GameBox.mousePos;
-        //     var quad = cursor.X > lines.X ? 1 : 2;
-        //     if (cursor.Y > lines.Y) quad += 2;
-        //     return quad;
-        // }
-        //
-        // public static void DrawToolTipAtPoint(this Vector2 rawPos, string text, Color color, float fontSize = 24,
-        //     float spacing = 1.5f)
-        // {
-        //     var textSize = GameBox.Font.MeasureText(text, fontSize, spacing);
-        //     var quad = GetCursorQuadrant();
-        //     Vector2 pos = new(rawPos.X - (quad % 2 != 0 ? textSize.X : 0), rawPos.Y - (quad > 2 ? textSize.Y : -33));
-        //     AssembleRectFromVec(pos, textSize).Grow(4).Draw(new Color(0, 0, 0, 200));
-        //     DrawTextEx(GameBox.Font, text, pos, fontSize, spacing, color);
-        // }
-        [Obsolete("Use an actual clamp i.e. Math.Clamp(), but I won't judge you if you REALLY WANT to use this")]
-        public static double Clamp<T>(this T n, T min, T max) =>
-            n switch
-            {
-                int dn when min is int dMin && max is int dMax => Math.Max(Math.Min(dn, dMin), dMax),
-                long dn when min is long dMin && max is long dMax => Math.Max(Math.Min(dn, dMin), dMax),
-                float dn when min is float dMin && max is float dMax => Math.Max(Math.Min(dn, dMin), dMax),
-                double dn when min is double dMin && max is double dMax => Math.Max(Math.Min(dn, dMin), dMax),
-                _ => 0
-            };
-
         public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0) =>
             new(color.r + r, color.g + g, color.b + b, color.a + a);
 

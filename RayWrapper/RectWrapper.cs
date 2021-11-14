@@ -93,14 +93,12 @@ namespace RayWrapper
         public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3) =>
             DrawRectangleLinesEx(rect, thickness, color);
 
-        // public static void DrawTooltip(this Rectangle box, string text /*, int fontSize = 24, float spacing = 1.5f*/) =>
         public static void DrawTooltip(this Rectangle box, string text)
-            // box.DrawTooltip(text, new Color(170, 170, 255, 220), fontSize, spacing);
-            { 
-                if (box.IsMouseIn()) GameBox.tooltip.Add(text);
-            }
+        {
+            if (box.IsMouseIn()) GameBox.tooltip.Add(text);
+        }
 
-            public static void MaskDraw(this Rectangle rect, Action draw)
+        public static void MaskDraw(this Rectangle rect, Action draw)
         {
             maskingLayer++;
             BeginScissorMode((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
@@ -108,12 +106,6 @@ namespace RayWrapper
             if (maskingLayer == 1) EndScissorMode();
             maskingLayer--;
         }
-
-        // public static void DrawTooltip(this Rectangle box, string text, Color color, int fontSize = 24,
-        //     float spacing = 1.5f)
-        // {
-        //     if (box.IsMouseIn()) GameBox.mousePos.DrawToolTipAtPoint(text, color, fontSize, spacing);
-        // }
 
         public static Rectangle Multi(this Rectangle rect, Vector2 v2) =>
             AssembleRectFromVec(rect.Pos() * v2, rect.Size() * v2);
