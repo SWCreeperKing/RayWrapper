@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
-using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
@@ -9,32 +8,26 @@ namespace RayWrapper.Objs
     {
         public override Vector2 Position
         {
-            get => _pos;
-            set
-            {
-                if (_pos == value) return;
-                _pos = value;
-                Change();
-            }
+            get => _t2d.Position;
+            set => _t2d.Position = value;
         }
 
-        public override Vector2 Size => _size;
+        public override Vector2 Size => _t2d.Size;
 
-        public int imageAlpha
+        public int ImageAlpha
         {
-            get => _imgColor.a;
-            set => _imgColor = new Color(255, 255, 255, value);
+            get => _t2d.ImageAlpha;
+            set => _t2d.ImageAlpha = value;
         } // transparency b/t 0-255
 
-        public int rotation; // 0 to 360
-
-        private Vector2 _pos;
-        private Vector2 _size;
+        public int Rotation
+        {
+            get => _t2d.rotation;
+            set => _t2d.rotation = value;
+        } // 0 to 360
+        
+        private TextureObj _t2d;
         private Image _img;
-        private Color _imgColor = new(255, 255, 255, 255);
-        private Rectangle _imageRect;
-        private Rectangle _destRect;
-        private Texture2D _imgText;
 
         public ImageObj(string imageFile) : this(Raylib.LoadImage(imageFile), Vector2.Zero)
         {
@@ -50,27 +43,13 @@ namespace RayWrapper.Objs
 
         public ImageObj(Image img, Vector2 pos)
         {
-            (_pos, _img) = (pos, img);
-            _imageRect = AssembleRectFromVec(Vector2.Zero, _img.Size());
-            _imgText = img.Texture();
-            Change();
+            _img = img;
+            _t2d = new TextureObj(img.Texture(), pos);
         }
 
-        protected override void UpdateCall()
-        {
-        }
-
-        protected override void RenderCall() =>
-            Raylib.DrawTexturePro(_imgText, _imageRect, _destRect, Vector2.Zero, rotation % 360, _imgColor);
-
-        public void SetSize(Vector2 size)
-        {
-            if (size == _size) return;
-            _size = size;
-            Change();
-        }
-
-        public void Change() => _destRect = AssembleRectFromVec(_pos, _size);
+        protected override void UpdateCall() => _t2d.Update();
+        protected override void RenderCall() => _t2d.Render();
+        public void SetSize(Vector2 size) => _t2d.SetSize(size);
         ~ImageObj() => Raylib.UnloadImage(_img);
     }
 }

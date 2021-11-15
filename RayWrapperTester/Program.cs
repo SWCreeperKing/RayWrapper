@@ -104,7 +104,7 @@ namespace RayWrapperTester
             ImageObj io2 = new("Images/Untitled.png", new Vector2(1025, 300));
             io.SetSize(new Vector2(75));
             io2.SetSize(new Vector2(75));
-            io2.imageAlpha = 100;
+            io2.ImageAlpha = 100;
             ImageItem ii = new(io) { slotDependent = false };
             Slot sl = new(new Vector2(800, 300), new Vector2(75)) { color = PURPLE };
             Slot sl1 = new(new Vector2(875, 300), new Vector2(75)) { color = BLUE, idRestriction = "blue" };

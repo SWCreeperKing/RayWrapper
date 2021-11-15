@@ -12,7 +12,7 @@ namespace RayWrapper.Objs.Slot
         {
             img.Position = pos;
             img.SetSize(size);
-            if (img.imageAlpha != alpha) img.imageAlpha = alpha;
+            if (img.ImageAlpha != alpha) img.ImageAlpha = alpha;
             img.Render();
         }
     }
