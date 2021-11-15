@@ -19,6 +19,7 @@ namespace RayWrapper.Vars
             return true;
         }
 
+        public void ResetRick() => LastTick = GetTimeMs();
         public float GetRemainingTime() => Math.Max(durationMs - GetTimeMs() - LastTick, 0);
         public float GetTimePercent() => (float)(GetTimeMs() - LastTick) / durationMs;
     }
