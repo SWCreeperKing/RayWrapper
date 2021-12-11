@@ -2,9 +2,8 @@
 using Raylib_cs;
 using RayWrapper;
 using RayWrapper.Animation;
-using RayWrapper.Animation.SinglePerposeObjects;
+using RayWrapper.Animation.SinglePurposeObjects;
 using RayWrapper.Animation.Transitions;
-using RayWrapper.Objs;
 
 namespace RayWrapperTester.Animations
 {
@@ -14,8 +13,9 @@ namespace RayWrapperTester.Animations
 
         public Mover()
         {
-            square.color = Color.RED;
+            square.ColorMod = Color.RED;
             AddTransition(0, new MoveTransition(new Vector2(GameBox.WindowSize.X, 0), square, 1));
+            AddTransition(0, new AlphaTransition<Rect>(0, square, 1));
             AddToRegister(square);
         }
     }

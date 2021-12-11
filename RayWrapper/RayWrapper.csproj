@@ -17,13 +17,17 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.1.7</PackageVersion>
+        <PackageVersion>0.1.11</PackageVersion>
+        <PackageReleaseNotes>Hopefully included symbols</PackageReleaseNotes>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+<!--        <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="NumberClass" Version="1.0.0" />
+        <PackageReference Include="NumberClass" Version="1.1.0" />
         <PackageReference Include="Raylib-cs" Version="3.7.0" />
     </ItemGroup>
 </Project>

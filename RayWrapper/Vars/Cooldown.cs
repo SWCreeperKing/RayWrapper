@@ -6,21 +6,20 @@ namespace RayWrapper.Vars
     public class Cooldown
     {
         public long durationMs;
-        public long LastTick { get; private set; }
+        public long lastTick;
 
         public Cooldown(long durationMs, bool startWithCooldown = false) =>
-            (this.durationMs, LastTick) = (durationMs, GetTimeMs() - (startWithCooldown ? 0 : durationMs));
+            (this.durationMs, lastTick) = (durationMs, GetTimeMs() - (startWithCooldown ? 0 : durationMs));
 
-        public bool UpdateTime()
+        public bool UpdateTime(bool resetTimeOnTrue = true)
         {
-            var time = GetTimeMs();
-            if (LastTick + durationMs < time) return false;
-            LastTick = time;
+            if (lastTick + durationMs > GetTimeMs()) return false;
+            if (resetTimeOnTrue) ResetTick();
             return true;
         }
 
-        public void ResetRick() => LastTick = GetTimeMs();
-        public float GetRemainingTime() => Math.Max(durationMs - GetTimeMs() - LastTick, 0);
-        public float GetTimePercent() => (float)(GetTimeMs() - LastTick) / durationMs;
+        public void ResetTick() => lastTick = GetTimeMs();
+        public float GetRemainingTime() => Math.Max(durationMs - (GetTimeMs() - lastTick), 0);
+        public float GetTimePercent() => Math.Clamp((float)(GetTimeMs() - lastTick) / durationMs, 0, 1);
     }
 }

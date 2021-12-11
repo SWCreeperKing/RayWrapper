@@ -74,6 +74,7 @@ namespace RayWrapper.Vars
             }, RayForm($"from raylib: {text}", args));
 
         public static void Log(string text) => Log(Debug, text);
+        public static void Log(object text) => Log(Debug, text.ToString());
 
         public static T LogReturn<T>(T t)
         {
@@ -97,6 +98,8 @@ namespace RayWrapper.Vars
             Console.ForegroundColor = ConsoleColor.White;
             _log.Add($"[{level}] [{time}] [\"{text}\"]");
         }
+
+        public static void Log(Level level, object text) => Log(level, text.ToString());
 
         public static void WriteLog(bool isCrash = true)
         {

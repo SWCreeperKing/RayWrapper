@@ -30,6 +30,7 @@ namespace RayWrapperTester
         // private Scrollbar _sb = new(new(400, 50, 20, 380));
         private ListView _lv;
         private DropDown _dd;
+        private Cooldown _c = new(5000);
 
         private Graph graf;
 
@@ -224,6 +225,9 @@ namespace RayWrapperTester
 
         public override void UpdateLoop()
         {
+            // var isC = _c.UpdateTime();
+            // Logger.Log($"is: {isC} | d: {_c.durationMs} | l: {_c.lastTick} | r: {_c.GetRemainingTime()} | p: {_c.GetTimePercent()}");
+
             percent += .005f;
             percent %= 1;
 

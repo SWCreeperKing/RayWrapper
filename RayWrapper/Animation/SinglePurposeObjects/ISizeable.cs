@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace RayWrapper.Vars
+namespace RayWrapper.Animation.SinglePurposeObjects
 {
     public interface ISizeable
     {
