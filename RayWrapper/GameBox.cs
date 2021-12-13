@@ -47,15 +47,13 @@ namespace RayWrapper
 
         public static string Title { get; private set; }
 
-        // public static GameBox Gb => _instance;
+        public static long GameObjects = 0;
         public static bool IsMouseOccupied => mouseOccupier != null;
         public static bool enableConsole = true;
         public static float scale;
         public static Vector2 mousePos;
         public static string discordAppId = "";
-
         public static AlertBox alertBox = null;
-
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
         public static bool isDebugTool;
@@ -146,6 +144,7 @@ namespace RayWrapper
             Scene.Init();
             try
             {
+                GC.Collect();
                 while (!WindowShouldClose())
                 {
                     CalcMousePos();

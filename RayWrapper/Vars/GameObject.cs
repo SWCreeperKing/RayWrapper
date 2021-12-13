@@ -19,6 +19,8 @@ namespace RayWrapper.Vars
         private Rectangle _rect = Zero;
         private Vector2 _freezeV2 = Vector2.Zero;
 
+        public GameObject() => GameObjects++;
+
         public void Update()
         {
             _rect = AssembleRectFromVec(Position, Size);
@@ -49,5 +51,7 @@ namespace RayWrapper.Vars
         public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);
         public Vector2 GetReserveV2() => _freezeV2;
         public void SetPositionAsReserveV2() => Position = _freezeV2;
+
+        ~GameObject() => GameObjects--;
     }
 }

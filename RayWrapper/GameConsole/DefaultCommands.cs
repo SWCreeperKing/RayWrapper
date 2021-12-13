@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RayWrapper.Discord;
@@ -102,5 +103,15 @@ namespace RayWrapper.GameConsole
             Logger.WriteLog(false);
             return $"{CYAN}Created status file at: {Logger.statusSave}";
         }
+
+        [Command("collectGarb"), Help("Calls garbage collection")]
+        public static string CallGC(string[] args)
+        {
+            GC.Collect();
+            return "Garbage Collected";
+        }
+
+        [Command("objs"), Help("Displays how many Gameobjects there are")]
+        public static string Objects(string[] args) => $"{CYAN}There are [{GameObjects}] GameObjects";
     }
 }
