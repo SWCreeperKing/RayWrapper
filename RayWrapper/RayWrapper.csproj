@@ -17,12 +17,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.1.14</PackageVersion>
-        <PackageReleaseNotes>2 new default commads:
-[objs] -&gt; displays current amount of gameobjects
-[collectgarb] -&gt; forces grabage collection
-
-added GameObject counter</PackageReleaseNotes>
+        <PackageVersion>0.1.15</PackageVersion>
+        <PackageReleaseNotes>GhostObjects added 
+(an extention of GameObjects)</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
