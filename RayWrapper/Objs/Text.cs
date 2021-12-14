@@ -18,7 +18,7 @@ namespace RayWrapper.Objs
             get => rect.Pos();
             set
             {
-                rect = rect.MoveTo(value);
+                rect.MoveTo(value);
                 _pos = value;
             }
         }

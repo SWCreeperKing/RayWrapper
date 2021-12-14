@@ -13,7 +13,7 @@ namespace RayWrapperTesterCollision
         {
         }
 
-        public override void RenderShape(Vector2 pos) => rect.MoveTo(pos).Draw(Color.GRAY);
+        public override void RenderShape(Vector2 pos) => rect.NewMoveTo(pos).Draw(Color.GRAY);
 
         public override void FirstCollision(Collider c)
         {

@@ -22,9 +22,11 @@ namespace RayWrapper
 
         public static void DrawCenterWrapText(this Font font, Rectangle rect, string text, Color color,
             float fontSize = 24,
-            float spacing = 1.5f) =>
-            DrawTextRec(font, text, rect.MoveBy(-(MeasureTextEx(font, text, fontSize, spacing) / 2)), fontSize, spacing,
-                true, color);
+            float spacing = 1.5f)
+        {
+            rect.MoveBy(-(MeasureTextEx(font, text, fontSize, spacing) / 2));
+            DrawTextRec(font, text, rect, fontSize, spacing, true, color);
+        }
 
         public static void DrawTextWrap(this Font font, string text, Rectangle rect, Color fontColor, int fontSize = 24,
             float spacing = 1.5f) =>

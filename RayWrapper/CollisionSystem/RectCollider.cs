@@ -20,6 +20,6 @@ namespace RayWrapper.CollisionSystem
             };
 
         public override bool SampleCollision(Rectangle c) => Raylib.CheckCollisionRecs(this, c);
-        public static implicit operator Rectangle(RectCollider rc) => rc.rect.MoveTo(rc.Position);
+        public static implicit operator Rectangle(RectCollider rc) => rc.rect.NewMoveTo(rc.Position);
     }
 }

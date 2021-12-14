@@ -14,7 +14,7 @@ namespace RayWrapper.Objs
             get => _pos;
             set
             {
-                _rect = _rect.MoveTo(_pos = value);
+                _rect.MoveTo(_pos = value);
                 _yScroll.Position = new Vector2(_rect.x, _rect.y);
                 _xScroll.Position = new Vector2(_rect.x + 20, _rect.y + _rect.height - 20);
             }

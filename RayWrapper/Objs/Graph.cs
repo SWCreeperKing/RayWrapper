@@ -14,7 +14,7 @@ namespace RayWrapper.Objs
         public override Vector2 Position
         {
             get => rect.Pos();
-            set => rect = rect.MoveTo(value);
+            set => rect.MoveTo(value);
         }
 
         public override Vector2 Size => rect.Size();

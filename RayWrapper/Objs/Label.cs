@@ -26,7 +26,7 @@ namespace RayWrapper.Objs
             get => _back.Pos();
             set
             {
-                _back = _back.MoveTo(value);
+                _back.MoveTo(value);
                 ReCalc();
             }
         }

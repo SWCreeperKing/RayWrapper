@@ -15,7 +15,7 @@ namespace RayWrapper.Objs
             set
             {
                 _bar.Position = value + new Vector2(-20, 0);
-                _bounds = _bounds.MoveTo(value);
+                _bounds.MoveTo(value);
                 UpdateLabels(_bar.Value);
             }
         }

@@ -39,8 +39,8 @@ namespace RayWrapper.Objs
             set
             {
                 var offset = GetOffset;
-                container = container.MoveTo(value);
-                bar = bar.MoveTo(value);
+                container.MoveTo(value);
+                bar.MoveTo(value);
                 MoveBar(offset);
             }
         }

@@ -49,7 +49,9 @@ namespace RayWrapper
         public static Rectangle Grow(this Rectangle rect, int changeBy) => rect.Shrink(-changeBy);
 
         public static Rectangle AdjustWh(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
-        public static Rectangle MoveTo(this Rectangle rect, Vector2 v2) => AssembleRectFromVec(v2, rect.Size());
+        public static Rectangle NewMoveTo(this Rectangle rect, Vector2 v2) => AssembleRectFromVec(v2, rect.Size());
+        public static void MoveTo(this ref Rectangle rect, Vector2 v2) => (rect.x, rect.y) = (v2.X, v2.Y);
+        public static void MoveTo(this ref Rectangle rect, float x = 0, float y = 0) => (rect.x, rect.y) = (x, y);
         public static Rectangle Clone(this Rectangle rect) => new(rect.x, rect.y, rect.width, rect.height);
         public static Rectangle SetSize(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
         public static bool IsColliding(this Rectangle rect1, Rectangle rect2) => CheckCollisionRecs(rect1, rect2);
@@ -84,8 +86,14 @@ namespace RayWrapper
         public static Rectangle AdjustByWh(this Rectangle rect, Vector2 v2) =>
             new(rect.x, rect.y, rect.width + v2.X, rect.height + v2.Y);
 
-        public static Rectangle MoveBy(this Rectangle rect, Vector2 v2) =>
+        public static Rectangle NewMoveBy(this Rectangle rect, Vector2 v2) =>
             AssembleRectFromVec(rect.Pos() + v2, rect.Size());
+
+        public static void MoveBy(this ref Rectangle rect, Vector2 v2) =>
+            (rect.x, rect.y) = (rect.x + v2.X, rect.y + v2.Y);
+
+        public static void MoveBy(this ref Rectangle rect, float x = 0, float y = 0) =>
+            (rect.x, rect.y) = (rect.x + x, rect.y + y);
 
         public static Rectangle ExtendPos(this Rectangle rect, Vector2 v2) =>
             new(rect.x - v2.X, rect.y - v2.Y, rect.width + v2.X, rect.height + v2.Y);

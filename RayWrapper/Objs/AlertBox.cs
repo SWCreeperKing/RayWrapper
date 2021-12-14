@@ -86,7 +86,7 @@ namespace RayWrapper.Objs
         }
 
         // yes, the set does nothing
-        public override Vector2 Position { get => _rect.Pos(); set => _rect.MoveTo(value); }
+        public override Vector2 Position { get => _rect.Pos(); set => _rect.NewMoveTo(value); }
         public override Vector2 Size => _rect.Size();
 
         protected override void UpdateCall()

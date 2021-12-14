@@ -14,7 +14,7 @@ namespace RayWrapper.Objs
             get => _rect.Pos();
             set
             {
-                _rect = _rect.MoveTo(value);
+                _rect.MoveTo(value);
                 _bar.Position = value + new Vector2(0, 40);
                 Refresh();
             }
