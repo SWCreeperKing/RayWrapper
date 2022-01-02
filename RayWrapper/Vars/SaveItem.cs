@@ -23,8 +23,14 @@ namespace RayWrapper.Vars
             set
             {
                 _cypher = value;
+                isCypherValid = true;
                 if (_cypher.encrypt is null || _cypher.decrypt is null) isCypherValid = false;
-                if (!isCypherValid) return;
+                if (!isCypherValid)
+                {
+                    if (_cypher.encrypt is null) Logger.Log(Error, "Encryption is Null");
+                    if (_cypher.decrypt is null) Logger.Log(Error, "Decryption is Null");
+                    return;
+                }
                 StringBuilder sb = new();
                 Random r = new();
                 var charStop = r.Next(100, 151);

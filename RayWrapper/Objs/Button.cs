@@ -12,7 +12,7 @@ namespace RayWrapper.Objs
 {
     public class Button : GameObject
     {
-        public ColorModule baseColor = new(56, 73, 99);
+        public ColorModule baseColor = new(1, 89, 99);
         public Label baseL;
         public Sound clickSound;
         public ColorModule fontColor = new(174, 177, 181);

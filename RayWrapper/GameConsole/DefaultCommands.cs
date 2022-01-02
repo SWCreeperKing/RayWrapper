@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using RayWrapper.Discord;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
@@ -113,5 +114,22 @@ namespace RayWrapper.GameConsole
 
         [Command("objs"), Help("Displays how many Gameobjects there are")]
         public static string Objects(string[] args) => $"{CYAN}There are [{GameObjects}] GameObjects";
+
+        [Command("toggleFps"), Help("Toggles the fps counter visibility")]
+        public static string ToggleFps(string[] args)
+        {
+            showFps = !showFps;
+            return $"{CYAN}{(showFps ? "Showing" : "Hiding")} Fps";
+        }
+
+        [Command("fpsPos"), Help("Sets Fps Position")]
+        public static string FpsPos(string[] args)
+        {
+            if (args.Length < 2) return "to set the pos do fpspos [x] [y]";
+            var x = int.TryParse(args[0], out var rX) ? rX : 0;
+            var y = int.TryParse(args[1], out var rY) ? rY : 0;
+            fpsPos = new Vector2(x, y);
+            return $"{CYAN}Set fps pos to ({x},{y})";
+        }
     }
 }

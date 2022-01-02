@@ -17,8 +17,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.1.18</PackageVersion>
-        <PackageReleaseNotes>Ghost object hopefully works now</PackageReleaseNotes>
+        <PackageVersion>0.1.22</PackageVersion>
+        <PackageReleaseNotes>- Fixed scheduler timing being 10x slower than it should be (10ms -&gt; 100ms)</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -27,7 +27,6 @@
     <ItemGroup>
         <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="NumberClass" Version="1.1.0" />
         <PackageReference Include="Raylib-cs" Version="3.7.0" />
     </ItemGroup>
 </Project>

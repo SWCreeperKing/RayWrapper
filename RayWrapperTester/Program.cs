@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper;
@@ -63,7 +64,7 @@ namespace RayWrapperTester
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
 
-            // gb.AddScheduler(new Scheduler(100,
+            // AddScheduler(new Scheduler(100,
             //     () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
 
             // save testing
@@ -207,6 +208,8 @@ namespace RayWrapperTester
             graf.maxConstraint = new Actionable<float>(() => currGraf == 4 ? 6 : float.MaxValue);
             graf.ExecuteFunction(grafFunc[0]);
 
+            fpsPos = new Vector2(12, WindowSize.Y - 25);
+
             RegisterGameObj(_tbv);
 
             // W: [(%, 16)] H: [(!, 24)]
@@ -248,30 +251,30 @@ namespace RayWrapperTester
 
         public override void RenderLoop()
         {
-            var size = WindowSize;
-            DrawFPS(12, (int)(size.Y - 25));
         }
 
         public void SaveTesting()
         {
+            ISave.Cypher = (s => string.Join("", s.Reverse()), s => string.Join("", s.Reverse()));
             InitSaveSystem("SW_CreeperKing", "SaveTesting");
             var t = new Test();
+            // basic encryption
             RegisterSaveItem(t, "test item");
             t.i = 10;
-            Console.WriteLine($"i = {t.i}"); // 10
+            Logger.Log($"i = {t.i}"); // 10
             SaveItems();
             t.i = 2;
-            Console.WriteLine($"i = {t.i}"); // 2
+            Logger.Log($"i = {t.i}"); // 2
             LoadItems();
-            Console.WriteLine($"i = {t.i}"); // 10
+            Logger.Log($"i = {t.i}"); // 10
             t.Set(new Test());
-            Console.WriteLine($"i = {t.i}"); // 6
+            Logger.Log($"i = {t.i}"); // 6
             LoadItems();
-            Console.WriteLine($"i = {t.i}"); // 10
+            Logger.Log($"i = {t.i}"); // 10
             t = new Test();
-            Console.WriteLine($"i = {t.i}"); // 6 
+            Logger.Log($"i = {t.i}"); // 6 
             LoadItems();
-            Console.WriteLine($"i = {t.i}"); // 6
+            Logger.Log($"i = {t.i}"); // 6
         }
     }
 }

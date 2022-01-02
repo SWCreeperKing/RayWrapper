@@ -50,13 +50,16 @@ namespace RayWrapper
         public static long GameObjects = 0;
         public static bool IsMouseOccupied => mouseOccupier != null;
         public static bool enableConsole = true;
+        public static bool showFps = false;
         public static float scale;
+        public static Vector2 fpsPos = Vector2.One;
         public static Vector2 mousePos;
         public static string discordAppId = "";
         public static AlertBox alertBox = null;
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
         public static bool isDebugTool;
+        public static bool conserveCpu;
         public static List<SlotBase> dragCollision = new();
         public static GameObject mouseOccupier;
         public static ScreenGrid screenGrid;
@@ -72,8 +75,11 @@ namespace RayWrapper
         private static readonly List<ISave> SaveList = new();
         private static Font _font;
         private static List<Scheduler> _schedulers = new();
+        private static List<Scheduler> _schedulerQueue = new();
+        private static Task _collisionLoop;
         private static bool _isDrawing;
         private static bool _isConsole;
+        private static bool _isEnding;
 
         private static RenderTexture2D _target;
 
@@ -124,20 +130,22 @@ namespace RayWrapper
 
         private static void Start()
         {
-            Task.Run(() =>
+            var schedulers = Task.Run(async () =>
             {
-                while (true)
+                while (!_isEnding)
                 {
                     try
                     {
                         foreach (var scheduler in _schedulers) scheduler.TestTime(GetTimeMs());
+                        _schedulers.AddRange(_schedulerQueue);
+                        _schedulerQueue.RemoveAll(s => _schedulers.Contains(s));
                     }
                     catch (Exception e)
                     {
                         Logger.Log(Error, e.ToString());
                     }
 
-                    Task.Delay(10).GetAwaiter().GetResult();
+                    if (conserveCpu) await Task.Delay(10);
                 }
             });
 
@@ -161,6 +169,15 @@ namespace RayWrapper
                 Logger.Log(Error, e.ToString());
             }
 
+            _isEnding = true;
+            Logger.Log("Waiting for schedulers to end");
+            while(!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
+            if (_initCollision)
+            {
+                Logger.Log("Waiting for collision to end");
+                while(!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
+            }
+            Logger.Log("All Tasks ended successfully");
             Dispose();
         }
 
@@ -177,9 +194,9 @@ namespace RayWrapper
         {
             if (_initCollision) return;
             _initCollision = true;
-            Task.Run(async () =>
+            _collisionLoop = Task.Run(async () =>
             {
-                while (true)
+                while (!_isEnding)
                 {
                     try
                     {
@@ -264,6 +281,9 @@ namespace RayWrapper
                 tooltip.Clear();
             }
 
+            if (showFps || isDebugTool)
+                DrawFPS((int)fpsPos.X, (int)fpsPos.Y);
+
             EndTextureMode();
             SetTextureFilter(_target.texture, targetTextureFilter);
             BeginDrawing();
@@ -286,7 +306,7 @@ namespace RayWrapper
             Environment.Exit(0);
         }
 
-        public static void AddScheduler(Scheduler schedule) => _schedulers.Add(schedule);
+        public static void AddScheduler(Scheduler schedule) => _schedulerQueue.Add(schedule);
         public static void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
         public static long GetTimeMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
