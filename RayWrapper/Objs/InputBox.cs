@@ -76,7 +76,7 @@ namespace RayWrapper.Objs
             _max = maxCharacters;
             _label = new Label(
                     new Rectangle(pos.X, pos.Y, 16 * _show,
-                        GameBox.Font.MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)))
+                        height: FontManager.GetDefFont().MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)))
                 { outline = new Actionable<bool>(true) };
             _lastTime = GetTimeMs();
         }
@@ -109,8 +109,16 @@ namespace RayWrapper.Objs
             }
 
             var fps = GetFPS();
-            _frameTime %= fps;
-            _frameTime++;
+            
+            try
+            {
+                _frameTime %= fps;
+                _frameTime++;
+            }
+            catch
+            {
+            }
+
             var flash = _frameTime % (fps * .33) > fps * .18;
             var start = 0;
             var end = Math.Min(_show, _text.Length);

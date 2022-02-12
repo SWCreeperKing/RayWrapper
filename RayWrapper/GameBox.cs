@@ -73,7 +73,6 @@ namespace RayWrapper
         public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
 
         private static readonly List<ISave> SaveList = new();
-        private static Font _font;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
         private static Task _collisionLoop;
@@ -94,16 +93,6 @@ namespace RayWrapper
             set => SetTargetFPS(value);
         }
 
-        public static Font Font
-        {
-            get => _font;
-            set
-            {
-                _font = value;
-                SetTextureFilter(_font.texture, fontTextureFilter);
-            }
-        }
-
         public GameBox(GameLoop scene, Vector2 windowSize, string title = "Untitled Window", int fps = 60,
             string iconPath = "")
         {
@@ -116,7 +105,6 @@ namespace RayWrapper
             InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
             if (iconPath != "") SetWindowIcon(LoadImage(iconPath));
             _target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
-            _font = GetFontDefault();
             if (singleConsole is null)
             {
                 singleConsole = new GameConsole.GameConsole();
@@ -273,22 +261,25 @@ namespace RayWrapper
                 var text = string.Join("\n", tooltip);
                 var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
                 if (mousePos.Y > WindowSize.Y / 2) quad += 2;
-                var textSize = Font.MeasureText(text);
+                var defFont = FontManager.GetDefFont(24);
+                var textSize = defFont.MeasureText(text);
                 Vector2 pos = new(mousePos.X - (quad % 2 != 0 ? textSize.X : 0),
                     mousePos.Y - (quad > 2 ? textSize.Y : -33));
                 AssembleRectFromVec(pos, textSize).Grow(4).Draw(baseTooltipBackColor);
-                Font.DrawText(text, pos, baseTooltipColor);
+                defFont.DrawText(text, pos, baseTooltipColor);
                 tooltip.Clear();
             }
 
             if (showFps || isDebugTool)
                 DrawFPS((int)fpsPos.X, (int)fpsPos.Y);
 
+            var texture = _target.texture;
+            
             EndTextureMode();
-            SetTextureFilter(_target.texture, targetTextureFilter);
+            SetTextureFilter(texture, targetTextureFilter);
             BeginDrawing();
             ClearBackground(letterboxColor);
-            DrawTexturePro(_target.texture, new Rectangle(0, 0, _target.texture.width, -_target.texture.height),
+            DrawTexturePro(texture, new Rectangle(0, 0, texture.width, -texture.height),
                 new Rectangle((GetScreenWidth() - WindowSize.X * scale) * .5f,
                     (GetScreenHeight() - WindowSize.Y * scale) * 0.5f, WindowSize.X * scale, WindowSize.Y * scale),
                 Vector2.Zero, 0, Color.WHITE);
@@ -343,10 +334,7 @@ namespace RayWrapper
             mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
             mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
-
-        public static void LoadFont(string font, int fontSize = 96, int toChar = 255) =>
-            Font = LoadFontEx(font, fontSize, null, toChar);
-
+        
         public static void OpenLink(string url) => Process.Start("explorer.exe", url);
 
         public static dynamic LoadJsonFromWeb(string site, out bool isSuccessful)

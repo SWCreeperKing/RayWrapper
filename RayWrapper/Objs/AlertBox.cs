@@ -2,6 +2,7 @@
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -61,8 +62,8 @@ namespace RayWrapper.Objs
             close.baseL.CheckText();
 
             var halfScreen = WindowSize / 2;
-            var messageSize = size == Vector2.Zero ? GameBox.Font.MeasureText(message, 30) : size;
-            var titleSize = GameBox.Font.MeasureText(title);
+            var messageSize = size == Vector2.Zero ? GetDefFont(30).MeasureText(message, 30) : size;
+            var titleSize = GetDefFont().MeasureText(title);
             var closeSize = close.Size;
             var noSize = informationBox ? Vector2.Zero : no.Size;
             var yesSize = informationBox ? Vector2.Zero : yes.Size;
@@ -103,11 +104,11 @@ namespace RayWrapper.Objs
             var halfScreen = screen / 2;
             new Rectangle(0, 0, screen.X, screen.Y).Draw(new Color(0, 0, 0, 150));
             _rect.Draw(rectColor);
-            GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
+            GetDefFont(30).DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
             if (size == Vector2.Zero)
-                GameBox.Font.DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
+                GetDefFont().DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
             else
-                GameBox.Font.DrawTextWrap(message,
+                GetDefFont().DrawTextWrap(message,
                     AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),
                     messageColor);
             close.Render();

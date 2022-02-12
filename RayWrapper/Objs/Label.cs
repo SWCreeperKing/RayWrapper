@@ -3,6 +3,7 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
+using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -37,7 +38,7 @@ namespace RayWrapper.Objs
         public ColorModule backColor = new(50);
         public Action clicked;
         public ColorModule fontColor = new(192);
-        public float fontSize = 24;
+        public int fontSize = 24;
         public bool outline = false;
         public ColorModule outlineColor = new(Color.BLACK);
         public float spacing = 1.5f;
@@ -82,7 +83,7 @@ namespace RayWrapper.Objs
             Color realBc = hover ? ((Color)backColor).MakeLighter() : backColor;
             CheckText();
 
-            void DrawTxt(Vector2 pos) => DrawTextEx(GameBox.Font, _textCache, pos, fontSize, spacing, realFc);
+            void DrawTxt(Vector2 pos) => DrawTextEx(GetDefFont(fontSize), _textCache, pos, fontSize, spacing, realFc);
 
             void DrawBack(Rectangle rect)
             {
@@ -98,13 +99,13 @@ namespace RayWrapper.Objs
                     DrawTxt(_alignLeft);
                     break;
                 case TextMode.AlignCenter:
-                    GameBox.Font.DrawCenterText(_alignCenter, _textCache, realFc, fontSize, spacing);
+                    GetDefFont(fontSize).DrawCenterText(_alignCenter, _textCache, realFc, fontSize, spacing);
                     break;
                 case TextMode.AlignRight:
                     DrawTxt(_alignRight);
                     break;
                 case TextMode.WrapText:
-                    DrawTextRec(GameBox.Font, _textCache, _adj, fontSize, spacing, true, realFc);
+                    DrawTextRec(GetDefFont(fontSize), _textCache, _adj, fontSize, spacing, true, realFc);
                     break;
                 case TextMode.SizeToText:
                     DrawBack(_sizedRect);
@@ -119,7 +120,7 @@ namespace RayWrapper.Objs
         public void CheckText()
         {
             if (_textCache is not null && _textCache == text) return;
-            _textSizeCache = MeasureTextEx(GameBox.Font, _textCache = text, fontSize, spacing);
+            _textSizeCache = MeasureTextEx(GetDefFont(fontSize), _textCache = text, fontSize, spacing);
             ReCalc();
         }
 

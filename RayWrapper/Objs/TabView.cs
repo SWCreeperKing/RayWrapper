@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static RayWrapper.FontManager;
 
 namespace RayWrapper.Objs
 {
@@ -160,7 +161,7 @@ namespace RayWrapper.Objs
             var s = new Scene();
             s.RegisterGameObj(gobjs);
             _tabContents.Add(tabName, s);
-            _tabLengths.Add(tabName, GameBox.Font.MeasureText($" {tabName} ").X);
+            _tabLengths.Add(tabName, GetDefFont().MeasureText($" {tabName} ").X);
             Refresh();
         }
 
@@ -172,7 +173,7 @@ namespace RayWrapper.Objs
             var s = new Scene();
             s.RegisterGameObj(gobjs);
             _tabContents.Add(tabName, s);
-            _tabLengths.Add(tabName, GameBox.Font.MeasureText($" {tabName} ").X);
+            _tabLengths.Add(tabName, GetDefFont().MeasureText($" {tabName} ").X);
             Refresh();
         }
 

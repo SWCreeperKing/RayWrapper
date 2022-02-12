@@ -57,7 +57,6 @@ namespace RayWrapper.Objs
             Text = text;
         }
 
-
         protected override void UpdateCall()
         {
             if (!AssembleRectFromVec(Position, _textBox).IsMouseIn() ||

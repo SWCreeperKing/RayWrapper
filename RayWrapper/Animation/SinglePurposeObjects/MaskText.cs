@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static RayWrapper.FontManager;
 
 namespace RayWrapper.Animation.SinglePurposeObjects
 {
@@ -41,7 +42,7 @@ namespace RayWrapper.Animation.SinglePurposeObjects
         {
             var color = (Color)ColorMod;
             rect.Grow(2).MaskDraw(() =>
-                GameBox.Font.DrawText(text, rect.Pos(), color.a != alpha ? color.SetAlpha(alpha) : color));
+                GetDefFont().DrawText(text, rect.Pos(), color.a != alpha ? color.SetAlpha(alpha) : color));
             if (tooltip is not null) rect.DrawTooltip(tooltip);
         }
 

@@ -17,8 +17,11 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.1.22</PackageVersion>
-        <PackageReleaseNotes>- Fixed scheduler timing being 10x slower than it should be (10ms -&gt; 100ms)</PackageReleaseNotes>
+        <PackageVersion>0.2.0</PackageVersion>
+        <PackageReleaseNotes>- FontManager Added
+- register font: FontManager.RegisterFont(name, path)
+- set a font as default: FontManager.SetDefFont(name)
+- get font: FontManager.GetFont(name, size)</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

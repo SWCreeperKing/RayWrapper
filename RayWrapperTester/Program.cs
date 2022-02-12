@@ -59,13 +59,14 @@ namespace RayWrapperTester
 
         public override void Init()
         {
-            GameBox.Font = LoadFont("CascadiaMono.ttf");
+            FontManager.RegisterFont("cas", "CascadiaMono.ttf");
+            FontManager.SetDefFont("cas");
 
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
 
-            // AddScheduler(new Scheduler(100,
-            //     () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.ffff}")));
+            // AddScheduler(new Scheduler(10,
+            //     () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
 
             // save testing
             // Console.WriteLine("save testing start");

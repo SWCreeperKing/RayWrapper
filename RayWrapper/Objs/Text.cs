@@ -29,24 +29,24 @@ namespace RayWrapper.Objs
         public Actionable<string> text;
         public Rectangle rect;
         public ColorModule color;
-        public float fontSize;
         public float spacing;
 
+        private Font _font;
         private Vector2 _pos;
         private string _cachedText;
 
-        public Text(Actionable<string> text, Vector2 pos, ColorModule color = null, float fontSize = 24,
+        public Text(Actionable<string> text, Vector2 pos, ColorModule color = null, int fontSize = 24,
             float spacing = 1.5f)
         {
-            (this.text, _pos, this.color, this.fontSize, this.spacing, _cachedText) =
-                (text, pos, color ?? Color.SKYBLUE, fontSize, spacing, text);
+            (this.text, _pos, this.color, _font, this.spacing, _cachedText) = (text,
+                pos, color ?? Color.SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text);
             rect = RectWrapper.AssembleRectFromVec(pos, MeasureText());
         }
 
-        public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, float fontSize = 24,
+        public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, int fontSize = 24,
             float spacing = 1.5f) =>
-            (this.rect, this.text, _pos, this.color, this.fontSize, this.spacing, _cachedText) = (rect, text,
-                rect.Pos(), color ?? Color.SKYBLUE, fontSize, spacing, text);
+            (this.rect, this.text, _pos, this.color, _font, this.spacing, _cachedText) = (rect, text,
+                rect.Pos(), color ?? Color.SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text);
 
         protected override void UpdateCall()
         {
@@ -70,12 +70,11 @@ namespace RayWrapper.Objs
             }
         }
 
+        public void SetFont(string fontName, int size) => _font = FontManager.GetFont(fontName, size);
         public void SetSize(Vector2 newSize) => rect = rect.SetSize(newSize);
-        public Vector2 MeasureText() => GameBox.Font.MeasureText(_cachedText, fontSize, spacing);
-        public void Draw() => GameBox.Font.DrawText(_cachedText, _pos, color, (int)fontSize, spacing);
-        public void DrawWrap() => GameBox.Font.DrawTextWrap(_cachedText, rect, color, (int)fontSize, spacing);
-
-        public void DrawCenter() =>
-            GameBox.Font.DrawCenterText(rect.Center(), _cachedText, color, (int)fontSize, spacing);
+        public Vector2 MeasureText() => _font.MeasureText(_cachedText, _font.baseSize, spacing);
+        public void Draw() => _font.DrawText(_cachedText, _pos, color, _font.baseSize, spacing);
+        public void DrawWrap() => _font.DrawTextWrap(_cachedText, rect, color, _font.baseSize, spacing);
+        public void DrawCenter() => _font.DrawCenterText(rect.Center(), _cachedText, color, _font.baseSize, spacing);
     }
 }
