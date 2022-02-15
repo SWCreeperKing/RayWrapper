@@ -7,7 +7,7 @@ using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper.Discord
 {
-    public class DiscordIntegration
+    public static class DiscordIntegration
     {
         public static DiscordRpcClient discord;
         public static bool discordAlive;

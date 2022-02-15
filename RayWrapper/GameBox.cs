@@ -101,6 +101,7 @@ namespace RayWrapper
             {
                 SetTraceLogCallback(&Logger.RayLog);
             }
+
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
@@ -162,12 +163,13 @@ namespace RayWrapper
 
             _isEnding = true;
             Logger.Log("Waiting for schedulers to end");
-            while(!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
+            while (!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             if (_initCollision)
             {
                 Logger.Log("Waiting for collision to end");
-                while(!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
+                while (!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             }
+
             Logger.Log("All Tasks ended successfully");
             Dispose();
         }
@@ -277,7 +279,7 @@ namespace RayWrapper
                 DrawFPS((int)fpsPos.X, (int)fpsPos.Y);
 
             var texture = _target.texture;
-            
+
             EndTextureMode();
             SetTextureFilter(texture, targetTextureFilter);
             BeginDrawing();
@@ -337,7 +339,7 @@ namespace RayWrapper
             mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
             mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
-        
+
         public static void OpenLink(string url) => Process.Start("explorer.exe", url);
 
         public static dynamic LoadJsonFromWeb(string site, out bool isSuccessful)
@@ -347,9 +349,9 @@ namespace RayWrapper
             {
                 return JsonConvert.DeserializeObject(new WebClient().DownloadString(site));
             }
-            catch
+            catch (Exception e)
             {
-                // ignored
+                Logger.Log(Warning, $"Cannot load json from web:\n{e.Message}\n{e.Source}");
             }
 
             isSuccessful = false;
