@@ -5,6 +5,7 @@ using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;
+using static RayWrapper.GeneralWrapper;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
@@ -104,10 +105,9 @@ namespace RayWrapper.Objs
                 case TextMode.AlignRight:
                     DrawTxt(_alignRight);
                     break;
-                //todo: make replacement
-                // case TextMode.WrapText:
-                //     DrawTextRec(GetDefFont(fontSize), _textCache, _adj, fontSize, spacing, true, realFc);
-                //     break;
+                case TextMode.WrapText:
+                    GetDefFont(fontSize).DrawTextRec(_textCache, _adj, fontSize, spacing, true, realFc);
+                    break;
                 case TextMode.SizeToText:
                     DrawBack(_sizedRect);
                     DrawTxt(_sizedPos);

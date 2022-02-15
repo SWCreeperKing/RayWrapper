@@ -2,6 +2,10 @@
 
 Made with .Net5
 
+on nuget
+
+[![NuGet](https://img.shields.io/nuget/dt/RayWrapper)](https://www.nuget.org/packages/RayWrapper/)
+
 it has 3 dependencies:
 - Raylib-cs (3.7.0)
 - DiscordRichPresence (1.0.175)
@@ -20,7 +24,8 @@ paths:
 - in game console (can add custom commands, use ` to access console)
 - a built in save system using Newtonsoft.Json
 - bad code
-- NumberClass is included (A big number lib)
+- ~~NumberClass is included (A big number lib)~~
+  - no longer included, but it still is on Nuget
 - many premade gameobjects
 - discord rich presence support
 - a very bad collision system

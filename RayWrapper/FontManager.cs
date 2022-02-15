@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
+using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 
 namespace RayWrapper
@@ -16,14 +17,19 @@ namespace RayWrapper
         private static Dictionary<string, Dictionary<int, Font>> _fonts = new();
         private static Dictionary<string, string> _fontPaths = new();
 
-        public static Font GetDefFont(int size = 24) => !isNewDefaultSet ? DefaultFont : GetFont(newDefault, size);
+        public static Font GetDefFont(int size = 24)
+        {
+            if (!isNewDefaultSet && size != 24)
+                Logger.Log(Logger.Level.Warning, "Default font can only load with a size of 24!");
+            return !isNewDefaultSet ? DefaultFont : GetFont(newDefault, size);
+        }
 
         public static void SetDefFont(string font)
         {
             isNewDefaultSet = true;
             newDefault = font;
         }
-        
+
         public static void RegisterFont(string name, string path)
         {
             if (_fontPaths.ContainsKey(name)) throw new ArgumentException($"Font name `{name}` already exists");
@@ -32,12 +38,13 @@ namespace RayWrapper
 
         public static Font GetFont(string name, int size)
         {
+            if (_fonts.ContainsKey(name) && _fonts[name].ContainsKey(size)) return _fonts[name][size];
+
             if (!_fontPaths.ContainsKey(name))
                 throw new ArgumentException($"Font path does not exist for `{name}` please [RegisterFont]");
 
             if (_fonts.ContainsKey(name))
             {
-                if (_fonts[name].ContainsKey(size)) return _fonts[name][size];
                 var newFont = LoadFont(_fontPaths[name], size);
                 _fonts[name].Add(size, newFont);
                 return newFont;

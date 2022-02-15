@@ -62,9 +62,9 @@ namespace RayWrapper.Objs
                     Draw();
                     break;
                 //todo: make replacement
-                // case TextMode.Wrap:
-                //     DrawWrap();
-                //     break;
+                case TextMode.Wrap:
+                    DrawWrap();
+                    break;
                 case TextMode.Center:
                     DrawCenter();
                     break;
@@ -75,7 +75,7 @@ namespace RayWrapper.Objs
         public void SetSize(Vector2 newSize) => rect = rect.SetSize(newSize);
         public Vector2 MeasureText() => _font.MeasureText(_cachedText, _font.baseSize, spacing);
         public void Draw() => _font.DrawText(_cachedText, _pos, color, _font.baseSize, spacing);
-        // public void DrawWrap() => _font.DrawTextWrap(_cachedText, rect, color, _font.baseSize, spacing);
+        public void DrawWrap() => _font.DrawTextRec(_cachedText, rect, color, _font.baseSize, spacing);
         public void DrawCenter() => _font.DrawCenterText(rect.Center(), _cachedText, color, _font.baseSize, spacing);
     }
 }

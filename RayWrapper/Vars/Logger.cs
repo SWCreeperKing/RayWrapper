@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using Raylib_cs;
 using static Raylib_cs.TraceLogLevel;
 using static RayWrapper.Vars.Logger.Level;
@@ -19,8 +18,6 @@ namespace RayWrapper.Vars
             Error,
             Other
         }
-
-        public const string regStr = @"(%(s|i|d|[\d.]+f))";
 
         public static readonly string guid = Guid.NewGuid().ToString();
         public static readonly string crashSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";

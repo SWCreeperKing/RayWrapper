@@ -107,11 +107,10 @@ namespace RayWrapper.Objs
             GetDefFont(30).DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
             if (size == Vector2.Zero)
                 GetDefFont().DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
-            //todo: make replacement
-            // else 
-            //     GetDefFont().DrawTextWrap(message,
-            //         AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),
-            //         messageColor);
+            else 
+                GetDefFont().DrawTextRec(message,
+                    AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),
+                    messageColor);
             close.Render();
             if (informationBox) return;
             no.Render();

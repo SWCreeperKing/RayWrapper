@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using Raylib_cs;
 using RayWrapper.Vars;
+using static Raylib_cs.Color;
 using static Raylib_cs.Raylib;
 using static RayWrapper.RectWrapper;
 
@@ -30,10 +32,140 @@ namespace RayWrapper
             // DrawTextRec(font, text, rect, fontSize, spacing, true, color);
         }
 
-        //todo: make replacement
-        // public static void DrawTextWrap(this Font font, string text, Rectangle rect, Color fontColor, int fontSize = 24,
-        //     float spacing = 1.5f) =>
-        //     DrawTextRec(font, text, rect, fontSize, spacing, true, fontColor);
+        public static void DrawTextRec(this Font font, string text, Rectangle rect, Color fontColor,
+            int fontSize = 24,
+            float spacing = 1.5f) =>
+            DrawTextRec(font, text, rect, fontSize, spacing, true, fontColor);
+
+        public static void DrawTextRec(this Font font, string text, Rectangle rec, float fontSize, float spacing,
+            bool wordWrap, Color tint) =>
+            DrawTextRec(font, text, rec, fontSize, spacing, wordWrap, tint, 0, 0, WHITE, WHITE);
+
+        public static unsafe void DrawTextRec(this Font font, string text, Rectangle rec, float fontSize, float
+            spacing, bool wordWrap, Color tint, int selectStart, int
+            selectLength, Color selectTint, Color selectBackTint)
+        {
+            var bytes = Encoding.ASCII.GetBytes(text);
+            sbyte* sb;
+            fixed (byte* b = bytes) sb = (sbyte*)b;
+            var length = TextLength(sb); // Total length in bytes of the text, scanned by codepoints in loop
+
+            var textOffsetY = 0f; // Offset between lines (on line break '\n')
+            var textOffsetX = 0f; // Offset X to next character to draw
+
+            var scaleFactor = fontSize / font.baseSize;
+            var state = !wordWrap;
+
+            var startLine = -1; // Index where to begin drawing (where a line begins)
+            var endLine = -1; // Index where to stop drawing (where a line ends)
+            var lastk = -1; // Holds last value of the character position
+
+            for (int i = 0, k = 0; i < length; i++, k++)
+            {
+                // Get next codepoint from byte string and glyph index in font
+                var codepointByteCount = 0;
+                var codepoint = GetCodepoint(&sb[i], &codepointByteCount);
+                var index = GetGlyphIndex(font, codepoint);
+
+                // NOTE: Normally we exit the decoding sequence as soon as a bad byte is found (and return 0x3f)
+                // but we need to draw all of the bad bytes using the '?' symbol moving one byte
+                if (codepoint == 0x3f) codepointByteCount = 1;
+                i += codepointByteCount - 1;
+
+                float glyphWidth = 0;
+                if (codepoint != '\n')
+                {
+                    glyphWidth = (font.glyphs[index].advanceX == 0)
+                        ? font.recs[index].width * scaleFactor
+                        : font.glyphs[index].advanceX * scaleFactor;
+
+                    if (i + 1 < length) glyphWidth = glyphWidth + spacing;
+                }
+
+                if (!state)
+                {
+                    if (codepoint is ' ' or '\t' or '\n') endLine = i;
+
+                    if (textOffsetX + glyphWidth > rec.width)
+                    {
+                        endLine = endLine < 1 ? i : endLine;
+                        if (i == endLine) endLine -= codepointByteCount;
+                        if (startLine + codepointByteCount == endLine) endLine = i - codepointByteCount;
+
+                        state = !state;
+                    }
+                    else if (i + 1 == length)
+                    {
+                        endLine = i;
+                        state = !state;
+                    }
+                    else if (codepoint == '\n') state = !state;
+
+                    if (state)
+                    {
+                        textOffsetX = 0;
+                        i = startLine;
+                        glyphWidth = 0;
+
+                        // Save character position when we switch states
+                        var tmp = lastk;
+                        lastk = k - 1;
+                        k = tmp;
+                    }
+                }
+                else
+                {
+                    if (codepoint == '\n')
+                    {
+                        if (!wordWrap)
+                        {
+                            textOffsetY += (font.baseSize + font.baseSize / 2) * scaleFactor;
+                            textOffsetX = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (!wordWrap && textOffsetX + glyphWidth > rec.width)
+                        {
+                            textOffsetY += (font.baseSize + font.baseSize / 2) * scaleFactor;
+                            textOffsetX = 0;
+                        }
+
+                        // When text overflows rectangle height limit, just stop drawing
+                        if (textOffsetY + font.baseSize * scaleFactor > rec.height) break;
+
+                        // Draw selection background
+                        var isGlyphSelected = false;
+                        if (selectStart >= 0 && k >= selectStart && k < selectStart + selectLength)
+                        {
+                            DrawRectangleRec(
+                                new Rectangle(rec.x + textOffsetX - 1, rec.y + textOffsetY, glyphWidth,
+                                    font.baseSize * scaleFactor), selectBackTint);
+                            isGlyphSelected = true;
+                        }
+
+                        // Draw current character glyph
+                        if (codepoint != ' ' && codepoint != '\t')
+                            DrawTextCodepoint(font, codepoint, new Vector2(rec.x + textOffsetX, rec.y + textOffsetY),
+                                fontSize, isGlyphSelected ? selectTint : tint);
+                    }
+
+                    if (wordWrap && i == endLine)
+                    {
+                        textOffsetY += (font.baseSize + font.baseSize / 2) * scaleFactor;
+                        textOffsetX = 0;
+                        startLine = endLine;
+                        endLine = -1;
+                        glyphWidth = 0;
+                        selectStart += lastk - k;
+                        k = lastk;
+                        state = !state;
+                    }
+                }
+
+                textOffsetX += glyphWidth;
+            }
+        }
 
         public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, int fontSize = 24,
             float spacing = 1.5f) =>
@@ -106,7 +238,7 @@ namespace RayWrapper
 
         public static void DrawPro(this Texture2D t, Vector2 pos, int rotation = 0) =>
             DrawTexturePro(t, new Rectangle(0, 0, t.width, t.height), new Rectangle(pos.X, pos.Y, t.width, t.height),
-                new Vector2(t.width / 2f, t.height / 2f), rotation, Color.WHITE);
+                new Vector2(t.width / 2f, t.height / 2f), rotation, WHITE);
 
         public static void Set<T>(this T t, T overrider)
         {
@@ -140,7 +272,7 @@ namespace RayWrapper
         }
 
         public static void DrawCircle(this Vector2 v2, float r, Color? color = null) =>
-            DrawCircleV(v2, r, color ?? Color.WHITE);
+            DrawCircleV(v2, r, color ?? WHITE);
 
         public static Vector2 FixVector(this Vector2 v2) => new Vector2(v2.X.Fix(), v2.Y.Fix());
 
