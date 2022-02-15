@@ -50,6 +50,8 @@ namespace RayWrapper.Vars
         {
             if (level == Error) hasError = true;
             var time = $"{DateTime.Now:G}";
+
+            // TODO: Add default arm that throws exception.
             Console.ForegroundColor = level switch
             {
                 Info => ConsoleColor.DarkGreen,
