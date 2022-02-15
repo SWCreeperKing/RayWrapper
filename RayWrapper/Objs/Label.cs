@@ -94,6 +94,7 @@ namespace RayWrapper.Objs
 
             if (textMode != TextMode.SizeToText) DrawBack(_back);
 
+            // TODO: Add default arm.
             switch ((TextMode)textMode)
             {
                 case TextMode.AlignLeft:

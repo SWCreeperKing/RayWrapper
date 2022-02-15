@@ -47,7 +47,7 @@ namespace RayWrapper
         {
             var bytes = Encoding.ASCII.GetBytes(text);
             sbyte* sb;
-            fixed (byte* b = bytes) sb = (sbyte*)b;
+            fixed (byte* b = bytes) sb = (sbyte*) b;
             var length = TextLength(sb); // Total length in bytes of the text, scanned by codepoints in loop
 
             var textOffsetY = 0f; // Offset between lines (on line break '\n')
@@ -178,11 +178,12 @@ namespace RayWrapper
             $"{key}".Replace("KEY_MENU", "KEY_R").Replace("KEY_", "").Replace("_", " ").ToLower();
 
         public static Color MakeLighter(this Color color) =>
-            new((int)Math.Min(color.r * 1.5, 255), (int)Math.Min(color.g * 1.5, 255), (int)Math.Min(color.b * 1.5, 255),
+            new((int) Math.Min(color.r * 1.5, 255), (int) Math.Min(color.g * 1.5, 255),
+                (int) Math.Min(color.b * 1.5, 255),
                 color.a);
 
         public static Color MakeDarker(this Color color) =>
-            new((int)(color.r / 1.7), (int)(color.g / 1.7), (int)(color.b / 1.7), color.a);
+            new((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
 
         public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0) =>
             new(color.r + r, color.g + g, color.b + b, color.a + a);
@@ -206,11 +207,11 @@ namespace RayWrapper
 
         public static Color Percent(this Color c1, Color c2, float percent)
         {
-            int DoCalc(int c1, int c2) => Math.Clamp((int)((1.0 - percent) * c1 + percent * c2 + 0.5), 1, 254);
+            int DoCalc(int c1, int c2) => Math.Clamp((int) ((1.0 - percent) * c1 + percent * c2 + 0.5), 1, 254);
             return new Color(DoCalc(c1.r, c2.r), DoCalc(c1.g, c2.g), DoCalc(c1.b, c2.b), 255);
         }
 
-        public static float Next(this Random r, float min, float max) => (float)(r.NextDouble() * (max - min) + min);
+        public static float Next(this Random r, float min, float max) => (float) (r.NextDouble() * (max - min) + min);
 
         public static Vector2[] CalcVectsFromFloats(this float[] array, Rectangle rect)
         {
@@ -265,7 +266,7 @@ namespace RayWrapper
         public static void MaskDraw(this Vector2 pos, Vector2 size, Action draw)
         {
             maskingLayer++;
-            BeginScissorMode((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
+            BeginScissorMode((int) pos.X, (int) pos.Y, (int) size.X, (int) size.Y);
             draw.Invoke();
             if (maskingLayer == 1) EndScissorMode();
             maskingLayer--;
@@ -287,8 +288,8 @@ namespace RayWrapper
 
         public static Vector2 Rotate(this Vector2 v2, float degrees)
         {
-            var sin = (float)Math.Sin(degrees * DegToRad);
-            var cos = (float)Math.Cos(degrees * DegToRad);
+            var sin = (float) Math.Sin(degrees * DegToRad);
+            var cos = (float) Math.Cos(degrees * DegToRad);
             var tx = v2.X;
             var ty = v2.Y;
 

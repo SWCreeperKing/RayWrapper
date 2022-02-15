@@ -8,7 +8,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
     {
         public Box(Vector2 position, Vector2 size, Func<string> tooltip = null) : base(position, size) =>
             this.tooltip = tooltip;
-        
+
         public Box(Vector2 position, Func<string> tooltip = null) : base(position, Vector2.One) =>
             this.tooltip = tooltip;
 
@@ -16,6 +16,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
             AssembleRectFromVec(position * scale + off, size * scale).Draw(completed ? completeColor : color);
 
         public override void DrawOnHover(Vector2 off, float scale) =>
-            AssembleRectFromVec(position * scale + off, size * scale).DrawHallowRect(completed ? color : completeColor, (int)(scale/8f));
+            AssembleRectFromVec(position * scale + off, size * scale)
+                .DrawHallowRect(completed ? color : completeColor, (int) (scale / 8f));
     }
 }

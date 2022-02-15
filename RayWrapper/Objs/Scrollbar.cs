@@ -19,7 +19,7 @@ namespace RayWrapper.Objs
         public bool outline = true;
         public ColorModule outlineColor = new(Color.BLACK);
 
-        private readonly List<Action<float>> _onMove = new();
+        private readonly IList<Action<float>> _onMove = new List<Action<float>>();
         private float _trueSize;
         private float _visibleSize;
         private Vector2 _lastMouse = Vector2.Zero;
@@ -70,8 +70,8 @@ namespace RayWrapper.Objs
             var (size, pos) = (container.Size(), container.Pos());
             (bar.width, bar.height) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
             var (hMax, wMax) = (pos.Y + size.Y, pos.X + size.X);
-            bar.y = Math.Clamp(bar.y, pos.Y, (int)(isVertical ? hMax - _visibleSize : hMax));
-            bar.x = Math.Clamp(bar.x, pos.X, (int)(isVertical ? wMax : wMax - _visibleSize));
+            bar.y = Math.Clamp(bar.y, pos.Y, (int) (isVertical ? hMax - _visibleSize : hMax));
+            bar.x = Math.Clamp(bar.x, pos.X, (int) (isVertical ? wMax : wMax - _visibleSize));
         }
 
         public void CalcVal()
@@ -87,7 +87,7 @@ namespace RayWrapper.Objs
             var size = container.Size();
             var rSize = isVertical ? size.Y : size.X;
             _trueSize = rSize / Amount();
-            _visibleSize = Math.Max(_trueSize, rSize * (minSizePercent/100f));
+            _visibleSize = Math.Max(_trueSize, rSize * (minSizePercent / 100f));
         }
 
         protected override void UpdateCall()
@@ -124,8 +124,8 @@ namespace RayWrapper.Objs
         {
             if (Amount() == 1) return;
             var hover = IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn();
-            container.DrawRounded(hover ? ((Color)containerColor).MakeLighter() : containerColor, .4f);
-            bar.DrawRounded(hover ? ((Color)barColor).MakeLighter() : barColor, .4f);
+            container.DrawRounded(hover ? ((Color) containerColor).MakeLighter() : containerColor, .4f);
+            bar.DrawRounded(hover ? ((Color) barColor).MakeLighter() : barColor, .4f);
             if (!outline) return;
             container.DrawRoundedLines(outlineColor, .4f);
             bar.DrawRoundedLines(outlineColor, .4f);

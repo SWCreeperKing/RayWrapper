@@ -16,7 +16,7 @@ namespace RayWrapper.GameConsole
         public static GameConsole singleConsole;
 
         private static string regString = @"^(\d{1,3}),(\d{1,3}),(\d{1,3})\|";
-        private static List<string> _lines = new();
+        private static IList<string> _lines = new List<string>();
         private static Dictionary<int, Color> _colors = new();
 
         public override Vector2 Position { get; set; }
@@ -95,6 +95,7 @@ namespace RayWrapper.GameConsole
             }
         }
 
+        // TODO: Make static?
         public int ClearOutput()
         {
             var lineAmt = _lines.Count;

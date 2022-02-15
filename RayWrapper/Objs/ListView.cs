@@ -3,7 +3,6 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
-using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {

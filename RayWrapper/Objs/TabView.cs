@@ -30,16 +30,16 @@ namespace RayWrapper.Objs
         private readonly Scrollbar _bar;
         private readonly Color _baseColor = new(95, 95, 95, 255);
         private bool _closable;
-        private readonly List<Label> _closing = new();
+        private readonly IList<Label> _closing = new List<Label>();
         private string _currentTab;
         private readonly Color _hoverColor = new(65, 65, 65, 255);
         private float _offset;
         private readonly int _padding = 7;
         private Rectangle _rect;
-        private readonly Dictionary<string, Scene> _tabContents = new();
-        private readonly Dictionary<string, float> _tabLengths = new();
-        private readonly List<string> _tabOrder = new();
-        private readonly List<Label> _tabs = new();
+        private readonly IDictionary<string, Scene> _tabContents = new Dictionary<string, Scene>();
+        private readonly IDictionary<string, float> _tabLengths = new Dictionary<string, float>();
+        private readonly IList<string> _tabOrder = new List<string>();
+        private readonly IList<Label> _tabs = new List<Label>();
 
         public TabView(Vector2 pos, float width)
         {

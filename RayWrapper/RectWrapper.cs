@@ -66,8 +66,9 @@ namespace RayWrapper
 
         public static void DrawGradiant(this Rectangle rect, Color c1, Color c2, bool isVertical = false)
         {
-            if (isVertical) DrawRectangleGradientV((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, c1, c2);
-            else DrawRectangleGradientH((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, c1, c2);
+            if (isVertical)
+                DrawRectangleGradientV((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height, c1, c2);
+            else DrawRectangleGradientH((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height, c1, c2);
         }
 
         public static void DrawRounded(this Rectangle rect, Color color, float roundness = .5f, int segments = 10) =>
@@ -86,7 +87,7 @@ namespace RayWrapper
         // todo: undo when update
         // public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) =>
         //     DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
-        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) 
+        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3)
         {
         }
 
@@ -123,7 +124,7 @@ namespace RayWrapper
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
             maskingLayer++;
-            BeginScissorMode((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+            BeginScissorMode((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height);
             draw.Invoke();
             if (maskingLayer == 1) EndScissorMode();
             maskingLayer--;

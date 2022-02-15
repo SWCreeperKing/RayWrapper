@@ -20,7 +20,7 @@ namespace RayWrapper.Discord
         public static Func<string> smallText;
 
         public static void Init() => now = DateTime.UtcNow;
-        
+
         public static void CheckDiscord(string appId, bool retry = true)
         {
             if (appId == "") return;
@@ -57,7 +57,8 @@ namespace RayWrapper.Discord
                     singleConsole.WriteToConsole($"{YELLOW}Retrying Discord connection");
                     Logger.Log(Debug, "RETRYING TO CHECK IF FLUKE");
                     CheckDiscord(appId, false);
-                } else singleConsole.WriteToConsole($"{DARKRED}Retry failed, use the 'discord' command to retry again");
+                }
+                else singleConsole.WriteToConsole($"{DARKRED}Retry failed, use the 'discord' command to retry again");
             }
         }
 

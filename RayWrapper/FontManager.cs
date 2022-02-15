@@ -51,7 +51,7 @@ namespace RayWrapper
             }
 
             var font = LoadFont(_fontPaths[name], size);
-            _fonts.Add(name, new Dictionary<int, Font> { { size, font } });
+            _fonts.Add(name, new Dictionary<int, Font> {{size, font}});
             return font;
         }
 

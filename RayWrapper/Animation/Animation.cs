@@ -11,7 +11,7 @@ namespace RayWrapper.Animation
         public int animationStep;
         public long stepTime;
         public long animationTime;
-        public List<Func<bool>> stepConditions = new();
+        public IList<Func<bool>> stepConditions = new List<Func<bool>>();
         public Action onInit = null;
         public Action onEnd = null;
 

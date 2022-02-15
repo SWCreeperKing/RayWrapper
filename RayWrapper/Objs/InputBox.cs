@@ -118,6 +118,7 @@ namespace RayWrapper.Objs
             }
             catch
             {
+                // TODO: Not have an empty catch clause?!
             }
 
             var flash = _frameTime % (fps * .33) > fps * .18;
@@ -126,8 +127,14 @@ namespace RayWrapper.Objs
             var curs = _curPos;
 
             if (curs >= _show / 2)
+            {
                 (start, curs, end) = (curs - _show / 2, _show / 2, Math.Min(_text.Length, _curPos + _show / 2));
-            if (start > _max - _show) (start, curs) = (_max - _show, _curPos - (_max - _show));
+            }
+
+            if (start > _max - _show)
+            {
+                (start, curs) = (_max - _show, _curPos - (_max - _show));
+            }
 
             _label.text = $"> {(_selected ? _text[start..end].Insert(curs, flash ? " " : "|") : _text[start..end])}";
             _label.Update();

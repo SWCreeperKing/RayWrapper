@@ -25,7 +25,7 @@ namespace RayWrapper.Objs
         private readonly Scrollbar _yScroll;
         private readonly Scrollbar _xScroll;
         private readonly List<GameObject> _gos = new();
-        private List<GameObject> _renderList = new();
+        private IList<GameObject> _renderList = new List<GameObject>();
         private Rectangle _rect;
         private Vector2 _size;
         private Vector2 _pos;

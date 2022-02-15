@@ -19,7 +19,7 @@ namespace RayWrapper.Animation.Transitions
         public override void UpdateTransition(float deltaTime)
         {
             currAlpha += (alphaTo - startAlpha) * deltaTime / duration;
-            t.SetAlpha((int)Math.Clamp(currAlpha, 0, 255));
+            t.SetAlpha((int) Math.Clamp(currAlpha, 0, 255));
         }
 
         public override void SnapTransition() => t.SetAlpha(alphaTo);

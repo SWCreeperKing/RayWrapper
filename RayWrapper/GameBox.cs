@@ -27,7 +27,7 @@ namespace RayWrapper
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-        #region temp collsion performance vars
+        #region temp collision performance vars
 
         public static readonly Random Random = new();
         public static readonly List<(string, string)> CollisionLayerTags = new();
@@ -101,13 +101,14 @@ namespace RayWrapper
             {
                 SetTraceLogCallback(&Logger.RayLog);
             }
+
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);
             screenGrid = new ScreenGrid();
-            InitWindow((int)WindowSize.X, (int)WindowSize.Y, Title = title);
+            InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
             if (iconPath != "") SetWindowIcon(LoadImage(iconPath));
-            _target = LoadRenderTexture((int)windowSize.X, (int)windowSize.Y);
+            _target = LoadRenderTexture((int) windowSize.X, (int) windowSize.Y);
             if (singleConsole is null)
             {
                 singleConsole = new GameConsole.GameConsole();
@@ -115,7 +116,7 @@ namespace RayWrapper
             }
 
             SetTargetFPS(FPS = fps);
-            SetWindowSize((int)windowSize.X, (int)windowSize.Y);
+            SetWindowSize((int) windowSize.X, (int) windowSize.Y);
             Start();
         }
 
@@ -162,12 +163,13 @@ namespace RayWrapper
 
             _isEnding = true;
             Logger.Log("Waiting for schedulers to end");
-            while(!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
+            while (!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             if (_initCollision)
             {
                 Logger.Log("Waiting for collision to end");
-                while(!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
+                while (!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             }
+
             Logger.Log("All Tasks ended successfully");
             Dispose();
         }
@@ -208,7 +210,7 @@ namespace RayWrapper
             if (f11Fullscreen && IsKeyPressed(KeyboardKey.KEY_F11))
             {
                 var mon = GetCurrentMonitor();
-                if (IsWindowFullscreen()) SetWindowSize((int)WindowSize.X, (int)WindowSize.Y);
+                if (IsWindowFullscreen()) SetWindowSize((int) WindowSize.X, (int) WindowSize.Y);
                 else SetWindowSize(GetMonitorWidth(mon), GetMonitorHeight(mon));
                 ToggleFullscreen();
             }
@@ -274,10 +276,10 @@ namespace RayWrapper
             }
 
             if (showFps || isDebugTool)
-                DrawFPS((int)fpsPos.X, (int)fpsPos.Y);
+                DrawFPS((int) fpsPos.X, (int) fpsPos.Y);
 
             var texture = _target.texture;
-            
+
             EndTextureMode();
             SetTextureFilter(texture, targetTextureFilter);
             BeginDrawing();
@@ -326,7 +328,7 @@ namespace RayWrapper
             currentCollision = CollisionTime[timeKeeper++] = ms;
             timeKeeper %= CollisionTime.Length;
             collisionHigh = Math.Max(collisionHigh, ms);
-            timeAverage = CollisionTime.Sum() / (double)CollisionTime.Length;
+            timeAverage = CollisionTime.Sum() / (double) CollisionTime.Length;
         }
 
         public static void CalcMousePos()
@@ -337,7 +339,7 @@ namespace RayWrapper
             mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
             mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
         }
-        
+
         public static void OpenLink(string url) => Process.Start("explorer.exe", url);
 
         public static dynamic LoadJsonFromWeb(string site, out bool isSuccessful)
@@ -349,6 +351,7 @@ namespace RayWrapper
             }
             catch
             {
+                // TODO: Not have empty catch statement.
                 // ignored
             }
 

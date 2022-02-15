@@ -33,7 +33,7 @@ namespace RayWrapper.Objs.Slot
         }
 
         protected override void RenderCall() => Draw();
-        
+
         protected abstract void Draw();
     }
 }
