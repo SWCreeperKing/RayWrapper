@@ -6,6 +6,7 @@ using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.GameBox;
+using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
@@ -37,7 +38,7 @@ namespace RayWrapper.Objs
                 KeyboardKey.KEY_V, (c, p, m, s) =>
                 {
                     if (!c || s.Length >= m) return (p, s);
-                    var txt = GetClipboardText();
+                    var txt = FromClipboard().Replace("\r", "").Replace("\n", " ");
                     var txtLeng = Math.Min(m - s.Length, txt!.Length);
                     return (p + txtLeng, s.Insert(p, txt[..txtLeng] ?? ""));
                 }
@@ -75,15 +76,15 @@ namespace RayWrapper.Objs
             _show = maxCharacterShow;
             _max = maxCharacters;
             _label = new Label(
-                    new Rectangle(pos.X, pos.Y, 16 * _show,
-                        height: FontManager.GetDefFont().MeasureText("!").Y), string.Join(",", Enumerable.Repeat(" ", _show)))
+                    new Rectangle(pos.X, pos.Y, 16 * _show, FontManager.GetDefFont().MeasureText("!").Y),
+                    string.Join(",", Enumerable.Repeat(" ", _show)))
                 { outline = new Actionable<bool>(true) };
             _lastTime = GetTimeMs();
         }
 
         protected override void UpdateCall()
         {
-            var isLeft = IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
+            var isLeft = (bool)IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
             switch (isLeft)
             {
                 case true when !_label.Rect.IsMouseIn() && _selected:
@@ -94,7 +95,7 @@ namespace RayWrapper.Objs
                     _selected = true;
                     break;
             }
-            
+
             if (_selected)
             {
                 Input();
@@ -109,7 +110,7 @@ namespace RayWrapper.Objs
             }
 
             var fps = GetFPS();
-            
+
             try
             {
                 _frameTime %= fps;

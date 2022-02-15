@@ -97,7 +97,10 @@ namespace RayWrapper
             string iconPath = "")
         {
             if (_hasInit) throw new ApplicationException("Only 1 instance of GameBox can be created");
-            SetTraceLogCallback(Logger.RayLog);
+            unsafe
+            {
+                SetTraceLogCallback(&Logger.RayLog);
+            }
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (Scene, WindowSize) = (scene, windowSize);

@@ -12,10 +12,11 @@ namespace RayWrapper
     public static class GeneralWrapper
     {
         public static readonly Color Transparent = new(0, 0, 0, 0);
-        public const double DegToRad = Math.PI * 2 / 360d; 
+        public const double DegToRad = Math.PI * 2 / 360d;
 
         public static Vector2 Max(this Vector2 v2) => new(Math.Max(v2.X, v2.Y));
         public static Vector2 Max(this Vector2 v2, Vector2 v22) => new(Math.Max(v2.X, v22.X), Math.Max(v2.Y, v22.Y));
+        public static unsafe string FromClipboard() => Utf8StringUtils.GetUTF8String(GetClipboardText());
 
         public static void DrawCenterText(this Font font, Vector2 pos, string text, Color color, float fontSize = 24,
             float spacing = 1.5f) =>
@@ -26,12 +27,13 @@ namespace RayWrapper
             float spacing = 1.5f)
         {
             rect.MoveBy(-(MeasureTextEx(font, text, fontSize, spacing) / 2));
-            DrawTextRec(font, text, rect, fontSize, spacing, true, color);
+            // DrawTextRec(font, text, rect, fontSize, spacing, true, color);
         }
 
-        public static void DrawTextWrap(this Font font, string text, Rectangle rect, Color fontColor, int fontSize = 24,
-            float spacing = 1.5f) =>
-            DrawTextRec(font, text, rect, fontSize, spacing, true, fontColor);
+        //todo: make replacement
+        // public static void DrawTextWrap(this Font font, string text, Rectangle rect, Color fontColor, int fontSize = 24,
+        //     float spacing = 1.5f) =>
+        //     DrawTextRec(font, text, rect, fontSize, spacing, true, fontColor);
 
         public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, int fontSize = 24,
             float spacing = 1.5f) =>
@@ -153,11 +155,11 @@ namespace RayWrapper
 
         public static Vector2 Rotate(this Vector2 v2, float degrees)
         {
-            var sin = (float) Math.Sin(degrees * DegToRad);
-            var cos = (float) Math.Cos(degrees * DegToRad);
+            var sin = (float)Math.Sin(degrees * DegToRad);
+            var cos = (float)Math.Cos(degrees * DegToRad);
             var tx = v2.X;
             var ty = v2.Y;
-            
+
             v2.X = cos * tx - sin * ty;
             v2.Y = sin * tx + cos * ty;
             return v2;

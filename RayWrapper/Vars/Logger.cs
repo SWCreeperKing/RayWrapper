@@ -28,50 +28,17 @@ namespace RayWrapper.Vars
         private static List<string> _log = new();
         private static bool hasError;
 
-        private static string RayForm(string text, IntPtr rawArgs)
-        {
-            if (rawArgs == IntPtr.Zero) return text;
-            var formatSize = Regex.Matches(text, regStr).Count;
-            var arr = new IntPtr[formatSize];
-            Marshal.Copy(rawArgs, arr, 0, formatSize);
-
-            var formatString = text;
-            var count = 0;
-            while (Regex.IsMatch(formatString, regStr))
-            {
-                var what = Regex.Match(formatString, regStr).Groups[1].Value;
-                var where = formatString.IndexOf(what, StringComparison.Ordinal);
-                formatString = formatString.Remove(where, what.Length);
-                switch (what)
-                {
-                    case "%s":
-                        formatString = formatString.Insert(where, Marshal.PtrToStringAnsi(arr[count])!);
-                        break;
-                    case "%i":
-                        formatString = formatString.Insert(where, arr[count]!.ToString());
-                        break;
-                    default:
-                        if (!what.Contains('f') && !what.Contains('d')) break;
-                        formatString = formatString.Insert(where, "[unknown float/double]");
-                        break;
-                }
-
-                count++;
-            }
-
-            return formatString;
-        }
-
-        public static void RayLog(TraceLogLevel logLevel, string text, IntPtr args) =>
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+        public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args) =>
             Log(logLevel switch
             {
-                LOG_ALL => Other,
-                LOG_TRACE or LOG_DEBUG => Debug,
-                LOG_INFO or LOG_NONE => Info,
-                LOG_WARNING => Warning,
-                LOG_ERROR or LOG_FATAL => Error,
+                (int)LOG_ALL => Other,
+                (int)LOG_TRACE or (int)LOG_DEBUG => Debug,
+                (int)LOG_INFO or (int)LOG_NONE => Info,
+                (int)LOG_WARNING => Warning,
+                (int)LOG_ERROR or (int)LOG_FATAL => Error,
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
-            }, RayForm($"from raylib: {text}", args));
+            }, $"from raylib: {Logging.GetLogMessage(new IntPtr(text), new IntPtr(args))}");
 
         public static void Log(string text) => Log(Debug, text);
         public static void Log(object text) => Log(Debug, text.ToString());
@@ -81,7 +48,7 @@ namespace RayWrapper.Vars
             Log(t.ToString());
             return t;
         }
-        
+
         public static void Log(Level level, string text)
         {
             if (level == Error) hasError = true;

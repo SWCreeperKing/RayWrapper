@@ -73,12 +73,22 @@ namespace RayWrapper
         public static void DrawRounded(this Rectangle rect, Color color, float roundness = .5f, int segments = 10) =>
             DrawRectangleRounded(rect, roundness, segments, color);
 
-        public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
-            int lineThickness = 3) =>
-            DrawRectangleRoundedLines(rect, roundness, 5, lineThickness, color);
+        // todo: undo when update
+        // public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
+        //     int lineThickness = 3) =>
+        //     DrawRectangleRoundedLines(rect, roundness, 5, lineThickness, color);
 
-        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) =>
-            DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
+        public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
+            int lineThickness = 3)
+        {
+        }
+
+        // todo: undo when update
+        // public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) =>
+        //     DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
+        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3) 
+        {
+        }
 
         public static Rectangle Shrink(this Rectangle rect, int changeBuy) =>
             new(rect.x + changeBuy, rect.y + changeBuy, rect.width - changeBuy * 2, rect.height - changeBuy * 2);
@@ -98,8 +108,12 @@ namespace RayWrapper
         public static Rectangle ExtendPos(this Rectangle rect, Vector2 v2) =>
             new(rect.x - v2.X, rect.y - v2.Y, rect.width + v2.X, rect.height + v2.Y);
 
-        public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3) =>
-            DrawRectangleLinesEx(rect, thickness, color);
+        // todo: undo when update
+        // public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3) =>
+        //     DrawRectangleLinesEx(rect, thickness, color);
+        public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3)
+        {
+        }
 
         public static void DrawTooltip(this Rectangle box, string text)
         {
