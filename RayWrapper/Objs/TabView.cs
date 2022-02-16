@@ -45,7 +45,7 @@ namespace RayWrapper.Objs
         {
             _rect = new Rectangle(pos.X, pos.Y, width, 40);
             _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
-                { amountInvoke = () => GetTabLength() - _rect.width };
+                {amountInvoke = () => GetTabLength() - _rect.width};
             _bar.OnMoveEvent += f =>
             {
                 _offset = f;
@@ -76,13 +76,14 @@ namespace RayWrapper.Objs
             }
             catch (InvalidOperationException)
             {
+                // TODO: Do not have an empty catch clause.
             }
 
             if (_closable)
                 foreach (var t in _closing)
                     t.Update();
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
-          _tabContents[_currentTab].Update();
+            _tabContents[_currentTab].Update();
         }
 
         protected override void RenderCall()
@@ -93,6 +94,7 @@ namespace RayWrapper.Objs
                 {
                     foreach (var t in _tabs) t.Render();
                 });
+
                 if (_closable)
                     foreach (var t in _closing)
                         t.Render();
@@ -111,6 +113,7 @@ namespace RayWrapper.Objs
             _tabs.Clear();
             var startX = _rect.x - _offset;
             var heightOff = outline ? 3 : 0;
+
             foreach (var name in _tabOrder)
             {
                 if (startX + _tabLengths[name] + 25 <= _rect.x)
@@ -146,6 +149,7 @@ namespace RayWrapper.Objs
                     {
                         backColor = Color.RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true
                     };
+
                     _tabs.Add(l);
                     startX += 25 + _padding;
                 }
@@ -194,7 +198,7 @@ namespace RayWrapper.Objs
             if (!_tabContents.ContainsKey(tabName)) return;
             _tabContents[tabName].RegisterGameObj(gobjs);
         }
-        
+
         public float GetTabLength() =>
             _tabLengths.Values.Sum() + (_closable ? 25 * _tabLengths.Values.Count : 0) +
             (_tabLengths.Count - 1) * _padding;

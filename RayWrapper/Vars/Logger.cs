@@ -22,18 +22,18 @@ namespace RayWrapper.Vars
         public static readonly string guid = Guid.NewGuid().ToString();
         public static readonly string crashSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
         public static readonly string statusSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
-        private static List<string> _log = new();
+        private static IList<string> _log = new List<string>();
         private static bool hasError;
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+        [UnmanagedCallersOnly(CallConvs = new[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
         public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args) =>
             Log(logLevel switch
             {
-                (int)LOG_ALL => Other,
-                (int)LOG_TRACE or (int)LOG_DEBUG => Debug,
-                (int)LOG_INFO or (int)LOG_NONE => Info,
-                (int)LOG_WARNING => Warning,
-                (int)LOG_ERROR or (int)LOG_FATAL => Error,
+                (int) LOG_ALL => Other,
+                (int) LOG_TRACE or (int) LOG_DEBUG => Debug,
+                (int) LOG_INFO or (int) LOG_NONE => Info,
+                (int) LOG_WARNING => Warning,
+                (int) LOG_ERROR or (int) LOG_FATAL => Error,
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
             }, $"from raylib: {Logging.GetLogMessage(new IntPtr(text), new IntPtr(args))}");
 

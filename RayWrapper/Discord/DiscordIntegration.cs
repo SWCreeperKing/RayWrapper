@@ -23,7 +23,7 @@ namespace RayWrapper.Discord
 
         public static void CheckDiscord(string appId, bool retry = true)
         {
-            if (appId == "") return;
+            if (appId == string.Empty) return;
             discordAlive = true;
             try
             {

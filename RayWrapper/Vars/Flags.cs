@@ -8,7 +8,7 @@ namespace RayWrapper.Vars
     {
         public IDictionary<string, T> flags = new Dictionary<string, T>();
 
-        public string StringToHex(string text) => string.Join("", text.Select(c => ((int)c).ToString("X2")));
+        public string StringToHex(string text) => string.Join(string.Empty, text.Select(c => ((int)c).ToString("X2")));
 
         public T GetFlag(string hex, T def = default)
         {

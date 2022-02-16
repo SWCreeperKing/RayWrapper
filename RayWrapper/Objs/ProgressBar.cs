@@ -52,7 +52,7 @@ namespace RayWrapper.Objs
                 var newS = new Vector2(size.X * (isVertical ? 1 : fill), size.Y * (isVertical ? fill : 1));
                 if (!useGradient)
                     AssembleRectFromVec(Position, newS).DrawRounded(((Color) fillColor).Percent(toColor, fill));
-                else AssembleRectFromVec(Position, newS).DrawGradiant(fillColor, toColor);
+                else AssembleRectFromVec(Position, newS).DrawGradient(fillColor, toColor);
             }
 
             if (!hoverPercent) return;

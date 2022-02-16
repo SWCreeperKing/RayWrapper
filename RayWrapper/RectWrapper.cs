@@ -7,7 +7,7 @@ namespace RayWrapper
 {
     public static class RectWrapper
     {
-        public static int maskingLayer = 0;
+        public static int maskingLayer;
         public static Rectangle Zero = new(0, 0, 0, 0);
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace RayWrapper
         public static void DrawCircle(this Rectangle rect, Color color, int segments = 10) =>
             rect.DrawRounded(color, 1, segments);
 
-        public static void DrawGradiant(this Rectangle rect, Color c1, Color c2, bool isVertical = false)
+        public static void DrawGradient(this Rectangle rect, Color c1, Color c2, bool isVertical = false)
         {
             if (isVertical)
                 DrawRectangleGradientV((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height, c1, c2);
@@ -123,14 +123,12 @@ namespace RayWrapper
 
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
-            maskingLayer++;
-            BeginScissorMode((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height);
-            draw.Invoke();
-            if (maskingLayer == 1) EndScissorMode();
-            maskingLayer--;
+            rect.Pos().MaskDraw(rect.Size(), draw);
         }
 
-        public static Rectangle Multi(this Rectangle rect, Vector2 v2) =>
-            AssembleRectFromVec(rect.Pos() * v2, rect.Size() * v2);
+        public static Rectangle Multi(this Rectangle rect, Vector2 v2)
+        {
+            return AssembleRectFromVec(rect.Pos() * v2, rect.Size() * v2);
+        }
     }
 }

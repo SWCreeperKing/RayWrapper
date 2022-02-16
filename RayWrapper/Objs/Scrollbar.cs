@@ -10,7 +10,7 @@ namespace RayWrapper.Objs
     public class Scrollbar : GameObject
     {
         public Func<float> amountInvoke;
-        public Rectangle bar;
+        public Rectangle bar = RectWrapper.Zero;
         public ColorModule barColor = new(116, 116, 116);
         public int minSizePercent = 20;
         public Rectangle container;
@@ -27,7 +27,6 @@ namespace RayWrapper.Objs
         public Scrollbar(Rectangle rect, bool isVertical = true)
         {
             container = rect.Clone();
-            bar = new Rectangle();
             this.isVertical = isVertical;
         }
 
@@ -122,6 +121,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
+            // TODO: Fix loss of precision with floating number.
             if (Amount() == 1) return;
             var hover = IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn();
             container.DrawRounded(hover ? ((Color) containerColor).MakeLighter() : containerColor, .4f);

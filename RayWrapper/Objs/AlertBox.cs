@@ -16,7 +16,7 @@ namespace RayWrapper.Objs
             No,
             Close,
         }
-        
+
         public bool informationBox;
         public Action<Result> onResult = null;
         public Vector2 size;
@@ -68,23 +68,27 @@ namespace RayWrapper.Objs
             var closeSize = close.Size;
             var noSize = informationBox ? Vector2.Zero : no.Size;
             var yesSize = informationBox ? Vector2.Zero : yes.Size;
-            var backLeng = informationBox
+
+            var backLength = informationBox
                 ? Math.Max(Math.Max(titleSize.X, messageSize.X), closeSize.X)
                 : Math.Max(Math.Max(titleSize.X, messageSize.X), yesSize.X + noSize.X + 20) + closeSize.X;
+
             var backHeight = informationBox
                 ? titleSize.Y + messageSize.Y + closeSize.Y * 2
                 : titleSize.Y + messageSize.Y + Math.Max(yesSize.Y, noSize.Y) + closeSize.Y;
+
             backHeight += 12;
-            _rect = new Rectangle(halfScreen.X - backLeng / 2, halfScreen.Y - backHeight / 2, backLeng, backHeight);
+            _rect = new Rectangle(halfScreen.X - backLength / 2, halfScreen.Y - backHeight / 2, backLength, backHeight);
             var bottom = _rect.Pos() + new Vector2(_rect.width / 2, _rect.height - 30);
 
-            if (!informationBox)
+            if (informationBox)
+                close.Position = bottom - new Vector2(closeSize.X / 2, 3);
+            else
             {
                 close.Position = new Vector2(_rect.x + (_rect.width - closeSize.X) - 3, _rect.y + 3);
                 no.Position = bottom + new Vector2(10, -3);
                 yes.Position = bottom - new Vector2(yesSize.X + 10, 3);
             }
-            else close.Position = bottom - new Vector2(closeSize.X / 2, 3);
         }
 
         // yes, the set does nothing

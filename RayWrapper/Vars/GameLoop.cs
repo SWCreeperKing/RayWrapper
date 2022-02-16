@@ -7,7 +7,7 @@ namespace RayWrapper.Vars
     public abstract class GameLoop : GameObjReg
     {
         public bool focusOnScenes;
-        private IList<Scene> _scenes = new List<Scene>();
+        private readonly IList<Scene> _scenes = new List<Scene>();
         private int _currentScene = -1;
 
         public void Update()

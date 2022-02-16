@@ -14,43 +14,44 @@ namespace RayWrapper.Objs
     {
         // func: isControl?, cursor pos, max leng, current text
         // func return: (cursorpos, text)
-        private readonly Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions = new()
-        {
-            { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
-            { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
+        private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
+            new Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>>()
             {
-                KeyboardKey.KEY_BACKSPACE, (c, p, _, s) =>
+                {KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s)},
+                {KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s)},
                 {
-                    if (!c)
+                    KeyboardKey.KEY_BACKSPACE, (c, p, _, s) =>
                     {
-                        if (p > 0) s = s.Remove(p-- - 1, 1);
+                        if (!c)
+                        {
+                            if (p > 0) s = s.Remove(p-- - 1, 1);
+                            return (p, s);
+                        }
+
+                        var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
+                        return (lastSpace, s.Remove(lastSpace, p - lastSpace));
+                    }
+                },
+                {KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s)},
+                {KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s)},
+                {KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s)},
+                {
+                    KeyboardKey.KEY_V, (c, p, m, s) =>
+                    {
+                        if (!c || s.Length >= m) return (p, s);
+                        var txt = FromClipboard().Replace("\r", string.Empty).Replace("\n", " ");
+                        var txtLength = Math.Min(m - s.Length, txt!.Length);
+                        return (p + txtLength, s.Insert(p, txt[..txtLength] ?? string.Empty));
+                    }
+                },
+                {
+                    KeyboardKey.KEY_C, (c, p, _, s) =>
+                    {
+                        if (c) SetClipboardText(s);
                         return (p, s);
                     }
-
-                    var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
-                    return (lastSpace, s.Remove(lastSpace, p - lastSpace));
                 }
-            },
-            { KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s) },
-            { KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s) },
-            { KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s) },
-            {
-                KeyboardKey.KEY_V, (c, p, m, s) =>
-                {
-                    if (!c || s.Length >= m) return (p, s);
-                    var txt = FromClipboard().Replace("\r", "").Replace("\n", " ");
-                    var txtLeng = Math.Min(m - s.Length, txt!.Length);
-                    return (p + txtLeng, s.Insert(p, txt[..txtLeng] ?? ""));
-                }
-            },
-            {
-                KeyboardKey.KEY_C, (c, p, _, s) =>
-                {
-                    if (c) SetClipboardText(s);
-                    return (p, s);
-                }
-            }
-        };
+            };
 
         public override Vector2 Position
         {
@@ -67,7 +68,7 @@ namespace RayWrapper.Objs
         private readonly int _max;
         private bool _selected;
         private readonly int _show;
-        private string _text = "";
+        private string _text = string.Empty;
         public Action<string> onEnter;
         public Action<string> onExit;
 
@@ -78,13 +79,13 @@ namespace RayWrapper.Objs
             _label = new Label(
                     new Rectangle(pos.X, pos.Y, 16 * _show, FontManager.GetDefFont().MeasureText("!").Y),
                     string.Join(",", Enumerable.Repeat(" ", _show)))
-                { outline = new Actionable<bool>(true) };
+                {outline = new Actionable<bool>(true)};
             _lastTime = GetTimeMs();
         }
 
         protected override void UpdateCall()
         {
-            var isLeft = (bool)IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
+            var isLeft = (bool) IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
             switch (isLeft)
             {
                 case true when !_label.Rect.IsMouseIn() && _selected:
@@ -147,13 +148,13 @@ namespace RayWrapper.Objs
             var (c, cc) = (GetCharPressed(), GetKeyPressed());
             while (c > 0 || cc > 0)
             {
-                if ((KeyboardKey)cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
-                if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char)c}");
+                if ((KeyboardKey) cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
+                if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
                 (c, cc) = (GetCharPressed(), GetKeyPressed());
             }
         }
 
-        public void Clear() => (_text, _curPos) = ("", 0);
+        public void Clear() => (_text, _curPos) = (string.Empty, 0);
         public void SetText(string text) => (_text, _curPos) = (text, text.Length);
     }
 }

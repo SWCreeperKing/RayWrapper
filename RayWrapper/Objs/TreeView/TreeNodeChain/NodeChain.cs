@@ -12,9 +12,9 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
         public ColorModule lineColor = new(0);
         public ColorModule completedLineColor = new(255);
         public List<NodeShape> nodes = new();
-        public NodeShape branched = null;
+        public NodeShape branched;
 
-        private Dictionary<NodeShape, List<NodeChain>> branches = new();
+        private IDictionary<NodeShape, List<NodeChain>> branches = new Dictionary<NodeShape, List<NodeChain>>();
 
         public NodeChain(params NodeShape[] nodes) => this.nodes.AddRange(nodes);
 

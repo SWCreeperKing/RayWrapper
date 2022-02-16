@@ -57,10 +57,12 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             if (!_gos.Any()) return;
+
             _rect.MaskDraw(() =>
             {
                 foreach (var obj in _renderList) obj.Render();
             });
+
             if (_trueSize.X >= _size.X) _xScroll.Render();
             if (_trueSize.Y >= _size.Y) _yScroll.Render();
             _rect.DrawHallowRect(Color.BLACK, 1);
@@ -85,6 +87,7 @@ namespace RayWrapper.Objs
         public void AddObj(params IGameObject[] objs)
         {
             var pos = Position;
+
             foreach (var t in objs)
             {
                 t.Position += pos;

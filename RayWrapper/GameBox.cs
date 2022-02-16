@@ -54,7 +54,7 @@ namespace RayWrapper
         public static float scale;
         public static Vector2 fpsPos = Vector2.One;
         public static Vector2 mousePos;
-        public static string discordAppId = "";
+        public static string discordAppId = string.Empty;
         public static AlertBox alertBox = null;
         public static ColorModule backgroundColor = new(40);
         public static ColorModule letterboxColor = new(20);
@@ -107,7 +107,7 @@ namespace RayWrapper
             (Scene, WindowSize) = (scene, windowSize);
             screenGrid = new ScreenGrid();
             InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
-            if (iconPath != "") SetWindowIcon(LoadImage(iconPath));
+            if (iconPath != string.Empty) SetWindowIcon(LoadImage(iconPath));
             _target = LoadRenderTexture((int) windowSize.X, (int) windowSize.Y);
             if (singleConsole is null)
             {
@@ -179,7 +179,7 @@ namespace RayWrapper
             if (_initDiscord) return;
             _initDiscord = true;
             DiscordIntegration.Init();
-            if (discordAppId != "") DiscordIntegration.CheckDiscord(discordAppId);
+            if (discordAppId != string.Empty) DiscordIntegration.CheckDiscord(discordAppId);
             AddScheduler(new Scheduler(100, DiscordIntegration.UpdateActivity));
         }
 
@@ -259,7 +259,7 @@ namespace RayWrapper
 
             if (isDebugTool)
                 tooltip.Add(
-                    $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : "")}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : "")}");
+                    $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)}");
 
             if (tooltip.Any())
             {

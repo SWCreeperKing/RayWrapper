@@ -9,13 +9,16 @@ namespace RayWrapper
 {
     public static class FontManager
     {
-        public static Font DefaultFont { get; private set; } = GetFontDefault();
+        public static Font DefaultFont { get; } = GetFontDefault();
         public static TextureFilter fontFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
 
-        private static bool isNewDefaultSet = false;
+        private static bool isNewDefaultSet;
         private static string newDefault;
-        private static Dictionary<string, Dictionary<int, Font>> _fonts = new();
-        private static Dictionary<string, string> _fontPaths = new();
+
+        private static IDictionary<string, IDictionary<int, Font>> _fonts =
+            new Dictionary<string, IDictionary<int, Font>>();
+
+        private static IDictionary<string, string> _fontPaths = new Dictionary<string, string>();
 
         public static Font GetDefFont(int size = 24)
         {

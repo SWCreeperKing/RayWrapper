@@ -29,17 +29,21 @@ namespace RayWrapper
             float spacing = 1.5f)
         {
             rect.MoveBy(-(MeasureTextEx(font, text, fontSize, spacing) / 2));
-            // DrawTextRec(font, text, rect, fontSize, spacing, true, color);
+            DrawTextRec(font, text, rect, fontSize, spacing, true, color);
         }
 
         public static void DrawTextRec(this Font font, string text, Rectangle rect, Color fontColor,
             int fontSize = 24,
-            float spacing = 1.5f) =>
+            float spacing = 1.5f)
+        {
             DrawTextRec(font, text, rect, fontSize, spacing, true, fontColor);
+        }
 
         public static void DrawTextRec(this Font font, string text, Rectangle rec, float fontSize, float spacing,
-            bool wordWrap, Color tint) =>
+            bool wordWrap, Color tint)
+        {
             DrawTextRec(font, text, rec, fontSize, spacing, wordWrap, tint, 0, 0, WHITE, WHITE);
+        }
 
         public static unsafe void DrawTextRec(this Font font, string text, Rectangle rec, float fontSize, float
             spacing, bool wordWrap, Color tint, int selectStart, int
@@ -168,40 +172,60 @@ namespace RayWrapper
         }
 
         public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, int fontSize = 24,
-            float spacing = 1.5f) =>
+            float spacing = 1.5f)
+        {
             DrawTextEx(font, text, pos, fontSize, spacing, fontColor);
+        }
 
-        public static Vector2 MeasureText(this Font font, string text, float fontSize = 24f, float spacing = 1.5f) =>
-            MeasureTextEx(font, text, fontSize, spacing);
+        public static Vector2 MeasureText(this Font font, string text, float fontSize = 24f, float spacing = 1.5f)
+        {
+            return MeasureTextEx(font, text, fontSize, spacing);
+        }
 
-        public static string GetString(this KeyboardKey key) =>
-            $"{key}".Replace("KEY_MENU", "KEY_R").Replace("KEY_", "").Replace("_", " ").ToLower();
+        public static string GetString(this KeyboardKey key)
+        {
+            return $"{key}".Replace("KEY_MENU", "KEY_R").Replace("KEY_", string.Empty).Replace("_", " ").ToLower();
+        }
 
-        public static Color MakeLighter(this Color color) =>
-            new((int) Math.Min(color.r * 1.5, 255), (int) Math.Min(color.g * 1.5, 255),
+        public static Color MakeLighter(this Color color)
+        {
+            return new Color((int) Math.Min(color.r * 1.5, 255), (int) Math.Min(color.g * 1.5, 255),
                 (int) Math.Min(color.b * 1.5, 255),
                 color.a);
+        }
 
-        public static Color MakeDarker(this Color color) =>
-            new((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
+        public static Color MakeDarker(this Color color)
+        {
+            return new Color((int) (color.r / 1.7), (int) (color.g / 1.7), (int) (color.b / 1.7), color.a);
+        }
 
-        public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0) =>
-            new(color.r + r, color.g + g, color.b + b, color.a + a);
+        public static Color EditColor(this Color color, int r = 0, int g = 0, int b = 0, int a = 0)
+        {
+            return new Color(color.r + r, color.g + g, color.b + b, color.a + a);
+        }
 
         public static Color SetAlpha(this Color color, int a) => new(color.r, color.g, color.b, a);
 
-        public static void DrawLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3) =>
+        public static void DrawLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3)
+        {
             DrawLineEx(v1, v2, thickness, color);
+        }
 
-        public static void DrawBezLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3) =>
+        public static void DrawBezLine(this Vector2 v1, Vector2 v2, Color color, float thickness = 3)
+        {
             DrawLineBezier(v1, v2, thickness, color);
+        }
 
-        public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3) =>
+        public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3)
+        {
             DrawLineEx(l.v1, l.v2, thickness, color);
+        }
 
         public static void
-            DrawLine(this (float x1, float y1, float x2, float y2) l, Color color, float thickness = 3) =>
+            DrawLine(this (float x1, float y1, float x2, float y2) l, Color color, float thickness = 3)
+        {
             (new Vector2(l.x1, l.y1), new Vector2(l.x2, l.y2)).DrawLine(color, thickness);
+        }
 
         public static Vector2 Add(this Vector2 v2, float f) => v2 + new Vector2(f);
 
@@ -217,8 +241,12 @@ namespace RayWrapper
         {
             var step = rect.width / array.Length;
             var vects = new Vector2[array.Length];
+
             for (var i = 0; i < array.Length; i++)
+            {
                 vects[i] = new Vector2(rect.x + rect.height + i * step, array[i]);
+            }
+
             return vects;
         }
 
@@ -256,9 +284,11 @@ namespace RayWrapper
             }
         }
 
-        public static bool IsVectInVects(this Vector2 vect, Vector2 pos, Vector2 size, float scale = 1) =>
-            pos.X * scale < vect.X && pos.Y * scale < vect.Y && vect.X < (pos.X + size.X) * scale &&
-            vect.Y < (pos.Y + size.Y) * scale;
+        public static bool IsVectInVects(this Vector2 vect, Vector2 pos, Vector2 size, float scale = 1)
+        {
+            return pos.X * scale < vect.X && pos.Y * scale < vect.Y && vect.X < (pos.X + size.X) * scale &&
+                   vect.Y < (pos.Y + size.Y) * scale;
+        }
 
         public static Vector2 Size(this Image img) => img.Texture().Size();
         public static Vector2 Size(this Texture2D t2d) => new(t2d.width, t2d.height);
@@ -275,16 +305,18 @@ namespace RayWrapper
         public static void DrawCircle(this Vector2 v2, float r, Color? color = null) =>
             DrawCircleV(v2, r, color ?? WHITE);
 
-        public static Vector2 FixVector(this Vector2 v2) => new Vector2(v2.X.Fix(), v2.Y.Fix());
+        public static Vector2 FixVector(this Vector2 v2) => new(v2.X.Fix(), v2.Y.Fix());
 
         public static bool IsFixable(this float f) => float.IsNaN(f) || float.IsInfinity(f);
 
-        public static float Fix(this float f) =>
-            f.IsFixable()
+        public static float Fix(this float f)
+        {
+            return f.IsFixable()
                 ? float.IsNegative(f)
                     ? float.MinValue
                     : float.MaxValue
                 : f;
+        }
 
         public static Vector2 Rotate(this Vector2 v2, float degrees)
         {

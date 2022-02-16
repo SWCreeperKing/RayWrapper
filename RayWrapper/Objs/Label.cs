@@ -5,7 +5,6 @@ using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
 using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;
-using static RayWrapper.GeneralWrapper;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
@@ -115,8 +114,8 @@ namespace RayWrapper.Objs
                     break;
             }
 
-            var t = (string)(tooltip ?? "");
-            if (Rect.IsMouseIn() && t != "" && !IsMouseOccupied) Rect.DrawTooltip(t);
+            var t = (string)(tooltip ?? string.Empty);
+            if (Rect.IsMouseIn() && t != string.Empty && !IsMouseOccupied) Rect.DrawTooltip(t);
         }
 
         public void CheckText()
