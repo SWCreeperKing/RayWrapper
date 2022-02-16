@@ -24,8 +24,8 @@ namespace RayWrapper.Objs
 
         private readonly Scrollbar _yScroll;
         private readonly Scrollbar _xScroll;
-        private readonly List<GameObject> _gos = new();
-        private IList<GameObject> _renderList = new List<GameObject>();
+        private readonly List<IGameObject> _gos = new();
+        private IList<IGameObject> _renderList = new List<IGameObject>();
         private Rectangle _rect;
         private Vector2 _size;
         private Vector2 _pos;
@@ -82,7 +82,7 @@ namespace RayWrapper.Objs
             foreach (var go in _renderList) go.Position -= _posOffset;
         }
 
-        public void AddObj(params GameObject[] objs)
+        public void AddObj(params IGameObject[] objs)
         {
             var pos = Position;
             foreach (var t in objs)

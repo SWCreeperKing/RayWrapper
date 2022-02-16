@@ -153,7 +153,7 @@ namespace RayWrapper.Objs
             }
         }
 
-        public void AddTab(string tabName, params GameObject[] gobjs)
+        public void AddTab(string tabName, params IGameObject[] gobjs)
         {
             if (_tabContents.ContainsKey(tabName)) return;
             _tabOrder.Add(tabName);
@@ -165,7 +165,7 @@ namespace RayWrapper.Objs
             Refresh();
         }
 
-        public void InsertTab(string tabName, int index, params GameObject[] gobjs)
+        public void InsertTab(string tabName, int index, params IGameObject[] gobjs)
         {
             if (_tabContents.ContainsKey(tabName)) return;
             _tabOrder.Insert(index, tabName);
@@ -189,7 +189,7 @@ namespace RayWrapper.Objs
             _bar.MoveBar(0);
         }
 
-        public void AddToTab(string tabName, params GameObject[] gobjs)
+        public void AddToTab(string tabName, params IGameObject[] gobjs)
         {
             if (!_tabContents.ContainsKey(tabName)) return;
             _tabContents[tabName].RegisterGameObj(gobjs);
@@ -202,7 +202,7 @@ namespace RayWrapper.Objs
         public string GetCurrentTab() => _currentTab;
         public bool ContainsTab(string tabName) => _tabOrder.Contains(tabName);
 
-        public GameObject[] GetTabContents(string tabName) =>
+        public IGameObject[] GetTabContents(string tabName) =>
             _tabContents.ContainsKey(tabName) ? _tabContents[tabName].GetRegistry() : null;
     }
 }

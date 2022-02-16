@@ -61,13 +61,13 @@ namespace RayWrapper
         public static bool isDebugTool;
         public static bool conserveCpu;
         public static List<SlotBase> dragCollision = new();
-        public static GameObject mouseOccupier;
+        public static IGameObject mouseOccupier;
         public static ScreenGrid screenGrid;
         public static TextureFilter fontTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
         public static bool f11Fullscreen = true;
         public static bool isCollisionSystem;
-        public static GameObject debugContext = null;
+        public static IGameObject debugContext = null;
         public static List<string> tooltip = new();
         public static ColorModule baseTooltipColor = new Color(170, 170, 255, 220);
         public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);

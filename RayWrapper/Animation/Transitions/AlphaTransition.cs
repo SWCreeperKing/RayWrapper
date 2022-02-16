@@ -4,7 +4,7 @@ using RayWrapper.Vars;
 
 namespace RayWrapper.Animation.Transitions
 {
-    public class AlphaTransition<T> : Transition where T : GameObject, IAlphable
+    public class AlphaTransition<T> : Transition where T : IGameObject, IAlphable
     {
         public T t;
         public int alphaTo;
