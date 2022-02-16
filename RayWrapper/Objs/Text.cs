@@ -61,7 +61,6 @@ namespace RayWrapper.Objs
                 case TextMode.Normal:
                     Draw();
                     break;
-                //todo: make replacement
                 case TextMode.Wrap:
                     DrawWrap();
                     break;

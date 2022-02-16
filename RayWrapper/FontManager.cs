@@ -58,7 +58,7 @@ namespace RayWrapper
         public static Vector2 MeasureText(string text, string fontName, int size) =>
             GetFont(fontName, size).MeasureText(text);
 
-        private static Font LoadFont(string font, int fontSize, int toChar = 5000)
+        private static Font LoadFont(string font, int fontSize, int toChar = 8595)
         {
             var f = LoadFontEx(font, fontSize, null, toChar);
             SetTextureFilter(f.texture, fontFilter);

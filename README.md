@@ -7,7 +7,7 @@ on nuget
 [![NuGet](https://img.shields.io/nuget/dt/RayWrapper)](https://www.nuget.org/packages/RayWrapper/)
 
 it has 3 dependencies:
-- Raylib-cs (3.7.0)
+- Raylib-cs (4.0)
 - DiscordRichPresence (1.0.175)
 - Newtonsoft.Json (13.0.1)
 
