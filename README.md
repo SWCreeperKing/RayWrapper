@@ -11,7 +11,7 @@
 
 ---
 
-<p align="center"> This is a Wrapper for the C# port (Raylib-cs) of RayLib, a 'bare-bones' graphics library.
+<p align="center"> This is a Wrapper for the C# port (Raylib-cs) of <a href="https://github.com/raysan5/raylib">raylib</a>, a 'bare-bones' graphics library.
     <br> 
 </p>
 
@@ -27,30 +27,30 @@
 This is a Wrapper for the C# port (Raylib-cs) of RayLib, a 'bare-bones' graphics library.
 Made with .Net5 on nuget.
 
-For credit, link back to this repo
+For credit, please link back to this repo.
 
 paths:
 - RayWrapper (wrapper code)
 - RayWrapperTester (testing program)
 - RayWrapperTesterCollision (collision testing program).
 
-## 🎈 Features <a name="features"></a>
-- in game console (can add custom commands, use ` to access console)
-- a built in save system using Newtonsoft.Json
-- bad code
+## 🎁 Features <a name="features"></a>
+- In game console (can add custom commands, use ` to access console)
+- A built in save system using Newtonsoft.Json
+- Bad code
 - ~~NumberClass is included (A big number lib)~~
   - no longer included, but it still is on Nuget
-- many premade gameobjects
-- discord rich presence support
-- a very bad collision system
-- a not as bad animation system
-- internal logger and crash log system
+- Many premade gameobjects
+- Discord rich presence support
+- A very bad collision system
+- A not as bad animation system
+- Internal logger and crash log system
 
 ## 🎈 Usage <a name="usage"></a>
 TODO: Insert usage instructions here. Say some stuff about adding the NuGet package and .Net version.
 
 
-## 🎈 Example Template <a name="example_template"></a>
+## 🏷️ Example Template <a name="example_template"></a>
 ```C#
 new GameBox(new Program(), new Vector2(window width, window height, "title"))
 
