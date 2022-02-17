@@ -28,7 +28,7 @@ namespace RayWrapper.Objs
 
         public int rotation; // 0 to 360
 
-        private Texture2D _t2d;
+        private Texture2D _texture2d;
         private Vector2 _pos;
         private Vector2 _size;
         private Color _t2dColor = new(255, 255, 255, 255);
@@ -37,8 +37,8 @@ namespace RayWrapper.Objs
         
         public TextureObj(Texture2D t2d, Vector2 pos)
         {
-            (_t2d, _pos) = (t2d, pos);
-            _t2dRect = AssembleRectFromVec(Vector2.Zero, _size = _t2d.Size());
+            (_texture2d, _pos) = (t2d, pos);
+            _t2dRect = AssembleRectFromVec(Vector2.Zero, _size = _texture2d.Size());
             Change();
         }
 
@@ -47,7 +47,7 @@ namespace RayWrapper.Objs
         }
 
         protected override void RenderCall() => 
-            Raylib.DrawTexturePro(_t2d, _t2dRect, _destRect, Vector2.Zero, rotation % 360, _t2dColor);
+            Raylib.DrawTexturePro(_texture2d, _t2dRect, _destRect, Vector2.Zero, rotation % 360, _t2dColor);
         
         public void SetSize(Vector2 size)
         {
@@ -57,6 +57,6 @@ namespace RayWrapper.Objs
         }
         
         public void Change() => _destRect = AssembleRectFromVec(_pos, _size);
-        ~TextureObj() => Raylib.UnloadTexture(_t2d);
+        ~TextureObj() => Raylib.UnloadTexture(_texture2d);
     }
 }

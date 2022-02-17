@@ -14,21 +14,21 @@ namespace RayWrapper.Objs
         {
             Yes,
             No,
-            Close
+            Close,
         }
 
-        public Button close;
         public bool informationBox;
-        public string message;
-        public ColorModule messageColor = new(70, 140, 140);
-        public Button no;
         public Action<Result> onResult = null;
-        public ColorModule rectColor = new(60, 60, 60);
         public Vector2 size;
         public string title;
+        public string message;
         public ColorModule titleColor = new(70, 170, 70);
+        public ColorModule messageColor = new(70, 140, 140);
+        public ColorModule rectColor = new(60, 60, 60);
         public Button yes;
-        
+        public Button no;
+        public Button close;
+
         private readonly Rectangle _rect;
 
         public AlertBox(string title, string message, bool informationBox = false) : this(title, message, Vector2.Zero,
@@ -36,6 +36,7 @@ namespace RayWrapper.Objs
         {
         }
 
+        // TODO: Update docs.
         /// <param name="size">Custom size for the Message Text</param>
         public AlertBox(string title, string message, Vector2 size, bool informationBox = false)
         {
@@ -67,27 +68,36 @@ namespace RayWrapper.Objs
             var closeSize = close.Size;
             var noSize = informationBox ? Vector2.Zero : no.Size;
             var yesSize = informationBox ? Vector2.Zero : yes.Size;
-            var backLeng = informationBox
+
+            var backLength = informationBox
                 ? Math.Max(Math.Max(titleSize.X, messageSize.X), closeSize.X)
                 : Math.Max(Math.Max(titleSize.X, messageSize.X), yesSize.X + noSize.X + 20) + closeSize.X;
+
             var backHeight = informationBox
                 ? titleSize.Y + messageSize.Y + closeSize.Y * 2
                 : titleSize.Y + messageSize.Y + Math.Max(yesSize.Y, noSize.Y) + closeSize.Y;
+
             backHeight += 12;
-            _rect = new Rectangle(halfScreen.X - backLeng / 2, halfScreen.Y - backHeight / 2, backLeng, backHeight);
+            _rect = new Rectangle(halfScreen.X - backLength / 2, halfScreen.Y - backHeight / 2, backLength, backHeight);
             var bottom = _rect.Pos() + new Vector2(_rect.width / 2, _rect.height - 30);
 
-            if (!informationBox)
+            if (informationBox)
+                close.Position = bottom - new Vector2(closeSize.X / 2, 3);
+            else
             {
                 close.Position = new Vector2(_rect.x + (_rect.width - closeSize.X) - 3, _rect.y + 3);
                 no.Position = bottom + new Vector2(10, -3);
                 yes.Position = bottom - new Vector2(yesSize.X + 10, 3);
             }
-            else close.Position = bottom - new Vector2(closeSize.X / 2, 3);
         }
 
         // yes, the set does nothing
-        public override Vector2 Position { get => _rect.Pos(); set => _rect.NewMoveTo(value); }
+        public override Vector2 Position
+        {
+            get => _rect.Pos();
+            set => _rect.NewMoveTo(value);
+        }
+
         public override Vector2 Size => _rect.Size();
 
         protected override void UpdateCall()
@@ -106,11 +116,16 @@ namespace RayWrapper.Objs
             _rect.Draw(rectColor);
             GetDefFont(30).DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
             if (size == Vector2.Zero)
+            {
                 GetDefFont().DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
-            else 
+            }
+            else
+            {
                 GetDefFont().DrawTextRec(message,
                     AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),
                     messageColor);
+            }
+
             close.Render();
             if (informationBox) return;
             no.Render();

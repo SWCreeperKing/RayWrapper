@@ -56,6 +56,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
+            // TODO: Make default arm.
             switch (mode)
             {
                 case TextMode.Normal:

@@ -6,7 +6,7 @@ using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Vars
 {
-    public abstract class GameObject : GameObjReg
+    public abstract class GameObject : GameObjReg, IGameObject
     {
         public Actionable<bool> isVisible = true;
         public abstract Vector2 Position { get; set; }

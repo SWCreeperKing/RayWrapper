@@ -15,8 +15,9 @@ namespace RayWrapper.GameConsole
     {
         public static GameConsole singleConsole;
 
+        // TODO: Make regex object.
         private static string regString = @"^(\d{1,3}),(\d{1,3}),(\d{1,3})\|";
-        private static List<string> _lines = new();
+        private static IList<string> _lines = new List<string>();
         private static Dictionary<int, Color> _colors = new();
 
         public override Vector2 Position { get; set; }
@@ -42,7 +43,7 @@ namespace RayWrapper.GameConsole
                     ? CommandRegister.ExecuteCommand(s)
                     : CommandRegister.ExecuteCommand(split[0], split[1..]);
                 ib.Clear();
-                if (!write.Any() || write.Length == 1 && write[0] == "") return;
+                if (!write.Any() || write.Length == 1 && write[0] == string.Empty) return;
                 WriteToConsole(write);
             };
 
@@ -78,6 +79,7 @@ namespace RayWrapper.GameConsole
             int ToColor(string text) => Math.Clamp(int.Parse(text), 0, 255);
             if (!texts.Any())
             {
+                // TODO: Remove dash after yellow.
                 WriteToConsole($"{YELLOW}|An Attempt to write to the console was made");
                 return;
             }
@@ -95,6 +97,7 @@ namespace RayWrapper.GameConsole
             }
         }
 
+        // TODO: Make static?
         public int ClearOutput()
         {
             var lineAmt = _lines.Count;

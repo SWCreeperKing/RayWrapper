@@ -12,14 +12,14 @@ namespace RayWrapper.Objs
 {
     public class Button : GameObject
     {
-        public ColorModule baseColor = new(1, 89, 99);
         public Label baseL;
         public Sound clickSound;
+        public ColorModule baseColor = new(1, 89, 99);
         public ColorModule fontColor = new(174, 177, 181);
         public Actionable<bool> isDisabled = new(false);
         public bool randomPitch = true;
-        
-        private readonly List<Action> _clickEvent = new();
+
+        private readonly IList<Action> _clickEvent = new List<Action>();
 
         public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, Vector2.Zero),
             text, TextMode.SizeToText)
@@ -47,7 +47,7 @@ namespace RayWrapper.Objs
             set => baseL.outline = value;
         }
 
-        public new Actionable<string> Text
+        public Actionable<string> Text
         {
             get => baseL.text;
             set => baseL.text = value;
@@ -94,9 +94,9 @@ namespace RayWrapper.Objs
 
         private Color GetColor(ColorModule c) =>
             isDisabled
-                ? ((Color)c).MakeDarker()
+                ? ((Color) c).MakeDarker()
                 : Rect.IsMouseIn() && !IsMouseOccupied
-                    ? ((Color)c).MakeLighter()
+                    ? ((Color) c).MakeLighter()
                     : c;
 
         /// <summary>

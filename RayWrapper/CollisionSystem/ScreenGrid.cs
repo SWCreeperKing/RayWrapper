@@ -12,18 +12,18 @@ namespace RayWrapper.CollisionSystem
     {
         public Dictionary<(int x, int y), List<int>> collisionGrid = new();
 
-        private List<Collider> subCol = new();
+        private IList<Collider> subCol = new List<Collider>();
         private long lastTick = -1;
         private const float screenPercent = .1f;
-        private List<Collider> removeQueue = new();
-        private List<Collider> addQueue = new();
-        private Dictionary<(int x, int y), Rectangle> rects = new();
+        private IList<Collider> removeQueue = new List<Collider>();
+        private IList<Collider> addQueue = new List<Collider>();
+        private IDictionary<(int x, int y), Rectangle> rects = new Dictionary<(int x, int y), Rectangle>();
         private List<(int x, int y)> keys = new();
 
         public ScreenGrid()
         {
-            var incrX = (int)Math.Ceiling(WindowSize.X * screenPercent);
-            var incrY = (int)Math.Ceiling(WindowSize.Y * screenPercent);
+            var incrX = (int) Math.Ceiling(WindowSize.X * screenPercent);
+            var incrY = (int) Math.Ceiling(WindowSize.Y * screenPercent);
             for (var x = 0; x < WindowSize.X; x += incrX)
             for (var y = 0; y < WindowSize.Y; y += incrY)
                 rects.Add((x, y), new Rectangle(x, y, incrX, incrY));
@@ -58,7 +58,8 @@ namespace RayWrapper.CollisionSystem
 
         public void Draw(bool debug)
         {
-            for (var i = 0; i < subCol.Count; i++) subCol[i].Render();
+            foreach (var t in subCol) t.Render();
+
             if (!debug || !isCollisionSystem) return;
             foreach (var rect in rects.Values) rect.DrawHallowRect(Color.GREEN);
         }
@@ -70,9 +71,9 @@ namespace RayWrapper.CollisionSystem
         {
             for (var i = 0; i < subCol.Count; i++)
             {
-                for (var j = 0; j < keys.Count; j++)
-                    if (subCol[i].SampleCollision(rects[keys[j]]))
-                        collisionGrid[keys[j]].Add(i);
+                foreach (var t in keys.Where(t => subCol[i].SampleCollision(rects[t])))
+                    collisionGrid[t].Add(i);
+
                 if (subCol[i].velocity != Vector2.Zero) subCol[i].Position += subCol[i].velocity * deltaTime;
                 subCol[i].Update();
             }
@@ -81,15 +82,13 @@ namespace RayWrapper.CollisionSystem
         public void CollDetect()
         {
             var lists = collisionGrid.Values.Where(l => l.Count > 1).ToList();
-            if (lists.Any())
-                for (var l = 0; l < lists.Count; l++) // second slow down if ~5k s: 25ms 
-                {
-                    var list = lists[l];
-                    if (!list.Any()) continue;
-                    for (var i = 0; i < list.Count - 1; i++)
-                    for (var j = i + 1; j < list.Count; j++)
-                        subCol[list[i]].DoCollision(subCol[list[j]]);
-                }
+            if (!lists.Any()) return;
+            foreach (var list in lists.Where(list => list.Any()))
+            {
+                for (var i = 0; i < list.Count - 1; i++)
+                for (var j = i + 1; j < list.Count; j++)
+                    subCol[list[i]].DoCollision(subCol[list[j]]);
+            }
         }
     }
 }

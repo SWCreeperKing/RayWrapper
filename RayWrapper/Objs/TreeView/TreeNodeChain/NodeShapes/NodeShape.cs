@@ -5,11 +5,12 @@ using RayWrapper.Vars;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
 {
-    public abstract class NodeShape
+    public abstract class NodeShape : INodeShape
     {
         protected Vector2 position;
         protected Vector2 size;
 
+        // TODO: Turn into properties and move to interface.
         public ColorModule color = new(0);
         public ColorModule completeColor = new(255);
         public Actionable<bool> completed = new(false);

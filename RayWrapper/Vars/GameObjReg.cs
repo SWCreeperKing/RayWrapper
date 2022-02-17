@@ -2,10 +2,11 @@
 
 namespace RayWrapper.Vars
 {
-    public abstract class GameObjReg
+    public abstract class GameObjReg : IGameObjReg
     {
-        private List<GameObject> _registry = new();
-        
+        // TODO: Look into the GameObject & GameObjReg system. This should not use the GameObject class since GameObjReg is the superclass of that class.
+        private List<IGameObject> _registry = new();
+
         public void UpdateReg()
         {
             foreach (var a in _registry) a.Update();
@@ -15,9 +16,9 @@ namespace RayWrapper.Vars
         {
             foreach (var a in _registry) a.Render();
         }
-        
-        public void RegisterGameObj(params GameObject[] igo) => _registry.AddRange(igo);
-        public void DeregisterGameObj(GameObject igo) => _registry.Remove(igo);
-        public GameObject[] GetRegistry() => _registry.ToArray();
+
+        public void RegisterGameObj(params IGameObject[] igo) => _registry.AddRange(igo);
+        public void DeregisterGameObj(IGameObject igo) => _registry.Remove(igo);
+        public IGameObject[] GetRegistry() => _registry.ToArray();
     }
 }

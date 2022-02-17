@@ -28,9 +28,9 @@ namespace RayWrapper.Objs
         public Actionable<float> minConstraint = float.MinValue;
 
         private readonly List<Vector2> _values = new();
-        private readonly Dictionary<Vector2, Vector2> _realVal = new();
+        private readonly IDictionary<Vector2, Vector2> _realVal = new Dictionary<Vector2, Vector2>();
         private Vector2[] _cacheValues;
-        private Vector2 closest = new(-1, -1);
+        private Vector2 _closest = new(-1, -1);
 
         public Graph(Rectangle rect) => this.rect = rect;
 
@@ -38,12 +38,12 @@ namespace RayWrapper.Objs
         {
             if (!rect.IsMouseIn())
             {
-                closest = neg;
+                _closest = neg;
                 return;
             }
 
             var mouse = GameBox.mousePos;
-            closest = _cacheValues.Select(v2 => (pos: v2, dist: Vector2.Distance(mouse, v2))).OrderBy(t => t.dist)
+            _closest = _cacheValues.Select(v2 => (pos: v2, dist: Vector2.Distance(mouse, v2))).OrderBy(t => t.dist)
                 .First().pos;
         }
 
@@ -51,15 +51,17 @@ namespace RayWrapper.Objs
         {
             var grow = rect.Grow(4);
             if (_cacheValues.Length < 2) return;
+
             grow.MaskDraw(() =>
             {
                 if (useBezier) _cacheValues.DrawArrAsBezLine(lineColor, thickness);
                 else _cacheValues.DrawArrAsLine(lineColor, thickness); 
             });
+
             grow.DrawHallowRect(Color.BLACK);
-            if (closest == neg) return;
-            closest.DrawCircle(3);
-            if (_realVal.ContainsKey(closest)) GameBox.tooltip.Add(_realVal[closest].ToString());
+            if (_closest == neg) return;
+            _closest.DrawCircle(3);
+            if (_realVal.ContainsKey(_closest)) GameBox.tooltip.Add(_realVal[_closest].ToString());
         }
 
         public void UpdateVal()
@@ -76,12 +78,18 @@ namespace RayWrapper.Objs
             var max = new Vector2(maxCalc.Max(v => v.X), maxCalc.Max(v => v.Y));
             var size = max - min;
             var scaling = size / rect.Size();
+            
             _cacheValues = val.Select(v2 =>
                     (v2 - min) / scaling * new Vector2(1, -1) + rect.Pos() + new Vector2(0, rect.height))
                 .ToArray();
+            
             for (var i = 0; i < val.Count; i++)
+            {
                 if (!_realVal.ContainsKey(_cacheValues[i]))
+                {
                     _realVal.Add(_cacheValues[i], val[i]);
+                }
+            }
         }
 
         public void NewVal(params Vector2[] v)

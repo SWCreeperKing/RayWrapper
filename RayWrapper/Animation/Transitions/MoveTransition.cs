@@ -8,7 +8,7 @@ namespace RayWrapper.Animation.Transitions
         public Vector2 moveBy;
         private Vector2 _snapDest;
 
-        public MoveTransition(Vector2 moveBy, GameObject obj, float duration = 5) : base(obj, duration) =>
+        public MoveTransition(Vector2 moveBy, IGameObject obj, float duration = 5) : base(obj, duration) =>
             this.moveBy = moveBy;
 
         public override void InitTransition() => _snapDest = obj.Position + moveBy;

@@ -81,6 +81,7 @@ namespace RayWrapper.Objs.Slot
                 slot.occupied = false;
                 slot = null;
             }
+
             mouseOccupier = null;
         }
 

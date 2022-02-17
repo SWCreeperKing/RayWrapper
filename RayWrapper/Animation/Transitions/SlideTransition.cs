@@ -4,7 +4,7 @@ using RayWrapper.Vars;
 
 namespace RayWrapper.Animation.Transitions
 {
-    public class SlideTransition<T> : Transition where T : GameObject, ISizeable
+    public class SlideTransition<T> : Transition where T : IGameObject, ISizeable
     {
         public Vector2 moveBy;
         public Vector2 moveByNeg;

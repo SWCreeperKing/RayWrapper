@@ -18,13 +18,13 @@ namespace RayWrapper.GameConsole
             {
                 foreach (var method in t.GetMethods())
                 {
-                    var commandName = "";
+                    var commandName = string.Empty;
                     foreach (var att in method.GetCustomAttributes())
                     {
                         switch (att)
                         {
                             case CommandAttribute ca:
-                                if (commandName != "") continue;
+                                if (commandName != string.Empty) continue;
                                 if (Commands.ContainsKey(ca.name))
                                     Console.WriteLine($"[WARN] [{ca.name}] is already registered");
                                 else if (Commands.ContainsValue(method))
@@ -32,7 +32,7 @@ namespace RayWrapper.GameConsole
                                 else Commands.Add(commandName = ca.name, method);
                                 break;
                             case AliasAttribute aa:
-                                if (commandName == "") continue;
+                                if (commandName == string.Empty) continue;
                                 foreach (var a in aa.aliases)
                                     if (Aliases.ContainsKey(a))
                                         Console.WriteLine(
@@ -40,7 +40,7 @@ namespace RayWrapper.GameConsole
                                     else Aliases.Add(a, commandName);
                                 break;
                             case HelpAttribute ha:
-                                if (commandName == "") continue;
+                                if (commandName == string.Empty) continue;
                                 if (Definitions.ContainsKey(commandName))
                                     Console.WriteLine($"[WARN] help definition for [{commandName}] already listed");
                                 else Definitions.Add(commandName, ha.definition);

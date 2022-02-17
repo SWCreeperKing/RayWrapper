@@ -24,8 +24,8 @@ namespace RayWrapper.Objs
 
         private readonly Scrollbar _yScroll;
         private readonly Scrollbar _xScroll;
-        private readonly List<GameObject> _gos = new();
-        private List<GameObject> _renderList = new();
+        private readonly List<IGameObject> _gos = new();
+        private IList<IGameObject> _renderList = new List<IGameObject>();
         private Rectangle _rect;
         private Vector2 _size;
         private Vector2 _pos;
@@ -57,10 +57,12 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             if (!_gos.Any()) return;
+
             _rect.MaskDraw(() =>
             {
                 foreach (var obj in _renderList) obj.Render();
             });
+
             if (_trueSize.X >= _size.X) _xScroll.Render();
             if (_trueSize.Y >= _size.Y) _yScroll.Render();
             _rect.DrawHallowRect(Color.BLACK, 1);
@@ -82,9 +84,10 @@ namespace RayWrapper.Objs
             foreach (var go in _renderList) go.Position -= _posOffset;
         }
 
-        public void AddObj(params GameObject[] objs)
+        public void AddObj(params IGameObject[] objs)
         {
             var pos = Position;
+
             foreach (var t in objs)
             {
                 t.Position += pos;

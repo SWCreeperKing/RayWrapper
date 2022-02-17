@@ -20,6 +20,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
             AssembleRectFromVec(position * scale + off, size * scale).DrawCircle(completed ? completeColor : color);
 
         public override void DrawOnHover(Vector2 off, float scale) =>
-            AssembleRectFromVec(position * scale + off, size * scale).DrawHallowCircle(completed ? color : completeColor, (int)(scale/8f));
+            AssembleRectFromVec(position * scale + off, size * scale)
+                .DrawHallowCircle(completed ? color : completeColor, (int) (scale / 8f));
     }
 }

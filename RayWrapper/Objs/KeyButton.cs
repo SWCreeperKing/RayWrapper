@@ -19,7 +19,7 @@ namespace RayWrapper.Objs
             core = new Button(RectWrapper.AssembleRectFromVec(pos, new Vector2(0, 0)), $" {this.key.GetString()} ",
                 Label.TextMode.SizeToText)
             {
-                Text = new Actionable<string>("", () => !_acceptingChange ? $" {this.key.GetString()} " : " _ ")
+                Text = new Actionable<string>(string.Empty, () => !_acceptingChange ? $" {this.key.GetString()} " : " _ ")
             };
             core.Clicked += () => _acceptingChange = !_acceptingChange;
         }

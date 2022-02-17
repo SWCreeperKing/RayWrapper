@@ -29,10 +29,10 @@ namespace RayWrapper.Vars
         }
 
         /// <param name="index">ms = 0, s = 1, m = 2, h = 3, d = 4, w = 5</param>
-        public void AddTime(long amt, int index = 0)
+        public void AddTime(long amount, int index = 0)
         {
             index = Math.Clamp(index, 0, times.Length - 1);
-            times[index] += amt;
+            times[index] += amount;
             Update();
         }
 
@@ -45,7 +45,9 @@ namespace RayWrapper.Vars
             for (var i = 0; i < index; i++) times[i + 1] += (this.times[i] + times[i]) / _convertTimes[i];
 
             for (var i = this.times.Length - 1; i > index; i--)
+            {
                 times[i - 1] += (this.times[i] + times[i]) * _convertTimes[i - 1];
+            }
 
             return times[index] + this.times[index];
         }
@@ -59,12 +61,14 @@ namespace RayWrapper.Vars
             end = Math.Clamp(end, -1, times.Length - 1);
             if (end == -1 || end < start) end = times.Length - 1;
             sb.Clear();
+
             for (var i = end; i >= start; i--)
-                if (times[i] != 0 || writeZeroes)
-                {
-                    sb.Append(times[i]).Append(_timeChars[i]);
-                    if (i != 0) sb.Append(' ');
-                }
+            {
+                if (times[i] == 0 && !writeZeroes) continue;
+                
+                sb.Append(times[i]).Append(_timeChars[i]);
+                if (i != 0) sb.Append(' ');
+            }
 
             return sb.ToString();
         }
