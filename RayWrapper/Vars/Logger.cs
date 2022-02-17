@@ -48,7 +48,7 @@ namespace RayWrapper.Vars
 
         public static void Log(Level level, string text)
         {
-            if (level == Error) hasError = true;
+            if (level == Error) _hasError = true;
             var time = $"{DateTime.Now:G}";
 
             // TODO: Add default arm that throws exception.
@@ -69,12 +69,12 @@ namespace RayWrapper.Vars
 
         public static void WriteLog(bool isCrash = true)
         {
-            hasError = false;
+            _hasError = false;
             var dir = isCrash ? "CrashLogs" : "StatusLogs";
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
             var file = isCrash
                 ? $"CrashLogs/Crash {DateTime.Now:u}.log".Replace(' ', '_').Replace(':', '-')
-                : $"StatusLogs/Status {guid}.log";
+                : $"StatusLogs/Status {Guid}.log";
             using var sw = File.CreateText(file);
             sw.Write(string.Join("\n", _log));
             sw.Close();
@@ -84,7 +84,7 @@ namespace RayWrapper.Vars
 
         public static void CheckWrite()
         {
-            if (hasError) WriteLog();
+            if (_hasError) WriteLog();
         }
     }
 }

@@ -349,10 +349,9 @@ namespace RayWrapper
             {
                 return JsonConvert.DeserializeObject(new WebClient().DownloadString(site));
             }
-            catch
+            catch (Exception e)
             {
-                // TODO: Not have empty catch statement.
-                // ignored
+                Logger.Log(Warning, $"Cannot load json from web:\n{e.Message}\n{e.Source}");
             }
 
             isSuccessful = false;

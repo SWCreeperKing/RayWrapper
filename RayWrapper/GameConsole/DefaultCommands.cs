@@ -102,7 +102,7 @@ namespace RayWrapper.GameConsole
         public static string PrintStatus(string[] args)
         {
             Logger.WriteLog(false);
-            return $"{CYAN}Created status file at: {Logger.statusSave}";
+            return $"{CYAN}Created status file at: {Logger.StatusSave}";
         }
 
         [Command("collectGarb"), Help("Calls garbage collection")]
