@@ -23,13 +23,12 @@ paths:
 ---
 - in game console (can add custom commands, use ` to access console)
 - a built in save system using Newtonsoft.Json
-- bad code
 - ~~NumberClass is included (A big number lib)~~
   - no longer included, but it still is on Nuget
 - many premade gameobjects
 - discord rich presence support
-- a very bad collision system
-- a not as bad animation system
+- a WIP collision system
+- an animation system
 - internal logger and crash log system
 
 ## raw template example
