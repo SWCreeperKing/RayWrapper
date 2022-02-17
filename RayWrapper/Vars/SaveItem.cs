@@ -117,24 +117,24 @@ namespace RayWrapper.Vars
 
         public static void SaveItems(this List<ISave> saveList)
         {
-            singleConsole.WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
+            WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
             var start = GetTimeMs();
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             foreach (var t in saveList) t.SaveToFile(path);
-            singleConsole.WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
+            WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
         }
 
         public static void LoadItems(this List<ISave> saveList)
         {
-            singleConsole.WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
+            WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
             var start = GetTimeMs();
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             foreach (var t in saveList) t.LoadToFile(path);
-            singleConsole.WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
+            WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
         }
 
         public static void DeleteFile(this IEnumerable<ISave> saveList, string name)

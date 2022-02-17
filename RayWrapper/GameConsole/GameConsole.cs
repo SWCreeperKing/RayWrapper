@@ -15,8 +15,7 @@ namespace RayWrapper.GameConsole
     {
         public static GameConsole singleConsole;
 
-        // TODO: Make regex object.
-        private static string regString = @"^(\d{1,3}),(\d{1,3}),(\d{1,3})\|";
+        private static readonly Regex regString = new(@"^(\d{1,3}),(\d{1,3}),(\d{1,3})\|");
         private static IList<string> _lines = new List<string>();
         private static Dictionary<int, Color> _colors = new();
 
@@ -47,9 +46,9 @@ namespace RayWrapper.GameConsole
                 WriteToConsole(write);
             };
 
-            history = new ListView(new Vector2(12, 50), (int)(WindowSize.X - 24),
+            history = new ListView(new Vector2(12, 50), (int) (WindowSize.X - 24),
                 i => _lines[Math.Abs(_lines.Count - 1 - i)], () => _lines.Count,
-                (int)Math.Floor((WindowSize.Y - 50) / 45))
+                (int) Math.Floor((WindowSize.Y - 50) / 45))
             {
                 fontColors = i =>
                 {
@@ -72,23 +71,22 @@ namespace RayWrapper.GameConsole
             ib.Render();
         }
 
-        public void WriteToConsole(params string[] texts)
+        public static void WriteToConsole(params string[] texts)
         {
             Logger.Log(Logger.Level.Info,
-                $"from GameConsole: {string.Join("\n\t>", texts.Select(s => Regex.IsMatch(s, regString) ? s[(s.IndexOf('|') + 1)..] : s))}");
+                $"from GameConsole: {string.Join("\n\t>", texts.Select(s => regString.IsMatch(s) ? s[(s.IndexOf('|') + 1)..] : s))}");
             int ToColor(string text) => Math.Clamp(int.Parse(text), 0, 255);
             if (!texts.Any())
             {
-                // TODO: Remove dash after yellow.
-                WriteToConsole($"{YELLOW}|An Attempt to write to the console was made");
+                WriteToConsole($"{YELLOW}An Attempt to write to the console was made");
                 return;
             }
 
             foreach (var text in texts)
             {
-                if (Regex.IsMatch(text, regString))
+                if (regString.IsMatch(text))
                 {
-                    var match = Regex.Match(text, regString).Groups;
+                    var match = regString.Match(text).Groups;
                     _colors.Add(_lines.Count,
                         new Color(ToColor(match[1].Value), ToColor(match[2].Value), ToColor(match[3].Value), 255));
                     _lines.Add(text[(text.IndexOf('|') + 1)..]);
@@ -97,8 +95,7 @@ namespace RayWrapper.GameConsole
             }
         }
 
-        // TODO: Make static?
-        public int ClearOutput()
+        public static int ClearOutput()
         {
             var lineAmt = _lines.Count;
             _colors.Clear();

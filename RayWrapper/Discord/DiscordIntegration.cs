@@ -44,21 +44,21 @@ namespace RayWrapper.Discord
 
                 discord.SetPresence(rp);
                 UpdateActivity();
-                singleConsole.WriteToConsole($"{CYAN}Discord Connected");
+                WriteToConsole($"{CYAN}Discord Connected");
             }
             catch (Exception e)
             {
                 Logger.Log(Warning, $"DISCORD ERR: {e}");
-                singleConsole.WriteToConsole($"{RED}Discord Failed to connect");
+                WriteToConsole($"{RED}Discord Failed to connect");
                 discordAlive = false;
 
                 if (retry)
                 {
-                    singleConsole.WriteToConsole($"{YELLOW}Retrying Discord connection");
+                    WriteToConsole($"{YELLOW}Retrying Discord connection");
                     Logger.Log(Debug, "RETRYING TO CHECK IF FLUKE");
                     CheckDiscord(appId, false);
                 }
-                else singleConsole.WriteToConsole($"{DARKRED}Retry failed, use the 'discord' command to retry again");
+                else WriteToConsole($"{DARKRED}Retry failed, use the 'discord' command to retry again");
             }
         }
 
@@ -79,7 +79,7 @@ namespace RayWrapper.Discord
             catch (Exception e)
             {
                 Logger.Log(Warning, $"DISCORD ERR: {e}");
-                singleConsole.WriteToConsole($"{RED}Discord connection threw error");
+                WriteToConsole($"{RED}Discord connection threw error");
                 discordAlive = false;
             }
         }

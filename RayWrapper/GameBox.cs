@@ -220,7 +220,7 @@ namespace RayWrapper
             if (IsKeyPressed(KeyboardKey.KEY_F3))
             {
                 isDebugTool = !isDebugTool;
-                singleConsole.WriteToConsole($"toggled debug via F3: {isDebugTool}");
+                WriteToConsole($"toggled debug via F3: {isDebugTool}");
             }
 
             Scene.Update();

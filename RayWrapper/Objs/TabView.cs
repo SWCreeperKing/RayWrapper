@@ -76,7 +76,8 @@ namespace RayWrapper.Objs
             }
             catch (InvalidOperationException)
             {
-                // TODO: Do not have an empty catch clause.
+                // forgor why it was here :/ but its here for a reason
+                // possibly thread stuffs
             }
 
             if (_closable)

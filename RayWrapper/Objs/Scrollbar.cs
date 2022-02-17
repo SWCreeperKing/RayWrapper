@@ -121,8 +121,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            // TODO: Fix loss of precision with floating number.
-            if (Amount() == 1) return;
+            if (Amount() == 1) return; // ignore loss of precision
             var hover = IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn();
             container.DrawRounded(hover ? ((Color) containerColor).MakeLighter() : containerColor, .4f);
             bar.DrawRounded(hover ? ((Color) barColor).MakeLighter() : barColor, .4f);

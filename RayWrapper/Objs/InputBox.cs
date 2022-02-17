@@ -17,8 +17,8 @@ namespace RayWrapper.Objs
         private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
             new Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>>()
             {
-                {KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s)},
-                {KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s)},
+                { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
+                { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
                 {
                     KeyboardKey.KEY_BACKSPACE, (c, p, _, s) =>
                     {
@@ -32,9 +32,9 @@ namespace RayWrapper.Objs
                         return (lastSpace, s.Remove(lastSpace, p - lastSpace));
                     }
                 },
-                {KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s)},
-                {KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s)},
-                {KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s)},
+                { KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s) },
+                { KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s) },
+                { KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s) },
                 {
                     KeyboardKey.KEY_V, (c, p, m, s) =>
                     {
@@ -79,7 +79,7 @@ namespace RayWrapper.Objs
             _label = new Label(
                     new Rectangle(pos.X, pos.Y, 16 * _show, FontManager.GetDefFont().MeasureText("!").Y),
                     string.Join(",", Enumerable.Repeat(" ", _show)))
-                {outline = new Actionable<bool>(true)};
+                { outline = new Actionable<bool>(true) };
             _lastTime = GetTimeMs();
         }
 
@@ -112,15 +112,8 @@ namespace RayWrapper.Objs
 
             var fps = GetFPS();
 
-            try
-            {
-                _frameTime %= fps;
-                _frameTime++;
-            }
-            catch
-            {
-                // TODO: Not have an empty catch clause?!
-            }
+            _frameTime %= Math.Max(1, fps); // fix divide by 0
+            _frameTime++;
 
             var flash = _frameTime % (fps * .33) > fps * .18;
             var start = 0;

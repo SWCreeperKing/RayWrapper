@@ -26,7 +26,8 @@ namespace RayWrapper.Vars
         private static bool _hasError;
 
         [UnmanagedCallersOnly(CallConvs = new[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
-        public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args) =>
+        public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args)
+        {
             Log(logLevel switch
             {
                 (int) LOG_ALL => Other,
@@ -36,6 +37,7 @@ namespace RayWrapper.Vars
                 (int) LOG_ERROR or (int) LOG_FATAL => Error,
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
             }, $"from raylib: {Logging.GetLogMessage(new IntPtr(text), new IntPtr(args))}");
+        }
 
         public static void Log(string text) => Log(Debug, text);
         public static void Log(object text) => Log(Debug, text.ToString());
@@ -51,14 +53,14 @@ namespace RayWrapper.Vars
             if (level == Error) _hasError = true;
             var time = $"{DateTime.Now:G}";
 
-            // TODO: Add default arm that throws exception.
             Console.ForegroundColor = level switch
             {
                 Info => ConsoleColor.DarkGreen,
                 Debug => ConsoleColor.DarkCyan,
                 Warning => ConsoleColor.Yellow,
                 Error => ConsoleColor.Red,
-                Other => ConsoleColor.Blue
+                Other => ConsoleColor.Blue,
+                _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
             };
             Console.WriteLine($"[{time}]: [{text}]");
             Console.ForegroundColor = ConsoleColor.White;

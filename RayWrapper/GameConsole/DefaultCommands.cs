@@ -27,7 +27,7 @@ namespace RayWrapper.GameConsole
         [Command("clear"), Help("clear (true/false)\nclears screen, true will not display message")]
         public static string Clear(string[] args)
         {
-            var c = singleConsole.ClearOutput();
+            var c = ClearOutput();
             if (args.Length <= 0 || args[0].ToLower()[0] is not 't' or '1') return $"{BLUE}Cleared {c} lines";
             return string.Empty;
         }
@@ -93,7 +93,7 @@ namespace RayWrapper.GameConsole
         {
             if (discordAppId == string.Empty) return $"Discord Integration is not set up for [{AppName}]";
             if (DiscordIntegration.discordAlive) return $"[{AppName}] is Connected to discord!";
-            singleConsole.WriteToConsole("Disconnected from discord, attempting to connect");
+            WriteToConsole("Disconnected from discord, attempting to connect");
             DiscordIntegration.CheckDiscord(discordAppId);
             return DiscordIntegration.discordAlive ? "Reconnected!" : "Failed, Try again later!";
         }

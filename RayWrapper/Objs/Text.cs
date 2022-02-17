@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 
@@ -56,7 +57,6 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            // TODO: Make default arm.
             switch (mode)
             {
                 case TextMode.Normal:
@@ -68,6 +68,8 @@ namespace RayWrapper.Objs
                 case TextMode.Center:
                     DrawCenter();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

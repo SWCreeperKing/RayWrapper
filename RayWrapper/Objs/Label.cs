@@ -93,7 +93,6 @@ namespace RayWrapper.Objs
 
             if (textMode != TextMode.SizeToText) DrawBack(_back);
 
-            // TODO: Add default arm.
             switch ((TextMode)textMode)
             {
                 case TextMode.AlignLeft:
@@ -112,6 +111,8 @@ namespace RayWrapper.Objs
                     DrawBack(_sizedRect);
                     DrawTxt(_sizedPos);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             var t = (string)(tooltip ?? string.Empty);
