@@ -58,6 +58,8 @@ namespace RayWrapper
             return font;
         }
 
+        public static bool HasFont(string name) => _fonts.ContainsKey(name);
+        
         public static Vector2 MeasureText(string text, string fontName, int size) =>
             GetFont(fontName, size).MeasureText(text);
 
