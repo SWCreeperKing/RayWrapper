@@ -8,20 +8,20 @@ namespace RayWrapper.Objs
 {
     public class ImageMatrix
     {
-        private Image _img;
+        private Image _image;
         private Dictionary<Enum, ImageObj> _slices = new();
 
-        public ImageMatrix(string img) : this(LoadImage(img))
+        public ImageMatrix(string image) : this(LoadImage(image))
         {
         }
 
-        public ImageMatrix(Image img) => _img = img;
+        public ImageMatrix(Image image) => _image = image;
 
         // rect is the slice of the bigger texture (i think)
         public void AddSlice(Enum e, Rectangle rect) =>
-            _slices.Add(e, new ImageObj(ImageFromImage(_img, rect), Vector2.Zero));
+            _slices.Add(e, new ImageObj(ImageFromImage(_image, rect), Vector2.Zero));
 
         public ImageObj this[Enum e] => _slices[e];
-        ~ImageMatrix() => UnloadImage(_img);
+        ~ImageMatrix() => UnloadImage(_image);
     }
 }

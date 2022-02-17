@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 
@@ -61,13 +62,14 @@ namespace RayWrapper.Objs
                 case TextMode.Normal:
                     Draw();
                     break;
-                //todo: make replacement
                 case TextMode.Wrap:
                     DrawWrap();
                     break;
                 case TextMode.Center:
                     DrawCenter();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

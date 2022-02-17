@@ -3,7 +3,6 @@ using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
 using static Raylib_cs.Raylib;
-using static RayWrapper.GeneralWrapper;
 
 namespace RayWrapper.Objs
 {
@@ -22,7 +21,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _bounds.Size();
 
-        public Actionable<string> tooltip = new("");
+        public Actionable<string> tooltip = new(string.Empty);
         public ColorModule backColor = new(50);
         public ColorModule fontColor = new(192);
         public ColorModule selectColor = new(60, 60, 100);
@@ -36,7 +35,6 @@ namespace RayWrapper.Objs
         public Action outsideClick;
         public bool randomPitch = true;
         public bool showTooltip = true;
-        public bool rememberLast = true;
         public bool useSelection = true;
         public bool selectedToggle;
 
@@ -64,11 +62,15 @@ namespace RayWrapper.Objs
             _bounds = new Rectangle(pos.X + 20, pos.Y, width - 20, height);
 
             _labels = new Label[itemsToShow + 1];
+
             for (var i = 0; i < _labels.Length; i++)
+            {
                 _labels[i] = new Label(new Rectangle(0, 0, _bounds.width, labelHeight))
                 {
                     useBaseHover = new Actionable<bool>(() => _individualClick is not null), updateReturnIfNonVis = true
                 };
+            }
+
             _bar.OnMoveEvent += UpdateLabels;
             UpdateLabels(0);
         }
@@ -95,7 +97,7 @@ namespace RayWrapper.Objs
 
         private void UpdateLabels(float value)
         {
-            var strictVal = (int)value;
+            var strictVal = (int) value;
             var labelPadding = _labelHeight + _padding;
             var y = _bounds.Pos().Y - labelPadding * (value - strictVal);
             foreach (var l in _labels) l.isVisible = false;
@@ -106,23 +108,28 @@ namespace RayWrapper.Objs
                 var place = strictVal + notI;
                 var l = _labels[i];
                 l.isVisible = true;
-                l.text = new Actionable<string>(() =>this[place]);
+                l.text = new Actionable<string>(() => this[place]);
                 if (_individualClick is not null)
+                {
                     l.clicked = () =>
                     {
                         _individualClick(place);
-                        if (!useSelection)  return;
+                        if (!useSelection) return;
                         if (_lastSelect == place && selectedToggle) _lastSelect = -1;
                         else _lastSelect = place;
                     };
+                }
+
                 l.Position = new Vector2(_bounds.x, y + labelPadding * i);
                 l.backColor =
                     new ColorModule(() =>
                         place == _lastSelect && _individualClick is not null
-                            ? (Color)selectColor
-                            : backColors?.Invoke(place) ?? (Color)backColor);
+                            ? (Color) selectColor
+                            : backColors?.Invoke(place) ?? (Color) backColor);
+
                 l.fontColor =
-                    new ColorModule(fontColors?.Invoke(place) ?? (Color)fontColor);
+                    new ColorModule(fontColors?.Invoke(place) ?? (Color) fontColor);
+
                 if (indivTooltip is null) continue;
                 l.tooltip = indivTooltip.Invoke(place);
             }
@@ -131,10 +138,10 @@ namespace RayWrapper.Objs
         private void UpdateText()
         {
             var value = _bar.Value;
-            for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - (int)value); i++)
+            for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - (int) value); i++)
             {
-                _labels[i].text = this[(int)value + i];
-                _labels[i].fontColor = new ColorModule(fontColors?.Invoke((int)value + i) ?? (Color)fontColor);
+                _labels[i].text = this[(int) value + i];
+                _labels[i].fontColor = new ColorModule(fontColors?.Invoke((int) value + i) ?? (Color) fontColor);
             }
         }
 
@@ -154,7 +161,7 @@ namespace RayWrapper.Objs
                 {
                     var a = arrayLength.Invoke();
                     // smooth scrolling, help from chocobogamer#4214
-                    _bar.MoveBar(scroll * (((_labelHeight + _padding) * ((float)a / _itemsToShow) - _padding) /
+                    _bar.MoveBar(scroll * (((_labelHeight + _padding) * ((float) a / _itemsToShow) - _padding) /
                                            (((_labelHeight + _padding) * a - _padding) / _bar.container.height)));
                     _bar.Update();
                     UpdateLabels(_bar.Value);
@@ -180,8 +187,9 @@ namespace RayWrapper.Objs
             {
                 foreach (var l in _labels) l.Render();
             });
+
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
-            if (showTooltip && tooltip != "") _bounds.ExtendPos(new Vector2(20, 0)).DrawTooltip(tooltip);
+            if (showTooltip && tooltip != string.Empty) _bounds.ExtendPos(new Vector2(20, 0)).DrawTooltip(tooltip);
         }
 
         public float CalcHeight() => (_labelHeight + _padding) * _itemsToShow - _padding;

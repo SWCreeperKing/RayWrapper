@@ -12,9 +12,9 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
         public ColorModule lineColor = new(0);
         public ColorModule completedLineColor = new(255);
         public List<NodeShape> nodes = new();
-        public NodeShape branched = null;
+        public NodeShape branched;
 
-        private Dictionary<NodeShape, List<NodeChain>> branches = new();
+        private IDictionary<NodeShape, List<NodeChain>> branches = new Dictionary<NodeShape, List<NodeChain>>();
 
         public NodeChain(params NodeShape[] nodes) => this.nodes.AddRange(nodes);
 
@@ -28,6 +28,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
                 nodes[0].Draw(off, scale);
                 return;
             }
+
             for (var i = 1; i < nodes.Count; i++)
             {
                 var n1 = nodes[i - 1];
@@ -63,6 +64,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
                 nodes[0].Update(off, scale, true, false);
                 return;
             }
+
             for (var i = 1; i < nodes.Count; i++)
             {
                 var n = nodes[i - 1];
@@ -72,11 +74,12 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
                     foreach (var branch in branches[n]) branch.Update(off, scale);
                     nxt = nxt || branches[n].Where(b => b.nodes.Any()).Any(b => b.nodes[0].completed);
                 }
+
                 n.Update(off, scale, i == 1 ? true : nodes[i - 2].completed, nxt);
                 if (i == nodes.Count - 1) nodes[i].Update(off, scale, n.completed, false);
             }
         }
-        
+
         public void Add(NodeChain nc) => nodes.AddRange(nc.nodes);
         public void Add(NodeShape ns) => nodes.Add(ns);
 

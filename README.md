@@ -37,13 +37,12 @@ paths:
 ## 🎁 Features <a name="features"></a>
 - In game console (can add custom commands, use ` to access console)
 - A built in save system using Newtonsoft.Json
-- Bad code
 - ~~NumberClass is included (A big number lib)~~
   - no longer included, but it still is on Nuget
 - Many premade gameobjects
 - Discord rich presence support
-- A very bad collision system
-- A not as bad animation system
+- a WIP collision system
+- an animation system
 - Internal logger and crash log system
 
 ## 🎈 Usage <a name="usage"></a>
@@ -78,7 +77,7 @@ public class Program : GameLoop
 
 
 ## ⛏️ Built Using <a name = "built_using"></a>
-- [Raylib-cs (3.7.0)](https://www.nuget.org/packages/Raylib-cs/) - C# bindings for the raylib framework
+- [Raylib-cs (4.0.0)](https://www.nuget.org/packages/Raylib-cs/) - C# bindings for the raylib framework
 - [DiscordRichPresence (1.0.175)](https://www.nuget.org/packages/DiscordRichPresence/) - A .NET implementation of Discord's Rich Presence functionality
 - [Newtonsoft.Json (13.0.1)](https://www.nuget.org/packages/Newtonsoft.Json/) - Popular high-performance JSON framework for .NET
 

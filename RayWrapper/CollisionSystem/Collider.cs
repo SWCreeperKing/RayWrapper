@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Raylib_cs;
 using RayWrapper.Vars;
@@ -20,8 +21,8 @@ namespace RayWrapper.CollisionSystem
         public string layer;
 
         private Vector2 _pos;
-        private List<Collider> collisionMem = new();
-        private List<Collider> clearMem = new();
+        private IList<Collider> collisionMem = new List<Collider>();
+        private IList<Collider> clearMem = new List<Collider>();
 
         protected Collider(string layerId, Vector2 pos)
         {
@@ -33,10 +34,8 @@ namespace RayWrapper.CollisionSystem
 
         protected override void UpdateCall()
         {
-            for (var i = 0; i < collisionMem.Count; i++)
+            foreach (var c in collisionMem.Where(c => !CheckCollision(c)))
             {
-                var c = collisionMem[i];
-                if (CheckCollision(c)) continue;
                 ExitCollision(c);
                 clearMem.Add(c);
             }
@@ -46,6 +45,7 @@ namespace RayWrapper.CollisionSystem
 
             if (!(Position.X < 0) && !(Position.Y < 0) && !(GameBox.WindowSize.X < Position.X) &&
                 !(GameBox.WindowSize.Y < Position.Y)) return;
+
             Dispose();
             GameBox.screenGrid.UnSubscribeCollider(this);
             count--;

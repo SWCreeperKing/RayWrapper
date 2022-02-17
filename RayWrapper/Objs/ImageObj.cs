@@ -8,26 +8,26 @@ namespace RayWrapper.Objs
     {
         public override Vector2 Position
         {
-            get => _t2d.Position;
-            set => _t2d.Position = value;
+            get => _texture2d.Position;
+            set => _texture2d.Position = value;
         }
 
-        public override Vector2 Size => _t2d.Size;
+        public override Vector2 Size => _texture2d.Size;
 
         public int ImageAlpha
         {
-            get => _t2d.ImageAlpha;
-            set => _t2d.ImageAlpha = value;
+            get => _texture2d.ImageAlpha;
+            set => _texture2d.ImageAlpha = value;
         } // transparency b/t 0-255
 
         public int Rotation
         {
-            get => _t2d.rotation;
-            set => _t2d.rotation = value;
+            get => _texture2d.rotation;
+            set => _texture2d.rotation = value;
         } // 0 to 360
         
-        private TextureObj _t2d;
-        private Image _img;
+        private TextureObj _texture2d;
+        private Image _image;
 
         public ImageObj(string imageFile) : this(Raylib.LoadImage(imageFile), Vector2.Zero)
         {
@@ -37,19 +37,19 @@ namespace RayWrapper.Objs
         {
         }
 
-        public ImageObj(Image img) : this(img, Vector2.Zero)
+        public ImageObj(Image image) : this(image, Vector2.Zero)
         {
         }
 
-        public ImageObj(Image img, Vector2 pos)
+        public ImageObj(Image image, Vector2 pos)
         {
-            _img = img;
-            _t2d = new TextureObj(img.Texture(), pos);
+            _image = image;
+            _texture2d = new TextureObj(image.Texture(), pos);
         }
 
-        protected override void UpdateCall() => _t2d.Update();
-        protected override void RenderCall() => _t2d.Render();
-        public void SetSize(Vector2 size) => _t2d.SetSize(size);
-        ~ImageObj() => Raylib.UnloadImage(_img);
+        protected override void UpdateCall() => _texture2d.Update();
+        protected override void RenderCall() => _texture2d.Render();
+        public void SetSize(Vector2 size) => _texture2d.SetSize(size);
+        ~ImageObj() => Raylib.UnloadImage(_image);
     }
 }

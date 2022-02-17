@@ -27,9 +27,9 @@ namespace RayWrapper.GameConsole
         [Command("clear"), Help("clear (true/false)\nclears screen, true will not display message")]
         public static string Clear(string[] args)
         {
-            var c = singleConsole.ClearOutput();
+            var c = ClearOutput();
             if (args.Length <= 0 || args[0].ToLower()[0] is not 't' or '1') return $"{BLUE}Cleared {c} lines";
-            return "";
+            return string.Empty;
         }
 
         [Command("opensavedir"), Help("opens save directory")]
@@ -91,9 +91,9 @@ namespace RayWrapper.GameConsole
         [Command("discord"), Help("discord rich presence status/recheck")]
         public static string DiscordCheck(string[] args)
         {
-            if (discordAppId == "") return $"Discord Integration is not set up for [{AppName}]";
+            if (discordAppId == string.Empty) return $"Discord Integration is not set up for [{AppName}]";
             if (DiscordIntegration.discordAlive) return $"[{AppName}] is Connected to discord!";
-            singleConsole.WriteToConsole("Disconnected from discord, attempting to connect");
+            WriteToConsole("Disconnected from discord, attempting to connect");
             DiscordIntegration.CheckDiscord(discordAppId);
             return DiscordIntegration.discordAlive ? "Reconnected!" : "Failed, Try again later!";
         }
@@ -102,7 +102,7 @@ namespace RayWrapper.GameConsole
         public static string PrintStatus(string[] args)
         {
             Logger.WriteLog(false);
-            return $"{CYAN}Created status file at: {Logger.statusSave}";
+            return $"{CYAN}Created status file at: {Logger.StatusSave}";
         }
 
         [Command("collectGarb"), Help("Calls garbage collection")]

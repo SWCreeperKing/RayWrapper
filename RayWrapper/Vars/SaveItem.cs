@@ -15,7 +15,7 @@ namespace RayWrapper.Vars
     public interface ISave
     {
         private static (Func<string, string> encrypt, Func<string, string> decrypt) _cypher = (null, null);
-        public static bool isCypherValid { get; private set; } = false;
+        public static bool isCypherValid { get; private set; }
 
         public static (Func<string, string> encrypt, Func<string, string> decrypt) Cypher
         {
@@ -31,14 +31,18 @@ namespace RayWrapper.Vars
                     if (_cypher.decrypt is null) Logger.Log(Error, "Decryption is Null");
                     return;
                 }
+
                 StringBuilder sb = new();
                 Random r = new();
                 var charStop = r.Next(100, 151);
-                for (var i = 0; i < charStop; i++) sb.Append((char)r.Next(0, 256));
+                
+                for (var i = 0; i < charStop; i++) sb.Append((char) r.Next(0, 256));
+                
                 var str = sb.ToString();
                 var enc = _cypher.encrypt!.Invoke(str);
                 var dec = _cypher.decrypt!.Invoke(enc);
                 var flawless = str != enc;
+
                 if (!flawless) Logger.Log(Warning, "ENCRYPTION RESULTS IN BASE STRING");
                 isCypherValid = str == dec;
                 Logger.Log(isCypherValid ? Info : Error,
@@ -113,24 +117,24 @@ namespace RayWrapper.Vars
 
         public static void SaveItems(this List<ISave> saveList)
         {
-            singleConsole.WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
+            WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
             var start = GetTimeMs();
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             foreach (var t in saveList) t.SaveToFile(path);
-            singleConsole.WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
+            WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
         }
 
         public static void LoadItems(this List<ISave> saveList)
         {
-            singleConsole.WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
+            WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
             var start = GetTimeMs();
             ISave.IsSaveInitCheck();
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             foreach (var t in saveList) t.LoadToFile(path);
-            singleConsole.WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
+            WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
         }
 
         public static void DeleteFile(this IEnumerable<ISave> saveList, string name)

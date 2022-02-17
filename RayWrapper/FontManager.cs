@@ -9,13 +9,16 @@ namespace RayWrapper
 {
     public static class FontManager
     {
-        public static Font DefaultFont { get; private set; } = GetFontDefault();
+        public static Font DefaultFont { get; } = GetFontDefault();
         public static TextureFilter fontFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
 
-        private static bool isNewDefaultSet = false;
+        private static bool isNewDefaultSet;
         private static string newDefault;
-        private static Dictionary<string, Dictionary<int, Font>> _fonts = new();
-        private static Dictionary<string, string> _fontPaths = new();
+
+        private static IDictionary<string, IDictionary<int, Font>> _fonts =
+            new Dictionary<string, IDictionary<int, Font>>();
+
+        private static IDictionary<string, string> _fontPaths = new Dictionary<string, string>();
 
         public static Font GetDefFont(int size = 24)
         {
@@ -51,14 +54,16 @@ namespace RayWrapper
             }
 
             var font = LoadFont(_fontPaths[name], size);
-            _fonts.Add(name, new Dictionary<int, Font> { { size, font } });
+            _fonts.Add(name, new Dictionary<int, Font> {{size, font}});
             return font;
         }
 
+        public static bool HasFont(string name) => _fonts.ContainsKey(name);
+        
         public static Vector2 MeasureText(string text, string fontName, int size) =>
             GetFont(fontName, size).MeasureText(text);
 
-        private static Font LoadFont(string font, int fontSize, int toChar = 5000)
+        private static Font LoadFont(string font, int fontSize, int toChar = 8595)
         {
             var f = LoadFontEx(font, fontSize, null, toChar);
             SetTextureFilter(f.texture, fontFilter);

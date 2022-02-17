@@ -4,7 +4,7 @@ using RayWrapper.Vars;
 
 namespace RayWrapper.Animation.Transitions
 {
-    public class SizeTransition<T> : Transition where T : GameObject, ISizeable
+    public class SizeTransition<T> : Transition where T : IGameObject, ISizeable
     {
         public T t;
         public Vector2 moveBy;

@@ -19,23 +19,25 @@ namespace RayWrapper.Vars
             Other
         }
 
-        public static readonly string guid = Guid.NewGuid().ToString();
-        public static readonly string crashSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
-        public static readonly string statusSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
-        private static List<string> _log = new();
-        private static bool hasError;
+        public static readonly string Guid = System.Guid.NewGuid().ToString();
+        public static readonly string CrashSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
+        public static readonly string StatusSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
+        private static IList<string> _log = new List<string>();
+        private static bool _hasError;
 
-        [UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-        public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args) =>
+        [UnmanagedCallersOnly(CallConvs = new[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
+        public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args)
+        {
             Log(logLevel switch
             {
-                (int)LOG_ALL => Other,
-                (int)LOG_TRACE or (int)LOG_DEBUG => Debug,
-                (int)LOG_INFO or (int)LOG_NONE => Info,
-                (int)LOG_WARNING => Warning,
-                (int)LOG_ERROR or (int)LOG_FATAL => Error,
+                (int) LOG_ALL => Other,
+                (int) LOG_TRACE or (int) LOG_DEBUG => Debug,
+                (int) LOG_INFO or (int) LOG_NONE => Info,
+                (int) LOG_WARNING => Warning,
+                (int) LOG_ERROR or (int) LOG_FATAL => Error,
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
             }, $"from raylib: {Logging.GetLogMessage(new IntPtr(text), new IntPtr(args))}");
+        }
 
         public static void Log(string text) => Log(Debug, text);
         public static void Log(object text) => Log(Debug, text.ToString());
@@ -48,15 +50,17 @@ namespace RayWrapper.Vars
 
         public static void Log(Level level, string text)
         {
-            if (level == Error) hasError = true;
+            if (level == Error) _hasError = true;
             var time = $"{DateTime.Now:G}";
+
             Console.ForegroundColor = level switch
             {
                 Info => ConsoleColor.DarkGreen,
                 Debug => ConsoleColor.DarkCyan,
                 Warning => ConsoleColor.Yellow,
                 Error => ConsoleColor.Red,
-                Other => ConsoleColor.Blue
+                Other => ConsoleColor.Blue,
+                _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
             };
             Console.WriteLine($"[{time}]: [{text}]");
             Console.ForegroundColor = ConsoleColor.White;
@@ -67,12 +71,12 @@ namespace RayWrapper.Vars
 
         public static void WriteLog(bool isCrash = true)
         {
-            hasError = false;
+            _hasError = false;
             var dir = isCrash ? "CrashLogs" : "StatusLogs";
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
             var file = isCrash
                 ? $"CrashLogs/Crash {DateTime.Now:u}.log".Replace(' ', '_').Replace(':', '-')
-                : $"StatusLogs/Status {guid}.log";
+                : $"StatusLogs/Status {Guid}.log";
             using var sw = File.CreateText(file);
             sw.Write(string.Join("\n", _log));
             sw.Close();
@@ -82,7 +86,7 @@ namespace RayWrapper.Vars
 
         public static void CheckWrite()
         {
-            if (hasError) WriteLog();
+            if (_hasError) WriteLog();
         }
     }
 }

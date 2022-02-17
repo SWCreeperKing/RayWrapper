@@ -11,13 +11,13 @@ namespace RayWrapper.Animation
         public int animationStep;
         public long stepTime;
         public long animationTime;
-        public List<Func<bool>> stepConditions = new();
+        public IList<Func<bool>> stepConditions = new List<Func<bool>>();
         public Action onInit = null;
         public Action onEnd = null;
 
         private long _lastTime = -1;
-        private List<GameObject> _register = new();
-        private Dictionary<int, List<Transition>> _transitions = new();
+        private List<IGameObject> _register = new();
+        private IDictionary<int, List<Transition>> _transitions = new Dictionary<int, List<Transition>>();
 
         public virtual void Animate(long deltaTime)
         {
@@ -64,7 +64,7 @@ namespace RayWrapper.Animation
             foreach (var go in _register) go.Render();
         }
 
-        public void AddToRegister(params GameObject[] go) => _register.AddRange(go);
+        public void AddToRegister(params IGameObject[] go) => _register.AddRange(go);
 
         public void AddTransition(int stage, params Transition[] tran)
         {

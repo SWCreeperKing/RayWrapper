@@ -20,23 +20,23 @@ namespace RayWrapper.Animation.SinglePurposeObjects
 
         public ColorModule ColorMod
         {
-            get => ((Color)_color).SetAlpha(alpha);
-            set => (_color, alpha) = (value, ((Color)value).a);
-        }      
-        
+            get => ((Color) _color).SetAlpha(alpha);
+            set => (_color, alpha) = (value, ((Color) value).a);
+        }
+
         public ColorModule OutlineMod
         {
-            get => ((Color)_outlineColor).SetAlpha(alpha);
-            set => (_outlineColor, alpha) = (value, ((Color)value).a);
+            get => ((Color) _outlineColor).SetAlpha(alpha);
+            set => (_outlineColor, alpha) = (value, ((Color) value).a);
         }
-        
+
         public int alpha = 255;
         public bool outline;
         public int outlineThickness = 3;
         public bool isRound;
         public float roundness = .5f;
         public Rectangle rect;
-        
+
         private ColorModule _color = Color.WHITE;
         private ColorModule _outlineColor = Color.BLACK;
 

@@ -38,7 +38,9 @@ namespace RayWrapper.Objs
         {
             if (IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && AssembleRectFromVec(Position, _size).IsMouseIn())
+            {
                 mouseOccupier = this;
+            }
             else if (!IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && mouseOccupier == this)
             {
                 mouseOccupier = null;

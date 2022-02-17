@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Physac-cs\Physac-cs.csproj" />
         <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 
