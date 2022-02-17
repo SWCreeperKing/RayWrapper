@@ -15,7 +15,7 @@ namespace RayWrapper.GameConsole
     {
         public static GameConsole singleConsole;
 
-        private static readonly Regex regString = new(@"^(\d{1,3}),(\d{1,3}),(\d{1,3})\|");
+        private static readonly Regex regString = new(@"^(\d{1,3}),(\d{1,3}),(\d{1,3})\|", RegexOptions.Compiled);
         private static IList<string> _lines = new List<string>();
         private static Dictionary<int, Color> _colors = new();
 
