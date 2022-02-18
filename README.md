@@ -51,7 +51,7 @@ TODO: Insert usage instructions here. Say some stuff about adding the NuGet pack
 
 ## 🏷️ Example Template <a name="example_template"></a>
 ```C#
-new GameBox(new Program(), new Vector2(window width, window height, "title"))
+new GameBox(new Program(), new Vector2(window width, window height, "title"));
 
 public class Program : GameLoop 
 {
