@@ -19,7 +19,6 @@ namespace RayWrapper.Objs
 
         public bool informationBox;
         public Action<Result> onResult = null;
-        public Vector2 size;
         public string title;
         public string message;
         public ColorModule titleColor = new(70, 170, 70);
@@ -31,16 +30,16 @@ namespace RayWrapper.Objs
 
         private readonly Rectangle _rect;
 
-        public AlertBox(string title, string message, bool informationBox = false) : this(title, message, Vector2.Zero,
-            informationBox)
+        /// <summary>
+        /// Create an alert box (used for warning and information checks)
+        /// </summary>
+        /// <param name="title">title of the alert</param>
+        /// <param name="message">message of the alert</param>
+        /// <param name="informationBox">if it should be an information box (close) or prompt box (yes/no/cancel)</param>
+        public AlertBox(string title, string message, bool informationBox = false)
         {
-        }
-
-        // TODO: Update docs.
-        /// <param name="size">Custom size for the Message Text</param>
-        public AlertBox(string title, string message, Vector2 size, bool informationBox = false)
-        {
-            (this.title, this.message, this.size, this.informationBox) = (title, message, size, informationBox);
+            // should make one with an input box in the future
+            (this.title, this.message, this.informationBox) = (title, message, informationBox);
 
             void Clicked(Result res)
             {
@@ -63,7 +62,7 @@ namespace RayWrapper.Objs
             close.baseL.CheckText();
 
             var halfScreen = WindowSize / 2;
-            var messageSize = size == Vector2.Zero ? GetDefFont(30).MeasureText(message, 30) : size;
+            var messageSize = GetDefFont(30).MeasureText(message, 30);
             var titleSize = GetDefFont().MeasureText(title);
             var closeSize = close.Size;
             var noSize = informationBox ? Vector2.Zero : no.Size;
@@ -115,16 +114,7 @@ namespace RayWrapper.Objs
             new Rectangle(0, 0, screen.X, screen.Y).Draw(new Color(0, 0, 0, 150));
             _rect.Draw(rectColor);
             GetDefFont(30).DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
-            if (size == Vector2.Zero)
-            {
-                GetDefFont().DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
-            }
-            else
-            {
-                GetDefFont().DrawTextRec(message,
-                    AssembleRectFromVec(halfScreen - new Vector2(size.X / 2, _rect.height / 2 - 25), size),
-                    messageColor);
-            }
+            GetDefFont().DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
 
             close.Render();
             if (informationBox) return;
@@ -132,7 +122,14 @@ namespace RayWrapper.Objs
             yes.Render();
         }
 
+        /// <summary>
+        /// shows the alertbox
+        /// </summary>
         public void Show() => alertBox = this;
+
+        /// <summary>
+        /// hids the alertbox
+        /// </summary>
         public void Hide() => alertBox = null;
     }
 }
