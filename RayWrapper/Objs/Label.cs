@@ -105,7 +105,7 @@ namespace RayWrapper.Objs
                     DrawTxt(_alignRight);
                     break;
                 case TextMode.WrapText:
-                    GetDefFont(fontSize).DrawTextRec(_textCache, _adj, fontSize, spacing, true, realFc);
+                    GetDefFont(fontSize).DrawTextRec(_textCache, _adj, realFc, fontSize, spacing, true);
                     break;
                 case TextMode.SizeToText:
                     DrawBack(_sizedRect);
