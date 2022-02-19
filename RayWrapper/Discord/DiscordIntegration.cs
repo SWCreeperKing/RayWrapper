@@ -7,6 +7,21 @@ using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper.Discord
 {
+    /// <summary>
+    /// the following is recommended to put in an the <see cref="GameLoop.Init()"/> method of the <see cref="GameLoop"/>
+    /// <list type="numer">
+    /// <listheader>
+    /// How to use discord integration:
+    /// </listheader>
+    /// <item>1. create an application on <a href="https://discord.com/developers/applications">the dev portal</a></item>
+    /// <item>2. set <see cref="GameBox.discordAppId"/> to the Application Id of the rich presence</item>
+    /// <item>3. call <see cref="GameBox.InitDiscord()"/></item>
+    /// </list>
+    /// the 6 <see cref="Func{TResult}"/>s are additional fields for rich presence.
+    /// here are the 6 fields and what they represent
+    /// <a href="https://discord.com/assets/43bef54c8aee2bc0fd1c717d5f8ae28a.png">represent</a>
+    /// </summary>
+    /// <remarks>images must be registered with the developer portal to use them, to use them return the name of the image</remarks>
     public static class DiscordIntegration
     {
         public static DiscordRpcClient discord;

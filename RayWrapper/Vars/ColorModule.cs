@@ -3,6 +3,9 @@ using Raylib_cs;
 
 namespace RayWrapper.Vars
 {
+    /// <summary>
+    /// an extension of <see cref="Actionable{T}"/> for <see cref="Raylib_cs.Color"/> 
+    /// </summary>
     public class ColorModule
     {
         public Actionable<Color> color;

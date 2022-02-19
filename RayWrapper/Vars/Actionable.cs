@@ -2,6 +2,9 @@
 
 namespace RayWrapper.Vars
 {
+    /// <summary>
+    /// this allows for a type to be of either static (variable) or dynamic (function).
+    /// </summary>
     public class Actionable<T>
     {
         public T val;
