@@ -21,31 +21,29 @@ namespace RayWrapperTester
 {
     class Program : GameLoop
     {
-        private float percent;
+        private float _percent;
         private int _buttonInc;
+        private bool saveTesting = false;
+        private bool scheduleTesting = false;
+        private int currGraf;
         private Rectangle _scissorArea;
         private Button _b;
         private TabView _tbv;
         private Label _l;
-
-        // private Scrollbar _sb = new(new(400, 50, 20, 380));
         private ListView _lv;
         private DropDown _dd;
-        private Cooldown _c = new(5000);
-
         private Graph graf;
 
         private Func<float, Vector2>[] grafFunc =
         {
-            dx => new Vector2(dx * 10, (float)Math.Sin(dx)),
-            dx => new Vector2((float)(dx * Math.Cos(dx)), (float)(dx * Math.Sin(dx))),
-            dx => new Vector2(dx, (float)Math.Log(dx)),
-            dx => new Vector2(dx, (float)Math.Exp(dx)),
-            dx => new Vector2(dx / 5f - 5, (float)Math.Tan(dx / 5f - 5)),
-            dx => new Vector2(dx, (float)Math.Sin(Math.Pow(dx, 2)))
+            dx => new Vector2(dx * 10, (float) Math.Sin(dx)),
+            dx => new Vector2((float) (dx * Math.Cos(dx)), (float) (dx * Math.Sin(dx))),
+            dx => new Vector2(dx, (float) Math.Log(dx)),
+            dx => new Vector2(dx, (float) Math.Exp(dx)),
+            dx => new Vector2(dx / 5f - 5, (float) Math.Tan(dx / 5f - 5)),
+            dx => new Vector2(dx, (float) Math.Sin(Math.Pow(dx, 2)))
         };
 
-        private int currGraf;
 
         private string yes =
             "What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little \"clever\" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.";
@@ -65,26 +63,28 @@ namespace RayWrapperTester
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
 
-            // AddScheduler(new Scheduler(10,
-            //     () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
+            if (scheduleTesting)
+            {
+                AddScheduler(new Scheduler(10,
+                    () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
+            }
 
-            // save testing
-            // Console.WriteLine("save testing start");
-            // SaveTesting();
-            // Console.WriteLine("save testing over");
+            if (saveTesting)
+            {
+                Logger.Log("save testing start");
+                SaveTesting();
+                Logger.Log("save testing over");
+            }
 
             _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name")
             {
-                Mode = new(() => (Label.TextMode)(_buttonInc % 3)),
-                isDisabled = new(false, () => _buttonInc > 10)
+                Mode = new Actionable<Label.TextMode>(() => (Label.TextMode) (_buttonInc % 3)),
+                isDisabled = new Actionable<bool>(false, () => _buttonInc > 10)
             };
             _b.Clicked += () => _buttonInc++;
 
             _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!",
                 Label.TextMode.WrapText);
-
-            // _sb.amount = 1000;
-            // _sb.OnMoveEvent += v => Console.WriteLine(v);
 
             var arr = new List<string>
                 { "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no" };
@@ -169,10 +169,6 @@ namespace RayWrapperTester
             bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
 
             _tbv.AddTab("AlertBox Test", b, bb);
-            // _tbv.AddTab("DrawTextRecEx Test", new EmptyRender(() =>
-            //     DrawTextRecEx(GameBox.font, yes, new Rectangle(100, 100, 600, 340), 24, 1.5f,
-            //         true, SKYBLUE, 4, 8, RED, GOLD)));
-
             _tbv.AddTab("Input Test", new InputBox(pos));
 
             Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Label.TextMode.SizeToText);
@@ -185,7 +181,7 @@ namespace RayWrapperTester
             aniBT.Clicked += () => Animator.AddToAnimationQueue(new InteractionAnimation());
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
-            var pb = new ProgressBar(100, 100, 400, 30, () => percent);
+            var pb = new ProgressBar(100, 100, 400, 30, () => _percent);
             _tbv.AddTab("Progress/Slider Test", pb, new Slider(100, 300, 400, 30));
 
             var rt2d = LoadRenderTexture(250, 250);
@@ -198,7 +194,6 @@ namespace RayWrapperTester
                         ClearBackground(RED);
                         bRend.Render();
                         tooltip.Add($"{mousePos}");
-                        // mousePos.DrawToolTipAtPoint($"{mousePos}", BLUE);
                     });
             }));
 
@@ -212,28 +207,12 @@ namespace RayWrapperTester
             fpsPos = new Vector2(12, WindowSize.Y - 25);
 
             RegisterGameObj(_tbv);
-
-            // W: [(%, 16)] H: [(!, 24)]
-            // (char c, int i) w = (' ', 0);
-            // (char c, int i) h = (' ', 0);
-            // for (var i = 32; i < 127; i++)
-            // {
-            //     var c = (char) i;
-            //     var wh = GameBox.font.MeasureText($"{c}");
-            //     if ((int) wh.X > w.i) w = (c, (int) wh.X);
-            //     else if ((int) wh.Y > h.i) h = (c, (int) wh.Y);
-            // }
-            //
-            // Console.WriteLine($"W: [{w}] H: [{h}]");
         }
 
         public override void UpdateLoop()
         {
-            // var isC = _c.UpdateTime();
-            // Logger.Log($"is: {isC} | d: {_c.durationMs} | l: {_c.lastTick} | r: {_c.GetRemainingTime()} | p: {_c.GetTimePercent()}");
-
-            percent += .005f;
-            percent %= 1;
+            _percent += .005f;
+            _percent %= 1;
 
             var mouse = mousePos;
             _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);

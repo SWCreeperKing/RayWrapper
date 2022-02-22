@@ -11,6 +11,7 @@ namespace RayWrapper.Vars
         public bool writeZeroes = false;
         public long[] times; //ms, s, m, h, d, w
 
+        /// <param name="index">ms = 0, s = 1, m = 2, h = 3, d = 4, w = 5</param>
         public TimeVar(long amt, int index = 0)
         {
             times = new long[] { 0, 0, 0, 0, 0, 0 };

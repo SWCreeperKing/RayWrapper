@@ -13,14 +13,13 @@ namespace RayWrapper.Objs
             get => _pos;
             set
             {
-                _pos = value;
-                text.Position = value;
+                _pos = text.Position = value;
                 optionDisplay.Position = value + new Vector2(0, text.Rect.height + 2);
                 UpdateChanges();
             }
         }
 
-        public override Vector2 Size =>  text.Size + new Vector2(0, optionDisplay.Size.Y);
+        public override Vector2 Size => text.Size + new Vector2(0, optionDisplay.Size.Y);
 
         public char arrowDown = '↓';
         public char arrowUp = '↑';
@@ -63,9 +62,8 @@ namespace RayWrapper.Objs
                 backColor = new ColorModule(50), fontColor = new ColorModule(192)
             };
 
-            optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), (int)back.width,
-                i => options[i],
-                () => options.Count, 4, padding: 2)
+            optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), (int) back.width,
+                i => options[i], () => options.Count, 4, padding: 2)
             {
                 IndividualClick = i =>
                 {

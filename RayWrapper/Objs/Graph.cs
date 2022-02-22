@@ -76,8 +76,7 @@ namespace RayWrapper.Objs
             var maxCalc = val.Where(v2 => v2.X < maxC && v2.Y < maxC);
             var min = new Vector2(minCalc.Min(v => v.X), minCalc.Min(v => v.Y));
             var max = new Vector2(maxCalc.Max(v => v.X), maxCalc.Max(v => v.Y));
-            var size = max - min;
-            var scaling = size / rect.Size();
+            var scaling = (max - min) / rect.Size();
             
             _cacheValues = val.Select(v2 =>
                     (v2 - min) / scaling * new Vector2(1, -1) + rect.Pos() + new Vector2(0, rect.height))

@@ -19,13 +19,14 @@ namespace RayWrapper.Vars
             Other
         }
 
-        public static readonly string Guid = System.Guid.NewGuid().ToString();
         public static readonly string CrashSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
+        public static readonly string Guid = System.Guid.NewGuid().ToString();
         public static readonly string StatusSave = $"{Directory.GetCurrentDirectory().Replace('\\', '/')}/CrashLogs";
+
         private static IList<string> _log = new List<string>();
         private static bool _hasError;
 
-        [UnmanagedCallersOnly(CallConvs = new[] {typeof(System.Runtime.CompilerServices.CallConvCdecl)})]
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
         public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args)
         {
             Log(logLevel switch

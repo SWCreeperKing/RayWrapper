@@ -113,7 +113,7 @@ namespace RayWrapper.GameConsole
         }
 
         [Command("objs"), Help("Displays how many Gameobjects there are")]
-        public static string Objects(string[] args) => $"{CYAN}There are [{GameObjects}] GameObjects";
+        public static string Objects(string[] args) => $"{CYAN}There are [{gameObjects}] GameObjects";
 
         [Command("toggleFps"), Help("Toggles the fps counter visibility")]
         public static string ToggleFps(string[] args)

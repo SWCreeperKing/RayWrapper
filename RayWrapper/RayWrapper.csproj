@@ -17,11 +17,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.2.0</PackageVersion>
-        <PackageReleaseNotes>- FontManager Added
-- register font: FontManager.RegisterFont(name, path)
-- set a font as default: FontManager.SetDefFont(name)
-- get font: FontManager.GetFont(name, size)</PackageReleaseNotes>
+        <PackageVersion>0.3.0-alpha</PackageVersion>
+        <PackageReleaseNotes>update raylib-cs to 4.0
+- some known issues with the logger, `DrawRectangleRoundedLines`, and `DrawRectangleLinesEx ` exist.</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

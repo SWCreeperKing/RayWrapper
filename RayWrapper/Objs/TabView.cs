@@ -45,7 +45,7 @@ namespace RayWrapper.Objs
         {
             _rect = new Rectangle(pos.X, pos.Y, width, 40);
             _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
-                {amountInvoke = () => GetTabLength() - _rect.width};
+                { amountInvoke = () => GetTabLength() - _rect.width };
             _bar.OnMoveEvent += f =>
             {
                 _offset = f;
@@ -71,8 +71,9 @@ namespace RayWrapper.Objs
             try
             {
                 if (!GameBox.IsMouseOccupied)
-                    foreach (var t in _tabs)
-                        t.Update();
+                {
+                    foreach (var t in _tabs) t.Update();
+                }
             }
             catch (InvalidOperationException)
             {

@@ -19,7 +19,7 @@ namespace RayWrapper.Vars
         private Rectangle _rect = Zero;
         private Vector2 _freezeV2 = Vector2.Zero;
 
-        public GameObject() => GameObjects++;
+        public GameObject() => gameObjects++;
 
         public void Update()
         {
@@ -52,6 +52,6 @@ namespace RayWrapper.Vars
         public Vector2 GetReserveV2() => _freezeV2;
         public void SetPositionAsReserveV2() => Position = _freezeV2;
 
-        ~GameObject() => GameObjects--;
+        ~GameObject() => gameObjects--;
     }
 }

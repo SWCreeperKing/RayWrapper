@@ -229,12 +229,12 @@ namespace RayWrapper
         /// <param name="rect">the <see cref="Rectangle"/> to draw</param>
         /// <param name="color">the <see cref="Color"/> to draw it as</param>
         /// <param name="roundness">how round the corners should be</param>
-        /// <param name="lineThickness">how thick the outline should be</param>
+        /// <param name="thickness">how thick the outline should be</param>
         public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
-            int lineThickness = 3)
+            int thickness = 3)
         {
             // todo: undo when update fixes
-            // DrawRectangleRoundedLines(rect, roundness, 5, lineThickness, color);
+            // DrawRectangleRoundedLines(rect, roundness, 5, thickness, color);
         }
 
         /// <summary>
@@ -242,8 +242,8 @@ namespace RayWrapper
         /// </summary>
         /// <param name="rect">the <see cref="Rectangle"/> to draw</param>
         /// <param name="color">the <see cref="Color"/> to draw it as</param>
-        /// <param name="lineThickness">how thick the outline should be</param>
-        public static void DrawHallowCircle(this Rectangle rect, Color color, int lineThickness = 3)
+        /// <param name="thickness">how thick the outline should be</param>
+        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3)
         {
             // todo: undo when update fixes
             // DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
@@ -254,8 +254,8 @@ namespace RayWrapper
         /// </summary>
         /// <param name="rect">the <see cref="Rectangle"/> to draw</param>
         /// <param name="color">the <see cref="Color"/> to draw it as</param>
-        /// <param name="lineThickness">how thick the outline should be</param>
-        public static void DrawHallowRect(this Rectangle rect, Color color, int lineThickness = 3)
+        /// <param name="thickness">how thick the outline should be</param>
+        public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3)
         {
             // todo: undo when update fixes
             // DrawRectangleLinesEx(rect, thickness, color);

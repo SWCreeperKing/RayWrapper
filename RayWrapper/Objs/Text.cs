@@ -45,9 +45,11 @@ namespace RayWrapper.Objs
         }
 
         public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, int fontSize = 24,
-            float spacing = 1.5f) =>
+            float spacing = 1.5f)
+        {
             (this.rect, this.text, _pos, this.color, _font, this.spacing, _cachedText) = (rect, text,
                 rect.Pos(), color ?? Color.SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text);
+        }
 
         protected override void UpdateCall()
         {

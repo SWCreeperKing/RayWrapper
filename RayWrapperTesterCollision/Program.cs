@@ -29,9 +29,9 @@ namespace RayWrapperTesterCollision
             new Bar(new Vector2(wx - 10, 0), new Vector2(10, wy)) { vert = true };
             RegisterGameObj(new Text($"{Collider.count - 4}", new Vector2(12, 60), RED), new Text(
                 new Actionable<string>(() => $@"Collision Time
-cur: {currentCollision}ms
-avg: {timeAverage}ms
-high: {collisionHigh}ms".Replace("\r", "")), new Vector2(300, 50), SKYBLUE));
+cur: {CurrentCollision}ms
+avg: {TimeAverage}ms
+high: {CollisionHigh}ms".Replace("\r", "")), new Vector2(300, 50), SKYBLUE));
         }
 
         public override void UpdateLoop()
