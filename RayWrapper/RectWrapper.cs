@@ -233,8 +233,7 @@ namespace RayWrapper
         public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
             int thickness = 3)
         {
-            // todo: undo when update fixes
-            // DrawRectangleRoundedLines(rect, roundness, 5, thickness, color);
+            DrawRectangleRoundedLines(rect, roundness, 5, thickness, color);
         }
 
         /// <summary>
@@ -245,8 +244,7 @@ namespace RayWrapper
         /// <param name="thickness">how thick the outline should be</param>
         public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3)
         {
-            // todo: undo when update fixes
-            // DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
+            DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
         }
 
         /// <summary>
@@ -257,8 +255,7 @@ namespace RayWrapper
         /// <param name="thickness">how thick the outline should be</param>
         public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3)
         {
-            // todo: undo when update fixes
-            // DrawRectangleLinesEx(rect, thickness, color);
+            DrawRectangleLinesEx(rect, thickness, color);
         }
 
         /// <summary>

@@ -87,7 +87,7 @@ namespace RayWrapper
         public static bool isCollisionSystem;
         public static bool isDebugTool;
         public static bool showFps = false;
-        public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_BILINEAR;
+        public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
         public static IGameObject debugContext = null;
         public static IGameObject mouseOccupier;
         public static Vector2 fpsPos = Vector2.One;
