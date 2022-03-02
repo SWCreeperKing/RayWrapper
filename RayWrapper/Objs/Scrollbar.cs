@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 
 namespace RayWrapper.Objs
@@ -17,7 +18,7 @@ namespace RayWrapper.Objs
         public ColorModule containerColor = new(78, 78, 78);
         public bool isVertical;
         public bool outline = true;
-        public ColorModule outlineColor = new(Color.BLACK);
+        public ColorModule outlineColor = new(BLACK);
 
         private readonly IList<Action<float>> _onMove = new List<Action<float>>();
         private float _trueSize;
@@ -96,7 +97,7 @@ namespace RayWrapper.Objs
             ClampBounds();
             CalcVal();
 
-            var isLeft = Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON);
+            var isLeft = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
 
             if (bar.IsMouseIn() && isLeft && !IsMouseOccupied)
             {
@@ -107,7 +108,7 @@ namespace RayWrapper.Objs
 
             if (mouseOccupier != this)
             {
-                if (!IsMouseOccupied && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) &&
+                if (!IsMouseOccupied && Raylib.IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
                     container.IsMouseIn())
                     MoveBar((isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X) + _visibleSize / 2);
 

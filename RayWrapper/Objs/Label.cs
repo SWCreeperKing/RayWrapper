@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
@@ -37,7 +37,7 @@ namespace RayWrapper.Objs
 
         public ColorModule backColor = new(50);
         public ColorModule fontColor = new(192);
-        public ColorModule outlineColor = new(Color.BLACK);
+        public ColorModule outlineColor = new(BLACK);
         public Action clicked;
         public int fontSize = 24;
         public bool outline = false;
@@ -74,7 +74,7 @@ namespace RayWrapper.Objs
 
         protected override void UpdateCall()
         {
-            if (!Rect.IsMouseIn() || !IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+            if (!Rect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
             clicked?.Invoke();
         }
 

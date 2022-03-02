@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
 {
@@ -32,8 +32,8 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
         public void Update(Vector2 off, float scale, bool context, bool next)
         {
             if (!IsMouseIn(off, scale)) return;
-            var isLeft = Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
-            var isRight = Raylib.IsMouseButtonPressed(MouseButton.MOUSE_RIGHT_BUTTON);
+            var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+            var isRight = IsMouseButtonPressed(MOUSE_RIGHT_BUTTON);
             if (isLeft && context && !completed) lClick?.Invoke();
             if (isRight && completed && !next) rClick?.Invoke();
         }

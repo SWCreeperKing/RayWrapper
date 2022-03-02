@@ -1,11 +1,11 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.CollisionSystem;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
-using static Raylib_cs.Color;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Color;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 
 namespace RayWrapperTesterCollision
@@ -36,7 +36,7 @@ high: {CollisionHigh}ms".Replace("\r", "")), new Vector2(300, 50), SKYBLUE));
 
         public override void UpdateLoop()
         {
-            if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+            if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
             for (var i = 0; i < 50; i++) new Circle(mousePos);
         }
 

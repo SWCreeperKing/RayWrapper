@@ -1,10 +1,10 @@
 ﻿using System;
-using Raylib_cs;
+using Raylib_CsLo;
 
 namespace RayWrapper.Vars
 {
     /// <summary>
-    /// an extension of <see cref="Actionable{T}"/> for <see cref="Raylib_cs.Color"/> 
+    /// an extension of <see cref="Actionable{T}"/> for <see cref="Raylib_CsLo.Color"/> 
     /// </summary>
     public class ColorModule
     {

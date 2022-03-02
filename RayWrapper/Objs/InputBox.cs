@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.GeneralWrapper;
 
@@ -85,7 +85,7 @@ namespace RayWrapper.Objs
 
         protected override void UpdateCall()
         {
-            var isLeft = (bool) IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
+            var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
             switch (isLeft)
             {
                 case true when !_label.Rect.IsMouseIn() && _selected:

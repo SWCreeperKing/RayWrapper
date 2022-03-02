@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -60,7 +60,7 @@ namespace RayWrapper.Objs
         protected override void UpdateCall()
         {
             if (!AssembleRectFromVec(Position, _textBox).IsMouseIn() ||
-                !Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+                !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
             isChecked = !isChecked;
             checkChange?.Invoke(isChecked);
         }

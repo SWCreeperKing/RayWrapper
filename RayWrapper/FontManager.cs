@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper
 {
@@ -65,9 +65,15 @@ namespace RayWrapper
 
         private static Font LoadFont(string font, int fontSize, int toChar = 8595)
         {
-            var f = LoadFontEx(font, fontSize, null, toChar);
-            SetTextureFilter(f.texture, fontFilter);
-            return f;
+            unsafe
+            {
+                var f = Raylib.LoadFontEx(font, fontSize, null, toChar);   
+                SetTextureFilter(f.texture, fontFilter);
+                return f;
+            }
+            // var f = Raylib.LoadFont(font);
+            // SetTextureFilter(f.texture, fontFilter);
+            // return f;
         }
     }
 }

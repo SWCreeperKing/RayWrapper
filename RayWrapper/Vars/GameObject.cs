@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
-using Raylib_cs;
-using static Raylib_cs.Raylib;
+using Raylib_CsLo;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -24,9 +24,9 @@ namespace RayWrapper.Vars
         public void Update()
         {
             _rect = AssembleRectFromVec(Position, Size);
-            if (debugContext == this && _rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
+            if (debugContext == this && _rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON) &&
                 isDebugTool) debugContext = null;
-            else if (_rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
+            else if (_rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON) &&
                      isDebugTool) debugContext = this;
             if (updateReturnIfNonVis && !isVisible) return;
             UpdateCall();
@@ -45,7 +45,7 @@ namespace RayWrapper.Vars
         protected abstract void RenderCall();
 
         protected virtual void DrawDebugHitbox() =>
-            _rect.DrawHallowRect(debugContext == this ? Color.GREEN : Color.RED);
+            _rect.DrawHallowRect(debugContext == this ? GREEN : RED);
 
         public Rectangle GetDebugRect() => _rect;
         public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);

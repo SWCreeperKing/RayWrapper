@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Animation.SinglePurposeObjects
 {
@@ -37,8 +38,8 @@ namespace RayWrapper.Animation.SinglePurposeObjects
         public float roundness = .5f;
         public Rectangle rect;
 
-        private ColorModule _color = Color.WHITE;
-        private ColorModule _outlineColor = Color.BLACK;
+        private ColorModule _color = WHITE;
+        private ColorModule _outlineColor = BLACK;
 
         public Rect(Rectangle rect) => this.rect = rect;
 

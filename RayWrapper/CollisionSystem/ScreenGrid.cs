@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Raylib_cs;
+using Raylib_CsLo;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 
 namespace RayWrapper.CollisionSystem
@@ -61,7 +62,7 @@ namespace RayWrapper.CollisionSystem
             foreach (var t in subCol) t.Render();
 
             if (!debug || !isCollisionSystem) return;
-            foreach (var rect in rects.Values) rect.DrawHallowRect(Color.GREEN);
+            foreach (var rect in rects.Values) rect.DrawHallowRect(GREEN);
         }
 
         public void SubscribeCollider(Collider c) => addQueue.Add(c);

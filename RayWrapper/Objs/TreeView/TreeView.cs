@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Vars;
-using static Raylib_cs.MouseButton;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.MouseButton;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 

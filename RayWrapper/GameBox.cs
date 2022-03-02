@@ -7,7 +7,7 @@ using System.Net;
 using System.Numerics;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Animation;
 using RayWrapper.CollisionSystem;
 using RayWrapper.Discord;
@@ -15,7 +15,7 @@ using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.RectWrapper;
 using static RayWrapper.Vars.Logger.Level;
@@ -109,7 +109,7 @@ namespace RayWrapper
         private static bool _isConsole;
         private static bool _isDrawing;
         private static bool _isEnding;
-        private static RenderTexture2D _target;
+        private static RenderTexture _target;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
         
@@ -261,19 +261,19 @@ namespace RayWrapper
             scene.Update();
         }
 
-        public static void RenderRenderTexture(RenderTexture2D texture2D, Vector2 pos, Action update, Action draw)
+        public static void RenderRenderTexture(RenderTexture Texture, Vector2 pos, Action update, Action draw)
         {
             if (!_isDrawing) return;
             var before = new Vector2(mousePos.X, mousePos.Y);
             mousePos.X -= pos.X;
             mousePos.Y -= pos.Y;
             update.Invoke();
-            BeginTextureMode(texture2D);
+            BeginTextureMode(Texture);
             draw.Invoke();
             BeginTextureMode(_target);
-            DrawTexturePro(texture2D.texture, new Rectangle(0, 0, texture2D.texture.width, -texture2D.texture.height),
-                new Rectangle(pos.X, pos.Y, texture2D.texture.width, texture2D.texture.height),
-                Vector2.Zero, 0, Color.WHITE);
+            DrawTexturePro(Texture.texture, new Rectangle(0, 0, Texture.texture.width, -Texture.texture.height),
+                new Rectangle(pos.X, pos.Y, Texture.texture.width, Texture.texture.height),
+                Vector2.Zero, 0, WHITE);
             mousePos = before;
         }
 
@@ -323,7 +323,7 @@ namespace RayWrapper
             DrawTexturePro(texture, new Rectangle(0, 0, texture.width, -texture.height),
                 new Rectangle((GetScreenWidth() - WindowSize.X * scale) * .5f,
                     (GetScreenHeight() - WindowSize.Y * scale) * 0.5f, WindowSize.X * scale, WindowSize.Y * scale),
-                Vector2.Zero, 0, Color.WHITE);
+                Vector2.Zero, 0, WHITE);
             EndDrawing();
             _isDrawing = false;
         }

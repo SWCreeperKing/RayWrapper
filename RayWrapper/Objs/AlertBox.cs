@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
 using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;

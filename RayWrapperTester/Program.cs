@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Objs;
@@ -12,8 +12,8 @@ using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
 using RayWrapperTester.Animations;
-using static Raylib_cs.Color;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Color;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -57,8 +57,10 @@ namespace RayWrapperTester
 
         public override void Init()
         {
-            // FontManager.RegisterFont("cas", "CascadiaMono.ttf");
-            // FontManager.SetDefFont("cas");
+            // FontManager.fontFilter = TextureFilter.TEXTURE_FILTER_POINT;
+            // GameBox.targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
+            FontManager.RegisterFont("cas", "CascadiaMono.ttf");
+            FontManager.SetDefFont("cas");
 
             var screen = WindowSize;
             Vector2 pos = new(75, 80);

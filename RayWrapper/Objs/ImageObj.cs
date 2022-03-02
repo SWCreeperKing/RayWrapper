@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
 
 namespace RayWrapper.Objs
@@ -8,25 +8,25 @@ namespace RayWrapper.Objs
     {
         public override Vector2 Position
         {
-            get => _texture2d.Position;
-            set => _texture2d.Position = value;
+            get => _Texture.Position;
+            set => _Texture.Position = value;
         }
 
-        public override Vector2 Size => _texture2d.Size;
+        public override Vector2 Size => _Texture.Size;
 
         public int ImageAlpha
         {
-            get => _texture2d.ImageAlpha;
-            set => _texture2d.ImageAlpha = value;
+            get => _Texture.ImageAlpha;
+            set => _Texture.ImageAlpha = value;
         } // transparency b/t 0-255
 
         public int Rotation
         {
-            get => _texture2d.rotation;
-            set => _texture2d.rotation = value;
+            get => _Texture.rotation;
+            set => _Texture.rotation = value;
         } // 0 to 360
         
-        private TextureObj _texture2d;
+        private TextureObj _Texture;
         private Image _image;
 
         public ImageObj(string imageFile) : this(Raylib.LoadImage(imageFile), Vector2.Zero)
@@ -44,12 +44,12 @@ namespace RayWrapper.Objs
         public ImageObj(Image image, Vector2 pos)
         {
             _image = image;
-            _texture2d = new TextureObj(image.Texture(), pos);
+            _Texture = new TextureObj(image.Texture(), pos);
         }
 
-        protected override void UpdateCall() => _texture2d.Update();
-        protected override void RenderCall() => _texture2d.Render();
-        public void SetSize(Vector2 size) => _texture2d.SetSize(size);
+        protected override void UpdateCall() => _Texture.Update();
+        protected override void RenderCall() => _Texture.Render();
+        public void SetSize(Vector2 size) => _Texture.SetSize(size);
         ~ImageObj() => Raylib.UnloadImage(_image);
     }
 }

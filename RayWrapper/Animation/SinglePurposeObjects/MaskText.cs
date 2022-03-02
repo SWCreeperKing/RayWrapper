@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.FontManager;
 
 namespace RayWrapper.Animation.SinglePurposeObjects
@@ -29,7 +30,7 @@ namespace RayWrapper.Animation.SinglePurposeObjects
         public Rectangle rect;
         public Actionable<string> tooltip = null;
 
-        private ColorModule _color = Color.WHITE;
+        private ColorModule _color = WHITE;
 
         public MaskText(Actionable<string> text, Rectangle rect) => (this.text, this.rect) = (text, rect);
         public MaskText(Rectangle rect) => this.rect = rect;

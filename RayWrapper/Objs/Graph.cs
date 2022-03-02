@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
@@ -20,7 +21,7 @@ namespace RayWrapper.Objs
         public override Vector2 Size => rect.Size();
 
         public Rectangle rect;
-        public ColorModule lineColor = Color.DARKBLUE;
+        public ColorModule lineColor = DARKBLUE;
         public int thickness = 3;
         public int range = -1;
         public bool useBezier = false;
@@ -58,7 +59,7 @@ namespace RayWrapper.Objs
                 else _cacheValues.DrawArrAsLine(lineColor, thickness); 
             });
 
-            grow.DrawHallowRect(Color.BLACK);
+            grow.DrawHallowRect(BLACK);
             if (_closest == neg) return;
             _closest.DrawCircle(3);
             if (_realVal.ContainsKey(_closest)) GameBox.tooltip.Add(_realVal[_closest].ToString());

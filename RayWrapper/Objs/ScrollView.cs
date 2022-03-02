@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
@@ -65,7 +66,7 @@ namespace RayWrapper.Objs
 
             if (_trueSize.X >= _size.X) _xScroll.Render();
             if (_trueSize.Y >= _size.Y) _yScroll.Render();
-            _rect.DrawHallowRect(Color.BLACK, 1);
+            _rect.DrawHallowRect(BLACK, 1);
         }
 
         public void Recalc()
@@ -80,7 +81,7 @@ namespace RayWrapper.Objs
             _posOffset = new Vector2(_xScroll.Value, _yScroll.Value) - new Vector2(3);
             var tempRect = new Rectangle(_rect.x + _posOffset.X, _rect.y + _posOffset.Y, _rect.width, _rect.height);
             _renderList.Clear();
-            _renderList = _gos.Where(g => Raylib.CheckCollisionRecs(g.GetDebugRect(), tempRect)).ToList();
+            _renderList = _gos.Where(g => CheckCollisionRecs(g.GetDebugRect(), tempRect)).ToList();
             foreach (var go in _renderList) go.Position -= _posOffset;
         }
 

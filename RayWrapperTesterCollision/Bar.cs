@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.CollisionSystem;
 
@@ -13,7 +13,7 @@ namespace RayWrapperTesterCollision
         {
         }
 
-        public override void RenderShape(Vector2 pos) => rect.NewMoveTo(pos).Draw(Color.GRAY);
+        public override void RenderShape(Vector2 pos) => rect.NewMoveTo(pos).Draw(Raylib.GRAY);
 
         public override void FirstCollision(Collider c)
         {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
@@ -41,7 +42,7 @@ namespace RayWrapper.Objs
             float spacing = 1.5f)
         {
             (this.text, _pos, this.color, _font, this.spacing, _cachedText, _fontSize) = (text, pos,
-                color ?? Color.SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text, fontSize);
+                color ?? SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text, fontSize);
             rect = RectWrapper.AssembleRectFromVec(pos, MeasureText());
         }
 
@@ -49,7 +50,7 @@ namespace RayWrapper.Objs
             float spacing = 1.5f)
         {
             (this.rect, this.text, _pos, this.color, _font, this.spacing, _cachedText, _fontSize) = (rect, text,
-                rect.Pos(), color ?? Color.SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text, fontSize);
+                rect.Pos(), color ?? SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text, fontSize);
         }
 
         protected override void UpdateCall()

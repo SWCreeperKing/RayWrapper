@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.SinglePurposeObjects;
@@ -13,7 +13,7 @@ namespace RayWrapperTester.Animations
 
         public Mover()
         {
-            square.ColorMod = Color.RED;
+            square.ColorMod = Raylib.RED;
             AddTransition(0, new MoveTransition(new Vector2(GameBox.WindowSize.X, 0), square, 1));
             AddTransition(0, new AlphaTransition<Rect>(0, square, 1));
             AddToRegister(square);

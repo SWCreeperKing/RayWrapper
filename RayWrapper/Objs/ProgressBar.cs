@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
@@ -16,10 +17,10 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => AssembleRectFromVec(Position, size).Grow(outlineThickness).Size();
 
-        public ColorModule backColor = new(Color.BLACK);
-        public ColorModule fillColor = new(Color.RAYWHITE);
-        public ColorModule toColor = new(Color.GOLD);
-        public ColorModule finishedColor = new(Color.GREEN);
+        public ColorModule backColor = new(BLACK);
+        public ColorModule fillColor = new(RAYWHITE);
+        public ColorModule toColor = new(GOLD);
+        public ColorModule finishedColor = new(GREEN);
         public bool hoverPercent = true;
         public bool isVertical;
         public int outlineThickness = 3;

@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 
 namespace RayWrapper.CollisionSystem
 {

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.FontManager;
 
 namespace RayWrapper.Objs
@@ -100,7 +101,7 @@ namespace RayWrapper.Objs
                 if (_closable)
                     foreach (var t in _closing)
                         t.Render();
-                if (outline) _rect.DrawHallowRect(Color.BLACK);
+                if (outline) _rect.DrawHallowRect(BLACK);
                 if (_bar.Amount() > 1) _bar.Render();
             }
 
@@ -149,7 +150,7 @@ namespace RayWrapper.Objs
                     Label l = new(new Rectangle(startX, _rect.y + heightOff, 25, 40 - heightOff * 2), "x",
                         Label.TextMode.AlignCenter)
                     {
-                        backColor = Color.RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true
+                        backColor = RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true
                     };
 
                     _tabs.Add(l);

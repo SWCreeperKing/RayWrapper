@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using Raylib_cs;
-using static Raylib_cs.TraceLogLevel;
+using Raylib_CsLo;
+using static Raylib_CsLo.TraceLogLevel;
 using static RayWrapper.Vars.Logger.Level;
 
 namespace RayWrapper.Vars
@@ -37,7 +37,7 @@ namespace RayWrapper.Vars
                 (int) LOG_WARNING => Warning,
                 (int) LOG_ERROR or (int) LOG_FATAL => Error,
                 _ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null)
-            }, $"from raylib: {Logging.GetLogMessage(new IntPtr(text), new IntPtr(args))}");
+            }, $"from raylib: {"soon:tm:"/*Logging.GetLogMessage(new IntPtr(text), new IntPtr(args))*/} ");
         }
 
         public static void Log(string text) => Log(Debug, text);

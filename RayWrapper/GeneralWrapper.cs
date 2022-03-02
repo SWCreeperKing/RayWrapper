@@ -3,10 +3,10 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Color;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Color;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper
@@ -36,17 +36,17 @@ namespace RayWrapper
         public static Vector2 Size(this Image image) => image.Texture().Size();
 
         /// <summary>
-        /// gets the size of a <see cref="Texture2D"/> as a <see cref="Vector2"/>
+        /// gets the size of a <see cref="Texture"/> as a <see cref="Vector2"/>
         /// </summary>
-        /// <param name="texture">the <see cref="Texture2D"/> to get the size of</param>
-        /// <returns>the size of a <see cref="Texture2D"/></returns>
-        public static Vector2 Size(this Texture2D texture) => new(texture.width, texture.height);
+        /// <param name="texture">the <see cref="Texture"/> to get the size of</param>
+        /// <returns>the size of a <see cref="Texture"/></returns>
+        public static Vector2 Size(this Texture texture) => new(texture.width, texture.height);
 
         /// <summary>
         /// gets text from the user's clipboard
         /// </summary>
         /// <returns>the text from the user's clipboard</returns>
-        public static unsafe string FromClipboard() => Utf8StringUtils.GetUTF8String(GetClipboardText());
+        public static unsafe string FromClipboard() => GetClipboardText_();
 
         /// <summary>
         /// draws text at the center of the given position
@@ -88,7 +88,7 @@ namespace RayWrapper
             DrawTextRec(font, text, rect, fontColor, fontSize, spacing, wordWrap, 0, 0, WHITE, WHITE);
         }
 
-        /// <inheritdoc cref="DrawTextRec(Raylib_cs.Font,string,Raylib_cs.Rectangle,Raylib_cs.Color,float,float,bool)"/>
+        /// <inheritdoc cref="DrawTextRec(Raylib_CsLo.Font,string,Raylib_CsLo.Rectangle,Raylib_CsLo.Color,float,float,bool)"/>
         /// <param name="selectStart">unknown</param>
         /// <param name="selectLength">unknown</param>
         /// <param name="selectTint">unknown</param>
@@ -327,7 +327,7 @@ namespace RayWrapper
             DrawLineBezier(v1, v2, thickness, color);
         }
 
-        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_cs.Color,float)"/>
+        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_CsLo.Color,float)"/>
         /// <remarks>v1 and v2 are stored as a tuple</remarks>
         public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3)
         {
@@ -335,7 +335,7 @@ namespace RayWrapper
             DrawLineEx(v1, v2, thickness, color);
         }
 
-        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_cs.Color,float)"/>
+        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_CsLo.Color,float)"/>
         /// <remarks>v1 and v2 are split into floats and stored as a tuple of 4 floats</remarks>
         public static void DrawLine(this (float x1, float y1, float x2, float y2) l, Color color, float thickness = 3)
         {
@@ -415,32 +415,32 @@ namespace RayWrapper
         }
 
         /// <summary>
-        /// loads a <see cref="Texture2D"/> from an <see cref="Image"/>
+        /// loads a <see cref="Texture"/> from an <see cref="Image"/>
         /// </summary>
-        /// <param name="i">the <see cref="Image"/> to get the <see cref="Texture2D"/> from</param>
-        /// <returns>the <see cref="Texture2D"/> from <paramref name="i"/></returns>
-        public static Texture2D Texture(this Image i) => LoadTextureFromImage(i);
+        /// <param name="i">the <see cref="Image"/> to get the <see cref="Texture"/> from</param>
+        /// <returns>the <see cref="Texture"/> from <paramref name="i"/></returns>
+        public static Texture Texture(this Image i) => LoadTextureFromImage(i);
 
         /// <summary>
-        /// draws a given <see cref="Texture2D"/>
+        /// draws a given <see cref="Texture"/>
         /// </summary>
-        /// <param name="t"><see cref="Texture2D"/> to draw</param>
-        /// <param name="pos">where to draw <see cref="Texture2D"/></param>
-        /// <param name="tint"><see cref="Color"/> tint of <see cref="Texture2D"/> (white should be default)</param>
-        /// <param name="rot">rotation of <see cref="Texture2D"/></param>
-        /// <param name="scale">scale of <see cref="Texture2D"/></param>
-        public static void Draw(this Texture2D t, Vector2 pos, Color tint, float rot = 0, float scale = 1)
+        /// <param name="t"><see cref="Texture"/> to draw</param>
+        /// <param name="pos">where to draw <see cref="Texture"/></param>
+        /// <param name="tint"><see cref="Color"/> tint of <see cref="Texture"/> (white should be default)</param>
+        /// <param name="rot">rotation of <see cref="Texture"/></param>
+        /// <param name="scale">scale of <see cref="Texture"/></param>
+        public static void Draw(this Texture t, Vector2 pos, Color tint, float rot = 0, float scale = 1)
         {
             DrawTextureEx(t, pos, rot, scale, tint);
         }
 
         /// <summary>
-        /// draws a given <see cref="Texture2D"/>
+        /// draws a given <see cref="Texture"/>
         /// </summary>
-        /// <param name="t"><see cref="Texture2D"/> to draw</param>
-        /// <param name="pos">where to draw <see cref="Texture2D"/></param>
-        /// <param name="rotation">rotation of <see cref="Texture2D"/></param>
-        public static void DrawPro(this Texture2D t, Vector2 pos, int rotation = 0)
+        /// <param name="t"><see cref="Texture"/> to draw</param>
+        /// <param name="pos">where to draw <see cref="Texture"/></param>
+        /// <param name="rotation">rotation of <see cref="Texture"/></param>
+        public static void DrawPro(this Texture t, Vector2 pos, int rotation = 0)
         {
             DrawTexturePro(t, new Rectangle(0, 0, t.width, t.height), new Rectangle(pos.X, pos.Y, t.width, t.height),
                 new Vector2(t.width / 2f, t.height / 2f), rotation, WHITE);

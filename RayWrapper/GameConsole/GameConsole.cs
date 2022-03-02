@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static RayWrapper.GameBox;
-using static RayWrapper.GameConsole.CommandLineColor;
 
 namespace RayWrapper.GameConsole
 {
@@ -53,7 +52,7 @@ namespace RayWrapper.GameConsole
                 fontColors = i =>
                 {
                     var key = Math.Abs(_lines.Count - 1 - i);
-                    return _colors.ContainsKey(key) ? _colors[key] : Color.DARKGREEN;
+                    return _colors.ContainsKey(key) ? _colors[key] : Raylib.DARKGREEN;
                 }
             };
         }
@@ -78,7 +77,7 @@ namespace RayWrapper.GameConsole
             int ToColor(string text) => Math.Clamp(int.Parse(text), 0, 255);
             if (!texts.Any())
             {
-                WriteToConsole($"{YELLOW}An Attempt to write to the console was made");
+                WriteToConsole($"{CommandLineColor.YELLOW}An Attempt to write to the console was made");
                 return;
             }
 

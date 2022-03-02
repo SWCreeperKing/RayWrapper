@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
@@ -167,7 +167,7 @@ namespace RayWrapper.Objs
                     UpdateLabels(_bar.Value);
                 }
 
-                if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+                if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
                 click?.Invoke();
                 if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
                 PlaySound(clickSound);
@@ -175,7 +175,7 @@ namespace RayWrapper.Objs
                 return;
             }
 
-            if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) ||
+            if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
                 _bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn()) return;
             outsideClick?.Invoke();
         }

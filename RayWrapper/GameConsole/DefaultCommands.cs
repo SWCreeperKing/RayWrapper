@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using RayWrapper.Discord;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.CommandRegister;
@@ -18,9 +18,9 @@ namespace RayWrapper.GameConsole
         [Command("setfps"), Help("setfps [0 < n < 501]\nsets fps to n")]
         public static string SetFps(string[] args)
         {
-            if (args.Length < 1) return $"{SKYBLUE}To set your fps do setfps [number]";
+            if (args.Length < 1) return $"{CommandLineColor.SKYBLUE}To set your fps do setfps [number]";
             if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and <= 500)
-                return $"{BLUE}Fps set to [{FPS = fpsset}]";
+                return $"{CommandLineColor.BLUE}Fps set to [{FPS = fpsset}]";
             return $"{DARKRED}[{args[0]}] <- IS NOT A VALID NUMBER";
         }
 
@@ -28,7 +28,7 @@ namespace RayWrapper.GameConsole
         public static string Clear(string[] args)
         {
             var c = ClearOutput();
-            if (args.Length <= 0 || args[0].ToLower()[0] is not 't' or '1') return $"{BLUE}Cleared {c} lines";
+            if (args.Length <= 0 || args[0].ToLower()[0] is not 't' or '1') return $"{CommandLineColor.BLUE}Cleared {c} lines";
             return string.Empty;
         }
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -10,8 +10,8 @@ namespace RayWrapper.Objs
 {
     public class Slider : GameObject
     {
-        public ColorModule backColor = new(Color.BLACK);
-        public ColorModule fillColor = new(Color.RAYWHITE);
+        public ColorModule backColor = new(BLACK);
+        public ColorModule fillColor = new(RAYWHITE);
         public ColorModule hoverColor = new(150);
         public bool isVertical;
         public Action<float> onDone;
@@ -37,11 +37,11 @@ namespace RayWrapper.Objs
         protected override void UpdateCall()
         {
             if (IsMouseOccupied && mouseOccupier != this) return;
-            if (IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && AssembleRectFromVec(Position, _size).IsMouseIn())
+            if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && AssembleRectFromVec(Position, _size).IsMouseIn())
             {
                 mouseOccupier = this;
             }
-            else if (!IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON) && mouseOccupier == this)
+            else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON) && mouseOccupier == this)
             {
                 mouseOccupier = null;
                 onDone?.Invoke(value);

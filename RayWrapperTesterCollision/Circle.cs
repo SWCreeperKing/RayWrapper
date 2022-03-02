@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.CollisionSystem;
 
@@ -20,6 +20,6 @@ namespace RayWrapperTesterCollision
         }
 
         public override void RenderShape(Vector2 pos) =>
-            Raylib.DrawCircle((int) pos.X, (int) pos.Y, radius, Color.DARKBLUE.EditColor(a: -100));
+            Raylib.DrawCircle((int) pos.X, (int) pos.Y, radius, Raylib.DARKBLUE.EditColor(a: -100));
     }
 }
