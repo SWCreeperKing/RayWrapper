@@ -36,11 +36,11 @@ namespace RayWrapper.Objs
             textMode == TextMode.SizeToText ? _textSizeCache + new Vector2(8) : _back.Size();
 
         public ColorModule backColor = new(50);
-        public Action clicked;
         public ColorModule fontColor = new(192);
+        public ColorModule outlineColor = new(Color.BLACK);
+        public Action clicked;
         public int fontSize = 24;
         public bool outline = false;
-        public ColorModule outlineColor = new(Color.BLACK);
         public float spacing = 1.5f;
         public Actionable<string> text;
         public Actionable<TextMode> textMode;
@@ -60,8 +60,10 @@ namespace RayWrapper.Objs
         private Vector2 _alignCenter;
         private Vector2 _alignRight;
 
-        public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft) =>
+        public Label(Rectangle back, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft)
+        {
             (_back, this.text, this.textMode) = (back, text, textMode);
+        }
 
         public Label(Vector2 pos, string text = "Untitled Label", TextMode textMode = TextMode.AlignLeft)
         {
@@ -79,8 +81,8 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var hover = useBaseHover && Rect.IsMouseIn() && !IsMouseOccupied;
-            Color realFc = hover ? ((Color)fontColor).MakeLighter() : fontColor;
-            Color realBc = hover ? ((Color)backColor).MakeLighter() : backColor;
+            Color realFc = hover ? ((Color) fontColor).MakeLighter() : fontColor;
+            Color realBc = hover ? ((Color) backColor).MakeLighter() : backColor;
             CheckText();
 
             void DrawTxt(Vector2 pos) => DrawTextEx(GetDefFont(fontSize), _textCache, pos, fontSize, spacing, realFc);
@@ -93,7 +95,7 @@ namespace RayWrapper.Objs
 
             if (textMode != TextMode.SizeToText) DrawBack(_back);
 
-            switch ((TextMode)textMode)
+            switch ((TextMode) textMode)
             {
                 case TextMode.AlignLeft:
                     DrawTxt(_alignLeft);
@@ -115,7 +117,7 @@ namespace RayWrapper.Objs
                     throw new ArgumentOutOfRangeException();
             }
 
-            var t = (string)(tooltip ?? string.Empty);
+            var t = (string) (tooltip ?? string.Empty);
             if (Rect.IsMouseIn() && t != string.Empty && !IsMouseOccupied) Rect.DrawTooltip(t);
         }
 

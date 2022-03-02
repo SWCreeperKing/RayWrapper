@@ -230,7 +230,7 @@ namespace RayWrapper
         /// <param name="fontColor"><see cref="Color"/> to draw with</param>
         /// <param name="fontSize">size of text</param>
         /// <param name="spacing">spacing of the characters</param>
-        public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, int fontSize = 24,
+        public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, float fontSize = 24,
             float spacing = 1.5f)
         {
             DrawTextEx(font, text, pos, fontSize, spacing, fontColor);

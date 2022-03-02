@@ -57,8 +57,8 @@ namespace RayWrapperTester
 
         public override void Init()
         {
-            FontManager.RegisterFont("cas", "CascadiaMono.ttf");
-            FontManager.SetDefFont("cas");
+            // FontManager.RegisterFont("cas", "CascadiaMono.ttf");
+            // FontManager.SetDefFont("cas");
 
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
