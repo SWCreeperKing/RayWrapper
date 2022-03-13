@@ -2,14 +2,13 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Vars;
-using static RayWrapper.FontManager;
 using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
     public class AlertBox : GameObject
     {
+        // todo: add styles a bit later
         public enum Result
         {
             Yes,
@@ -53,17 +52,15 @@ namespace RayWrapper.Objs
                 yes = new Button(Vector2.Zero, "yes");
                 no.Clicked += () => Clicked(Result.No);
                 yes.Clicked += () => Clicked(Result.Yes);
-                no.baseL.CheckText();
-                yes.baseL.CheckText();
             }
 
             close = new Button(Vector2.Zero, informationBox ? "close" : "x");
             close.Clicked += () => Clicked(Result.Close);
-            close.baseL.CheckText();
 
+            var font = Text.Style.DefaultFont ?? Raylib.GetFontDefault();
             var halfScreen = WindowSize / 2;
-            var messageSize = GetDefFont(30).MeasureText(message, 30);
-            var titleSize = GetDefFont().MeasureText(title);
+            var messageSize = font.MeasureText(message, 30);
+            var titleSize = font.MeasureText(title);
             var closeSize = close.Size;
             var noSize = informationBox ? Vector2.Zero : no.Size;
             var yesSize = informationBox ? Vector2.Zero : yes.Size;
@@ -113,8 +110,9 @@ namespace RayWrapper.Objs
             var halfScreen = screen / 2;
             new Rectangle(0, 0, screen.X, screen.Y).Draw(new Color(0, 0, 0, 150));
             _rect.Draw(rectColor);
-            GetDefFont(30).DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
-            GetDefFont().DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
+            var font = Text.Style.DefaultFont ?? Raylib.GetFontDefault();
+            font.DrawCenterText(halfScreen - new Vector2(0, _rect.height / 2 - 15), title, titleColor, 30);
+            font.DrawCenterText(halfScreen - new Vector2(0, 10), message, messageColor);
 
             close.Render();
             if (informationBox) return;
@@ -128,7 +126,7 @@ namespace RayWrapper.Objs
         public void Show() => alertBox = this;
 
         /// <summary>
-        /// hids the alertbox
+        /// hides the alertbox
         /// </summary>
         public void Hide() => alertBox = null;
     }

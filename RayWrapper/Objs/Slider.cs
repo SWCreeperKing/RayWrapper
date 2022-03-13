@@ -10,12 +10,11 @@ namespace RayWrapper.Objs
 {
     public class Slider : GameObject
     {
-        public ColorModule backColor = new(BLACK);
-        public ColorModule fillColor = new(RAYWHITE);
-        public ColorModule hoverColor = new(150);
+        public static Style defaultStyle = new();
+
+        public Style style = defaultStyle.Copy();
         public bool isVertical;
         public Action<float> onDone;
-        public int outlineThickness = 3;
         public float value;
 
         private readonly Vector2 _size;
@@ -32,7 +31,7 @@ namespace RayWrapper.Objs
             set => _pos = value;
         }
 
-        public override Vector2 Size => _size + new Vector2(outlineThickness);
+        public override Vector2 Size => _size + new Vector2(style.outlineStyle.thickness);
 
         protected override void UpdateCall()
         {
@@ -55,11 +54,31 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var newS = new Vector2(_size.X * (isVertical ? 1 : value), _size.Y * (isVertical ? value : 1));
-            var rect = AssembleRectFromVec(Position, _size).Grow(outlineThickness);
-            rect.DrawRounded(backColor);
-            AssembleRectFromVec(Position, newS).DrawRounded(fillColor);
-            if (IsMouseOccupied && mouseOccupier != this) return;
-            if (rect.IsMouseIn() || mouseOccupier == this) rect.DrawRoundedLines(hoverColor);
+            var back = AssembleRectFromVec(Position, _size);
+            var rect = AssembleRectFromVec(Position, newS);
+            style.Draw(back, rect, back.IsMouseIn() || mouseOccupier == this);
+        }
+
+        public class Style : IStyle<Style>
+        {
+            public RectStyle backStyle = new() { color = BLACK };
+            public RectStyle fillStyle = new() { color = RAYWHITE };
+            public OutlineStyle outlineStyle = new() { color = new ColorModule(150) };
+
+            public void Draw(Rectangle back, Rectangle rect, bool hover)
+            {
+                backStyle.Draw(back);
+                fillStyle.Draw(rect);
+                if (hover) outlineStyle.Draw(back.Grow(5));
+            }
+
+            public Style Copy()
+            {
+                return new Style
+                {
+                    backStyle = backStyle.Copy(), fillStyle = fillStyle.Copy(), outlineStyle = outlineStyle.Copy()
+                };
+            }
         }
     }
 }

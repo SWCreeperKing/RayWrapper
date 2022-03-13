@@ -5,12 +5,13 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.FontManager;
 
 namespace RayWrapper.Objs
 {
     public class TabView : GameObject
     {
+        public static Style defaultStyle = new();
+
         public override Vector2 Position
         {
             get => _rect.Pos();
@@ -24,29 +25,27 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _rect.Size();
 
+        public Style style = defaultStyle.Copy();
         public bool drawIfLowTabs = false;
         public bool outline = true;
         public Action<string, int> tabChanged = null;
 
         private readonly Scrollbar _bar;
         private readonly Color _baseColor = new(95, 95, 95, 255);
-        private bool _closable;
-        private readonly IList<Label> _closing = new List<Label>();
-        private string _currentTab;
         private readonly Color _hoverColor = new(65, 65, 65, 255);
-        private float _offset;
-        private readonly int _padding = 7;
-        private Rectangle _rect;
         private readonly IDictionary<string, Scene> _tabContents = new Dictionary<string, Scene>();
-        private readonly IDictionary<string, float> _tabLengths = new Dictionary<string, float>();
-        private readonly IList<string> _tabOrder = new List<string>();
         private readonly IList<Label> _tabs = new List<Label>();
+        private readonly IList<string> _tabOrder = new List<string>();
+        private readonly int _padding = 7;
+        private string _currentTab;
+        private float _offset;
+        private Rectangle _rect;
 
         public TabView(Vector2 pos, float width)
         {
-            _rect = new Rectangle(pos.X, pos.Y, width, 40);
-            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 40, width, 18), false)
-                { amountInvoke = () => GetTabLength() - _rect.width };
+            _rect = new Rectangle(pos.X, pos.Y, width, 35);
+            _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 35, width, 18), false)
+                { amountInvoke = () => GetTabLength() - _rect.width, style = style.scrollStyle };
             _bar.OnMoveEvent += f =>
             {
                 _offset = f;
@@ -54,37 +53,24 @@ namespace RayWrapper.Objs
             };
         }
 
-        public bool Closable
-        {
-            get => _closable;
-            set
-            {
-                _closable = value;
-                Refresh();
-                _bar.Update();
-                _bar.MoveBar(0);
-            }
-        }
-
         protected override void UpdateCall()
         {
             _bar.Update();
-            try
-            {
-                if (!GameBox.IsMouseOccupied)
-                {
-                    foreach (var t in _tabs) t.Update();
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                // forgor why it was here :/ but its here for a reason
-                // possibly thread stuffs
-            }
 
-            if (_closable)
-                foreach (var t in _closing)
-                    t.Update();
+            // imma just comment out the try catch for now
+            // try
+            // {
+            if (!GameBox.IsMouseOccupied)
+            {
+                foreach (var t in _tabs) t.Update();
+            }
+            // }
+            // catch (InvalidOperationException)
+            // {
+            //     // forgor why it was here :/ but its here for a reason
+            //     // possibly thread stuffs
+            // }
+
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
             _tabContents[_currentTab].Update();
         }
@@ -95,12 +81,9 @@ namespace RayWrapper.Objs
             {
                 _rect.MaskDraw(() =>
                 {
-                    foreach (var t in _tabs) t.Render();
+                    foreach (var l in _tabs) l.Render();
                 });
 
-                if (_closable)
-                    foreach (var t in _closing)
-                        t.Render();
                 if (outline) _rect.DrawHallowRect(BLACK);
                 if (_bar.Amount() > 1) _bar.Render();
             }
@@ -109,91 +92,86 @@ namespace RayWrapper.Objs
             _tabContents[_currentTab].Render();
         }
 
-        public void Refresh() => RefreshTabs();
+        public void Refresh() => ReCalculate();
 
-        public void RefreshTabs()
+        public void ReCalculate()
         {
-            _tabs.Clear();
             var startX = _rect.x - _offset;
-            var heightOff = outline ? 3 : 0;
-
-            foreach (var name in _tabOrder)
+            var hOff = outline ? 3 : 0;
+            foreach (var l in _tabs)
             {
-                if (startX + _tabLengths[name] + 25 <= _rect.x)
-                {
-                    startX += _tabLengths[name] + _padding + (_closable ? 25 : 0);
-                    continue;
-                }
+                var newPos = new Vector2(startX, _rect.y + hOff);
+                l.Position = newPos;
+                startX += l.Size.X + _padding;
+            }
+        }
 
-                if (startX + _tabLengths[name] > _rect.x)
+        private void NewTab(string name, int insert = -1)
+        {
+            Label l = new(new Vector2(0, _rect.y), name)
+            {
+                clicked = () =>
                 {
-                    Label l = new(new Rectangle(startX, _rect.y + heightOff, _tabLengths[name], 40 - heightOff * 2),
-                        name, Label.TextMode.AlignCenter)
+                    _currentTab = name;
+                    tabChanged?.Invoke(name, _tabOrder.IndexOf(name));
+                    Refresh();
+                },
+                style =
+                {
+                    drawHover = new Actionable<bool>(name != _currentTab),
+                    drawMode = Label.Style.DrawMode.AlignCenter,
+                    drawColor = (c, b) =>
                     {
-                        clicked = () =>
-                        {
-                            _currentTab = name;
-                            tabChanged?.Invoke(name, _tabOrder.IndexOf(name));
-                            Refresh();
-                        },
-                        useBaseHover = new Actionable<bool>(name != _currentTab),
-                        outline = true,
-                        backColor = new ColorModule(() => name == _currentTab ? _baseColor : _hoverColor)
-                    };
-                    _tabs.Add(l);
+                        if (name == _currentTab) return c.MakeDarker();
+                        return b ? c.MakeLighter() : c;
+                    }
                 }
+            };
 
-                startX += _tabLengths[name];
-
-                if (_closable && startX + 25 > _rect.x)
-                {
-                    Label l = new(new Rectangle(startX, _rect.y + heightOff, 25, 40 - heightOff * 2), "x",
-                        Label.TextMode.AlignCenter)
-                    {
-                        backColor = RED, clicked = () => RemoveTab(name), outline = true, useBaseHover = true
-                    };
-
-                    _tabs.Add(l);
-                    startX += 25 + _padding;
-                }
-                else startX += _padding + (_closable ? 25 : 0);
+            if (insert != -1)
+            {
+                _tabs.Insert(insert, l);
+                _tabOrder.Insert(insert, name);
+            }
+            else
+            {
+                _tabs.Add(l);
+                _tabOrder.Add(name);
             }
         }
 
         public void AddTab(string tabName, params IGameObject[] gobjs)
         {
             if (_tabContents.ContainsKey(tabName)) return;
-            _tabOrder.Add(tabName);
             _currentTab ??= tabName;
             var s = new Scene();
             s.RegisterGameObj(gobjs);
             _tabContents.Add(tabName, s);
-            _tabLengths.Add(tabName, GetDefFont().MeasureText($" {tabName} ").X);
+            NewTab(tabName);
             Refresh();
         }
 
         public void InsertTab(string tabName, int index, params IGameObject[] gobjs)
         {
             if (_tabContents.ContainsKey(tabName)) return;
-            _tabOrder.Insert(index, tabName);
             _currentTab ??= tabName;
             var s = new Scene();
             s.RegisterGameObj(gobjs);
             _tabContents.Add(tabName, s);
-            _tabLengths.Add(tabName, GetDefFont().MeasureText($" {tabName} ").X);
+            NewTab(tabName, index);
             Refresh();
         }
 
         public void RemoveTab(string tabName)
         {
             if (!_tabContents.ContainsKey(tabName)) return;
-            _tabOrder.Remove(tabName);
             _tabContents.Remove(tabName);
-            _tabLengths.Remove(tabName);
+            _tabOrder.Remove(tabName);
             if (_currentTab == tabName) _currentTab = _tabContents.Any() ? _tabContents.Keys.First() : null;
             Refresh();
             _bar.Update();
             _bar.MoveBar(0);
+            Refresh();
         }
 
         public void AddToTab(string tabName, params IGameObject[] gobjs)
@@ -202,14 +180,24 @@ namespace RayWrapper.Objs
             _tabContents[tabName].RegisterGameObj(gobjs);
         }
 
-        public float GetTabLength() =>
-            _tabLengths.Values.Sum() + (_closable ? 25 * _tabLengths.Values.Count : 0) +
-            (_tabLengths.Count - 1) * _padding;
+        public float GetTabLength() => _tabs.Sum(t => t.Size.X) + (_tabs.Count - 1) * _padding;
 
         public string GetCurrentTab() => _currentTab;
-        public bool ContainsTab(string tabName) => _tabOrder.Contains(tabName);
+        public bool ContainsTab(string tabName) => _tabContents.ContainsKey(tabName);
 
-        public IGameObject[] GetTabContents(string tabName) =>
-            _tabContents.ContainsKey(tabName) ? _tabContents[tabName].GetRegistry() : null;
+        public IGameObject[] GetTabContents(string tabName)
+        {
+            return _tabContents.ContainsKey(tabName) ? _tabContents[tabName].GetRegistry() : null;
+        }
+
+        public class Style : IStyle<Style>
+        {
+            public Scrollbar.Style scrollStyle = new();
+
+            public Style Copy()
+            {
+                return new Style { scrollStyle = scrollStyle.Copy() };
+            }
+        }
     }
 }

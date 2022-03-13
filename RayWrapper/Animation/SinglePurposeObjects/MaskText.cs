@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.FontManager;
 
 namespace RayWrapper.Animation.SinglePurposeObjects
 {
@@ -11,6 +11,8 @@ namespace RayWrapper.Animation.SinglePurposeObjects
     /// </summary>
     public class MaskText : GameObject, ISizeable, IAlphable
     {
+        public static Text.Style defaultStyle = new();
+
         public override Vector2 Position
         {
             get => rect.Pos();
@@ -25,6 +27,7 @@ namespace RayWrapper.Animation.SinglePurposeObjects
             set => (_color, alpha) = (value, ((Color) value).a);
         }
 
+        public Text.Style style = defaultStyle.Copy();
         public int alpha = 255;
         public Actionable<string> text;
         public Rectangle rect;
@@ -32,8 +35,19 @@ namespace RayWrapper.Animation.SinglePurposeObjects
 
         private ColorModule _color = WHITE;
 
-        public MaskText(Actionable<string> text, Rectangle rect) => (this.text, this.rect) = (text, rect);
-        public MaskText(Rectangle rect) => this.rect = rect;
+        public MaskText(Rectangle rect) : this("", rect)
+        {
+        }
+
+        public MaskText(Actionable<string> text, Rectangle rect)
+        {
+            (this.text, this.rect) = (text, rect);
+            style.color = new ColorModule(() =>
+            {
+                var color = (Color) ColorMod;
+                return color.a != alpha ? color.SetAlpha(alpha) : color;
+            });
+        }
 
         protected override void UpdateCall()
         {
@@ -41,9 +55,8 @@ namespace RayWrapper.Animation.SinglePurposeObjects
 
         protected override void RenderCall()
         {
-            var color = (Color) ColorMod;
-            rect.Grow(2).MaskDraw(() =>
-                GetDefFont().DrawText(text, rect.Pos(), color.a != alpha ? color.SetAlpha(alpha) : color));
+            style.Draw(text, rect);
+            rect.Grow(2).MaskDraw(() => style.Draw(text, rect));
             if (tooltip is not null) rect.DrawTooltip(tooltip);
         }
 

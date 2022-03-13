@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Vars;
@@ -8,80 +9,131 @@ namespace RayWrapper.Objs
 {
     public class Text : GameObject
     {
-        public enum TextMode
-        {
-            Normal,
-            Wrap,
-            Center
-        }
+        public static Style defaultStyle = new();
 
         public override Vector2 Position
         {
             get => rect.Pos();
-            set
-            {
-                rect.MoveTo(value);
-                _pos = value;
-            }
+            set => rect.MoveTo(value);
         }
 
         public override Vector2 Size => rect.Size();
 
-        public TextMode mode = TextMode.Normal;
+        public Style style = defaultStyle.Copy();
         public Actionable<string> text;
         public Rectangle rect;
-        public ColorModule color;
-        public float spacing;
 
-        private int _fontSize;
-        private Font _font;
-        private Vector2 _pos;
-        private string _cachedText;
-
-        public Text(Actionable<string> text, Vector2 pos, ColorModule color = null, int fontSize = 24,
-            float spacing = 1.5f)
+        public Text(Actionable<string> text, Vector2 pos, ColorModule color = null, int fontSize = 24)
         {
-            (this.text, _pos, this.color, _font, this.spacing, _cachedText, _fontSize) = (text, pos,
-                color ?? SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text, fontSize);
+            (this.text, style.fontSize) = (text, fontSize);
+            if (color is not null) style.color = color;
             rect = RectWrapper.AssembleRectFromVec(pos, MeasureText());
         }
 
-        public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, int fontSize = 24,
-            float spacing = 1.5f)
+        public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, int fontSize = 24)
         {
-            (this.rect, this.text, _pos, this.color, _font, this.spacing, _cachedText, _fontSize) = (rect, text,
-                rect.Pos(), color ?? SKYBLUE, FontManager.GetDefFont(fontSize), spacing, text, fontSize);
+            (this.rect, this.text, style.fontSize) = (rect, text, fontSize);
+            if (color is not null) style.color = color;
         }
 
+        [Obsolete("Not Used")]
         protected override void UpdateCall()
         {
-            if (!isVisible) return;
-            _cachedText = text;
         }
 
-        protected override void RenderCall()
+        protected override void RenderCall() => style.Draw(text, rect);
+        public Vector2 MeasureText() => style.MeasureText(text);
+
+        public class Style : IStyle<Style>
         {
-            switch (mode)
+            public static Font? DefaultFont { get; private set; }
+
+            public Font Font
             {
-                case TextMode.Normal:
-                    Draw();
-                    break;
-                case TextMode.Wrap:
-                    DrawWrap();
-                    break;
-                case TextMode.Center:
-                    DrawCenter();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                get => _font ?? (DefaultFont ?? GetFontDefault());
+                set => SetFont(value);
+            }
+
+            public TextureFilter Filter { get; private set; } = TextureFilter.TEXTURE_FILTER_BILINEAR;
+
+            public ColorModule color = SKYBLUE;
+            public float fontSize = 24;
+            public float spacing = 1.5f;
+            public bool useWordWrap = true;
+            public DrawMode drawMode = DrawMode.Normal;
+
+            private Font? _font;
+
+            public enum DrawMode
+            {
+                Normal,
+                Wrap,
+                Center
+            }
+
+            public void Draw(string text, Rectangle rect)
+            {
+                switch (drawMode)
+                {
+                    case DrawMode.Normal:
+                        Font.DrawText(text, rect.Pos(), color, fontSize, spacing);
+                        break;
+                    case DrawMode.Wrap:
+                        Font.DrawTextRec(text, rect, color, fontSize, spacing, useWordWrap);
+                        break;
+                    case DrawMode.Center:
+                        Font.DrawCenterText(rect.Center(), text, color, fontSize, spacing);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            public void Draw(string text, Vector2 pos)
+            {
+                switch (drawMode)
+                {
+                    case DrawMode.Wrap:
+                    case DrawMode.Normal:
+                        Font.DrawText(text, pos, color, fontSize, spacing);
+                        break;
+                    case DrawMode.Center:
+                        Font.DrawCenterText(pos, text, color, fontSize, spacing);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            public static void SetDefaultFont(string fileName) => SetDefaultFont(LoadFont(fileName));
+            public static void SetDefaultFont(Font font) => DefaultFont = font;
+
+            public void SetFont(string fileName) => SetFont(LoadFont(fileName));
+
+            public void SetFont(Font font)
+            {
+                _font = font;
+                SetTextureFilter(Font.texture, Filter);
+            }
+
+            public void SetFilter(TextureFilter filter)
+            {
+                Filter = filter;
+                SetTextureFilter(Font.texture, Filter);
+            }
+
+            public Vector2 MeasureText(string text) => Font.MeasureText(text, fontSize, spacing);
+
+            public Style Copy()
+            {
+                var clone = new Style
+                {
+                    color = color.Copy(), spacing = spacing, drawMode = drawMode, fontSize = fontSize
+                };
+                clone.SetFont(Font);
+                clone.SetFilter(Filter);
+                return clone;
             }
         }
-
-        public void SetFont(string fontName, int size) => _font = FontManager.GetFont(fontName, _fontSize = size);
-        public void SetSize(Vector2 newSize) => rect = rect.SetSize(newSize);
-        public Vector2 MeasureText() => _font.MeasureText(_cachedText, _fontSize, spacing);
-        public void Draw() => _font.DrawText(_cachedText, _pos, color, _fontSize, spacing);
-        public void DrawWrap() => _font.DrawTextRec(_cachedText, rect, color, _fontSize, spacing);
-        public void DrawCenter() => _font.DrawCenterText(rect.Center(), _cachedText, color, _fontSize, spacing);
     }
 }

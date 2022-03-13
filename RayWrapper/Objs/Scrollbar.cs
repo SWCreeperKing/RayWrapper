@@ -10,15 +10,14 @@ namespace RayWrapper.Objs
 {
     public class Scrollbar : GameObject
     {
-        public Func<float> amountInvoke;
+        public static Style defaultStyle = new();
+
+        public Style style = defaultStyle.Copy();
         public Rectangle bar = RectWrapper.Zero;
-        public ColorModule barColor = new(116, 116, 116);
-        public int minSizePercent = 20;
         public Rectangle container;
-        public ColorModule containerColor = new(78, 78, 78);
+        public int minSizePercent = 20;
         public bool isVertical;
-        public bool outline = true;
-        public ColorModule outlineColor = new(BLACK);
+        public Func<float> amountInvoke;
 
         private readonly IList<Action<float>> _onMove = new List<Action<float>>();
         private float _trueSize;
@@ -108,7 +107,7 @@ namespace RayWrapper.Objs
 
             if (mouseOccupier != this)
             {
-                if (!IsMouseOccupied && Raylib.IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+                if (!IsMouseOccupied && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
                     container.IsMouseIn())
                     MoveBar((isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X) + _visibleSize / 2);
 
@@ -123,14 +122,42 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             if (Amount() == 1) return; // ignore loss of precision
-            var hover = IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn();
-            container.DrawRounded(hover ? ((Color) containerColor).MakeLighter() : containerColor, .4f);
-            bar.DrawRounded(hover ? ((Color) barColor).MakeLighter() : barColor, .4f);
-            if (!outline) return;
-            container.DrawRoundedLines(outlineColor, .4f);
-            bar.DrawRoundedLines(outlineColor, .4f);
+            style.Draw(container, bar,
+                IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn());
         }
 
         public float Amount() => Math.Max(amountInvoke?.Invoke() ?? 0, 1);
+
+        public class Style : IStyle<Style>
+        {
+            public RectStyle containerStyle = new();
+            public RectStyle barStyle = new();
+            public OutlineStyle containerOutline = new();
+            public OutlineStyle barOutline = new();
+            public ColorModule containerColor = new(78, 78, 78);
+            public ColorModule barColor = new(116, 116, 116);
+            public bool drawOutline = true;
+
+            public void Draw(Rectangle container, Rectangle bar, bool hover)
+            {
+                containerStyle.color = hover ? ((Color) containerColor).MakeLighter() : (Color) containerColor;
+                barStyle.color = hover ? ((Color) barColor).MakeLighter() : (Color) barColor;
+                containerStyle.Draw(container);
+                containerOutline.Draw(container);
+                if (!drawOutline) return;
+                barStyle.Draw(bar);
+                barOutline.Draw(bar);
+            }
+
+            public Style Copy()
+            {
+                return new Style
+                {
+                    containerStyle = containerStyle.Copy(), containerOutline = containerOutline.Copy(),
+                    containerColor = containerColor.Copy(), barStyle = barStyle.Copy(), barOutline = barOutline.Copy(),
+                    barColor = barColor.Copy(), drawOutline = drawOutline
+                };
+            }
+        }
     }
 }

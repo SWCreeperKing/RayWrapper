@@ -12,7 +12,6 @@ using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
 using RayWrapperTester.Animations;
-using static Raylib_CsLo.Color;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
@@ -53,14 +52,11 @@ namespace RayWrapperTester
             public int i = 6;
         }
 
-        static void Main(string[] args) => new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
+        static void Main() => new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
 
         public override void Init()
         {
-            // FontManager.fontFilter = TextureFilter.TEXTURE_FILTER_POINT;
-            // GameBox.targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
-            FontManager.RegisterFont("cas", "CascadiaMono.ttf");
-            FontManager.SetDefFont("cas");
+            Text.Style.SetDefaultFont("CascadiaMono.ttf");
 
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
@@ -80,13 +76,21 @@ namespace RayWrapperTester
 
             _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name")
             {
-                Mode = new Actionable<Label.TextMode>(() => (Label.TextMode) (_buttonInc % 3)),
                 isDisabled = new Actionable<bool>(false, () => _buttonInc > 10)
             };
-            _b.Clicked += () => _buttonInc++;
+            _b.Clicked += () =>
+            {
+                _buttonInc++;
+                _b.baseL.style.drawMode = (Label.Style.DrawMode) (_buttonInc % 5);
+            };
 
-            _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!",
-                Label.TextMode.WrapText);
+            _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!")
+            {
+                style =
+                {
+                    drawMode = Label.Style.DrawMode.WrapText
+                }
+            };
 
             var arr = new List<string>
                 { "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no" };
@@ -96,7 +100,7 @@ namespace RayWrapperTester
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
                 "option option", "option setting", "option N");
 
-            _tbv = new(Vector2.Zero, WindowSize.X);
+            _tbv = new TabView(Vector2.Zero, WindowSize.X);
             _tbv.AddTab("Button Test", _b,
                 new EmptyRender(() =>
                     DrawText($"Hello, world! [i] is {_buttonInc}", 12, 60, 20, new Color(174, 177, 181, 255))));
@@ -128,7 +132,7 @@ namespace RayWrapperTester
                 new EmptyRender(() =>
                     AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip("Testing Tooltip")));
 
-            Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Label.TextMode.SizeToText);
+            Button listViewButton = new(new Vector2(700, 100), "Clear");
             listViewButton.Clicked += () =>
             {
                 arr.Clear();
@@ -137,8 +141,7 @@ namespace RayWrapperTester
 
             _tbv.AddTab("ListView Test", _lv, listViewButton);
             _tbv.AddTab("DropDown Test", _dd);
-            _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
-                new Checkbox(pos + new Vector2(0, 50), "Circle") { isCircle = true });
+            _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"));
 
             TreeView tv = new(new NodeChain(new Box(Vector2.One, () => "hi") { completed = true },
                 new Box(new Vector2(1, 3), () => "hi2") { completed = true },
@@ -164,22 +167,21 @@ namespace RayWrapperTester
 
             _tbv.AddTab("KeyButton Test", kb);
 
-            var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Label.TextMode.SizeToText);
-            var bb = new Button(AssembleRectFromVec(pos + new Vector2(0, 60), new Vector2()), "Test info",
-                Label.TextMode.SizeToText);
+            var b = new Button(pos, "Test");
+            var bb = new Button(pos + new Vector2(0, 60), "Test info");
             b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
             bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
 
             _tbv.AddTab("AlertBox Test", b, bb);
             _tbv.AddTab("Input Test", new InputBox(pos));
 
-            Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Label.TextMode.SizeToText);
+            Button aniB = new(new Vector2(20, 80), "Queue Animation");
             aniB.Clicked += () => Animator.AddToAnimationQueue(new TestAnimation1());
 
-            Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Label.TextMode.SizeToText);
+            Button aniBC = new(new Vector2(20, 120), "Add Animation");
             aniBC.Clicked += () => Animator.AddAnimation(new Mover());
 
-            Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Label.TextMode.SizeToText);
+            Button aniBT = new(new Vector2(20, 160), "Queue Trigger Animation");
             aniBT.Clicked += () => Animator.AddToAnimationQueue(new InteractionAnimation());
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
@@ -199,7 +201,7 @@ namespace RayWrapperTester
                     });
             }));
 
-            graf = new(new Rectangle(50, 100, 1000, 400));
+            graf = new Graph(new Rectangle(50, 100, 1000, 400));
             _tbv.AddTab("Graphy", graf,
                 new Text(new Actionable<string>(() => $"A: {graf.Amount()}"), new Vector2(120, 520)));
             graf.minConstraint = new Actionable<float>(() => currGraf == 4 ? -6 : float.MinValue);
@@ -223,7 +225,6 @@ namespace RayWrapperTester
             else if (IsKeyDown(KeyboardKey.KEY_RIGHT)) _l.Position += new Vector2(3, 0);
             if (IsKeyDown(KeyboardKey.KEY_UP)) _l.Position += new Vector2(0, -3);
             else if (IsKeyDown(KeyboardKey.KEY_DOWN)) _l.Position += new Vector2(0, 3);
-            if (IsKeyPressed(KeyboardKey.KEY_SPACE)) _tbv.Closable = !_tbv.Closable;
 
             if (!IsKeyPressed(KeyboardKey.KEY_R)) return;
             currGraf++;

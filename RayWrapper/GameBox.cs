@@ -88,7 +88,7 @@ namespace RayWrapper
         public static bool isDebugTool;
         public static bool showFps = false;
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
-        public static IGameObject debugContext = null;
+        public static GameObject debugContext = null;
         public static IGameObject mouseOccupier;
         public static Vector2 fpsPos = Vector2.One;
         public static Vector2 mousePos;
@@ -100,6 +100,7 @@ namespace RayWrapper
         public static ColorModule letterboxColor = new(20);
         public static List<SlotBase> dragCollision = new();
         public static List<string> tooltip = new();
+        public static Action<string[]> drawTooltip; 
 
         private static readonly List<ISave> SaveList = new();
         private static Task _collisionLoop;
@@ -128,11 +129,27 @@ namespace RayWrapper
                 SetTraceLogCallback(&Logger.RayLog);
             }
 
+            drawTooltip = strArr =>
+            {
+                var text = string.Join("\n", strArr);
+                var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
+                if (mousePos.Y > WindowSize.Y / 2) quad += 2;
+                var defFont = Text.Style.DefaultFont ?? GetFontDefault();
+                var textSize = defFont.MeasureText(text);
+                Vector2 pos = new(mousePos.X - (quad % 2 != 0 ? textSize.X : 0),
+                    mousePos.Y - (quad > 2 ? textSize.Y : -33));
+                var rect = AssembleRectFromVec(pos, textSize).Grow(4);
+                rect.Draw(baseTooltipBackColor);
+                rect.DrawHallowRect(((Color)baseTooltipColor).MakeDarker());
+                defFont.DrawText(text, pos, baseTooltipColor);
+            };
+            
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (GameBox.scene, WindowSize) = (scene, windowSize);
             screenGrid = new ScreenGrid();
             InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
+            RayGui.GuiLoadStyleDefault();
             if (iconPath != string.Empty) SetWindowIcon(LoadImage(iconPath));
             _target = LoadRenderTexture((int) windowSize.X, (int) windowSize.Y);
             if (singleConsole is null)
@@ -296,19 +313,12 @@ namespace RayWrapper
             {
                 tooltip.Add(
                     $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)}");
+                if (debugContext?.debugString is not null) tooltip.Add(debugContext.debugString);
             }
 
             if (tooltip.Any())
             {
-                var text = string.Join("\n", tooltip);
-                var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
-                if (mousePos.Y > WindowSize.Y / 2) quad += 2;
-                var defFont = FontManager.GetDefFont();
-                var textSize = defFont.MeasureText(text);
-                Vector2 pos = new(mousePos.X - (quad % 2 != 0 ? textSize.X : 0),
-                    mousePos.Y - (quad > 2 ? textSize.Y : -33));
-                AssembleRectFromVec(pos, textSize).Grow(4).Draw(baseTooltipBackColor);
-                defFont.DrawText(text, pos, baseTooltipColor);
+                drawTooltip.Invoke(tooltip.ToArray());
                 tooltip.Clear();
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
@@ -9,13 +10,15 @@ namespace RayWrapper.Objs
 {
     public class Checkbox : GameObject
     {
+        public static Style defaultStyle = new();
+
         public string Text
         {
-            get => _text.text;
+            get => _text;
             set
             {
-                _text.text = value;
-                _textLength = _text.MeasureText().X;
+                _text = value;
+                _textLength = style.textStyle.MeasureText(_text).X;
                 _textBox = new Vector2(35 + _textLength, 40);
             }
         }
@@ -26,34 +29,31 @@ namespace RayWrapper.Objs
             set
             {
                 _pos = value;
-                _text.Position = value + _textOff;
+                _textPos = value + _textOff;
             }
         }
 
         public override Vector2 Size => _textBox;
 
+        public Style style = defaultStyle.Copy();
         public Action<bool> checkChange;
-        public ColorModule checkedColor = new(60, 170, 80);
-        public ColorModule emptyColor = new(170);
-        public ColorModule hoverColor = new(255);
-        public ColorModule textColor = new(192);
         public bool isChecked;
-        public bool isCircle;
 
         private readonly Vector2 _posOff = new(5);
         private readonly Vector2 _size = new(20);
         private readonly Vector2 _textOff = new(35, 5);
 
         private Vector2 _pos;
-
-        private float _textLength;
-        private Text _text;
+        private Vector2 _textPos;
         private Vector2 _textBox;
+        private string _text;
+        private float _textLength;
 
         public Checkbox(Vector2 pos, string text = "Untitled Checkbox")
         {
             _pos = pos;
-            _text = new Text(text, pos + _textOff, new ColorModule(() => textColor));
+            _text = text;
+            _textPos = pos + _textOff;
             Text = text;
         }
 
@@ -68,23 +68,35 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var rect = AssembleRectFromVec(Position + _posOff, _size);
-            var mouseIsIn = AssembleRectFromVec(Position, _textBox).IsMouseIn() &&
-                            !IsMouseOccupied;
-            
-            if (isCircle)
+            var mouseIsIn = AssembleRectFromVec(Position, _textBox).IsMouseIn() && !IsMouseOccupied;
+
+            style.Draw(_text, _textPos, isChecked, mouseIsIn, rect.Grow(3), rect.Shrink(3));
+        }
+
+        public class Style : IStyle<Style>
+        {
+            public RectStyle check = new() { color = new ColorModule(1, 193, 1) };
+            public OutlineStyle outsideBase = new() { color = new ColorModule(170) };
+            public OutlineStyle outsideHover = new() { color = new ColorModule(255) };
+            public Text.Style textStyle = new() { color = new ColorModule(192) };
+
+            public void Draw(string text, Vector2 textPos, bool isChecked, bool mouseIsIn, Rectangle outside,
+                Rectangle inside)
             {
-                if (isChecked) rect.DrawCircle(checkedColor);
-                rect.DrawHallowCircle(emptyColor);
-                if (mouseIsIn) rect.DrawHallowCircle(hoverColor);
-            }
-            else
-            {
-                if (isChecked) rect.DrawRounded(checkedColor, .35f);
-                rect.DrawRoundedLines(emptyColor, .35f);
-                if (mouseIsIn) rect.DrawRoundedLines(hoverColor, .35f);
+                if (isChecked) check.Draw(inside);
+                if (mouseIsIn) outsideHover.Draw(outside);
+                else outsideBase.Draw(outside);
+                textStyle.Draw(text, textPos);
             }
 
-            _text.Draw();
+            public Style Copy()
+            {
+                return new Style
+                {
+                    check = check.Copy(), outsideBase = outsideBase.Copy(), outsideHover = outsideHover.Copy(),
+                    textStyle = textStyle.Copy()
+                };
+            }
         }
     }
 }

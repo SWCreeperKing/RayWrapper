@@ -8,6 +8,8 @@ namespace RayWrapper.Objs
 {
     public class ListView : GameObject
     {
+        public static Style defaultStyle = new();
+
         public override Vector2 Position
         {
             get => _bounds.Pos();
@@ -21,10 +23,8 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _bounds.Size();
 
+        public Style style = defaultStyle.Copy();
         public Actionable<string> tooltip = new(string.Empty);
-        public ColorModule backColor = new(50);
-        public ColorModule fontColor = new(192);
-        public ColorModule selectColor = new(60, 60, 100);
         public Sound clickSound;
         public Func<int> arrayLength;
         public Func<int, Color> backColors;
@@ -67,8 +67,9 @@ namespace RayWrapper.Objs
             {
                 _labels[i] = new Label(new Rectangle(0, 0, _bounds.width, labelHeight))
                 {
-                    useBaseHover = new Actionable<bool>(() => _individualClick is not null), updateReturnIfNonVis = true
+                    style = style.labelStyle.Copy(), updateReturnIfNonVis = true
                 };
+                _labels[i].style.drawHover = new Actionable<bool>(() => _individualClick is not null);
             }
 
             _bar.OnMoveEvent += UpdateLabels;
@@ -120,15 +121,16 @@ namespace RayWrapper.Objs
                     };
                 }
 
-                l.Position = new Vector2(_bounds.x, y + labelPadding * i);
-                l.backColor =
+                l.style.backColor =
                     new ColorModule(() =>
                         place == _lastSelect && _individualClick is not null
-                            ? (Color) selectColor
-                            : backColors?.Invoke(place) ?? (Color) backColor);
+                            ? (Color) style.selectColor
+                            : backColors?.Invoke(place) ?? (Color) style.backColor);
 
-                l.fontColor =
-                    new ColorModule(fontColors?.Invoke(place) ?? (Color) fontColor);
+                l.style.fontColor =
+                    new ColorModule(fontColors?.Invoke(place) ?? (Color) style.fontColor);
+
+                l.Position = new Vector2(_bounds.x, y + labelPadding * i);
 
                 if (indivTooltip is null) continue;
                 l.tooltip = indivTooltip.Invoke(place);
@@ -141,7 +143,8 @@ namespace RayWrapper.Objs
             for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - (int) value); i++)
             {
                 _labels[i].text = this[(int) value + i];
-                _labels[i].fontColor = new ColorModule(fontColors?.Invoke((int) value + i) ?? (Color) fontColor);
+                _labels[i].style.fontColor =
+                    new ColorModule(fontColors?.Invoke((int) value + i) ?? (Color) style.fontColor);
             }
         }
 
@@ -201,6 +204,24 @@ namespace RayWrapper.Objs
             if (!doOnClick) return;
             click?.Invoke();
             IndividualClick?.Invoke(select);
+        }
+
+        public class Style : IStyle<Style>
+        {
+            public Scrollbar.Style scrollStyle = new();
+            public Label.Style labelStyle = new();
+            public ColorModule backColor = new(50);
+            public ColorModule fontColor = new(192);
+            public ColorModule selectColor = new(60, 60, 100);
+
+            public Style Copy()
+            {
+                return new Style
+                {
+                    scrollStyle = scrollStyle.Copy(), labelStyle = labelStyle.Copy(), backColor = backColor.Copy(),
+                    fontColor = fontColor.Copy(), selectColor = selectColor.Copy()
+                };
+            }
         }
     }
 }

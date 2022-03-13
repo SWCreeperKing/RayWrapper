@@ -12,6 +12,8 @@ namespace RayWrapper.Objs
 {
     public class InputBox : GameObject
     {
+        public static Style defaultStyle = new();
+
         // func: isControl?, cursor pos, max leng, current text
         // func return: (cursorpos, text)
         private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
@@ -61,6 +63,8 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _label.Size;
 
+        public Style style = defaultStyle.Copy();
+
         private int _curPos;
         private int _frameTime;
         private readonly Label _label;
@@ -77,9 +81,11 @@ namespace RayWrapper.Objs
             _show = maxCharacterShow;
             _max = maxCharacters;
             _label = new Label(
-                    new Rectangle(pos.X, pos.Y, 16 * _show, FontManager.GetDefFont().MeasureText("!").Y),
-                    string.Join(",", Enumerable.Repeat(" ", _show)))
-                { outline = new Actionable<bool>(true) };
+                new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y),
+                string.Join(",", Enumerable.Repeat(" ", _show)))
+            {
+                style = style.labelStyle
+            };
             _lastTime = GetTimeMs();
         }
 
@@ -130,7 +136,8 @@ namespace RayWrapper.Objs
                 (start, curs) = (_max - _show, _curPos - (_max - _show));
             }
 
-            _label.text = $"> {(_selected ? _text[start..end].Insert(curs, flash ? " " : "|") : _text[start..end])}";
+            _label.text =
+                $"{style.startChar} {(_selected ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)}") : _text[start..end])}";
             _label.Update();
         }
 
@@ -149,5 +156,20 @@ namespace RayWrapper.Objs
 
         public void Clear() => (_text, _curPos) = (string.Empty, 0);
         public void SetText(string text) => (_text, _curPos) = (text, text.Length);
+
+        public class Style : IStyle<Style>
+        {
+            public Label.Style labelStyle = new();
+            public char startChar = '>';
+            public char cursorChar = '|';
+
+            public Style Copy()
+            {
+                return new Style
+                {
+                    labelStyle = labelStyle.Copy(), startChar = startChar, cursorChar = cursorChar
+                };
+            }
+        }
     }
 }

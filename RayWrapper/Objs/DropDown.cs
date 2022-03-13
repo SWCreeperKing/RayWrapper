@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper.Vars;
 
 namespace RayWrapper.Objs
@@ -21,8 +22,8 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => text.Size + new Vector2(0, optionDisplay.Size.Y);
 
-        public char arrowDown = '↓';
-        public char arrowUp = '↑';
+        public char arrowDown = 'v';
+        public char arrowUp = '^';
         public int fontSize = 24;
         public bool isListVisible;
         public Action<string, int> onChange = null; // op, val
@@ -53,13 +54,17 @@ namespace RayWrapper.Objs
         public void UpdateChanges()
         {
             var longest = options.OrderByDescending(s => s.Length).First();
-            _size = FontManager.GetDefFont(fontSize).MeasureText($"^|||y{longest}", fontSize);
+            _size = (Text.Style.DefaultFont ?? Raylib.GetFontDefault()).MeasureText($"^|||y{longest}", fontSize);
             var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
             text = new Label(back, options[Value])
             {
-                fontSize = fontSize, outline = new Actionable<bool>(true),
-                clicked = () => isListVisible = !isListVisible, useBaseHover = true,
-                backColor = new ColorModule(50), fontColor = new ColorModule(192)
+               clicked = () => isListVisible = !isListVisible,
+               style =
+               {
+                   backColor = new ColorModule(50),
+                   fontColor = new ColorModule(192),
+                   drawHover = true
+               }
             };
 
             optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), (int) back.width,
