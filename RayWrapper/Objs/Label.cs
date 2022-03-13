@@ -17,7 +17,7 @@ namespace RayWrapper.Objs
             get
             {
                 return style.drawMode is Style.DrawMode.SizeToText
-                    ? AssembleRectFromVec(Rect.Pos(), style.textStyle.MeasureText(text) + new Vector2(4))
+                    ? AssembleRectFromVec(_back.Pos(), style.textStyle.MeasureText(text)).Grow(4)
                     : _back;
             }
         }
