@@ -32,7 +32,7 @@ namespace RayWrapper.Objs
         private Vector2 _pos;
         private Vector2 _posOffset = Vector2.Zero;
         private Vector2 _trueSize;
-        
+
         //todo: scrollbars borked
         public ScrollView(Rectangle rect)
         {

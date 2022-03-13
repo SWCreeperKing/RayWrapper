@@ -11,7 +11,16 @@ namespace RayWrapper.Objs
     public class Label : GameObject
     {
         public static Style defaultStyle = new();
-        public Rectangle Rect => _clickCheck ?? _back;
+
+        public Rectangle Rect
+        {
+            get
+            {
+                return style.drawMode is Style.DrawMode.SizeToText
+                    ? AssembleRectFromVec(Rect.Pos(), style.textStyle.MeasureText(text) + new Vector2(4))
+                    : _back;
+            }
+        }
 
         public override Vector2 Position
         {
@@ -27,7 +36,6 @@ namespace RayWrapper.Objs
         public Actionable<string> tooltip;
 
         private Rectangle _back;
-        private Rectangle? _clickCheck;
 
         // caching
         private bool _hoverCache;
@@ -46,7 +54,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            style.Draw(text, _back, out _clickCheck);
+            style.Draw(text, Rect);
             var t = (string) (tooltip ?? string.Empty);
             if (Rect.IsMouseIn() && t != string.Empty && !IsMouseOccupied) Rect.DrawTooltip(t);
         }
@@ -108,19 +116,17 @@ namespace RayWrapper.Objs
                 hasOgDrawColor = true;
             }
 
-            public void Draw(string text, Rectangle back, out Rectangle? check)
+            public void Draw(string text, Rectangle back)
             {
                 var textSize = textStyle.MeasureText(text);
                 var shrink = back.Shrink(4);
-                if (drawMode is DrawMode.SizeToText) back = AssembleRectFromVec(shrink.Pos(), textSize).Grow(4);
                 backStyle.Draw(back);
                 if (drawOutline) outline.Draw(back);
 
                 var hover = back.IsMouseIn();
-                check = back;
                 backStyle.color = drawColor.Invoke(backColor, hover);
                 textStyle.color = drawColor.Invoke(fontColor, hover);
-                
+
                 switch (drawMode)
                 {
                     case DrawMode.AlignLeft:
