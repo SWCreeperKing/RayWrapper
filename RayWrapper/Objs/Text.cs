@@ -130,7 +130,7 @@ namespace RayWrapper.Objs
                 {
                     color = color.Copy(), spacing = spacing, drawMode = drawMode, fontSize = fontSize
                 };
-                clone.SetFont(Font);
+                if (DefaultFont is not null || _font is not null) clone.SetFont(Font);
                 clone.SetFilter(Filter);
                 return clone;
             }
