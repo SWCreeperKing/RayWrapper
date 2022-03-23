@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 
-namespace RayWrapper.Vars
+namespace RayWrapper.Var_Interfaces
 {
     public interface IGameObject
     {

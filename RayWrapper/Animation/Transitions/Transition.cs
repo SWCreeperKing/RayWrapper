@@ -1,4 +1,4 @@
-﻿using RayWrapper.Vars;
+﻿using RayWrapper.Var_Interfaces;
 
 namespace RayWrapper.Animation.Transitions
 {

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
+    // todo: use scenes instead of just gameobjects
     public class TabView : GameObject
     {
         public static Style defaultStyle = new();
@@ -31,8 +33,6 @@ namespace RayWrapper.Objs
         public Action<string, int> tabChanged = null;
 
         private readonly Scrollbar _bar;
-        private readonly Color _baseColor = new(95, 95, 95, 255);
-        private readonly Color _hoverColor = new(65, 65, 65, 255);
         private readonly IDictionary<string, Scene> _tabContents = new Dictionary<string, Scene>();
         private readonly IList<Label> _tabs = new List<Label>();
         private readonly IList<string> _tabOrder = new List<string>();

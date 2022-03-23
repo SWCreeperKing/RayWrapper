@@ -14,6 +14,7 @@ using RayWrapper.Discord;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
@@ -57,6 +58,7 @@ namespace RayWrapper
     {
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
         public static readonly Random Random = new();
 
         #region temp collision performance vars
@@ -91,8 +93,11 @@ namespace RayWrapper
         public static GameObject debugContext = null;
         public static IGameObject mouseOccupier;
         public static Vector2 fpsPos = Vector2.One;
+
         public static Vector2 mousePos;
-        public static AlertBox alertBox = null;
+
+        // public static AlertBox alertBox = null;
+        public static Stack<AlertBase> alertQueue = new();
         public static ScreenGrid screenGrid;
         public static ColorModule backgroundColor = new(40);
         public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
@@ -100,7 +105,7 @@ namespace RayWrapper
         public static ColorModule letterboxColor = new(20);
         public static List<SlotBase> dragCollision = new();
         public static List<string> tooltip = new();
-        public static Action<string[]> drawTooltip; 
+        public static Action<string[]> drawTooltip;
 
         private static readonly List<ISave> SaveList = new();
         private static Task _collisionLoop;
@@ -113,7 +118,7 @@ namespace RayWrapper
         private static RenderTexture _target;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
-        
+
         public static int FPS
         {
             get => GetFPS();
@@ -140,10 +145,10 @@ namespace RayWrapper
                     mousePos.Y - (quad > 2 ? textSize.Y : -33));
                 var rect = AssembleRectFromVec(pos, textSize).Grow(4);
                 rect.Draw(baseTooltipBackColor);
-                rect.DrawHallowRect(((Color)baseTooltipColor).MakeDarker());
+                rect.DrawHallowRect(((Color) baseTooltipColor).MakeDarker());
                 defFont.DrawText(text, pos, baseTooltipColor);
             };
-            
+
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (GameBox.scene, WindowSize) = (scene, windowSize);
@@ -195,9 +200,22 @@ namespace RayWrapper
                 {
                     CalcMousePos();
                     if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && enableConsole) _isConsole = !_isConsole;
-                    else if (alertBox is null && !_isConsole) Update();
-                    else if (alertBox is not null && !_isConsole) alertBox.Update();
-                    else if (_isConsole) singleConsole.Update();
+                    else
+                        switch (alertQueue.Count)
+                        {
+                            case < 1 when !_isConsole:
+                                Update();
+                                break;
+                            case > 0 when !_isConsole:
+                                alertQueue.Peek().Update();
+                                break;
+                            default:
+                            {
+                                if (_isConsole) singleConsole.Update();
+                                break;
+                            }
+                        }
+
                     if (!enableConsole && _isConsole) _isConsole = false;
                     Render();
                 }
@@ -306,7 +324,11 @@ namespace RayWrapper
             else
             {
                 Animator.Render();
-                alertBox?.Render();
+                if (alertQueue.Count > 0)
+                {
+                    new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 75));
+                    alertQueue.Peek().Render();
+                }
             }
 
             if (isDebugTool)

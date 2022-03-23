@@ -5,7 +5,6 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Vars;
-using static Raylib_CsLo.MouseButton;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
@@ -29,7 +28,7 @@ namespace RayWrapper.Objs.TreeView
 
         protected override void UpdateCall()
         {
-            if (alertBox is not null || IsMouseOccupied && mouseOccupier != this) return;
+            if (alertQueue.Count > 0 || IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();
             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask.IsEqualTo(Zero)
                 ? AssembleRectFromVec(Vector2.Zero, WindowSize)

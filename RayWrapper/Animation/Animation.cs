@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RayWrapper.Animation.Transitions;
-using RayWrapper.Vars;
+using RayWrapper.Var_Interfaces;
 
 namespace RayWrapper.Animation
 {

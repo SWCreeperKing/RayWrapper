@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;

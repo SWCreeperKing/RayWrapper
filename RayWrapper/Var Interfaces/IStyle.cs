@@ -1,4 +1,4 @@
-﻿namespace RayWrapper.Vars
+﻿namespace RayWrapper.Var_Interfaces
 {
     public interface IStyle<T>
     {

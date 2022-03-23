@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RayWrapper.Var_Interfaces;
 
 namespace RayWrapper.Vars
 {

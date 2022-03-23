@@ -5,9 +5,7 @@ using System.Reflection;
 using System.Text;
 using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_CsLo.Color;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.RectWrapper;
 
 namespace RayWrapper
 {
@@ -549,6 +547,25 @@ namespace RayWrapper
             v2.X = cos * tx - sin * ty;
             v2.Y = sin * tx + cos * ty;
             return v2;
+        }
+
+        /// <summary>
+        /// Deconstructs a <see cref="Vector2"/> into it's x and y as a tuple
+        /// </summary>
+        /// <param name="v2">the <see cref="Vector2"/> to deconstruct</param>
+        /// <returns>the X and Y of <paramref name="v2"/> as a tuple</returns>
+        public static (float x, float y) Deconstruct(this Vector2 v2) => (v2.X, v2.Y);
+        
+        /// <summary>
+        /// Returns the center of 2 <see cref="Vector2"/>s (as if it was a <see cref="Rectangle"/>) as a <see cref="Vector2"/>
+        /// </summary>
+        /// <param name="pos">position of '<see cref="Rectangle"/>'</param>
+        /// <param name="size">size of '<see cref="Rectangle"/>'</param>
+        /// <returns>the center of the given <see cref="Rectangle"/></returns>
+        /// <remarks>like the <see cref="Rectangle"/>'s Center, but optimized for V2</remarks>
+        public static Vector2 Center(this Vector2 pos, Vector2 size)
+        {
+            return new Vector2(pos.X + size.X / 2, pos.Y + size.Y / 2);
         }
     }
 }

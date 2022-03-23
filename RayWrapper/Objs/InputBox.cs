@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
@@ -156,6 +157,7 @@ namespace RayWrapper.Objs
 
         public void Clear() => (_text, _curPos) = (string.Empty, 0);
         public void SetText(string text) => (_text, _curPos) = (text, text.Length);
+        public string GetText() => _text;
 
         public class Style : IStyle<Style>
         {

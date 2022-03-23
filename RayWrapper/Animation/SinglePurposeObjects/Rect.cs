@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;

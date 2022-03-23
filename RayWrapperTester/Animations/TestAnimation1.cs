@@ -4,7 +4,6 @@ using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.SinglePurposeObjects;
 using RayWrapper.Animation.Transitions;
-using RayWrapper.Objs;
 
 namespace RayWrapperTester.Animations
 {

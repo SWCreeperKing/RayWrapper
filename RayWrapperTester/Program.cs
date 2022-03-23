@@ -167,12 +167,14 @@ namespace RayWrapperTester
 
             _tbv.AddTab("KeyButton Test", kb);
 
-            var b = new Button(pos, "Test");
-            var bb = new Button(pos + new Vector2(0, 60), "Test info");
-            b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
-            bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
+            var b = new Button(pos, "Test Close");
+            var bb = new Button(pos + new Vector2(0, 60), "Test Confirm");
+            var bbb = new Button(pos + new Vector2(0, 120), "Test Input");
+            b.Clicked += () => new AlertClose("Testing", "Just testing alert boxes").Show();
+            bb.Clicked += () => new AlertConfirm("Testing", "Just testing alert\nboxes").Show();
+            bbb.Clicked += () => new AlertInput("Testing", "Hello?") { onResult = Logger.Log }.Show();
 
-            _tbv.AddTab("AlertBox Test", b, bb);
+            _tbv.AddTab("AlertBox Test", b, bb, bbb);
             _tbv.AddTab("Input Test", new InputBox(pos));
 
             Button aniB = new(new Vector2(20, 80), "Queue Animation");
