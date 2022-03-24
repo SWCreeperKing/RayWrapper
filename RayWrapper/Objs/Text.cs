@@ -59,6 +59,8 @@ namespace RayWrapper.Objs
             public ColorModule color = SKYBLUE;
             public float fontSize = 24;
             public float spacing = 1.5f;
+            public float rotation = 0;
+            public Actionable<Vector2> origin = Vector2.Zero;
             public bool useWordWrap = true;
             public DrawMode drawMode = DrawMode.Normal;
 
@@ -76,13 +78,13 @@ namespace RayWrapper.Objs
                 switch (drawMode)
                 {
                     case DrawMode.Normal:
-                        Font.DrawText(text, rect.Pos(), color, fontSize, spacing);
+                        Font.DrawText(text, rect.Pos(), color, fontSize, spacing, origin, rotation);
                         break;
                     case DrawMode.Wrap:
                         Font.DrawTextRec(text, rect, color, fontSize, spacing, useWordWrap);
                         break;
                     case DrawMode.Center:
-                        Font.DrawCenterText(rect.Center(), text, color, fontSize, spacing);
+                        Font.DrawCenterText(rect.Center(), text, color, fontSize, spacing, origin, rotation);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -95,10 +97,10 @@ namespace RayWrapper.Objs
                 {
                     case DrawMode.Wrap:
                     case DrawMode.Normal:
-                        Font.DrawText(text, pos, color, fontSize, spacing);
+                        Font.DrawText(text, pos, color, fontSize, spacing, origin, rotation);
                         break;
                     case DrawMode.Center:
-                        Font.DrawCenterText(pos, text, color, fontSize, spacing);
+                        Font.DrawCenterText(pos, text, color, fontSize, spacing, origin, rotation);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -124,11 +126,17 @@ namespace RayWrapper.Objs
 
             public Vector2 MeasureText(string text) => Font.MeasureText(text, fontSize, spacing);
 
+            public void SetOriginToCenterOfText(string text)
+            {
+                origin = MeasureText(text) / 2;
+            }
+            
             public Style Copy()
             {
                 var clone = new Style
                 {
-                    color = color.Copy(), spacing = spacing, drawMode = drawMode, fontSize = fontSize
+                    color = color.Copy(), spacing = spacing, drawMode = drawMode, fontSize = fontSize,
+                    rotation = rotation, origin = origin.Copy()
                 };
                 if (DefaultFont is not null || _font is not null) clone.SetFont(Font);
                 clone.SetFilter(Filter);

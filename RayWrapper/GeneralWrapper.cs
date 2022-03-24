@@ -56,9 +56,10 @@ namespace RayWrapper
         /// <param name="fontSize">the size of the font</param>
         /// <param name="spacing">the spacing of the characters</param>
         public static void DrawCenterText(this Font font, Vector2 pos, string text, Color color, float fontSize = 24,
-            float spacing = 1.5f)
+            float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {
-            DrawTextEx(font, text, pos - MeasureTextEx(font, text, fontSize, spacing) / 2, fontSize, spacing, color);
+            var center = pos - MeasureTextEx(font, text, fontSize, spacing) / 2;
+            DrawTextPro(font, text, center, origin ?? Vector2.Zero, rotation, fontSize, spacing, color);
         }
 
         /// <inheritdoc cref="DrawCenterText"/>
@@ -228,10 +229,12 @@ namespace RayWrapper
         /// <param name="fontColor"><see cref="Color"/> to draw with</param>
         /// <param name="fontSize">size of text</param>
         /// <param name="spacing">spacing of the characters</param>
+        /// <param name="origin">origin for rotation</param>
+        /// <param name="rotation">rotation for text</param>
         public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, float fontSize = 24,
-            float spacing = 1.5f)
+            float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {
-            DrawTextEx(font, text, pos, fontSize, spacing, fontColor);
+            DrawTextPro(font, text, pos, origin ?? Vector2.Zero, rotation, fontSize, spacing, fontColor);
         }
 
         /// <summary>
@@ -555,7 +558,7 @@ namespace RayWrapper
         /// <param name="v2">the <see cref="Vector2"/> to deconstruct</param>
         /// <returns>the X and Y of <paramref name="v2"/> as a tuple</returns>
         public static (float x, float y) Deconstruct(this Vector2 v2) => (v2.X, v2.Y);
-        
+
         /// <summary>
         /// Returns the center of 2 <see cref="Vector2"/>s (as if it was a <see cref="Rectangle"/>) as a <see cref="Vector2"/>
         /// </summary>

@@ -100,8 +100,15 @@ namespace RayWrapperTester
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
                 "option option", "option setting", "option N");
 
+            Text t = new("WWEEEEEE!!", WindowSize / 2);
+            t.style.SetOriginToCenterOfText("WWEEEEEE!!");
+            AddScheduler(new Scheduler(50, () =>
+            {
+                t.style.rotation = (t.style.rotation + 3) % 360;
+            }));
+
             _tbv = new TabView(Vector2.Zero, WindowSize.X);
-            _tbv.AddTab("Button Test", _b,
+            _tbv.AddTab("Button Test", _b, t,
                 new EmptyRender(() =>
                     DrawText($"Hello, world! [i] is {_buttonInc}", 12, 60, 20, new Color(174, 177, 181, 255))));
 
