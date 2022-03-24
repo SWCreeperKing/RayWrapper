@@ -17,9 +17,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-alpha</PackageVersion>
-        <PackageReleaseNotes>-moved to Raylib-CsLo from Raylib-Cs
--refactored and recoded a lot of stuff </PackageReleaseNotes>
+        <PackageVersion>0.4.0-alpha-2</PackageVersion>
+        <PackageReleaseNotes>-added text rotation</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

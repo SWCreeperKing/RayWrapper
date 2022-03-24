@@ -71,8 +71,8 @@ namespace RayWrapper.Objs
 
         public void Hide()
         {
-            onResult?.Invoke(ResultMessage());
             alertQueue.Pop();
+            onResult?.Invoke(ResultMessage());
         }
 
         public class Style : IStyle<Style>
