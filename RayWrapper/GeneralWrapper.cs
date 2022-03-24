@@ -55,6 +55,8 @@ namespace RayWrapper
         /// <param name="color">the <see cref="Color"/> to draw the text as</param>
         /// <param name="fontSize">the size of the font</param>
         /// <param name="spacing">the spacing of the characters</param>
+        /// <param name="origin">origin for rotation</param>
+        /// <param name="rotation">rotation for text in degrees</param>
         public static void DrawCenterText(this Font font, Vector2 pos, string text, Color color, float fontSize = 24,
             float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {
@@ -230,7 +232,7 @@ namespace RayWrapper
         /// <param name="fontSize">size of text</param>
         /// <param name="spacing">spacing of the characters</param>
         /// <param name="origin">origin for rotation</param>
-        /// <param name="rotation">rotation for text</param>
+        /// <param name="rotation">rotation for text in degrees</param>
         public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, float fontSize = 24,
             float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {

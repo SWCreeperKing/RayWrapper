@@ -101,7 +101,7 @@ namespace RayWrapperTester
                 "option option", "option setting", "option N");
 
             Text t = new("WWEEEEEE!!", WindowSize / 2);
-            t.style.SetOriginToCenterOfText("WWEEEEEE!!");
+            t.style.SetRotationOriginToCenter("WWEEEEEE!!");
             AddScheduler(new Scheduler(50, () =>
             {
                 t.style.rotation = (t.style.rotation + 3) % 360;
