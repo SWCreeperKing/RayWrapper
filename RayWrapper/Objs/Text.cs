@@ -59,7 +59,7 @@ namespace RayWrapper.Objs
             public ColorModule color = SKYBLUE;
             public float fontSize = 24;
             public float spacing = 1.5f;
-            public float rotation = 0;
+            public float rotation;
             public Actionable<Vector2> rotationOrigin = Vector2.Zero;
             public bool useWordWrap = true;
             public DrawMode drawMode = DrawMode.Normal;

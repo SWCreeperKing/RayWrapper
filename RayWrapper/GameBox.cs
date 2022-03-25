@@ -106,6 +106,8 @@ namespace RayWrapper
         public static List<SlotBase> dragCollision = new();
         public static List<string> tooltip = new();
         public static Action<string[]> drawTooltip;
+        public static int tooltipLayers = 1;
+        public static List<Tooltip> tooltips;
 
         private static readonly List<ISave> SaveList = new();
         private static Task _collisionLoop;
@@ -338,8 +340,16 @@ namespace RayWrapper
                 if (debugContext?.debugString is not null) tooltip.Add(debugContext.debugString);
             }
 
-            if (tooltip.Any())
+            if (tooltips.Any())
             {
+                var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
+                if (mousePos.Y > WindowSize.Y / 2) quad += 2;
+
+                foreach (var tt in tooltips.GetRange(tooltips.Count - tooltipLayers, tooltipLayers))
+                {
+                    tt.RenderTooltip((Tooltip.ScreenQuadrant) quad);
+                }
+
                 drawTooltip.Invoke(tooltip.ToArray());
                 tooltip.Clear();
             }
@@ -440,6 +450,26 @@ namespace RayWrapper
 
             isSuccessful = false;
             return null;
+        }
+
+        public class DefaultTooltip : Tooltip
+        {
+            public DefaultTooltip(Actionable<string> data) : base(data)
+            {
+            }
+            
+            protected override void RenderTooltip(ScreenQuadrant screenQuad, string data)
+            {
+                var text = string.Join("\n", data);
+                var defFont = Text.Style.DefaultFont ?? GetFontDefault();
+                var textSize = defFont.MeasureText(text);
+                Vector2 pos = new(mousePos.X - ((int) screenQuad % 2 != 0 ? textSize.X : 0),
+                    mousePos.Y - ((int) screenQuad > 2 ? textSize.Y : -33));
+                var rect = AssembleRectFromVec(pos, textSize).Grow(4);
+                rect.Draw(baseTooltipBackColor);
+                rect.DrawHallowRect(((Color) baseTooltipColor).MakeDarker());
+                defFont.DrawText(text, pos, baseTooltipColor);
+            }
         }
     }
 }
