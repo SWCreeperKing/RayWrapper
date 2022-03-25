@@ -55,9 +55,7 @@ namespace RayWrapper.Animation.SinglePurposeObjects
 
         protected override void RenderCall()
         {
-            style.Draw(text, rect);
             rect.Grow(2).MaskDraw(() => style.Draw(text, rect));
-            
             if (tooltip is not null) rect.DrawTooltip(tooltip);
         }
 
