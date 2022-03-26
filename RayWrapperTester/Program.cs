@@ -102,10 +102,7 @@ namespace RayWrapperTester
 
             Text t = new("WWEEEEEE!!", WindowSize / 2);
             t.style.SetRotationOriginToCenter("WWEEEEEE!!");
-            AddScheduler(new Scheduler(50, () =>
-            {
-                t.style.rotation = (t.style.rotation + 3) % 360;
-            }));
+            AddScheduler(new Scheduler(50, () => { t.style.rotation = (t.style.rotation + 3) % 360; }));
 
             _tbv = new TabView(Vector2.Zero, WindowSize.X);
             _tbv.AddTab("Button Test", _b, t,
@@ -136,8 +133,7 @@ namespace RayWrapperTester
             })));
 
             _tbv.AddTab("Tooltip Test",
-                new EmptyRender(() =>
-                    AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip("Testing Tooltip")));
+                new EmptyRender(() => new DefaultTooltip("Testing Tooltip").Draw()));
 
             Button listViewButton = new(new Vector2(700, 100), "Clear");
             listViewButton.Clicked += () =>
@@ -150,13 +146,16 @@ namespace RayWrapperTester
             _tbv.AddTab("DropDown Test", _dd);
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"));
 
-            TreeView tv = new(new NodeChain(new Box(Vector2.One, () => "hi") { completed = true },
-                new Box(new Vector2(1, 3), () => "hi2") { completed = true },
-                new Ball(new Vector2(3, 1), () => "hi3") { completed = true },
-                new Ball(new Vector2(3, 3), () => "hi4") { completed = true },
-                new Ball(new Vector2(4, 8), new Vector2(2, 1), () => "yeet")));
-            tv.axisOffset = new Vector2(5, 5);
-            tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
+            TreeView tv = new(new NodeChain(
+                new Box(Vector2.One, "hi") { completed = true },
+                new Box(new Vector2(1, 3), "hi2") { completed = true },
+                new Ball(new Vector2(3, 1),"hi3") { completed = true },
+                new Ball(new Vector2(3, 3),"hi4") { completed = true },
+                new Ball(new Vector2(4, 8), new Vector2(2, 1),"yeet")))
+            {
+                axisOffset = new Vector2(5, 5),
+                mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60))
+            };
 
             _tbv.AddTab("TreeView Test", tv);
 
@@ -206,7 +205,6 @@ namespace RayWrapperTester
                     {
                         ClearBackground(RED);
                         bRend.Render();
-                        tooltip.Add($"{mousePos}");
                     });
             }));
 

@@ -1,4 +1,5 @@
-﻿using RayWrapper.Var_Interfaces;
+﻿using System.Numerics;
+using Raylib_CsLo;
 
 namespace RayWrapper.Vars
 {
@@ -11,15 +12,22 @@ namespace RayWrapper.Vars
             BottomLeft = 3,
             BottomRight = 4
         }
-        
+
         private Actionable<string> _data;
 
         public Tooltip(Actionable<string> data) => _data = data;
-        
+
         /// <summary>
         /// Use this to draw the tooltip
         /// </summary>
         public void Draw() => GameBox.tooltips.Add(this);
+
+        public void Draw(Rectangle bounds) => Draw(bounds, GameBox.mousePos);
+
+        public void Draw(Rectangle bounds, Vector2 position)
+        {
+            if (bounds.IsV2In(position)) GameBox.tooltips.Add(this);
+        }
 
         /// <summary>
         /// Do not call this to draw, use <see cref="Tooltip.Draw()"/>

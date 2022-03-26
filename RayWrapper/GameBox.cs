@@ -104,10 +104,8 @@ namespace RayWrapper
         public static ColorModule baseTooltipColor = new Color(170, 170, 255, 220);
         public static ColorModule letterboxColor = new(20);
         public static List<SlotBase> dragCollision = new();
-        public static List<string> tooltip = new();
-        public static Action<string[]> drawTooltip;
         public static int tooltipLayers = 1;
-        public static List<Tooltip> tooltips;
+        public static List<Tooltip> tooltips = new();
 
         private static readonly List<ISave> SaveList = new();
         private static Task _collisionLoop;
@@ -120,6 +118,7 @@ namespace RayWrapper
         private static RenderTexture _target;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
+        private static DefaultTooltip _debugTooltip;
 
         public static int FPS
         {
@@ -136,21 +135,6 @@ namespace RayWrapper
                 SetTraceLogCallback(&Logger.RayLog);
             }
 
-            drawTooltip = strArr =>
-            {
-                var text = string.Join("\n", strArr);
-                var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
-                if (mousePos.Y > WindowSize.Y / 2) quad += 2;
-                var defFont = Text.Style.DefaultFont ?? GetFontDefault();
-                var textSize = defFont.MeasureText(text);
-                Vector2 pos = new(mousePos.X - (quad % 2 != 0 ? textSize.X : 0),
-                    mousePos.Y - (quad > 2 ? textSize.Y : -33));
-                var rect = AssembleRectFromVec(pos, textSize).Grow(4);
-                rect.Draw(baseTooltipBackColor);
-                rect.DrawHallowRect(((Color) baseTooltipColor).MakeDarker());
-                defFont.DrawText(text, pos, baseTooltipColor);
-            };
-
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (GameBox.scene, WindowSize) = (scene, windowSize);
@@ -164,6 +148,12 @@ namespace RayWrapper
                 singleConsole = new GameConsole.GameConsole();
                 CommandRegister.RegisterCommand<DefaultCommands>();
             }
+
+            _debugTooltip = new DefaultTooltip(new Actionable<string>(() => $@"({mousePos.X},{mousePos.Y}){
+                (IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)
+            }{
+                (debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)
+            }{(debugContext?.debugString is not null ? $"{debugContext.debugString}" : "")}"));
 
             SetTargetFPS(FPS = fps);
             SetWindowSize((int) windowSize.X, (int) windowSize.Y);
@@ -333,12 +323,7 @@ namespace RayWrapper
                 }
             }
 
-            if (isDebugTool)
-            {
-                tooltip.Add(
-                    $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)}");
-                if (debugContext?.debugString is not null) tooltip.Add(debugContext.debugString);
-            }
+            if (isDebugTool) _debugTooltip.Draw();
 
             if (tooltips.Any())
             {
@@ -349,9 +334,8 @@ namespace RayWrapper
                 {
                     tt.RenderTooltip((Tooltip.ScreenQuadrant) quad);
                 }
-
-                drawTooltip.Invoke(tooltip.ToArray());
-                tooltip.Clear();
+                
+                tooltips.Clear();
             }
 
             if (showFps || isDebugTool) DrawFPS((int) fpsPos.X, (int) fpsPos.Y);
@@ -457,7 +441,7 @@ namespace RayWrapper
             public DefaultTooltip(Actionable<string> data) : base(data)
             {
             }
-            
+
             protected override void RenderTooltip(ScreenQuadrant screenQuad, string data)
             {
                 var text = string.Join("\n", data);

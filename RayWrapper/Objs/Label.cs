@@ -34,7 +34,7 @@ namespace RayWrapper.Objs
         public Style style = defaultStyle.Copy();
         public Action clicked;
         public Actionable<string> text;
-        public Actionable<string> tooltip;
+        public Tooltip tooltip;
 
         private Rectangle _back;
 
@@ -56,8 +56,7 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             style.Draw(text, Rect);
-            var t = (string) (tooltip ?? string.Empty);
-            if (Rect.IsMouseIn() && t != string.Empty && !IsMouseOccupied) Rect.DrawTooltip(t);
+            if (tooltip is not null && !IsMouseOccupied) tooltip.Draw(Rect);
         }
 
         public class Style : IStyle<Style>

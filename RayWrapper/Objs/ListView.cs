@@ -25,7 +25,6 @@ namespace RayWrapper.Objs
         public override Vector2 Size => _bounds.Size();
 
         public Style style = defaultStyle.Copy();
-        public Actionable<string> tooltip = new(string.Empty);
         public Sound clickSound;
         public Func<int> arrayLength;
         public Func<int, Color> backColors;
@@ -38,6 +37,7 @@ namespace RayWrapper.Objs
         public bool showTooltip = true;
         public bool useSelection = true;
         public bool selectedToggle;
+        public Tooltip tooltip;
 
         private readonly Label[] _labels;
         private readonly Scrollbar _bar;
@@ -134,7 +134,7 @@ namespace RayWrapper.Objs
                 l.Position = new Vector2(_bounds.x, y + labelPadding * i);
 
                 if (indivTooltip is null) continue;
-                l.tooltip = indivTooltip.Invoke(place);
+                l.tooltip = tooltip;
             }
         }
 
@@ -193,7 +193,7 @@ namespace RayWrapper.Objs
             });
 
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
-            if (showTooltip && tooltip != string.Empty) _bounds.ExtendPos(new Vector2(20, 0)).DrawTooltip(tooltip);
+            if (tooltip is not null && showTooltip) tooltip.Draw(_bounds.ExtendPos(new Vector2(20, 0)));
         }
 
         public float CalcHeight() => (_labelHeight + _padding) * _itemsToShow - _padding;

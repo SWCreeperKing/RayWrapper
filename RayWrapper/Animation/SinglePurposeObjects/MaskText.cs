@@ -31,7 +31,7 @@ namespace RayWrapper.Animation.SinglePurposeObjects
         public int alpha = 255;
         public Actionable<string> text;
         public Rectangle rect;
-        public Actionable<string> tooltip = null;
+        public Tooltip tooltip;
 
         private ColorModule _color = WHITE;
 
@@ -56,7 +56,7 @@ namespace RayWrapper.Animation.SinglePurposeObjects
         protected override void RenderCall()
         {
             rect.Grow(2).MaskDraw(() => style.Draw(text, rect));
-            if (tooltip is not null) rect.DrawTooltip(tooltip);
+            tooltip?.Draw(rect);
         }
 
         public void SetSize(Vector2 size) => rect = rect.SetSize(size);

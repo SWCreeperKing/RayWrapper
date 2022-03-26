@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using DiscordRPC;
 using Raylib_CsLo;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
@@ -18,25 +19,18 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
 
         public NodeChain(params NodeShape[] nodes) => this.nodes.AddRange(nodes);
 
-        public void Draw(Vector2 off, float scale)
+        public string Draw(Vector2 off, float scale)
         {
             Update(off, scale);
-            if (branched is not null && !branched.completed) return;
+            if (branched is not null && !branched.completed) return null;
             void DrawLine(Vector2 c1, Vector2 c2, Color cColor, float scale) => c1.DrawLine(c2, cColor, .25f * scale);
-            if (nodes.Count == 1)
-            {
-                nodes[0].Draw(off, scale);
-                return;
-            }
+            if (nodes.Count == 1) return nodes[0].Draw(off, scale);
 
+            List<string> tooltipList = new();
             for (var i = 1; i < nodes.Count; i++)
             {
                 var n1 = nodes[i - 1];
-                if (!n1.completed)
-                {
-                    n1.Draw(off, scale);
-                    return;
-                }
+                if (!n1.completed) return n1.Draw(off, scale);
 
                 var n2 = nodes[i];
                 var n1C = n1.Center(off, scale);
@@ -48,13 +42,16 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
                         if (!nodes.Any()) continue;
                         var n3 = branch.nodes[0];
                         DrawLine(n1C, n3.Center(off, scale), n3.completed ? completedLineColor : lineColor, scale);
-                        branch.Draw(off, scale);
+                        tooltipList.Add(branch.Draw(off, scale));
                     }
                 }
 
-                n1.Draw(off, scale);
-                if (i == nodes.Count - 1) n2.Draw(off, scale);
+                tooltipList.Add(n1.Draw(off, scale));
+                if (i == nodes.Count - 1) tooltipList.Add(n2.Draw(off, scale));
             }
+
+            var remain = tooltipList.Where(i => i is not null).ToArray();
+            return !remain.Any() ? null : remain.First();
         }
 
         public void Update(Vector2 off, float scale)

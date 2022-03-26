@@ -28,7 +28,7 @@ namespace RayWrapper.Objs
             set => baseL.text = value;
         }
 
-        public Actionable<string> Tooltip
+        public Tooltip Tooltip
         {
             get => baseL.tooltip;
             set => baseL.tooltip = value;

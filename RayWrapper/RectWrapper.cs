@@ -284,16 +284,6 @@ namespace RayWrapper
         }
 
         /// <summary>
-        /// draws a tooltip if a cursor is inside the bounds of the given <see cref="Rectangle"/>
-        /// </summary>
-        /// <param name="box">bounds to check</param>
-        /// <param name="text">the tooltip text</param>
-        public static void DrawTooltip(this Rectangle box, string text)
-        {
-            if (box.IsMouseIn()) GameBox.tooltip.Add(text);
-        }
-
-        /// <summary>
         /// executes <paramref name="draw"/> inside of a masked <see cref="Rectangle"/>
         /// </summary>
         /// <param name="rect">the mask</param>

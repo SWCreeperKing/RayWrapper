@@ -9,7 +9,6 @@ using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
-    // todo: use scenes instead of just gameobjects
     public class TabView : GameObject
     {
         public static Style defaultStyle = new();

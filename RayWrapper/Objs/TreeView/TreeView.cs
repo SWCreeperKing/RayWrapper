@@ -13,26 +13,33 @@ namespace RayWrapper.Objs.TreeView
 {
     public class TreeView : GameObject
     {
+        public readonly List<NodeChain> chains = new();
+
         public override Vector2 Position { get; set; }
         public override Vector2 Size => mask.IsEqualTo(Zero) ? WindowSize : mask.Size();
 
         public Rectangle mask = Zero;
         public Vector2 axisOffset = Vector2.Zero;
-        public readonly List<NodeChain> chains = new();
+        public Tooltip tooltip;
+        public string selected = null;
 
         private Vector2 _lastPos;
         private Vector2 _moveChange;
         private float _scale = 32;
 
-        public TreeView(params NodeChain[] chains) => this.chains.AddRange(chains);
+        public TreeView(params NodeChain[] chains)
+        {
+            this.chains.AddRange(chains);
+            tooltip = new DefaultTooltip(new Actionable<string>(() => selected));
+        }
 
         protected override void UpdateCall()
         {
             if (alertQueue.Count > 0 || IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();
             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask.IsEqualTo(Zero)
-                ? AssembleRectFromVec(Vector2.Zero, WindowSize)
-                : mask).IsMouseIn())
+                    ? AssembleRectFromVec(Vector2.Zero, WindowSize)
+                    : mask).IsMouseIn())
             {
                 var curMouse = mousePos;
                 if (mouseOccupier != this) _lastPos = curMouse;
@@ -52,7 +59,12 @@ namespace RayWrapper.Objs.TreeView
                 ? AssembleRectFromVec(Vector2.Zero, WindowSize)
                 : mask).MaskDraw(() =>
             {
-                foreach (var nodeChain in chains) nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale);
+                var tooltipList = chains
+                    .Select(nodeChain => nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale)).ToList();
+                var remain = tooltipList.Where(i => i is not null).ToArray();
+                if (!remain.Any()) return;
+                selected = remain.First();
+                tooltip.Draw();
             });
         }
 

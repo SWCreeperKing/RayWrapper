@@ -27,15 +27,23 @@ namespace RayWrapper.Objs
         public Func<float> percent;
         public Vector2 size;
         public bool useGradient = true;
-        public Func<string> customTooltip = null;
+        public Tooltip tooltip;
 
         private Vector2 _pos;
 
-        public ProgressBar(Rectangle rect, Func<float> percent) =>
+        public ProgressBar(Rectangle rect, Func<float> percent)
+        {
             (this.percent, _pos, size) = (percent, rect.Pos(), rect.Size());
+            tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
+                percent.Invoke() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
+        }
 
-        public ProgressBar(float x, float y, float width, float height, Func<float> percent) =>
+        public ProgressBar(float x, float y, float width, float height, Func<float> percent)
+        {
             (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
+            tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
+                percent.Invoke() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
+        }
 
         protected override void UpdateCall()
         {
@@ -57,8 +65,7 @@ namespace RayWrapper.Objs
             }
 
             if (!hoverPercent) return;
-            if (customTooltip is null) back.DrawTooltip(fill >= 1 ? "100%" : $"{fill:##0.00%}");
-            else back.DrawTooltip(customTooltip.Invoke());
+            tooltip.Draw(back);
         }
     }
 }
