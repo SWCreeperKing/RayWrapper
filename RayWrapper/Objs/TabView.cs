@@ -96,7 +96,7 @@ namespace RayWrapper.Objs
         public void ReCalculate()
         {
             var startX = _rect.x - _offset;
-            var hOff = outline ? 3 : 0;
+            var hOff = outline ? 2 : 0;
             foreach (var l in _tabs)
             {
                 var newPos = new Vector2(startX, _rect.y + hOff);

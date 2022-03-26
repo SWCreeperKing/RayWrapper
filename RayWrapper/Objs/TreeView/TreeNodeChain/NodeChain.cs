@@ -30,7 +30,11 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
             for (var i = 1; i < nodes.Count; i++)
             {
                 var n1 = nodes[i - 1];
-                if (!n1.completed) return n1.Draw(off, scale);
+                if (!n1.completed)
+                {
+                    tooltipList.Add(n1.Draw(off, scale));
+                    break;
+                }
 
                 var n2 = nodes[i];
                 var n1C = n1.Center(off, scale);
@@ -49,7 +53,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
                 tooltipList.Add(n1.Draw(off, scale));
                 if (i == nodes.Count - 1) tooltipList.Add(n2.Draw(off, scale));
             }
-
+            
             var remain = tooltipList.Where(i => i is not null).ToArray();
             return !remain.Any() ? null : remain.First();
         }

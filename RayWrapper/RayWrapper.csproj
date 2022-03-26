@@ -17,8 +17,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-alpha-4</PackageVersion>
-        <PackageReleaseNotes>-fixed MaskText drawing text twice</PackageReleaseNotes>
+        <PackageVersion>0.4.0-alpha-7</PackageVersion>
+        <PackageReleaseNotes>-fixed tabview labels rendering lower than they should
+-possibly fixed odd null error with custom tooltips</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

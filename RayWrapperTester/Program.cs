@@ -154,13 +154,15 @@ namespace RayWrapperTester
                 new Ball(new Vector2(4, 8), new Vector2(2, 1),"yeet")))
             {
                 axisOffset = new Vector2(5, 5),
-                mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60))
+                mask = AssembleRectFromVec(Vector2.Zero, screen).ExtendPos(new Vector2(0, -60))
             };
 
             _tbv.AddTab("TreeView Test", tv);
 
-            KeyButton kb = new(pos, KeyboardKey.KEY_C);
-            kb.keyChange = key => Console.WriteLine($"New Key: {key}");
+            KeyButton kb = new(pos, KeyboardKey.KEY_C)
+            {
+                keyChange = key => Console.WriteLine($"New Key: {key}")
+            };
 
             ScrollView sv = new(new Rectangle(200, 200, 700, 500));
             Label l = new(Vector2.Zero, "Text1");

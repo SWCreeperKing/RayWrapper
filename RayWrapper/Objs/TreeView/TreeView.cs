@@ -55,17 +55,18 @@ namespace RayWrapper.Objs.TreeView
         protected override void RenderCall()
         {
             if (!chains.Any()) return;
+            List<string> tooltipList = new();
             (mask.IsEqualTo(Zero)
                 ? AssembleRectFromVec(Vector2.Zero, WindowSize)
                 : mask).MaskDraw(() =>
             {
-                var tooltipList = chains
-                    .Select(nodeChain => nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale)).ToList();
-                var remain = tooltipList.Where(i => i is not null).ToArray();
-                if (!remain.Any()) return;
-                selected = remain.First();
-                tooltip.Draw();
+                tooltipList.AddRange(chains
+                    .Select(nodeChain => nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale)));
             });
+            var remain = tooltipList.Where(i => i is not null).ToArray();
+            if (!remain.Any()) return;
+            selected = remain.First();
+            tooltip.Draw();
         }
 
         public void ResetPos() => (_moveChange, _scale) = (Vector2.Zero, _scale = 32);

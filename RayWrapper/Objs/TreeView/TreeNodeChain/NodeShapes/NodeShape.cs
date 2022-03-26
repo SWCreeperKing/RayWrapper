@@ -40,8 +40,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
 
         public string Draw(Vector2 off, float scale)
         {
-            if (isVisibleCompleted && !completed) return null;
-            DrawShape(off, scale);
+            if (!isVisibleCompleted || completed) DrawShape(off, scale);
             if (!IsMouseIn(off, scale)) return null;
             DrawOnHover(off, scale);
             return tooltip;

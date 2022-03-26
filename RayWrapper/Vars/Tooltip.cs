@@ -33,7 +33,11 @@ namespace RayWrapper.Vars
         /// Do not call this to draw, use <see cref="Tooltip.Draw()"/>
         /// This is for the process of rendering the tooltip
         /// </summary>
-        public void RenderTooltip(ScreenQuadrant screenQuad) => RenderTooltip(screenQuad, _data);
+        public void RenderTooltip(ScreenQuadrant screenQuad)
+        {
+            if (_data is null) return;
+            RenderTooltip(screenQuad, _data);
+        }
 
         /// <summary>
         /// Do not call this to draw, use <see cref="Tooltip.Draw()"/>

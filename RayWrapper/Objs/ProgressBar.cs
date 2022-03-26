@@ -51,7 +51,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            var fill = percent.Invoke();
+            var fill = FixedPercent();
             var back = AssembleRectFromVec(Position, size).Grow(outlineThickness);
             if (!useGradient) back.DrawRounded(backColor);
             else back.Draw(backColor);
@@ -66,6 +66,13 @@ namespace RayWrapper.Objs
 
             if (!hoverPercent) return;
             tooltip.Draw(back);
+        }
+
+        public float FixedPercent()
+        {
+            var fill = percent.Invoke();
+            var fix = fill.IsFixable() ? fill.Fix() : fill;
+            return Math.Clamp(fix, 0, 1);
         }
     }
 }
