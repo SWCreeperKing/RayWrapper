@@ -9,6 +9,7 @@ namespace RayWrapper.Objs
 {
     public class ProgressBar : GameObject
     {
+        // todo see if to merge progress bar and slider
         public override Vector2 Position
         {
             get => _pos;
@@ -17,6 +18,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => AssembleRectFromVec(Position, size).Grow(outlineThickness).Size();
 
+        // todo progressbar style
         public ColorModule backColor = new(BLACK);
         public ColorModule fillColor = new(RAYWHITE);
         public ColorModule toColor = new(GOLD);

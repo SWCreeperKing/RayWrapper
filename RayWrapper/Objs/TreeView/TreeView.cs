@@ -26,6 +26,7 @@ namespace RayWrapper.Objs.TreeView
         private Vector2 _lastPos;
         private Vector2 _moveChange;
         private float _scale = 32;
+        private List<string> _tooltipList = new();
 
         public TreeView(params NodeChain[] chains)
         {
@@ -55,15 +56,14 @@ namespace RayWrapper.Objs.TreeView
         protected override void RenderCall()
         {
             if (!chains.Any()) return;
-            List<string> tooltipList = new();
             (mask.IsEqualTo(Zero)
                 ? AssembleRectFromVec(Vector2.Zero, WindowSize)
                 : mask).MaskDraw(() =>
             {
-                tooltipList.AddRange(chains
+                _tooltipList.AddRange(chains
                     .Select(nodeChain => nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale)));
             });
-            var remain = tooltipList.Where(i => i is not null).ToArray();
+            var remain = _tooltipList.Where(i => i is not null).ToArray();
             if (!remain.Any()) return;
             selected = remain.First();
             tooltip.Draw();

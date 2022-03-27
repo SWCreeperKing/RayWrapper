@@ -30,7 +30,7 @@ namespace RayWrapper.Objs
                             if (p > 0) s = s.Remove(p-- - 1, 1);
                             return (p, s);
                         }
-
+                
                         var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
                         return (lastSpace, s.Remove(lastSpace, p - lastSpace));
                     }
@@ -150,6 +150,23 @@ namespace RayWrapper.Objs
             while (c > 0 || cc > 0)
             {
                 if ((KeyboardKey) cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
+                // todo: find a way to fix it
+                // this is for holding backspace 
+                //
+                // if ((KeyboardKey) cc == KeyboardKey.KEY_BACKSPACE)
+                // {
+                //     if (IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) || IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL))
+                //     {
+                //         var lastSpace = Math.Max(0, _text[.._curPos].LastIndexOf(' '));
+                //         _text = _text.Remove(lastSpace, _curPos - lastSpace);
+                //         _curPos = lastSpace;
+                //     }
+                //     else
+                //     {
+                //         if (_curPos > 0) _text = _text.Remove(_curPos-- - 1, 1);
+                //     }
+                // }
+
                 if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
                 (c, cc) = (GetCharPressed(), GetKeyPressed());
             }
