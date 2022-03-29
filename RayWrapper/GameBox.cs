@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper.Animation;
-using RayWrapper.CollisionSystem;
 using RayWrapper.Discord;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
@@ -61,17 +60,6 @@ namespace RayWrapper
 
         public static readonly Random Random = new();
 
-        #region temp collision performance vars
-
-        public static List<(string, string)> CollisionLayerTags { get; } = new();
-        public static long[] CollisionTime { get; } = new long[100];
-        public static double TimeAverage { get; private set; }
-        public static long CollisionHigh { get; private set; }
-        public static long CurrentCollision { get; private set; }
-        public static int TimeKeeper { get; private set; }
-
-        #endregion
-
         public static string DeveloperName { get; private set; }
         public static string AppName { get; private set; } = "Unknown App";
         public static string Title { get; private set; }
@@ -95,10 +83,7 @@ namespace RayWrapper
         public static Vector2 fpsPos = Vector2.One;
 
         public static Vector2 mousePos;
-
-        // public static AlertBox alertBox = null;
         public static Stack<AlertBase> alertQueue = new();
-        public static ScreenGrid screenGrid;
         public static ColorModule backgroundColor = new(40);
         public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
         public static ColorModule baseTooltipColor = new Color(170, 170, 255, 220);
@@ -138,7 +123,6 @@ namespace RayWrapper
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (GameBox.scene, WindowSize) = (scene, windowSize);
-            screenGrid = new ScreenGrid();
             InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
             RayGui.GuiLoadStyleDefault();
             if (iconPath != string.Empty) SetWindowIcon(LoadImage(iconPath));
@@ -242,31 +226,6 @@ namespace RayWrapper
             AddScheduler(new Scheduler(100, DiscordIntegration.UpdateActivity));
         }
 
-        /// <summary>
-        /// Initialize the Collision thread
-        /// </summary>
-        public static void InitCollision()
-        {
-            if (_initCollision) return;
-            _initCollision = true;
-            _collisionLoop = Task.Run(async () =>
-            {
-                while (!_isEnding)
-                {
-                    try
-                    {
-                        var startTime = GetTimeMs();
-                        await screenGrid.Update();
-                        await Task.Run(() => AddTime(GetTimeMs() - startTime));
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log(Error, e.ToString());
-                    }
-                }
-            });
-        }
-
         private static void Update()
         {
             if (f11Fullscreen && IsKeyPressed(KeyboardKey.KEY_F11))
@@ -310,7 +269,6 @@ namespace RayWrapper
             _isDrawing = true;
             ClearBackground(backgroundColor);
 
-            screenGrid.Draw(isDebugTool);
             scene.Render();
             if (_isConsole) singleConsole.Render();
             else
@@ -389,14 +347,6 @@ namespace RayWrapper
         public static void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
         #endregion
-
-        public static void AddTime(long ms)
-        {
-            CurrentCollision = CollisionTime[TimeKeeper++] = ms;
-            TimeKeeper %= CollisionTime.Length;
-            CollisionHigh = Math.Max(CollisionHigh, ms);
-            TimeAverage = CollisionTime.Sum() / (double) CollisionTime.Length;
-        }
 
         public static void CalcMousePos()
         {

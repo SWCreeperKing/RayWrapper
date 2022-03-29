@@ -109,7 +109,8 @@ namespace RayWrapperTester
                 new EmptyRender(() =>
                     DrawText($"Hello, world! [i] is {_buttonInc}", 12, 60, 20, new Color(174, 177, 181, 255))));
 
-            _tbv.AddTab("Label Test", _l);
+            RichText rich = new(pos + new Vector2(50, 300), "Testing [#Ff0a0a]rich\n [#3a3aff]text [#dbc07b]test"); 
+            _tbv.AddTab("Label Test", _l, rich);
 
             RectItem ri = new(new Vector2(400), new Vector2(75)) { slotDependent = false, id = "blue", color = BLUE };
             CircleItem ci = new(new Vector2(400, 475), new Vector2(75)) { color = RED, id = "red" };
