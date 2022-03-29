@@ -27,7 +27,7 @@ namespace RayWrapper.Objs
         private PrintData[] _data;
         private Vector2 _pos;
 
-        public RichText(Vector2 pos, string text)
+        public RichText(string text, Vector2 pos)
         {
             _pos = pos;
             UpdateText(text);
@@ -79,7 +79,7 @@ namespace RayWrapper.Objs
                     var txt = mText[..index];
                     datas.Add(new PrintData(position, txt, color));
                     var measure = style.MeasureText(txt);
-                    position.X += measure.X;
+                    position.X += measure.X + style.spacing;
                     addedY = Math.Max(addedY, measure.Y);
                     mText = mText[(index + 9)..];
 

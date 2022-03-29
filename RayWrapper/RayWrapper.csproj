@@ -17,8 +17,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-alpha-9</PackageVersion>
-        <PackageReleaseNotes>-added RichText</PackageReleaseNotes>
+        <PackageVersion>0.4.0-alpha-10</PackageVersion>
+        <PackageReleaseNotes>-added plain text color to RichText with [!color]</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
