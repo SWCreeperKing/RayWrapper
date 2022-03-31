@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper;
+using RayWrapper.Collision;
 // using RayWrapper.CollisionSystem;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
@@ -17,7 +19,7 @@ namespace RayWrapperTesterCollision
 
         public override void Init()
         {
-//             InitCollision();
+            Starter.InitPhysics();
 //             var wx = WindowSize.X;
 //             var wy = WindowSize.Y;
 //             CollisionLayerTags.Add(("circle", "bar"));
@@ -30,12 +32,16 @@ namespace RayWrapperTesterCollision
 // cur: {CurrentCollision}ms
 // avg: {TimeAverage}ms
 // high: {CollisionHigh}ms".Replace("\r", "")), new Vector2(300, 50), SKYBLUE));
+            var rectTest1 = new PhysicRect(new Rectangle(20, 500, 400, 50), isStatic: true);
+            RegisterGameObj(rectTest1);
         }
 
         public override void UpdateLoop()
         {
-            if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
-            // for (var i = 0; i < 50; i++) new Circle(mousePos);
+            if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
+            {
+                RegisterGameObj(new PhysicCircle(mousePos));
+            }
         }
 
         public override void RenderLoop() => DrawFPS(12, 12);

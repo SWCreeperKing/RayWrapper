@@ -104,6 +104,27 @@ namespace RayWrapper
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
         private static DefaultTooltip _debugTooltip;
+        private static List<Action> _staticInit = new();
+        private static List<Action> _staticUpdate = new();
+        private static List<Action> _staticRender = new();
+
+        public static event Action StaticInit
+        {
+            add => _staticInit.Add(value);
+            remove => _staticInit.Remove(value);
+        }
+
+        public static event Action StaticUpdate
+        {
+            add => _staticUpdate.Add(value);
+            remove => _staticUpdate.Remove(value);
+        }
+
+        public static event Action StaticRender
+        {
+            add => _staticRender.Add(value);
+            remove => _staticRender.Remove(value);
+        }
 
         public static int FPS
         {
@@ -168,6 +189,7 @@ namespace RayWrapper
                 }
             });
 
+            _staticInit.ForEach(a => a.Invoke());
             scene.Init();
             try
             {
@@ -244,6 +266,7 @@ namespace RayWrapper
                 WriteToConsole($"toggled debug via F3: {isDebugTool}");
             }
 
+            _staticUpdate.ForEach(a => a.Invoke());
             scene.Update();
         }
 
@@ -270,6 +293,7 @@ namespace RayWrapper
             ClearBackground(backgroundColor);
 
             scene.Render();
+            _staticRender.ForEach(a => a.Invoke());
             if (_isConsole) singleConsole.Render();
             else
             {
@@ -292,7 +316,7 @@ namespace RayWrapper
                 {
                     tt.RenderTooltip((Tooltip.ScreenQuadrant) quad);
                 }
-                
+
                 tooltips.Clear();
             }
 

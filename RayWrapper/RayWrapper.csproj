@@ -17,11 +17,13 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-alpha-10</PackageVersion>
-        <PackageReleaseNotes>-added plain text color to RichText with [!color]</PackageReleaseNotes>
+        <PackageVersion>0.4.0-alpha-9.2</PackageVersion>
+        <PackageReleaseNotes>-Circle
+-new static events to gamebox</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
