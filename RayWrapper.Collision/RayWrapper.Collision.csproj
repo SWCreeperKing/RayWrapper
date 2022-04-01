@@ -22,10 +22,10 @@
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="RayWrapper" Version="0.4.0-beta" />
+      <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
     </ItemGroup>
 </Project>

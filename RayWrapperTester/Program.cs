@@ -56,6 +56,7 @@ namespace RayWrapperTester
 
         public override void Init()
         {
+            // Text.defaultStyle.SetFilter(TextureFilter.TEXTURE_FILTER_POINT);
             Text.Style.SetDefaultFont("CascadiaMono.ttf");
 
             var screen = WindowSize;
@@ -64,9 +65,9 @@ namespace RayWrapperTester
             if (scheduleTesting)
             {
                 AddScheduler(new Scheduler(10,
-                    () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
+                    () => Logger.Log($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
             }
-
+                
             if (saveTesting)
             {
                 Logger.Log("save testing start");
