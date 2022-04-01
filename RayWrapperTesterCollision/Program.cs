@@ -5,7 +5,7 @@ using RayWrapper.Collision;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.Collision.Starter;
+using static RayWrapper.Collision.Collision;
 using static RayWrapper.GameBox;
 
 namespace RayWrapperTesterCollision
@@ -26,7 +26,7 @@ namespace RayWrapperTesterCollision
             new Bar(new Vector2(0, wy - 10), new Vector2(wx, 10));
             new Bar(new Vector2(0, 0), new Vector2(10, wy)) { vert = true };
             new Bar(new Vector2(wx - 10, 0), new Vector2(10, wy)) { vert = true };
-            RegisterGameObj(new Text(new Actionable<string>(() => $"{Collider.count - 4}"), new Vector2(12, 60), RED),
+            RegisterGameObj(new Text(new Actionable<string>(() => $"{CountColliders() - 4}"), new Vector2(12, 60), RED),
                 new Text(
                     new Actionable<string>(() => $@"Collision Time
 cur: {CurrentCollision}ms

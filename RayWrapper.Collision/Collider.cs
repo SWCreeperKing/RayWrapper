@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Vars;
+using static RayWrapper.Collision.Collision;
 
 namespace RayWrapper.Collision;
 
@@ -12,7 +13,6 @@ public abstract class Collider : GameObject
         set => _pos = value;
     }
 
-    public static long count;
     public static long id;
     public Vector2 velocity = Vector2.Zero;
 
@@ -31,9 +31,8 @@ public abstract class Collider : GameObject
     protected Collider(Vector2 pos)
     {
         (_pos, currentId) = (pos, id);
-        Starter.AddObject(this);
+        AddObject(this);
         id++;
-        count++;
     }
 
     protected override void UpdateCall()
@@ -54,20 +53,27 @@ public abstract class Collider : GameObject
 
     public void PostCollision()
     {
-        foreach (var c in _buffer.Where(c => _buffer.Contains(c) && !_backBuffer.Contains(c))) FirstCollision(c);
-        foreach (var c in _buffer.Where(c => _buffer.Contains(c) && _backBuffer.Contains(c))) InCollision(c);
-        foreach (var c in _backBuffer.Where(c => !_buffer.Contains(c) && _backBuffer.Contains(c))) ExitCollision(c);
+        foreach (var c in _buffer)
+        {
+            if (_buffer.Contains(c) && !_backBuffer.Contains(c)) FirstCollision(c);
+            if (_buffer.Contains(c) && _backBuffer.Contains(c)) InCollision(c);
+        }
+        
+        foreach (var c in _backBuffer)
+        {
+            // to reduce mem allow, as `Where` will cause like 100mb of extra ram xd
+            if (!_buffer.Contains(c) && _backBuffer.Contains(c)) ExitCollision(c);
+        }
+
         _backBuffer.Clear();
         foreach (var c in _buffer) _backBuffer.Add(c);
         _buffer.Clear();
 
         if (!removeWhenOutOfBounds) return;
-        if (!(Position.X < 0) && !(Position.Y < 0) && !(GameBox.WindowSize.X < Position.X) &&
-            !(GameBox.WindowSize.Y < Position.Y)) return;
+        if (Position.X >= 0 && Position.Y >= 0 && Position.X <= GameBox.WindowSize.X &&
+            Position.Y <= GameBox.WindowSize.Y) return;
 
-        Dispose();
-        Starter.RemoveObject(this);
-        count--;
+        DestoryObject();
     }
 
     protected override void RenderCall() => RenderShape(Position);
@@ -90,4 +96,12 @@ public abstract class Collider : GameObject
     public virtual void Dispose()
     {
     }
+
+    public void DestoryObject()
+    {
+        Dispose();
+        RemoveObject(this);
+    }
+
+    ~Collider() => DestoryObject();
 }

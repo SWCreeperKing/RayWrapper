@@ -25,7 +25,7 @@
 
 ## 🧐 About <a name = "about"></a>
 This is a Wrapper for the C# port (Raylib-CsLo) of Raylib, a 'bare-bones' graphics library.
-Made with .Net5 on nuget.
+Made with .Net6 on nuget.
 
 For credit, please link back to this repo.
 
@@ -80,6 +80,7 @@ public class Program : GameLoop
 - [Raylib-CsLo (4.0.0)](https://www.nuget.org/packages/Raylib-CsLo/) - C# bindings for the raylib framework
 - [DiscordRichPresence (1.0.175)](https://www.nuget.org/packages/DiscordRichPresence/) - A .NET implementation of Discord's Rich Presence functionality
 - [Newtonsoft.Json (13.0.1)](https://www.nuget.org/packages/Newtonsoft.Json/) - Popular high-performance JSON framework for .NET
+- [ZimonIsHimUtils (1.1.0)](https://www.nuget.org/packages/ZimonIsHimUtils/) - Valuable Extension Methods for shortening code
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@SWCreeperKing](https://github.com/SWCreeperKing) - Idea, Initial work, general development & management
