@@ -22,7 +22,6 @@
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

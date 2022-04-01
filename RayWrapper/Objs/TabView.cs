@@ -81,7 +81,7 @@ namespace RayWrapper.Objs
             {
                 _rect.MaskDraw(() =>
                 {
-                    _tabs.Each(t => t.Update());
+                    _tabs.Each(t => t.Render());
                 });
 
                 if (outline) _rect.DrawHallowRect(BLACK);

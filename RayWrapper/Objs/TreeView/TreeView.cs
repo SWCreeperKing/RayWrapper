@@ -63,7 +63,9 @@ namespace RayWrapper.Objs.TreeView
                 _tooltipList.AddRange(chains
                     .Select(nodeChain => nodeChain.Draw((_moveChange + axisOffset) * _scale, _scale)));
             });
+
             var remain = _tooltipList.Where(i => i is not null).ToArray();
+            _tooltipList.Clear();
             if (!remain.Any()) return;
             selected = remain.First();
             tooltip.Draw();
