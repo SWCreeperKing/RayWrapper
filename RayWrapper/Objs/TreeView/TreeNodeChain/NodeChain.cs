@@ -5,6 +5,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain
 {
@@ -74,7 +75,7 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain
                 bool nxt = nodes[i].completed;
                 if (branches.ContainsKey(n))
                 {
-                    foreach (var branch in branches[n]) branch.Update(off, scale);
+                    branches[n].Each(branch => branch.Update(off, scale));
                     nxt = nxt || branches[n].Where(b => b.nodes.Any()).Any(b => b.nodes[0].completed);
                 }
 

@@ -5,6 +5,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
@@ -61,7 +62,7 @@ namespace RayWrapper.Objs
             // {
             if (!GameBox.IsMouseOccupied)
             {
-                foreach (var t in _tabs) t.Update();
+                _tabs.Each(t => t.Update());
             }
             // }
             // catch (InvalidOperationException)
@@ -80,7 +81,7 @@ namespace RayWrapper.Objs
             {
                 _rect.MaskDraw(() =>
                 {
-                    foreach (var l in _tabs) l.Render();
+                    _tabs.Each(t => t.Update());
                 });
 
                 if (outline) _rect.DrawHallowRect(BLACK);

@@ -9,7 +9,7 @@ namespace RayWrapper.Objs
     public class ImageMatrix
     {
         private Image _image;
-        private Dictionary<Enum, ImageObj> _slices = new();
+        private IDictionary<Enum, ImageObj> _slices = new Dictionary<Enum, ImageObj>();
 
         public ImageMatrix(string image) : this(LoadImage(image))
         {

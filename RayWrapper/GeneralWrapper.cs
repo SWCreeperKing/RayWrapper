@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Raylib_CsLo;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper
@@ -44,7 +45,7 @@ namespace RayWrapper
         /// gets text from the user's clipboard
         /// </summary>
         /// <returns>the text from the user's clipboard</returns>
-        public static unsafe string FromClipboard() => GetClipboardText_();
+        public static string FromClipboard() => GetClipboardText_();
 
         /// <summary>
         /// draws text at the center of the given position
@@ -145,12 +146,12 @@ namespace RayWrapper
                         if (i == endLine) endLine -= codepointByteCount;
                         if (startLine + codepointByteCount == endLine) endLine = i - codepointByteCount;
 
-                        state = !state;
+                        state.Flip();
                     }
                     else if (i + 1 == length)
                     {
                         endLine = i;
-                        state = !state;
+                        state.Flip();
                     }
                     else if (codepoint == '\n') state = !state;
 
@@ -214,7 +215,7 @@ namespace RayWrapper
                         glyphWidth = 0;
                         selectStart += lastk - k;
                         k = lastk;
-                        state = !state;
+                        state.Flip();
                     }
                 }
 
@@ -385,14 +386,14 @@ namespace RayWrapper
         public static Vector2[] CalcVectsFromFloats(this float[] array, Rectangle rect)
         {
             var step = rect.width / array.Length;
-            var vects = new Vector2[array.Length];
+            var vectors = new Vector2[array.Length];
 
             for (var i = 0; i < array.Length; i++)
             {
-                vects[i] = new Vector2(rect.x + rect.height + i * step, array[i]);
+                vectors[i] = new Vector2(rect.x + rect.height + i * step, array[i]);
             }
 
-            return vects;
+            return vectors;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using RayWrapper.Discord;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.GameConsole.CommandLineColor;
@@ -118,7 +119,7 @@ namespace RayWrapper.GameConsole
         [Command("toggleFps"), Help("Toggles the fps counter visibility")]
         public static string ToggleFps(string[] args)
         {
-            showFps = !showFps;
+            showFps.Flip();
             return $"{CYAN}{(showFps ? "Showing" : "Hiding")} Fps";
         }
 
