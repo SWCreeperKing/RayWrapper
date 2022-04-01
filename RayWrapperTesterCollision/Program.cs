@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper;
-using RayWrapper.Collision;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
@@ -19,9 +18,12 @@ namespace RayWrapperTesterCollision
 
         public override void Init()
         {
-            InitPhysics();
+            InitPhysics(8, 8);
             var wx = WindowSize.X;
             var wy = WindowSize.Y;
+
+            collisionRules.TryAdd("bar", "ball");
+
             new Bar(new Vector2(0, 0), new Vector2(wx, 10));
             new Bar(new Vector2(0, wy - 10), new Vector2(wx, 10));
             new Bar(new Vector2(0, 0), new Vector2(10, wy)) { vert = true };

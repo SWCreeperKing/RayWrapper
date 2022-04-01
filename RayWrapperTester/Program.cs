@@ -22,7 +22,7 @@ namespace RayWrapperTester
     {
         private float _percent;
         private int _buttonInc;
-        private bool saveTesting = false;
+        private bool saveTesting = true;
         private bool scheduleTesting = false;
         private int currGraf;
         private Rectangle _scissorArea;

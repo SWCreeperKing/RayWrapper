@@ -17,8 +17,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-beta</PackageVersion>
-        <PackageReleaseNotes>-ready for RayWrapper.Collision</PackageReleaseNotes>
+        <PackageVersion>0.4.0-beta-2</PackageVersion>
+        <PackageReleaseNotes>-ToggleConsole
+-Small code cleanup</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

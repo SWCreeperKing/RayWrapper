@@ -17,6 +17,7 @@ namespace RayWrapperTesterCollision
             var vy = .25f * Math.Sin(phi);
 
             velocity = new Vector2((float) vx, (float) vy);
+            tag = "ball";
         }
 
         public override void RenderShape(Vector2 pos)

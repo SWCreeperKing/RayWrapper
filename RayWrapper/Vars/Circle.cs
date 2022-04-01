@@ -19,7 +19,7 @@ public struct Circle
     public bool CheckCollision(Circle circle)
     {
         return Raylib.CheckCollisionCircles(position, radius, circle.position, circle.radius);
-    }
+    } 
 
     public bool CheckCollision(Rectangle rect) => Raylib.CheckCollisionCircleRec(position, radius, rect);
 

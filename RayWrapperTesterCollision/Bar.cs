@@ -11,6 +11,7 @@ namespace RayWrapperTesterCollision
 
         public Bar(Vector2 pos, Vector2 size) : base(RectWrapper.AssembleRectFromVec(pos, size))
         {
+            tag = "bar";
         }
 
         public override void RenderShape(Vector2 pos) => rect.NewMoveTo(pos).Draw(GRAY);

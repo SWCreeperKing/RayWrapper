@@ -17,6 +17,7 @@ public abstract class Collider : GameObject
     public Vector2 velocity = Vector2.Zero;
 
     public long currentId;
+    public string tag = "def";
 
     /// <summary>
     /// if true, will delete object when it reaches the out of bounds of the screen

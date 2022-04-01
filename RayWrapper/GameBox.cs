@@ -15,6 +15,7 @@ using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.RectWrapper;
@@ -74,14 +75,12 @@ namespace RayWrapper
         public static bool conserveCpu;
         public static bool enableConsole = true;
         public static bool f11Fullscreen = true;
-        public static bool isCollisionSystem;
         public static bool isDebugTool;
         public static bool showFps = false;
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
         public static GameObject debugContext = null;
         public static IGameObject mouseOccupier;
         public static Vector2 fpsPos = Vector2.One;
-
         public static Vector2 mousePos;
         public static Stack<AlertBase> alertQueue = new();
         public static ColorModule backgroundColor = new(40);
@@ -93,13 +92,13 @@ namespace RayWrapper
         public static List<Tooltip> tooltips = new();
 
         private static readonly List<ISave> SaveList = new();
-        private static Task _collisionLoop;
         private static bool _hasInit;
         private static bool _initCollision;
         private static bool _initDiscord;
         private static bool _isConsole;
         private static bool _isDrawing;
         private static bool _isEnding;
+        private static Task _collisionLoop;
         private static RenderTexture _target;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
@@ -363,6 +362,11 @@ namespace RayWrapper
         public static void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
         public static long GetTimeMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
+        /// <summary>
+        /// Toggles the ingame console
+        /// </summary>
+        public static void ToggleConsole() => _isConsole.Flip();
+        
         # region save system
 
         public static void InitSaveSystem(string developerName, string appName) =>
