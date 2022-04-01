@@ -2,10 +2,10 @@
 using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Collision;
-// using RayWrapper.CollisionSystem;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
+using static RayWrapper.Collision.Starter;
 using static RayWrapper.GameBox;
 
 namespace RayWrapperTesterCollision
@@ -19,28 +19,26 @@ namespace RayWrapperTesterCollision
 
         public override void Init()
         {
-            Starter.InitPhysics();
-//             var wx = WindowSize.X;
-//             var wy = WindowSize.Y;
-//             CollisionLayerTags.Add(("circle", "bar"));
-//             new Bar(new Vector2(0, 0), new Vector2(wx, 10));
-//             new Bar(new Vector2(0, wy - 10), new Vector2(wx, 10));
-//             new Bar(new Vector2(0, 0), new Vector2(10, wy)) { vert = true };
-//             new Bar(new Vector2(wx - 10, 0), new Vector2(10, wy)) { vert = true };
-//             RegisterGameObj(new Text($"{Collider.count - 4}", new Vector2(12, 60), RED), new Text(
-//                 new Actionable<string>(() => $@"Collision Time
-// cur: {CurrentCollision}ms
-// avg: {TimeAverage}ms
-// high: {CollisionHigh}ms".Replace("\r", "")), new Vector2(300, 50), SKYBLUE));
-            var rectTest1 = new PhysicRect(new Rectangle(20, 500, 400, 50), isStatic: true);
-            RegisterGameObj(rectTest1);
+            InitPhysics();
+            var wx = WindowSize.X;
+            var wy = WindowSize.Y;
+            new Bar(new Vector2(0, 0), new Vector2(wx, 10));
+            new Bar(new Vector2(0, wy - 10), new Vector2(wx, 10));
+            new Bar(new Vector2(0, 0), new Vector2(10, wy)) { vert = true };
+            new Bar(new Vector2(wx - 10, 0), new Vector2(10, wy)) { vert = true };
+            RegisterGameObj(new Text(new Actionable<string>(() => $"{Collider.count - 4}"), new Vector2(12, 60), RED),
+                new Text(
+                    new Actionable<string>(() => $@"Collision Time
+cur: {CurrentCollision}ms
+avg: {TimeAverage}ms
+high: {CollisionHigh}ms".Replace("\r", "")), new Vector2(300, 50), SKYBLUE));
         }
 
         public override void UpdateLoop()
         {
             if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
             {
-                RegisterGameObj(new PhysicCircle(mousePos));
+                for (var i = 0; i < 100; i++) new Circle(mousePos);
             }
         }
 

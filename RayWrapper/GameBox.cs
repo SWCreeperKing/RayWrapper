@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Numerics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Raylib_CsLo;
@@ -107,6 +108,7 @@ namespace RayWrapper
         private static List<Action> _staticInit = new();
         private static List<Action> _staticUpdate = new();
         private static List<Action> _staticRender = new();
+        private static List<Action> _staticDispose = new();
 
         public static event Action StaticInit
         {
@@ -124,6 +126,12 @@ namespace RayWrapper
         {
             add => _staticRender.Add(value);
             remove => _staticRender.Remove(value);
+        }
+
+        public static event Action StaticDispose
+        {
+            add => _staticDispose.Add(value);
+            remove => _staticDispose.Remove(value);
         }
 
         public static int FPS
@@ -224,15 +232,15 @@ namespace RayWrapper
             }
 
             _isEnding = true;
-            Logger.Log("Waiting for schedulers to end");
+            Logger.Log(Other, "Waiting for schedulers to end");
             while (!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             if (_initCollision)
             {
-                Logger.Log("Waiting for collision to end");
+                Logger.Log(Special, "Waiting for collision to end");
                 while (!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             }
 
-            Logger.Log("All Tasks ended successfully");
+            Logger.Log(Special, "All Tasks ended successfully");
             Dispose();
         }
 
@@ -292,8 +300,8 @@ namespace RayWrapper
             _isDrawing = true;
             ClearBackground(backgroundColor);
 
-            scene.Render();
             _staticRender.ForEach(a => a.Invoke());
+            scene.Render();
             if (_isConsole) singleConsole.Render();
             else
             {
@@ -339,9 +347,10 @@ namespace RayWrapper
         public static void Dispose()
         {
             if (_isDrawing) EndDrawing();
-            _schedulers.Clear();
-            CloseWindow();
+            _staticDispose.ForEach(a => a.Invoke());
             scene.Dispose();
+            CloseWindow();
+            _schedulers.Clear();
             Logger.CheckWrite();
             Environment.Exit(0);
         }

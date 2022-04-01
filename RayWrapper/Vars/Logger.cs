@@ -14,6 +14,7 @@ namespace RayWrapper.Vars
         {
             Info,
             Debug,
+            Special,
             Warning,
             Error,
             Other
@@ -61,6 +62,7 @@ namespace RayWrapper.Vars
                 Warning => ConsoleColor.Yellow,
                 Error => ConsoleColor.Red,
                 Other => ConsoleColor.Blue,
+                Special => ConsoleColor.Cyan,
                 _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
             };
             Console.WriteLine($"[{time}]: [{text}]");

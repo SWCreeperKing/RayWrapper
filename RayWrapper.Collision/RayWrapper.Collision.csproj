@@ -4,16 +4,28 @@
         <TargetFramework>net5.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PackageId>RayWrapper.Collision</PackageId>
+        <Authors>SW_CreeperKing</Authors>
+        <Description>This is the collision addon to RayWrapper</Description>
+        <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
+        <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <DebugSymbols>true</DebugSymbols>
+        <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
+        <AppxSymbolPackageOutput>snupkg</AppxSymbolPackageOutput>
+        <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1.0</PackageVersion>
+        <PackageReleaseNotes>-initial release</PackageReleaseNotes>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RayWrapper" Version="0.4.0-alpha-9.2" />
+      <PackageReference Include="RayWrapper" Version="0.4.0-beta" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
-    </ItemGroup>
-
 </Project>

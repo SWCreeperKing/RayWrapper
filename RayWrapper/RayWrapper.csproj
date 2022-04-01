@@ -7,7 +7,7 @@
         <PackageId>RayWrapper</PackageId>
         <Authors>SW_CreeperKing</Authors>
         <Description>This is a Wrapper Project for Raylib-cs</Description>
-        <PackageTags>Raylib-cs wrapper</PackageTags>
+        <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
         <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
         <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -17,9 +17,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-alpha-9.2</PackageVersion>
-        <PackageReleaseNotes>-Circle
--new static events to gamebox</PackageReleaseNotes>
+        <PackageVersion>0.4.0-beta</PackageVersion>
+        <PackageReleaseNotes>-ready for RayWrapper.Collision</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
