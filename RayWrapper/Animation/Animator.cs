@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Animation
 {
@@ -42,7 +43,7 @@ namespace RayWrapper.Animation
         public static void Render()
         {
             _queuedAnimation?.Render();
-            foreach (var animation in _animationList) animation.Render();
+            _animationList.Each(animation => animation.Render());
         }
     }
 }

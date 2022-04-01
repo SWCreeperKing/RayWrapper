@@ -9,7 +9,7 @@ namespace RayWrapper.Objs
 {
     public class ProgressBar : GameObject
     {
-        // todo see if to merge progress bar and slider
+        // todo: see if to merge progress bar and slider
         public override Vector2 Position
         {
             get => _pos;

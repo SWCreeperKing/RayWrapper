@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RayWrapper.Animation.Transitions;
 using RayWrapper.Var_Interfaces;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Animation
 {
@@ -30,7 +31,7 @@ namespace RayWrapper.Animation
         public void InitAnimation()
         {
             if (!_transitions.ContainsKey(0)) return;
-            foreach (var transition in _transitions[animationStep]) transition.InitTransition();
+            _transitions[animationStep].Each(transition => transition.InitTransition());
             onInit?.Invoke();
         }
 
@@ -45,7 +46,7 @@ namespace RayWrapper.Animation
             Animate(deltaTime);
             if (_transitions.ContainsKey(animationStep) && !_transitions[animationStep].All(t => t.overFlag))
             {
-                foreach (var transition in _transitions[animationStep]) transition.Update(deltaTime);
+                _transitions[animationStep].Each(transition => transition.Update(deltaTime));
                 return false;
             }
 
@@ -53,15 +54,14 @@ namespace RayWrapper.Animation
             animationStep++;
             stepTime = 0;
             if (!_transitions.ContainsKey(animationStep)) return false;
-            foreach (var transition in _transitions[animationStep])
-                transition.InitTransition();
+            _transitions[animationStep].Each(transition => transition.InitTransition());
             return false;
         }
 
         public void Render()
         {
             Draw();
-            foreach (var go in _register) go.Render();
+            _register.Each(go => go.Render());
         }
 
         public void AddToRegister(params IGameObject[] go) => _register.AddRange(go);

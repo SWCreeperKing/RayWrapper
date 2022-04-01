@@ -13,15 +13,10 @@ namespace RayWrapper.Objs
     {
         public static Style defaultStyle = new();
 
-        public Rectangle Rect
-        {
-            get
-            {
-                return style.drawMode is Style.DrawMode.SizeToText
-                    ? AssembleRectFromVec(_back.Pos(), style.textStyle.MeasureText(text)).Grow(4)
-                    : _back;
-            }
-        }
+        public Rectangle Rect =>
+            style.drawMode is Style.DrawMode.SizeToText
+                ? AssembleRectFromVec(_back.Pos(), style.textStyle.MeasureText(text)).Grow(4)
+                : _back;
 
         public override Vector2 Position
         {
@@ -37,9 +32,6 @@ namespace RayWrapper.Objs
         public Tooltip tooltip;
 
         private Rectangle _back;
-
-        // caching
-        private bool _hoverCache;
 
         public Label(Vector2 pos, string text = "Untitled Label") : this(
             AssembleRectFromVec(pos, defaultStyle.textStyle.MeasureText(text)).Grow(4), text)

@@ -3,6 +3,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
@@ -189,7 +190,7 @@ namespace RayWrapper.Objs
             UpdateText();
             _bounds.MaskDraw(() =>
             {
-                foreach (var l in _labels) l.Render();
+                _labels.Each(l => l.Render());
             });
 
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();

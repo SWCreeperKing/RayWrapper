@@ -102,7 +102,7 @@ namespace RayWrapper.Objs
     public static class ColorIndex
     {
         // http://www.javascripter.net/faq/colornam.htm
-        // i should be arrested for my crimes
+        // I should be arrested for my crimes
         public static readonly Dictionary<string, string> ColorDict = new()
         {
             { "[!aliceblue]", "[#F0F8FF]" }, { "[!lightsalmon]", "[#FFA07A]" }, { "[!antiquewhite]", "[#FAEBD7]" },

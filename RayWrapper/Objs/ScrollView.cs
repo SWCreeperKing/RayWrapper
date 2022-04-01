@@ -5,6 +5,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
@@ -62,7 +63,7 @@ namespace RayWrapper.Objs
 
             _rect.MaskDraw(() =>
             {
-                foreach (var obj in _renderList) obj.Render();
+                _renderList.Each(obj => obj.Render());
             });
 
             if (_trueSize.X >= _size.X) _xScroll.Render();

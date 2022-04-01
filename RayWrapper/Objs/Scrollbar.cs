@@ -4,6 +4,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 
@@ -61,7 +62,7 @@ namespace RayWrapper.Objs
             if (isVertical) bar.y -= offset;
             else bar.x -= offset;
             ClampBounds();
-            foreach (var a in _onMove) a.Invoke(Value);
+            _onMove.Each(a => a.Invoke(Value));
         }
 
         public void ClampBounds()

@@ -4,6 +4,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.RectWrapper;
 
@@ -95,7 +96,7 @@ namespace RayWrapper.Objs
         /// </summary>
         public void Click()
         {
-            foreach (var a in _clickEvent) a.Invoke();
+            _clickEvent.Each(a => a.Invoke());
         }
 
         public void SetStyle(Style style)
