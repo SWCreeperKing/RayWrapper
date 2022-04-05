@@ -25,14 +25,15 @@ namespace RayWrapper.Objs
             get => _Texture.rotation;
             set => _Texture.rotation = value;
         } // 0 to 360
-        
+
         private TextureObj _Texture;
         private Image _image;
+        private Rectangle _textSize;
 
         public ImageObj(string imageFile) : this(Raylib.LoadImage(imageFile), Vector2.Zero)
         {
         }
-        
+
         public ImageObj(string imageFile, Vector2 pos) : this(Raylib.LoadImage(imageFile), pos)
         {
         }
@@ -45,10 +46,17 @@ namespace RayWrapper.Objs
         {
             _image = image;
             _Texture = new TextureObj(image.Texture(), pos);
+            _textSize = RectWrapper.AssembleRectFromVec(Vector2.Zero, _Texture.Size);
         }
 
         protected override void UpdateCall() => _Texture.Update();
         protected override void RenderCall() => _Texture.Render();
+
+        public void RenderTo(Rectangle rect, Color? tint = null, Vector2? origin = null, float rotation = 0)
+        {
+            Raylib.DrawTexturePro(_Texture, _textSize, rect, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
+        }
+
         public void SetSize(Vector2 size) => _Texture.SetSize(size);
         ~ImageObj() => Raylib.UnloadImage(_image);
     }

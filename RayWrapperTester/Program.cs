@@ -149,12 +149,18 @@ namespace RayWrapperTester
             _tbv.AddTab("DropDown Test", _dd);
             _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"));
 
-            TreeView tv = new(new NodeChain(
+            var nodeChain = new NodeChain(
                 new Box(Vector2.One, "hi") { completed = true },
                 new Box(new Vector2(1, 3), "hi2") { completed = true },
                 new Ball(new Vector2(3, 1), "hi3") { completed = true },
                 new Ball(new Vector2(3, 3), "hi4") { completed = true },
-                new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")))
+                new ImageNode(new ImageObj("Images/Untitled.png"), new Vector2(10, 2), new Vector2(4), "Image :D")
+            );
+
+            nodeChain.AddBranch(new NodeChain(new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")),
+                nodeChain.nodes.Count - 2);
+
+            TreeView tv = new(nodeChain)
             {
                 axisOffset = new Vector2(5, 5), verticalMovement = false,
                 bounds = new Rectangle(0, 0, 15, 0),
