@@ -55,6 +55,8 @@ namespace RayWrapper.Objs
             _size = size;
             Change();
         }
+
+        public static implicit operator Texture(TextureObj tObj) => tObj._Texture;
         
         public void Change() => _destRect = AssembleRectFromVec(_pos, _size);
         ~TextureObj() => Raylib.UnloadTexture(_Texture);
