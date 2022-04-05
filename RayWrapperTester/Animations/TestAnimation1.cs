@@ -1,10 +1,9 @@
 ﻿using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.SinglePurposeObjects;
 using RayWrapper.Animation.Transitions;
-using RayWrapper.Objs;
 
 namespace RayWrapperTester.Animations
 {

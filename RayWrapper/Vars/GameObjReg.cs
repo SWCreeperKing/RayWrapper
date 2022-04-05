@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using RayWrapper.Var_Interfaces;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Vars
 {
@@ -9,12 +11,12 @@ namespace RayWrapper.Vars
 
         public void UpdateReg()
         {
-            foreach (var a in _registry) a.Update();
+            _registry.Each(a => a.Update());
         }
 
         public void RenderReg()
         {
-            foreach (var a in _registry) a.Render();
+            _registry.Each(a => a.Render());
         }
 
         public void RegisterGameObj(params IGameObject[] igo) => _registry.AddRange(igo);

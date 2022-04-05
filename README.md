@@ -11,7 +11,7 @@
 
 ---
 
-<p align="center"> This is a Wrapper for the C# bindings (<a href="https://github.com/ChrisDill/Raylib-cs">Raylib-cs</a>) of <a href="https://github.com/raysan5/raylib">Raylib</a>, a 'bare-bones' graphics library.
+<p align="center"> This is a Wrapper for the C# bindings (<a href="https://github.com/NotNotTech/Raylib-CsLo">Raylib-CsLo</a>) of <a href="https://github.com/raysan5/raylib">Raylib</a>, a 'bare-bones' graphics library.
     <br> 
 </p>
 
@@ -24,8 +24,8 @@
 - [Authors](#authors)
 
 ## 🧐 About <a name = "about"></a>
-This is a Wrapper for the C# port (Raylib-cs) of Raylib, a 'bare-bones' graphics library.
-Made with .Net5 on nuget.
+This is a Wrapper for the C# port (Raylib-CsLo) of Raylib, a 'bare-bones' graphics library.
+Made with .Net6 on nuget.
 
 For credit, please link back to this repo.
 
@@ -51,9 +51,9 @@ TODO: Insert usage instructions here. Say some stuff about adding the NuGet pack
 
 ## 🏷️ Example Template <a name="example_template"></a>
 ```C#
-new GameBox(new Program(), new Vector2(window width, window height, "title"));
+new GameBox(new Program(), new Vector2(window width, window height), "title");
 
-public class Program : GameLoop 
+public partial class Program : GameLoop 
 {
     public override void Init() 
     {
@@ -77,9 +77,10 @@ public class Program : GameLoop
 
 
 ## ⛏️ Built Using <a name = "built_using"></a>
-- [Raylib-cs (4.0.0.1)](https://www.nuget.org/packages/Raylib-cs/) - C# bindings for the raylib framework
+- [Raylib-CsLo (4.0.0)](https://www.nuget.org/packages/Raylib-CsLo/) - C# bindings for the raylib framework
 - [DiscordRichPresence (1.0.175)](https://www.nuget.org/packages/DiscordRichPresence/) - A .NET implementation of Discord's Rich Presence functionality
 - [Newtonsoft.Json (13.0.1)](https://www.nuget.org/packages/Newtonsoft.Json/) - Popular high-performance JSON framework for .NET
+- [ZimonIsHimUtils (1.1.0)](https://www.nuget.org/packages/ZimonIsHimUtils/) - Valuable Extension Methods for shortening code
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@SWCreeperKing](https://github.com/SWCreeperKing) - Idea, Initial work, general development & management

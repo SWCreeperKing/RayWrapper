@@ -1,51 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
-using static RayWrapper.GameBox;
-using static RayWrapper.Objs.Label;
+using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
     public class Button : GameObject
     {
+        public static Style defaultStyle = new();
+
+        public Style style { get; private set; } = defaultStyle.Copy();
         public Label baseL;
         public Sound clickSound;
-        public ColorModule baseColor = new(1, 89, 99);
-        public ColorModule fontColor = new(174, 177, 181);
-        public Actionable<bool> isDisabled = new(false);
+        public Actionable<bool> isDisabled = false;
         public bool randomPitch = true;
 
         private readonly IList<Action> _clickEvent = new List<Action>();
-
-        public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, Vector2.Zero),
-            text, TextMode.SizeToText)
-        {
-        }
-
-        public Button(Rectangle rect, string text = "Untitled Button", TextMode textMode = TextMode.AlignCenter) =>
-            baseL = new Label(rect, text)
-            {
-                textMode = new Actionable<TextMode>(() => textMode), outline = true,
-                backColor = new ColorModule(() => GetColor(baseColor)),
-                fontColor = new ColorModule(() => GetColor(fontColor)),
-                clicked = () =>
-                {
-                    if (isDisabled) return;
-                    if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
-                    PlaySound(clickSound);
-                    Click();
-                }
-            };
-
-        public bool Outline
-        {
-            get => baseL.outline;
-            set => baseL.outline = value;
-        }
+        private bool disabledCache;
 
         public Actionable<string> Text
         {
@@ -53,22 +29,10 @@ namespace RayWrapper.Objs
             set => baseL.text = value;
         }
 
-        public Actionable<TextMode> Mode
-        {
-            get => baseL.textMode;
-            set => baseL.textMode = value;
-        }
-
-        public Actionable<string> Tooltip
+        public Tooltip Tooltip
         {
             get => baseL.tooltip;
             set => baseL.tooltip = value;
-        }
-
-        public ColorModule OutlineColor
-        {
-            get => baseL.outlineColor;
-            set => baseL.outlineColor = value;
         }
 
         public override Vector2 Position
@@ -89,22 +53,109 @@ namespace RayWrapper.Objs
             remove => _clickEvent.Remove(value);
         }
 
-        protected override void UpdateCall() => baseL.Update();
-        protected override void RenderCall() => baseL.Render();
+        public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, Vector2.Zero), text,
+            Label.Style.DrawMode.SizeToText)
+        {
+        }        
+        
+        public Button(Vector2 pos, Actionable<string> text) : this(AssembleRectFromVec(pos, Vector2.Zero), text,
+            Label.Style.DrawMode.SizeToText)
+        {
+            Text = text;
+        }
 
-        private Color GetColor(ColorModule c) =>
-            isDisabled
-                ? ((Color) c).MakeDarker()
-                : Rect.IsMouseIn() && !IsMouseOccupied
-                    ? ((Color) c).MakeLighter()
-                    : c;
+        public Button(Rectangle rect, string text = "Untitled Button",
+            Label.Style.DrawMode drawMode = Label.Style.DrawMode.AlignCenter)
+        {
+            style.labelStyle.drawMode = drawMode;
+            style.labelStyle.drawColor = (c, b) =>
+            {
+                if (isDisabled) return c.MakeDarker();
+                return b ? c.MakeLighter() : c;
+            };
+
+            baseL = new Label(rect, text)
+            {
+                style = style.labelStyle,
+                clicked = () =>
+                {
+                    if (isDisabled) return;
+                    if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
+                    PlaySound(clickSound);
+                    Click();
+                }
+            };
+        }
+
+        protected override void UpdateCall()
+        {
+            baseL.Update();
+            if (isDisabled == disabledCache) return;
+            disabledCache = (bool) isDisabled;
+            if (!isDisabled) return;
+        }
+
+        protected override void RenderCall() => baseL.Render();
 
         /// <summary>
         ///     Execute all methods subscribed to the on click event
         /// </summary>
         public void Click()
         {
-            foreach (var a in _clickEvent) a.Invoke();
+            _clickEvent.Each(a => a.Invoke());
+        }
+
+        public void SetStyle(Style style)
+        {
+            this.style = style.Copy();
+            this.style.labelStyle.drawColor = (c, b) =>
+            {
+                if (isDisabled) return c.MakeDarker();
+                return b ? c.MakeLighter() : c;
+            };
+            
+            baseL.style = this.style.labelStyle;
+        }
+
+        public class Style : IStyle<Style>
+        {
+            public ColorModule FontColor
+            {
+                get => _fontColor;
+                set => _fontColor = value;
+            }
+
+            public ColorModule BackColor
+            {
+                get => _backColor;
+                set => _backColor = value;
+            }
+
+            public Label.Style labelStyle = new();
+
+            private ColorModule _fontColor = new(174, 177, 181);
+            private ColorModule _backColor = new(1, 89, 99);
+
+            public Style(Label.Style.DrawMode drawMode = Label.Style.DrawMode.SizeToText)
+            {
+                labelStyle.drawMode = drawMode;
+                ReInit();
+            }
+
+            public Style ReInit()
+            {
+                labelStyle.backColor = new ColorModule(() => BackColor);
+                labelStyle.fontColor = new ColorModule(() => FontColor);
+                return this;
+            }
+            
+            public Style Copy()
+            {
+                return new Style
+                {
+                    FontColor = FontColor.Copy(), BackColor = BackColor.Copy(), labelStyle = labelStyle.Copy()
+                }.ReInit();
+            }
         }
     }
 }

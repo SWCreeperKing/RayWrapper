@@ -7,15 +7,16 @@ using System.Net;
 using System.Numerics;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Animation;
-using RayWrapper.CollisionSystem;
 using RayWrapper.Discord;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.RectWrapper;
 using static RayWrapper.Vars.Logger.Level;
@@ -57,18 +58,8 @@ namespace RayWrapper
     {
         public static readonly string CoreDir =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
         public static readonly Random Random = new();
-
-        #region temp collision performance vars
-
-        public static List<(string, string)> CollisionLayerTags { get; } = new();
-        public static long[] CollisionTime { get; } = new long[100];
-        public static double TimeAverage { get; private set; }
-        public static long CollisionHigh { get; private set; }
-        public static long CurrentCollision { get; private set; }
-        public static int TimeKeeper { get; private set; }
-
-        #endregion
 
         public static string DeveloperName { get; private set; }
         public static string AppName { get; private set; } = "Unknown App";
@@ -84,35 +75,63 @@ namespace RayWrapper
         public static bool conserveCpu;
         public static bool enableConsole = true;
         public static bool f11Fullscreen = true;
-        public static bool isCollisionSystem;
         public static bool isDebugTool;
         public static bool showFps = false;
         public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
-        public static IGameObject debugContext = null;
+        public static GameObject debugContext = null;
         public static IGameObject mouseOccupier;
         public static Vector2 fpsPos = Vector2.One;
         public static Vector2 mousePos;
-        public static AlertBox alertBox = null;
-        public static ScreenGrid screenGrid;
+        public static Stack<AlertBase> alertQueue = new();
         public static ColorModule backgroundColor = new(40);
         public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
         public static ColorModule baseTooltipColor = new Color(170, 170, 255, 220);
         public static ColorModule letterboxColor = new(20);
         public static List<SlotBase> dragCollision = new();
-        public static List<string> tooltip = new();
+        public static int tooltipLayers = 1;
+        public static List<Tooltip> tooltips = new();
 
         private static readonly List<ISave> SaveList = new();
-        private static Task _collisionLoop;
         private static bool _hasInit;
         private static bool _initCollision;
         private static bool _initDiscord;
         private static bool _isConsole;
         private static bool _isDrawing;
         private static bool _isEnding;
-        private static RenderTexture2D _target;
+        private static Task _collisionLoop;
+        private static RenderTexture _target;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
-        
+        private static DefaultTooltip _debugTooltip;
+        private static List<Action> _staticInit = new();
+        private static List<Action> _staticUpdate = new();
+        private static List<Action> _staticRender = new();
+        private static List<Action> _staticDispose = new();
+
+        public static event Action StaticInit
+        {
+            add => _staticInit.Add(value);
+            remove => _staticInit.Remove(value);
+        }
+
+        public static event Action StaticUpdate
+        {
+            add => _staticUpdate.Add(value);
+            remove => _staticUpdate.Remove(value);
+        }
+
+        public static event Action StaticRender
+        {
+            add => _staticRender.Add(value);
+            remove => _staticRender.Remove(value);
+        }
+
+        public static event Action StaticDispose
+        {
+            add => _staticDispose.Add(value);
+            remove => _staticDispose.Remove(value);
+        }
+
         public static int FPS
         {
             get => GetFPS();
@@ -131,8 +150,8 @@ namespace RayWrapper
             _hasInit = true;
             SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             (GameBox.scene, WindowSize) = (scene, windowSize);
-            screenGrid = new ScreenGrid();
             InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);
+            RayGui.GuiLoadStyleDefault();
             if (iconPath != string.Empty) SetWindowIcon(LoadImage(iconPath));
             _target = LoadRenderTexture((int) windowSize.X, (int) windowSize.Y);
             if (singleConsole is null)
@@ -140,6 +159,12 @@ namespace RayWrapper
                 singleConsole = new GameConsole.GameConsole();
                 CommandRegister.RegisterCommand<DefaultCommands>();
             }
+
+            _debugTooltip = new DefaultTooltip(new Actionable<string>(() => $@"({mousePos.X},{mousePos.Y}){
+                (IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)
+            }{
+                (debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)
+            }{(debugContext?.debugString is not null ? $"{debugContext.debugString}" : "")}"));
 
             SetTargetFPS(FPS = fps);
             SetWindowSize((int) windowSize.X, (int) windowSize.Y);
@@ -170,6 +195,7 @@ namespace RayWrapper
                 }
             });
 
+            _staticInit.ForEach(a => a.Invoke());
             scene.Init();
             try
             {
@@ -178,9 +204,22 @@ namespace RayWrapper
                 {
                     CalcMousePos();
                     if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && enableConsole) _isConsole = !_isConsole;
-                    else if (alertBox is null && !_isConsole) Update();
-                    else if (alertBox is not null && !_isConsole) alertBox.Update();
-                    else if (_isConsole) singleConsole.Update();
+                    else
+                        switch (alertQueue.Count)
+                        {
+                            case < 1 when !_isConsole:
+                                Update();
+                                break;
+                            case > 0 when !_isConsole:
+                                alertQueue.Peek().Update();
+                                break;
+                            default:
+                            {
+                                if (_isConsole) singleConsole.Update();
+                                break;
+                            }
+                        }
+
                     if (!enableConsole && _isConsole) _isConsole = false;
                     Render();
                 }
@@ -191,15 +230,15 @@ namespace RayWrapper
             }
 
             _isEnding = true;
-            Logger.Log("Waiting for schedulers to end");
+            Logger.Log(Other, "Waiting for schedulers to end");
             while (!schedulers.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             if (_initCollision)
             {
-                Logger.Log("Waiting for collision to end");
+                Logger.Log(Special, "Waiting for collision to end");
                 while (!_collisionLoop.IsCompleted) Task.Delay(10).GetAwaiter().GetResult();
             }
 
-            Logger.Log("All Tasks ended successfully");
+            Logger.Log(Special, "All Tasks ended successfully");
             Dispose();
         }
 
@@ -213,31 +252,6 @@ namespace RayWrapper
             DiscordIntegration.Init();
             if (discordAppId != string.Empty) DiscordIntegration.CheckDiscord(discordAppId);
             AddScheduler(new Scheduler(100, DiscordIntegration.UpdateActivity));
-        }
-
-        /// <summary>
-        /// Initialize the Collision thread
-        /// </summary>
-        public static void InitCollision()
-        {
-            if (_initCollision) return;
-            _initCollision = true;
-            _collisionLoop = Task.Run(async () =>
-            {
-                while (!_isEnding)
-                {
-                    try
-                    {
-                        var startTime = GetTimeMs();
-                        await screenGrid.Update();
-                        await Task.Run(() => AddTime(GetTimeMs() - startTime));
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log(Error, e.ToString());
-                    }
-                }
-            });
         }
 
         private static void Update()
@@ -258,22 +272,23 @@ namespace RayWrapper
                 WriteToConsole($"toggled debug via F3: {isDebugTool}");
             }
 
+            _staticUpdate.ForEach(a => a.Invoke());
             scene.Update();
         }
 
-        public static void RenderRenderTexture(RenderTexture2D texture2D, Vector2 pos, Action update, Action draw)
+        public static void RenderRenderTexture(RenderTexture Texture, Vector2 pos, Action update, Action draw)
         {
             if (!_isDrawing) return;
             var before = new Vector2(mousePos.X, mousePos.Y);
             mousePos.X -= pos.X;
             mousePos.Y -= pos.Y;
             update.Invoke();
-            BeginTextureMode(texture2D);
+            BeginTextureMode(Texture);
             draw.Invoke();
             BeginTextureMode(_target);
-            DrawTexturePro(texture2D.texture, new Rectangle(0, 0, texture2D.texture.width, -texture2D.texture.height),
-                new Rectangle(pos.X, pos.Y, texture2D.texture.width, texture2D.texture.height),
-                Vector2.Zero, 0, Color.WHITE);
+            DrawTexturePro(Texture.texture, new Rectangle(0, 0, Texture.texture.width, -Texture.texture.height),
+                new Rectangle(pos.X, pos.Y, Texture.texture.width, Texture.texture.height),
+                Vector2.Zero, 0, WHITE);
             mousePos = before;
         }
 
@@ -283,33 +298,32 @@ namespace RayWrapper
             _isDrawing = true;
             ClearBackground(backgroundColor);
 
-            screenGrid.Draw(isDebugTool);
+            _staticRender.ForEach(a => a.Invoke());
             scene.Render();
             if (_isConsole) singleConsole.Render();
             else
             {
                 Animator.Render();
-                alertBox?.Render();
+                if (alertQueue.Count > 0)
+                {
+                    new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 75));
+                    alertQueue.Peek().Render();
+                }
             }
 
-            if (isDebugTool)
-            {
-                tooltip.Add(
-                    $"({mousePos.X},{mousePos.Y}){(IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)}{(debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)}");
-            }
+            if (isDebugTool) _debugTooltip.Draw();
 
-            if (tooltip.Any())
+            if (tooltips.Any())
             {
-                var text = string.Join("\n", tooltip);
                 var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
                 if (mousePos.Y > WindowSize.Y / 2) quad += 2;
-                var defFont = FontManager.GetDefFont();
-                var textSize = defFont.MeasureText(text);
-                Vector2 pos = new(mousePos.X - (quad % 2 != 0 ? textSize.X : 0),
-                    mousePos.Y - (quad > 2 ? textSize.Y : -33));
-                AssembleRectFromVec(pos, textSize).Grow(4).Draw(baseTooltipBackColor);
-                defFont.DrawText(text, pos, baseTooltipColor);
-                tooltip.Clear();
+
+                foreach (var tt in tooltips.GetRange(tooltips.Count - tooltipLayers, tooltipLayers))
+                {
+                    tt.RenderTooltip((Tooltip.ScreenQuadrant) quad);
+                }
+
+                tooltips.Clear();
             }
 
             if (showFps || isDebugTool) DrawFPS((int) fpsPos.X, (int) fpsPos.Y);
@@ -323,7 +337,7 @@ namespace RayWrapper
             DrawTexturePro(texture, new Rectangle(0, 0, texture.width, -texture.height),
                 new Rectangle((GetScreenWidth() - WindowSize.X * scale) * .5f,
                     (GetScreenHeight() - WindowSize.Y * scale) * 0.5f, WindowSize.X * scale, WindowSize.Y * scale),
-                Vector2.Zero, 0, Color.WHITE);
+                Vector2.Zero, 0, WHITE);
             EndDrawing();
             _isDrawing = false;
         }
@@ -331,9 +345,10 @@ namespace RayWrapper
         public static void Dispose()
         {
             if (_isDrawing) EndDrawing();
-            _schedulers.Clear();
-            CloseWindow();
+            _staticDispose.ForEach(a => a.Invoke());
             scene.Dispose();
+            CloseWindow();
+            _schedulers.Clear();
             Logger.CheckWrite();
             Environment.Exit(0);
         }
@@ -347,6 +362,11 @@ namespace RayWrapper
         public static void ChangeFps(int fps) => SetTargetFPS(FPS = fps);
         public static long GetTimeMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
+        /// <summary>
+        /// Toggles the ingame console
+        /// </summary>
+        public static void ToggleConsole() => _isConsole.Flip();
+        
         # region save system
 
         public static void InitSaveSystem(string developerName, string appName) =>
@@ -363,14 +383,6 @@ namespace RayWrapper
         public static void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
         #endregion
-
-        public static void AddTime(long ms)
-        {
-            CurrentCollision = CollisionTime[TimeKeeper++] = ms;
-            TimeKeeper %= CollisionTime.Length;
-            CollisionHigh = Math.Max(CollisionHigh, ms);
-            TimeAverage = CollisionTime.Sum() / (double) CollisionTime.Length;
-        }
 
         public static void CalcMousePos()
         {
@@ -408,6 +420,26 @@ namespace RayWrapper
 
             isSuccessful = false;
             return null;
+        }
+
+        public class DefaultTooltip : Tooltip
+        {
+            public DefaultTooltip(Actionable<string> data) : base(data)
+            {
+            }
+
+            protected override void RenderTooltip(ScreenQuadrant screenQuad, string data)
+            {
+                var text = string.Join("\n", data);
+                var defFont = Text.Style.DefaultFont ?? GetFontDefault();
+                var textSize = defFont.MeasureText(text);
+                Vector2 pos = new(mousePos.X - ((int) screenQuad % 2 != 0 ? textSize.X : 0),
+                    mousePos.Y - ((int) screenQuad > 2 ? textSize.Y : -33));
+                var rect = AssembleRectFromVec(pos, textSize).Grow(4);
+                rect.Draw(baseTooltipBackColor);
+                rect.DrawHallowRect(((Color) baseTooltipColor).MakeDarker());
+                defFont.DrawText(text, pos, baseTooltipColor);
+            }
         }
     }
 }

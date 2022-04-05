@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
-using Raylib_cs;
-using static Raylib_cs.Raylib;
+using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -14,6 +15,7 @@ namespace RayWrapper.Vars
 
         public float FullLength => Position.X + Size.X;
         public float FullHeight => Position.Y + Size.Y;
+        public Actionable<string>? debugString = null;
         public bool updateReturnIfNonVis;
 
         private Rectangle _rect = Zero;
@@ -24,10 +26,16 @@ namespace RayWrapper.Vars
         public void Update()
         {
             _rect = AssembleRectFromVec(Position, Size);
-            if (debugContext == this && _rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
-                isDebugTool) debugContext = null;
-            else if (_rect.IsMouseIn() && IsMouseButtonPressed(MouseButton.MOUSE_MIDDLE_BUTTON) &&
-                     isDebugTool) debugContext = this;
+            if (debugContext == this && _rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON) &&
+                isDebugTool)
+            {
+                debugContext = null;
+            }
+            else if (_rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON) &&
+                     isDebugTool)
+            {
+                debugContext = this;
+            }
             if (updateReturnIfNonVis && !isVisible) return;
             UpdateCall();
             UpdateReg();
@@ -43,9 +51,7 @@ namespace RayWrapper.Vars
 
         protected abstract void UpdateCall();
         protected abstract void RenderCall();
-
-        protected virtual void DrawDebugHitbox() =>
-            _rect.DrawHallowRect(debugContext == this ? Color.GREEN : Color.RED);
+        protected virtual void DrawDebugHitbox() => _rect.DrawHallowRect(debugContext == this ? GREEN : RED);
 
         public Rectangle GetDebugRect() => _rect;
         public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);

@@ -2,32 +2,30 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <Nullable>disable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PackageId>RayWrapper</PackageId>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>RayWrapper.Collision</PackageId>
         <Authors>SW_CreeperKing</Authors>
-        <Description>This is a Wrapper Project for Raylib-cs</Description>
+        <Description>This is the collision addon to RayWrapper</Description>
         <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
         <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
         <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <DebugSymbols>true</DebugSymbols>
         <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
         <AppxSymbolPackageOutput>snupkg</AppxSymbolPackageOutput>
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-beta-2</PackageVersion>
-        <PackageReleaseNotes>-ToggleConsole
--Small code cleanup</PackageReleaseNotes>
+        <PackageVersion>0.1.0</PackageVersion>
+        <PackageReleaseNotes>-initial release</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Raylib-CsLo" Version="4.0.0" />
-        <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
+      <PackageReference Include="RayWrapper" Version="0.4.0-beta" />
+      <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
     </ItemGroup>
 </Project>

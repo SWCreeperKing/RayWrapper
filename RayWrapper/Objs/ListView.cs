@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
     public class ListView : GameObject
     {
+        public static Style defaultStyle = new();
+
         public override Vector2 Position
         {
             get => _bounds.Pos();
@@ -21,10 +25,7 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _bounds.Size();
 
-        public Actionable<string> tooltip = new(string.Empty);
-        public ColorModule backColor = new(50);
-        public ColorModule fontColor = new(192);
-        public ColorModule selectColor = new(60, 60, 100);
+        public Style style = defaultStyle.Copy();
         public Sound clickSound;
         public Func<int> arrayLength;
         public Func<int, Color> backColors;
@@ -37,6 +38,7 @@ namespace RayWrapper.Objs
         public bool showTooltip = true;
         public bool useSelection = true;
         public bool selectedToggle;
+        public Tooltip tooltip;
 
         private readonly Label[] _labels;
         private readonly Scrollbar _bar;
@@ -67,8 +69,9 @@ namespace RayWrapper.Objs
             {
                 _labels[i] = new Label(new Rectangle(0, 0, _bounds.width, labelHeight))
                 {
-                    useBaseHover = new Actionable<bool>(() => _individualClick is not null), updateReturnIfNonVis = true
+                    style = style.labelStyle.Copy(), updateReturnIfNonVis = true
                 };
+                _labels[i].style.drawHover = new Actionable<bool>(() => _individualClick is not null);
             }
 
             _bar.OnMoveEvent += UpdateLabels;
@@ -120,18 +123,19 @@ namespace RayWrapper.Objs
                     };
                 }
 
-                l.Position = new Vector2(_bounds.x, y + labelPadding * i);
-                l.backColor =
+                l.style.backColor =
                     new ColorModule(() =>
                         place == _lastSelect && _individualClick is not null
-                            ? (Color) selectColor
-                            : backColors?.Invoke(place) ?? (Color) backColor);
+                            ? (Color) style.selectColor
+                            : backColors?.Invoke(place) ?? (Color) style.backColor);
 
-                l.fontColor =
-                    new ColorModule(fontColors?.Invoke(place) ?? (Color) fontColor);
+                l.style.fontColor =
+                    new ColorModule(fontColors?.Invoke(place) ?? (Color) style.fontColor);
+
+                l.Position = new Vector2(_bounds.x, y + labelPadding * i);
 
                 if (indivTooltip is null) continue;
-                l.tooltip = indivTooltip.Invoke(place);
+                l.tooltip = tooltip;
             }
         }
 
@@ -141,7 +145,8 @@ namespace RayWrapper.Objs
             for (var i = 0; i < Math.Min(_labels.Length, arrayLength.Invoke() - (int) value); i++)
             {
                 _labels[i].text = this[(int) value + i];
-                _labels[i].fontColor = new ColorModule(fontColors?.Invoke((int) value + i) ?? (Color) fontColor);
+                _labels[i].style.fontColor =
+                    new ColorModule(fontColors?.Invoke((int) value + i) ?? (Color) style.fontColor);
             }
         }
 
@@ -167,7 +172,7 @@ namespace RayWrapper.Objs
                     UpdateLabels(_bar.Value);
                 }
 
-                if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON)) return;
+                if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
                 click?.Invoke();
                 if (randomPitch) SetSoundPitch(clickSound, GameBox.Random.Next(.75f, 1.25f));
                 PlaySound(clickSound);
@@ -175,7 +180,7 @@ namespace RayWrapper.Objs
                 return;
             }
 
-            if (!IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) ||
+            if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
                 _bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn()) return;
             outsideClick?.Invoke();
         }
@@ -185,11 +190,11 @@ namespace RayWrapper.Objs
             UpdateText();
             _bounds.MaskDraw(() =>
             {
-                foreach (var l in _labels) l.Render();
+                _labels.Each(l => l.Render());
             });
 
             if (arrayLength.Invoke() > _itemsToShow) _bar.Render();
-            if (showTooltip && tooltip != string.Empty) _bounds.ExtendPos(new Vector2(20, 0)).DrawTooltip(tooltip);
+            if (tooltip is not null && showTooltip) tooltip.Draw(_bounds.ExtendPos(new Vector2(20, 0)));
         }
 
         public float CalcHeight() => (_labelHeight + _padding) * _itemsToShow - _padding;
@@ -201,6 +206,24 @@ namespace RayWrapper.Objs
             if (!doOnClick) return;
             click?.Invoke();
             IndividualClick?.Invoke(select);
+        }
+
+        public class Style : IStyle<Style>
+        {
+            public Scrollbar.Style scrollStyle = new();
+            public Label.Style labelStyle = new();
+            public ColorModule backColor = new(50);
+            public ColorModule fontColor = new(192);
+            public ColorModule selectColor = new(60, 60, 100);
+
+            public Style Copy()
+            {
+                return new Style
+                {
+                    scrollStyle = scrollStyle.Copy(), labelStyle = labelStyle.Copy(), backColor = backColor.Copy(),
+                    fontColor = fontColor.Copy(), selectColor = selectColor.Copy()
+                };
+            }
         }
     }
 }

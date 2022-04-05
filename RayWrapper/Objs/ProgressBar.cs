@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs
 {
     public class ProgressBar : GameObject
     {
+        // todo: see if to merge progress bar and slider
         public override Vector2 Position
         {
             get => _pos;
@@ -16,25 +18,34 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => AssembleRectFromVec(Position, size).Grow(outlineThickness).Size();
 
-        public ColorModule backColor = new(Color.BLACK);
-        public ColorModule fillColor = new(Color.RAYWHITE);
-        public ColorModule toColor = new(Color.GOLD);
-        public ColorModule finishedColor = new(Color.GREEN);
+        // todo progressbar style
+        public ColorModule backColor = new(BLACK);
+        public ColorModule fillColor = new(RAYWHITE);
+        public ColorModule toColor = new(GOLD);
+        public ColorModule finishedColor = new(GREEN);
         public bool hoverPercent = true;
         public bool isVertical;
         public int outlineThickness = 3;
         public Func<float> percent;
         public Vector2 size;
         public bool useGradient = true;
-        public Func<string> customTooltip = null;
+        public Tooltip tooltip;
 
         private Vector2 _pos;
 
-        public ProgressBar(Rectangle rect, Func<float> percent) =>
+        public ProgressBar(Rectangle rect, Func<float> percent)
+        {
             (this.percent, _pos, size) = (percent, rect.Pos(), rect.Size());
+            tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
+                FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
+        }
 
-        public ProgressBar(float x, float y, float width, float height, Func<float> percent) =>
+        public ProgressBar(float x, float y, float width, float height, Func<float> percent)
+        {
             (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
+            tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
+                FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
+        }
 
         protected override void UpdateCall()
         {
@@ -42,7 +53,7 @@ namespace RayWrapper.Objs
 
         protected override void RenderCall()
         {
-            var fill = percent.Invoke();
+            var fill = FixedPercent();
             var back = AssembleRectFromVec(Position, size).Grow(outlineThickness);
             if (!useGradient) back.DrawRounded(backColor);
             else back.Draw(backColor);
@@ -56,8 +67,14 @@ namespace RayWrapper.Objs
             }
 
             if (!hoverPercent) return;
-            if (customTooltip is null) back.DrawTooltip(fill >= 1 ? "100%" : $"{fill:##0.00%}");
-            else back.DrawTooltip(customTooltip.Invoke());
+            tooltip.Draw(back);
+        }
+
+        public float FixedPercent()
+        {
+            var fill = percent.Invoke();
+            var fix = fill.IsFixable() ? fill.Fix() : fill;
+            return Math.Clamp(fix, 0, 1);
         }
     }
 }

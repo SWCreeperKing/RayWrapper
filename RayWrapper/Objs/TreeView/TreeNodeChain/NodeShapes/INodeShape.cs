@@ -12,6 +12,6 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
 
         void Update(Vector2 off, float scale, bool context, bool next);
 
-        void Draw(Vector2 off, float scale);
+        string Draw(Vector2 off, float scale);
     }
 }

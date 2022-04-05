@@ -2,11 +2,12 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\RayWrapper.Collision\RayWrapper.Collision.csproj" />
         <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 
@@ -49,6 +50,8 @@
     <ItemGroup>
         <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Raylib-CsLo" Version="4.0.0" />
+        <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
     </ItemGroup>
 
 </Project>

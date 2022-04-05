@@ -1,14 +1,20 @@
 ﻿using System;
-using Raylib_cs;
+using Raylib_CsLo;
 
 namespace RayWrapper.Vars
 {
     /// <summary>
-    /// an extension of <see cref="Actionable{T}"/> for <see cref="Raylib_cs.Color"/> 
+    /// an extension of <see cref="Actionable{T}"/> for <see cref="Raylib_CsLo.Color"/> 
     /// </summary>
     public class ColorModule
     {
-        public Actionable<Color> color;
+        public Actionable<Color> color = Raylib.BLACK;
+
+        public ColorModule()
+        {
+            // json constructor
+        }
+        
         public ColorModule(Color color) => this.color = new Actionable<Color>(color);
         public ColorModule(Func<Color> color) => this.color = new Actionable<Color>(color);
 
@@ -21,12 +27,20 @@ namespace RayWrapper.Vars
 
         public void Deconstruct(out int r, out int g, out int b, out int a)
         {
-            var c = (Color)this;
+            var c = (Color) this;
             (r, g, b, a) = (c.r, c.g, c.b, c.a);
         }
 
         public static implicit operator Color(ColorModule cm) => cm.color;
         public static implicit operator ColorModule(Color cm) => new(cm);
         public static implicit operator ColorModule(Func<Color> cm) => new(cm);
+
+        public override string ToString()
+        {
+            var color = (Color) this;
+            return $"({color.r},{color.g},{color.b},{color.a})";
+        }
+
+        public ColorModule Copy() => new() { color = color.Copy() };
     }
 }

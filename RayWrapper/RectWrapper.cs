@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
-using static Raylib_cs.Raylib;
+using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
+using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper
 {
@@ -10,7 +12,12 @@ namespace RayWrapper
         /// <summary>
         /// a <see cref="Rectangle"/> with 0 x, y, width, and height
         /// </summary>
-        public static Rectangle Zero = new(0, 0, 0, 0);
+        public static readonly Rectangle Zero = new(0, 0, 0, 0);
+
+        /// <summary>
+        /// a <see cref="Rectangle"/> with float.Min pos and float.Max size
+        /// </summary>
+        public static readonly Rectangle Max = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
 
         /// <summary>
         /// Makes a <see cref="Rectangle"/> from 2 <see cref="Vector2"/>s
@@ -231,7 +238,7 @@ namespace RayWrapper
         /// <param name="roundness">how round the corners should be</param>
         /// <param name="thickness">how thick the outline should be</param>
         public static void DrawRoundedLines(this Rectangle rect, Color color, float roundness = .5f,
-            int thickness = 3)
+            float thickness = 3)
         {
             DrawRectangleRoundedLines(rect, roundness, 5, thickness, color);
         }
@@ -242,7 +249,7 @@ namespace RayWrapper
         /// <param name="rect">the <see cref="Rectangle"/> to draw</param>
         /// <param name="color">the <see cref="Color"/> to draw it as</param>
         /// <param name="thickness">how thick the outline should be</param>
-        public static void DrawHallowCircle(this Rectangle rect, Color color, int thickness = 3)
+        public static void DrawHallowCircle(this Rectangle rect, Color color, float thickness = 3)
         {
             DrawRectangleRoundedLines(rect, 1f, 5, thickness, color);
         }
@@ -253,7 +260,7 @@ namespace RayWrapper
         /// <param name="rect">the <see cref="Rectangle"/> to draw</param>
         /// <param name="color">the <see cref="Color"/> to draw it as</param>
         /// <param name="thickness">how thick the outline should be</param>
-        public static void DrawHallowRect(this Rectangle rect, Color color, int thickness = 3)
+        public static void DrawHallowRect(this Rectangle rect, Color color, float thickness = 3)
         {
             DrawRectangleLinesEx(rect, thickness, color);
         }
@@ -282,16 +289,6 @@ namespace RayWrapper
         }
 
         /// <summary>
-        /// draws a tooltip if a cursor is inside the bounds of the given <see cref="Rectangle"/>
-        /// </summary>
-        /// <param name="box">bounds to check</param>
-        /// <param name="text">the tooltip text</param>
-        public static void DrawTooltip(this Rectangle box, string text)
-        {
-            if (box.IsMouseIn()) GameBox.tooltip.Add(text);
-        }
-
-        /// <summary>
         /// executes <paramref name="draw"/> inside of a masked <see cref="Rectangle"/>
         /// </summary>
         /// <param name="rect">the mask</param>
@@ -299,6 +296,54 @@ namespace RayWrapper
         public static void MaskDraw(this Rectangle rect, Action draw)
         {
             rect.Pos().MaskDraw(rect.Size(), draw);
+        }
+    }
+
+    public class RectStyle : IStyle<RectStyle>
+    {
+        public ColorModule color = new(70);
+        public bool rounded;
+        public float roundness = .5f;
+        public int segments = 10;
+
+        public void Draw(Rectangle rect)
+        {
+            if (rounded) rect.DrawRounded(color, roundness, segments);
+            else rect.Draw(color);
+        }
+
+        public RectStyle Copy()
+        {
+            return new RectStyle
+            {
+                color = color.Copy(), rounded = rounded, roundness = roundness, segments = segments
+            };
+        }
+    }
+
+    public class OutlineStyle : IStyle<OutlineStyle>
+    {
+        public ColorModule color = new(0);
+        public bool rounded;
+        public float thickness = .25f;
+        public float roundness = .5f;
+        public int segments = 10;
+        public bool displayOutline = true;
+
+        public void Draw(Rectangle rect)
+        {
+            if (!displayOutline) return;
+            if (rounded) rect.DrawRoundedLines(color, roundness, thickness);
+            else rect.DrawHallowRect(color);
+        }
+
+        public OutlineStyle Copy()
+        {
+            return new OutlineStyle
+            {
+                color = color.Copy(), rounded = rounded, roundness = roundness, segments = segments,
+                thickness = thickness, displayOutline = displayOutline
+            };
         }
     }
 }

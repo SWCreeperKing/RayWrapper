@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
 {
@@ -20,19 +21,24 @@ namespace RayWrapper.Objs
         public override Vector2 Size => rect.Size();
 
         public Rectangle rect;
-        public ColorModule lineColor = Color.DARKBLUE;
+        public ColorModule lineColor = DARKBLUE;
         public int thickness = 3;
         public int range = -1;
         public bool useBezier = false;
         public Actionable<float> maxConstraint = float.MaxValue;
         public Actionable<float> minConstraint = float.MinValue;
+        public Tooltip tooltip;
 
         private readonly List<Vector2> _values = new();
         private readonly IDictionary<Vector2, Vector2> _realVal = new Dictionary<Vector2, Vector2>();
         private Vector2[] _cacheValues;
         private Vector2 _closest = new(-1, -1);
 
-        public Graph(Rectangle rect) => this.rect = rect;
+        public Graph(Rectangle rect)
+        {
+            this.rect = rect;
+            tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() => _realVal[_closest].ToString()));
+        }
 
         protected override void UpdateCall()
         {
@@ -58,10 +64,10 @@ namespace RayWrapper.Objs
                 else _cacheValues.DrawArrAsLine(lineColor, thickness); 
             });
 
-            grow.DrawHallowRect(Color.BLACK);
+            grow.DrawHallowRect(BLACK);
             if (_closest == neg) return;
             _closest.DrawCircle(3);
-            if (_realVal.ContainsKey(_closest)) GameBox.tooltip.Add(_realVal[_closest].ToString());
+            if (_realVal.ContainsKey(_closest)) tooltip.Draw();
         }
 
         public void UpdateVal()

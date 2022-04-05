@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Raylib_CsLo;
+using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.GeneralWrapper;
 
@@ -12,6 +13,8 @@ namespace RayWrapper.Objs
 {
     public class InputBox : GameObject
     {
+        public static Style defaultStyle = new();
+
         // func: isControl?, cursor pos, max leng, current text
         // func return: (cursorpos, text)
         private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
@@ -27,7 +30,7 @@ namespace RayWrapper.Objs
                             if (p > 0) s = s.Remove(p-- - 1, 1);
                             return (p, s);
                         }
-
+                
                         var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
                         return (lastSpace, s.Remove(lastSpace, p - lastSpace));
                     }
@@ -61,6 +64,8 @@ namespace RayWrapper.Objs
 
         public override Vector2 Size => _label.Size;
 
+        public Style style = defaultStyle.Copy();
+
         private int _curPos;
         private int _frameTime;
         private readonly Label _label;
@@ -77,15 +82,17 @@ namespace RayWrapper.Objs
             _show = maxCharacterShow;
             _max = maxCharacters;
             _label = new Label(
-                    new Rectangle(pos.X, pos.Y, 16 * _show, FontManager.GetDefFont().MeasureText("!").Y),
-                    string.Join(",", Enumerable.Repeat(" ", _show)))
-                { outline = new Actionable<bool>(true) };
+                new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y),
+                string.Join(",", Enumerable.Repeat(" ", _show)))
+            {
+                style = style.labelStyle
+            };
             _lastTime = GetTimeMs();
         }
 
         protected override void UpdateCall()
         {
-            var isLeft = (bool) IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
+            var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
             switch (isLeft)
             {
                 case true when !_label.Rect.IsMouseIn() && _selected:
@@ -130,7 +137,8 @@ namespace RayWrapper.Objs
                 (start, curs) = (_max - _show, _curPos - (_max - _show));
             }
 
-            _label.text = $"> {(_selected ? _text[start..end].Insert(curs, flash ? " " : "|") : _text[start..end])}";
+            _label.text =
+                $"{style.startChar} {(_selected ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)}") : _text[start..end])}";
             _label.Update();
         }
 
@@ -142,6 +150,23 @@ namespace RayWrapper.Objs
             while (c > 0 || cc > 0)
             {
                 if ((KeyboardKey) cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
+                // todo: find a way to fix it
+                // this is for holding backspace 
+                //
+                // if ((KeyboardKey) cc == KeyboardKey.KEY_BACKSPACE)
+                // {
+                //     if (IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) || IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL))
+                //     {
+                //         var lastSpace = Math.Max(0, _text[.._curPos].LastIndexOf(' '));
+                //         _text = _text.Remove(lastSpace, _curPos - lastSpace);
+                //         _curPos = lastSpace;
+                //     }
+                //     else
+                //     {
+                //         if (_curPos > 0) _text = _text.Remove(_curPos-- - 1, 1);
+                //     }
+                // }
+
                 if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
                 (c, cc) = (GetCharPressed(), GetKeyPressed());
             }
@@ -149,5 +174,21 @@ namespace RayWrapper.Objs
 
         public void Clear() => (_text, _curPos) = (string.Empty, 0);
         public void SetText(string text) => (_text, _curPos) = (text, text.Length);
+        public string GetText() => _text;
+
+        public class Style : IStyle<Style>
+        {
+            public Label.Style labelStyle = new();
+            public char startChar = '>';
+            public char cursorChar = '|';
+
+            public Style Copy()
+            {
+                return new Style
+                {
+                    labelStyle = labelStyle.Copy(), startChar = startChar, cursorChar = cursorChar
+                };
+            }
+        }
     }
 }

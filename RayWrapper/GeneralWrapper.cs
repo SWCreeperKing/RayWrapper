@@ -3,11 +3,10 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
-using Raylib_cs;
+using Raylib_CsLo;
 using RayWrapper.Vars;
-using static Raylib_cs.Color;
-using static Raylib_cs.Raylib;
-using static RayWrapper.RectWrapper;
+using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper
 {
@@ -36,17 +35,17 @@ namespace RayWrapper
         public static Vector2 Size(this Image image) => image.Texture().Size();
 
         /// <summary>
-        /// gets the size of a <see cref="Texture2D"/> as a <see cref="Vector2"/>
+        /// gets the size of a <see cref="Texture"/> as a <see cref="Vector2"/>
         /// </summary>
-        /// <param name="texture">the <see cref="Texture2D"/> to get the size of</param>
-        /// <returns>the size of a <see cref="Texture2D"/></returns>
-        public static Vector2 Size(this Texture2D texture) => new(texture.width, texture.height);
+        /// <param name="texture">the <see cref="Texture"/> to get the size of</param>
+        /// <returns>the size of a <see cref="Texture"/></returns>
+        public static Vector2 Size(this Texture texture) => new(texture.width, texture.height);
 
         /// <summary>
         /// gets text from the user's clipboard
         /// </summary>
         /// <returns>the text from the user's clipboard</returns>
-        public static unsafe string FromClipboard() => Utf8StringUtils.GetUTF8String(GetClipboardText());
+        public static string FromClipboard() => GetClipboardText_();
 
         /// <summary>
         /// draws text at the center of the given position
@@ -57,10 +56,13 @@ namespace RayWrapper
         /// <param name="color">the <see cref="Color"/> to draw the text as</param>
         /// <param name="fontSize">the size of the font</param>
         /// <param name="spacing">the spacing of the characters</param>
+        /// <param name="origin">origin for rotation</param>
+        /// <param name="rotation">rotation for text in degrees</param>
         public static void DrawCenterText(this Font font, Vector2 pos, string text, Color color, float fontSize = 24,
-            float spacing = 1.5f)
+            float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {
-            DrawTextEx(font, text, pos - MeasureTextEx(font, text, fontSize, spacing) / 2, fontSize, spacing, color);
+            var center = pos - MeasureTextEx(font, text, fontSize, spacing) / 2;
+            DrawTextPro(font, text, center, origin ?? Vector2.Zero, rotation, fontSize, spacing, color);
         }
 
         /// <inheritdoc cref="DrawCenterText"/>
@@ -88,7 +90,7 @@ namespace RayWrapper
             DrawTextRec(font, text, rect, fontColor, fontSize, spacing, wordWrap, 0, 0, WHITE, WHITE);
         }
 
-        /// <inheritdoc cref="DrawTextRec(Raylib_cs.Font,string,Raylib_cs.Rectangle,Raylib_cs.Color,float,float,bool)"/>
+        /// <inheritdoc cref="DrawTextRec(Raylib_CsLo.Font,string,Raylib_CsLo.Rectangle,Raylib_CsLo.Color,float,float,bool)"/>
         /// <param name="selectStart">unknown</param>
         /// <param name="selectLength">unknown</param>
         /// <param name="selectTint">unknown</param>
@@ -144,12 +146,12 @@ namespace RayWrapper
                         if (i == endLine) endLine -= codepointByteCount;
                         if (startLine + codepointByteCount == endLine) endLine = i - codepointByteCount;
 
-                        state = !state;
+                        state.Flip();
                     }
                     else if (i + 1 == length)
                     {
                         endLine = i;
-                        state = !state;
+                        state.Flip();
                     }
                     else if (codepoint == '\n') state = !state;
 
@@ -213,7 +215,7 @@ namespace RayWrapper
                         glyphWidth = 0;
                         selectStart += lastk - k;
                         k = lastk;
-                        state = !state;
+                        state.Flip();
                     }
                 }
 
@@ -230,10 +232,12 @@ namespace RayWrapper
         /// <param name="fontColor"><see cref="Color"/> to draw with</param>
         /// <param name="fontSize">size of text</param>
         /// <param name="spacing">spacing of the characters</param>
+        /// <param name="origin">origin for rotation</param>
+        /// <param name="rotation">rotation for text in degrees</param>
         public static void DrawText(this Font font, string text, Vector2 pos, Color fontColor, float fontSize = 24,
-            float spacing = 1.5f)
+            float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {
-            DrawTextEx(font, text, pos, fontSize, spacing, fontColor);
+            DrawTextPro(font, text, pos, origin ?? Vector2.Zero, rotation, fontSize, spacing, fontColor);
         }
 
         /// <summary>
@@ -327,7 +331,7 @@ namespace RayWrapper
             DrawLineBezier(v1, v2, thickness, color);
         }
 
-        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_cs.Color,float)"/>
+        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_CsLo.Color,float)"/>
         /// <remarks>v1 and v2 are stored as a tuple</remarks>
         public static void DrawLine(this (Vector2 v1, Vector2 v2) l, Color color, float thickness = 3)
         {
@@ -335,7 +339,7 @@ namespace RayWrapper
             DrawLineEx(v1, v2, thickness, color);
         }
 
-        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_cs.Color,float)"/>
+        /// <inheritdoc cref="DrawLine(System.Numerics.Vector2,System.Numerics.Vector2,Raylib_CsLo.Color,float)"/>
         /// <remarks>v1 and v2 are split into floats and stored as a tuple of 4 floats</remarks>
         public static void DrawLine(this (float x1, float y1, float x2, float y2) l, Color color, float thickness = 3)
         {
@@ -382,14 +386,14 @@ namespace RayWrapper
         public static Vector2[] CalcVectsFromFloats(this float[] array, Rectangle rect)
         {
             var step = rect.width / array.Length;
-            var vects = new Vector2[array.Length];
+            var vectors = new Vector2[array.Length];
 
             for (var i = 0; i < array.Length; i++)
             {
-                vects[i] = new Vector2(rect.x + rect.height + i * step, array[i]);
+                vectors[i] = new Vector2(rect.x + rect.height + i * step, array[i]);
             }
 
-            return vects;
+            return vectors;
         }
 
         /// <summary>
@@ -415,32 +419,32 @@ namespace RayWrapper
         }
 
         /// <summary>
-        /// loads a <see cref="Texture2D"/> from an <see cref="Image"/>
+        /// loads a <see cref="Texture"/> from an <see cref="Image"/>
         /// </summary>
-        /// <param name="i">the <see cref="Image"/> to get the <see cref="Texture2D"/> from</param>
-        /// <returns>the <see cref="Texture2D"/> from <paramref name="i"/></returns>
-        public static Texture2D Texture(this Image i) => LoadTextureFromImage(i);
+        /// <param name="i">the <see cref="Image"/> to get the <see cref="Texture"/> from</param>
+        /// <returns>the <see cref="Texture"/> from <paramref name="i"/></returns>
+        public static Texture Texture(this Image i) => LoadTextureFromImage(i);
 
         /// <summary>
-        /// draws a given <see cref="Texture2D"/>
+        /// draws a given <see cref="Texture"/>
         /// </summary>
-        /// <param name="t"><see cref="Texture2D"/> to draw</param>
-        /// <param name="pos">where to draw <see cref="Texture2D"/></param>
-        /// <param name="tint"><see cref="Color"/> tint of <see cref="Texture2D"/> (white should be default)</param>
-        /// <param name="rot">rotation of <see cref="Texture2D"/></param>
-        /// <param name="scale">scale of <see cref="Texture2D"/></param>
-        public static void Draw(this Texture2D t, Vector2 pos, Color tint, float rot = 0, float scale = 1)
+        /// <param name="t"><see cref="Texture"/> to draw</param>
+        /// <param name="pos">where to draw <see cref="Texture"/></param>
+        /// <param name="tint"><see cref="Color"/> tint of <see cref="Texture"/> (white should be default)</param>
+        /// <param name="rot">rotation of <see cref="Texture"/></param>
+        /// <param name="scale">scale of <see cref="Texture"/></param>
+        public static void Draw(this Texture t, Vector2 pos, Color tint, float rot = 0, float scale = 1)
         {
             DrawTextureEx(t, pos, rot, scale, tint);
         }
 
         /// <summary>
-        /// draws a given <see cref="Texture2D"/>
+        /// draws a given <see cref="Texture"/>
         /// </summary>
-        /// <param name="t"><see cref="Texture2D"/> to draw</param>
-        /// <param name="pos">where to draw <see cref="Texture2D"/></param>
-        /// <param name="rotation">rotation of <see cref="Texture2D"/></param>
-        public static void DrawPro(this Texture2D t, Vector2 pos, int rotation = 0)
+        /// <param name="t"><see cref="Texture"/> to draw</param>
+        /// <param name="pos">where to draw <see cref="Texture"/></param>
+        /// <param name="rotation">rotation of <see cref="Texture"/></param>
+        public static void DrawPro(this Texture t, Vector2 pos, int rotation = 0)
         {
             DrawTexturePro(t, new Rectangle(0, 0, t.width, t.height), new Rectangle(pos.X, pos.Y, t.width, t.height),
                 new Vector2(t.width / 2f, t.height / 2f), rotation, WHITE);
@@ -549,6 +553,33 @@ namespace RayWrapper
             v2.X = cos * tx - sin * ty;
             v2.Y = sin * tx + cos * ty;
             return v2;
+        }
+
+        /// <summary>
+        /// Deconstructs a <see cref="Vector2"/> into it's x and y as a tuple
+        /// </summary>
+        /// <param name="v2">the <see cref="Vector2"/> to deconstruct</param>
+        /// <returns>the X and Y of <paramref name="v2"/> as a tuple</returns>
+        public static (float x, float y) Deconstruct(this Vector2 v2) => (v2.X, v2.Y);
+
+        /// <summary>
+        /// Returns the center of 2 <see cref="Vector2"/>s (as if it was a <see cref="Rectangle"/>) as a <see cref="Vector2"/>
+        /// </summary>
+        /// <param name="pos">position of '<see cref="Rectangle"/>'</param>
+        /// <param name="size">size of '<see cref="Rectangle"/>'</param>
+        /// <returns>the center of the given <see cref="Rectangle"/></returns>
+        /// <remarks>like the <see cref="Rectangle"/>'s Center, but optimized for V2</remarks>
+        public static Vector2 Center(this Vector2 pos, Vector2 size)
+        {
+            return new Vector2(pos.X + size.X / 2, pos.Y + size.Y / 2);
+        }
+
+        /// <summary>
+        /// Distance between 2 <see cref="Vector2"/>
+        /// </summary>
+        public static double Distance(this Vector2 pos1, Vector2 pos2)
+        {
+            return Math.Sqrt(Math.Pow(pos2.X - pos1.X, 2) + Math.Pow(pos2.Y - pos1.Y, 2));
         }
     }
 }

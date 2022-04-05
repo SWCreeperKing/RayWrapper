@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
-using Raylib_cs;
 using RayWrapper.Vars;
+using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
 {
@@ -16,10 +16,10 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
         public Actionable<bool> completed = new(false);
         public Action lClick;
         public Action rClick;
-        public Func<string> tooltip;
         public bool isVisibleCompleted = false;
+        public Actionable<string> tooltip;
 
-        protected NodeShape(Vector2 position, Vector2 size, Func<string> tooltip = null) =>
+        protected NodeShape(Vector2 position, Vector2 size, Actionable<string> tooltip = null) =>
             (this.position, this.size, this.tooltip) = (position, size, tooltip);
 
         public virtual bool IsMouseIn(Vector2 off, float scale) =>
@@ -32,19 +32,18 @@ namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes
         public void Update(Vector2 off, float scale, bool context, bool next)
         {
             if (!IsMouseIn(off, scale)) return;
-            var isLeft = Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
-            var isRight = Raylib.IsMouseButtonPressed(MouseButton.MOUSE_RIGHT_BUTTON);
+            var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+            var isRight = IsMouseButtonPressed(MOUSE_RIGHT_BUTTON);
             if (isLeft && context && !completed) lClick?.Invoke();
             if (isRight && completed && !next) rClick?.Invoke();
         }
 
-        public void Draw(Vector2 off, float scale)
+        public string Draw(Vector2 off, float scale)
         {
-            if (isVisibleCompleted && !completed) return;
-            DrawShape(off, scale);
-            if (!IsMouseIn(off, scale)) return;
+            if (!isVisibleCompleted || completed) DrawShape(off, scale);
+            if (!IsMouseIn(off, scale)) return null;
             DrawOnHover(off, scale);
-            if (tooltip is not null) GameBox.tooltip.Add(tooltip.Invoke());
+            return tooltip;
         }
     }
 }

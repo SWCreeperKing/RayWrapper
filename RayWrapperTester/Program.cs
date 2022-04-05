@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_cs;
+using Newtonsoft.Json;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Objs;
@@ -12,8 +13,7 @@ using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapper.Vars;
 using RayWrapperTester.Animations;
-using static Raylib_cs.Color;
-using static Raylib_cs.Raylib;
+using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
 
@@ -53,12 +53,12 @@ namespace RayWrapperTester
             public int i = 6;
         }
 
-        static void Main(string[] args) => new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
+        static void Main() => new GameBox(new Program(), new Vector2(1280, 720), "Hallo World");
 
         public override void Init()
         {
-            // FontManager.RegisterFont("cas", "CascadiaMono.ttf");
-            // FontManager.SetDefFont("cas");
+            // Text.defaultStyle.SetFilter(TextureFilter.TEXTURE_FILTER_POINT);
+            Text.Style.SetDefaultFont("CascadiaMono.ttf");
 
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
@@ -66,7 +66,7 @@ namespace RayWrapperTester
             if (scheduleTesting)
             {
                 AddScheduler(new Scheduler(10,
-                    () => Console.WriteLine($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
+                    () => Logger.Log($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
             }
 
             if (saveTesting)
@@ -78,13 +78,21 @@ namespace RayWrapperTester
 
             _b = new Button(AssembleRectFromVec(pos, new Vector2(200, 200)), "Just a Name")
             {
-                Mode = new Actionable<Label.TextMode>(() => (Label.TextMode) (_buttonInc % 3)),
                 isDisabled = new Actionable<bool>(false, () => _buttonInc > 10)
             };
-            _b.Clicked += () => _buttonInc++;
+            _b.Clicked += () =>
+            {
+                _buttonInc++;
+                _b.baseL.style.drawMode = (Label.Style.DrawMode) (_buttonInc % 5);
+            };
 
-            _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!",
-                Label.TextMode.WrapText);
+            _l = new Label(AssembleRectFromVec(pos, new Vector2(200, 200)), "Look! I can move with the arrow keys!")
+            {
+                style =
+                {
+                    drawMode = Label.Style.DrawMode.WrapText
+                }
+            };
 
             var arr = new List<string>
                 { "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no" };
@@ -94,12 +102,17 @@ namespace RayWrapperTester
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
                 "option option", "option setting", "option N");
 
-            _tbv = new(Vector2.Zero, WindowSize.X);
-            _tbv.AddTab("Button Test", _b,
+            Text t = new("WWEEEEEE!!", WindowSize / 2);
+            t.style.SetRotationOriginToCenter("WWEEEEEE!!");
+            AddScheduler(new Scheduler(50, () => { t.style.rotation = (t.style.rotation + 3) % 360; }));
+
+            _tbv = new TabView(Vector2.Zero, WindowSize.X);
+            _tbv.AddTab("Button Test", _b, t,
                 new EmptyRender(() =>
                     DrawText($"Hello, world! [i] is {_buttonInc}", 12, 60, 20, new Color(174, 177, 181, 255))));
 
-            _tbv.AddTab("Label Test", _l);
+            RichText rich = new("Testing [#fF0a0a]rich\n [!aqua]text [!gold]test", pos + new Vector2(50, 300));
+            _tbv.AddTab("Label Test", _l, rich);
 
             RectItem ri = new(new Vector2(400), new Vector2(75)) { slotDependent = false, id = "blue", color = BLUE };
             CircleItem ci = new(new Vector2(400, 475), new Vector2(75)) { color = RED, id = "red" };
@@ -123,10 +136,9 @@ namespace RayWrapperTester
             })));
 
             _tbv.AddTab("Tooltip Test",
-                new EmptyRender(() =>
-                    AssembleRectFromVec(Vector2.Zero, WindowSize).DrawTooltip("Testing Tooltip")));
+                new EmptyRender(() => new DefaultTooltip("Testing Tooltip").Draw()));
 
-            Button listViewButton = new(new Rectangle(700, 100, 0, 0), "Clear", Label.TextMode.SizeToText);
+            Button listViewButton = new(new Vector2(700, 100), "Clear");
             listViewButton.Clicked += () =>
             {
                 arr.Clear();
@@ -135,21 +147,26 @@ namespace RayWrapperTester
 
             _tbv.AddTab("ListView Test", _lv, listViewButton);
             _tbv.AddTab("DropDown Test", _dd);
-            _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"),
-                new Checkbox(pos + new Vector2(0, 50), "Circle") { isCircle = true });
+            _tbv.AddTab("Checkbox Test", new Checkbox(pos, "Square Check"));
 
-            TreeView tv = new(new NodeChain(new Box(Vector2.One, () => "hi") { completed = true },
-                new Box(new Vector2(1, 3), () => "hi2") { completed = true },
-                new Ball(new Vector2(3, 1), () => "hi3") { completed = true },
-                new Ball(new Vector2(3, 3), () => "hi4") { completed = true },
-                new Ball(new Vector2(4, 8), new Vector2(2, 1), () => "yeet")));
-            tv.axisOffset = new Vector2(5, 5);
-            tv.mask = AssembleRectFromVec(new Vector2(0), screen).ExtendPos(new Vector2(0, -60));
+            TreeView tv = new(new NodeChain(
+                new Box(Vector2.One, "hi") { completed = true },
+                new Box(new Vector2(1, 3), "hi2") { completed = true },
+                new Ball(new Vector2(3, 1), "hi3") { completed = true },
+                new Ball(new Vector2(3, 3), "hi4") { completed = true },
+                new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")))
+            {
+                axisOffset = new Vector2(5, 5), verticalMovement = false,
+                bounds = new Rectangle(0, 0, 15, 0),
+                mask = AssembleRectFromVec(Vector2.Zero, screen).ExtendPos(new Vector2(0, -60))
+            };
 
             _tbv.AddTab("TreeView Test", tv);
 
-            KeyButton kb = new(pos, KeyboardKey.KEY_C);
-            kb.keyChange = key => Console.WriteLine($"New Key: {key}");
+            KeyButton kb = new(pos, KeyboardKey.KEY_C)
+            {
+                keyChange = key => Console.WriteLine($"New Key: {key}")
+            };
 
             ScrollView sv = new(new Rectangle(200, 200, 700, 500));
             Label l = new(Vector2.Zero, "Text1");
@@ -162,22 +179,23 @@ namespace RayWrapperTester
 
             _tbv.AddTab("KeyButton Test", kb);
 
-            var b = new Button(AssembleRectFromVec(pos, new Vector2()), "Test", Label.TextMode.SizeToText);
-            var bb = new Button(AssembleRectFromVec(pos + new Vector2(0, 60), new Vector2()), "Test info",
-                Label.TextMode.SizeToText);
-            b.Clicked += () => new AlertBox("Testing", "Just testing alert boxes").Show();
-            bb.Clicked += () => new AlertBox("Testing", "Just testing alert boxes", true).Show();
+            var b = new Button(pos, "Test Close");
+            var bb = new Button(pos + new Vector2(0, 60), "Test Confirm");
+            var bbb = new Button(pos + new Vector2(0, 120), "Test Input");
+            b.Clicked += () => new AlertClose("Testing", "Just testing alert boxes").Show();
+            bb.Clicked += () => new AlertConfirm("Testing", "Just testing alert\nboxes").Show();
+            bbb.Clicked += () => new AlertInput("Testing", "Hello?") { onResult = Logger.Log }.Show();
 
-            _tbv.AddTab("AlertBox Test", b, bb);
+            _tbv.AddTab("AlertBox Test", b, bb, bbb);
             _tbv.AddTab("Input Test", new InputBox(pos));
 
-            Button aniB = new(new Rectangle(20, 80, 0, 0), "Queue Animation", Label.TextMode.SizeToText);
+            Button aniB = new(new Vector2(20, 80), "Queue Animation");
             aniB.Clicked += () => Animator.AddToAnimationQueue(new TestAnimation1());
 
-            Button aniBC = new(new Rectangle(20, 120, 0, 0), "Add Animation", Label.TextMode.SizeToText);
+            Button aniBC = new(new Vector2(20, 120), "Add Animation");
             aniBC.Clicked += () => Animator.AddAnimation(new Mover());
 
-            Button aniBT = new(new Rectangle(20, 160, 0, 0), "Queue Trigger Animation", Label.TextMode.SizeToText);
+            Button aniBT = new(new Vector2(20, 160), "Queue Trigger Animation");
             aniBT.Clicked += () => Animator.AddToAnimationQueue(new InteractionAnimation());
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
@@ -193,11 +211,10 @@ namespace RayWrapperTester
                     {
                         ClearBackground(RED);
                         bRend.Render();
-                        tooltip.Add($"{mousePos}");
                     });
             }));
 
-            graf = new(new Rectangle(50, 100, 1000, 400));
+            graf = new Graph(new Rectangle(50, 100, 1000, 400));
             _tbv.AddTab("Graphy", graf,
                 new Text(new Actionable<string>(() => $"A: {graf.Amount()}"), new Vector2(120, 520)));
             graf.minConstraint = new Actionable<float>(() => currGraf == 4 ? -6 : float.MinValue);
@@ -221,7 +238,6 @@ namespace RayWrapperTester
             else if (IsKeyDown(KeyboardKey.KEY_RIGHT)) _l.Position += new Vector2(3, 0);
             if (IsKeyDown(KeyboardKey.KEY_UP)) _l.Position += new Vector2(0, -3);
             else if (IsKeyDown(KeyboardKey.KEY_DOWN)) _l.Position += new Vector2(0, 3);
-            if (IsKeyPressed(KeyboardKey.KEY_SPACE)) _tbv.Closable = !_tbv.Closable;
 
             if (!IsKeyPressed(KeyboardKey.KEY_R)) return;
             currGraf++;
