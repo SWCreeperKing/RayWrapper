@@ -573,5 +573,13 @@ namespace RayWrapper
         {
             return new Vector2(pos.X + size.X / 2, pos.Y + size.Y / 2);
         }
+
+        /// <summary>
+        /// Distance between 2 <see cref="Vector2"/>
+        /// </summary>
+        public static double Distance(this Vector2 pos1, Vector2 pos2)
+        {
+            return Math.Sqrt(Math.Pow(pos2.X - pos1.X, 2) + Math.Pow(pos2.Y - pos1.Y, 2));
+        }
     }
 }

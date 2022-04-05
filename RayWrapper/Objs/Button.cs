@@ -56,6 +56,12 @@ namespace RayWrapper.Objs
         public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, Vector2.Zero), text,
             Label.Style.DrawMode.SizeToText)
         {
+        }        
+        
+        public Button(Vector2 pos, Actionable<string> text) : this(AssembleRectFromVec(pos, Vector2.Zero), text,
+            Label.Style.DrawMode.SizeToText)
+        {
+            Text = text;
         }
 
         public Button(Rectangle rect, string text = "Untitled Button",

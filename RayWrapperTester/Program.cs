@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
@@ -22,7 +23,7 @@ namespace RayWrapperTester
     {
         private float _percent;
         private int _buttonInc;
-        private bool saveTesting = true;
+        private bool saveTesting = false;
         private bool scheduleTesting = false;
         private int currGraf;
         private Rectangle _scissorArea;
@@ -67,7 +68,7 @@ namespace RayWrapperTester
                 AddScheduler(new Scheduler(10,
                     () => Logger.Log($"Scheduler: time = {DateTime.Now:HH\\:mm\\:ss\\.fff}")));
             }
-                
+
             if (saveTesting)
             {
                 Logger.Log("save testing start");
@@ -151,11 +152,12 @@ namespace RayWrapperTester
             TreeView tv = new(new NodeChain(
                 new Box(Vector2.One, "hi") { completed = true },
                 new Box(new Vector2(1, 3), "hi2") { completed = true },
-                new Ball(new Vector2(3, 1),"hi3") { completed = true },
-                new Ball(new Vector2(3, 3),"hi4") { completed = true },
-                new Ball(new Vector2(4, 8), new Vector2(2, 1),"yeet")))
+                new Ball(new Vector2(3, 1), "hi3") { completed = true },
+                new Ball(new Vector2(3, 3), "hi4") { completed = true },
+                new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")))
             {
-                axisOffset = new Vector2(5, 5),
+                axisOffset = new Vector2(5, 5), verticalMovement = false,
+                bounds = new Rectangle(0, 0, 15, 0),
                 mask = AssembleRectFromVec(Vector2.Zero, screen).ExtendPos(new Vector2(0, -60))
             };
 

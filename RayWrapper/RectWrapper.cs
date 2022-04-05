@@ -12,7 +12,12 @@ namespace RayWrapper
         /// <summary>
         /// a <see cref="Rectangle"/> with 0 x, y, width, and height
         /// </summary>
-        public static Rectangle Zero = new(0, 0, 0, 0);
+        public static readonly Rectangle Zero = new(0, 0, 0, 0);
+
+        /// <summary>
+        /// a <see cref="Rectangle"/> with float.Min pos and float.Max size
+        /// </summary>
+        public static readonly Rectangle Max = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
 
         /// <summary>
         /// Makes a <see cref="Rectangle"/> from 2 <see cref="Vector2"/>s

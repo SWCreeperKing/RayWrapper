@@ -37,14 +37,14 @@ namespace RayWrapper.Objs
         {
             (this.percent, _pos, size) = (percent, rect.Pos(), rect.Size());
             tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
-                percent.Invoke() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
+                FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
         }
 
         public ProgressBar(float x, float y, float width, float height, Func<float> percent)
         {
             (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
             tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
-                percent.Invoke() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
+                FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
         }
 
         protected override void UpdateCall()

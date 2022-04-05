@@ -57,19 +57,18 @@ namespace RayWrapper.Objs
         {
             _bar.Update();
 
-            // imma just comment out the try catch for now
-            // try
-            // {
-            if (!GameBox.IsMouseOccupied)
+
+            try
             {
-                _tabs.Each(t => t.Update());
+                if (!GameBox.IsMouseOccupied)
+                {
+                    _tabs.Each(t => t.Update());
+                }
             }
-            // }
-            // catch (InvalidOperationException)
-            // {
-            //     // forgor why it was here :/ but its here for a reason
-            //     // possibly thread stuffs
-            // }
+            catch (InvalidOperationException)
+            {
+                // catches Collection was modified error
+            }
 
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
             _tabContents[_currentTab].Update();
@@ -79,10 +78,7 @@ namespace RayWrapper.Objs
         {
             if (!(!drawIfLowTabs && _tabs.Count < 2))
             {
-                _rect.MaskDraw(() =>
-                {
-                    _tabs.Each(t => t.Render());
-                });
+                _rect.MaskDraw(() => { _tabs.Each(t => t.Render()); });
 
                 if (outline) _rect.DrawHallowRect(BLACK);
                 if (_bar.Amount() > 1) _bar.Render();

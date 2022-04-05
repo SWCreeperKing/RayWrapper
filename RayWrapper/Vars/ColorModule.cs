@@ -8,8 +8,13 @@ namespace RayWrapper.Vars
     /// </summary>
     public class ColorModule
     {
-        public Actionable<Color> color;
+        public Actionable<Color> color = Raylib.BLACK;
 
+        public ColorModule()
+        {
+            // json constructor
+        }
+        
         public ColorModule(Color color) => this.color = new Actionable<Color>(color);
         public ColorModule(Func<Color> color) => this.color = new Actionable<Color>(color);
 
