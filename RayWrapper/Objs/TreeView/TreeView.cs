@@ -11,8 +11,6 @@ using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs.TreeView
 {
-    // todo: VVVVVV 
-    // - tree view: image node
     public class TreeView : GameObject
     {
         public readonly List<NodeChain> chains = new();
