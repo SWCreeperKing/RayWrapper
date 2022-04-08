@@ -95,7 +95,10 @@ namespace RayWrapperTester
             };
 
             var arr = new List<string>
-                { "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no" };
+            {
+                "start", "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no", "e",
+                "i", "o", "u", "a", "werwer", "letters", "words", "end"
+            };
 
             DefaultListItem defItem = new(500, () => arr.Count, i => arr[i])
                 { onClick = (i, _) => Logger.Log($"{i}: {arr[i]}") };

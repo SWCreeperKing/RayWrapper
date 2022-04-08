@@ -62,7 +62,7 @@ namespace RayWrapper.Objs
             var strictVal = (int) value;
             var labelPadding = _size.Y + _padding;
             var y = _bounds.Pos().Y - labelPadding * (value - strictVal);
-            for (var i = 0; i < itemTemplate.ListSize() - strictVal; i++)
+            for (var i = 0; i < Math.Min(_itemsToShow + 1, itemTemplate.ListSize() - strictVal); i++)
             {
                 var notI = i;
                 var place = strictVal + notI;
