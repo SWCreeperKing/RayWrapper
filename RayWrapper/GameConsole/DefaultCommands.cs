@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using RayWrapper.Discord;
@@ -16,12 +17,15 @@ namespace RayWrapper.GameConsole
 {
     public class DefaultCommands : ICommandModule
     {
-        [Command("setfps"), Help("setfps [0 < n < 501]\nsets fps to n")]
+        [Command("setfps"), Help("setfps [n > 0]\nsets fps to n")]
         public static string SetFps(string[] args)
         {
             if (args.Length < 1) return $"{CommandLineColor.SKYBLUE}To set your fps do setfps [number]";
-            if (int.TryParse(args[0], out var fpsset) && fpsset is > 0 and <= 500)
+            if (int.TryParse(args[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var fpsset) && fpsset > 0)
+            {
                 return $"{CommandLineColor.BLUE}Fps set to [{FPS = fpsset}]";
+            }
+
             return $"{DARKRED}[{args[0]}] <- IS NOT A VALID NUMBER";
         }
 
@@ -29,7 +33,8 @@ namespace RayWrapper.GameConsole
         public static string Clear(string[] args)
         {
             var c = ClearOutput();
-            if (args.Length <= 0 || args[0].ToLower()[0] is not 't' or '1') return $"{CommandLineColor.BLUE}Cleared {c} lines";
+            if (args.Length <= 0 || args[0].ToLower()[0] is not 't' or '1')
+                return $"{CommandLineColor.BLUE}Cleared {c} lines";
             return string.Empty;
         }
 
@@ -45,7 +50,7 @@ namespace RayWrapper.GameConsole
         public static string ResetResolution(string[] args)
         {
             if (IsWindowFullscreen()) return "Game can not be in fullscreen";
-            SetWindowSize((int)WindowSize.X, (int)WindowSize.Y);
+            SetWindowSize((int) WindowSize.X, (int) WindowSize.Y);
             return $"Reset Resolution to {WindowSize}";
         }
 
@@ -53,8 +58,12 @@ namespace RayWrapper.GameConsole
         public static string SetResolution(string[] args)
         {
             if (args.Length < 2) return "To set your resolution do setres [width] [height]";
-            if (!int.TryParse(args[0], out var w) || !int.TryParse(args[1], out var h))
+            if (!int.TryParse(args[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var w) ||
+                !int.TryParse(args[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var h))
+            {
                 return "Could not parse one of the variables";
+            }
+
             SetWindowSize(w, h);
             return $"Set Resolution to <{w}, {h}>";
         }
@@ -84,8 +93,9 @@ namespace RayWrapper.GameConsole
         public static string SetScale(string[] args)
         {
             if (args.Length < 1) return "To set your window size do setscale [scale]";
-            if (!float.TryParse(args[0], out var f)) return "Could not parse scale";
-            SetWindowSize((int)(WindowSize.X * f), (int)(WindowSize.Y * f));
+            if (!float.TryParse(args[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var f))
+                return "Could not parse scale";
+            SetWindowSize((int) (WindowSize.X * f), (int) (WindowSize.Y * f));
             return $"Set Resolution to a scale of <{f}>";
         }
 
@@ -127,8 +137,8 @@ namespace RayWrapper.GameConsole
         public static string FpsPos(string[] args)
         {
             if (args.Length < 2) return "to set the pos do fpspos [x] [y]";
-            var x = int.TryParse(args[0], out var rX) ? rX : 0;
-            var y = int.TryParse(args[1], out var rY) ? rY : 0;
+            var x = int.TryParse(args[0], NumberStyles.Any, CultureInfo.InvariantCulture, out var rX) ? rX : 0;
+            var y = int.TryParse(args[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var rY) ? rY : 0;
             fpsPos = new Vector2(x, y);
             return $"{CYAN}Set fps pos to ({x},{y})";
         }

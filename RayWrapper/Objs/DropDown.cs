@@ -58,24 +58,26 @@ namespace RayWrapper.Objs
             var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
             text = new Label(back, options[Value])
             {
-               clicked = () => isListVisible = !isListVisible,
-               style =
-               {
-                   backColor = new ColorModule(50),
-                   fontColor = new ColorModule(192),
-                   drawHover = true
-               }
+                clicked = () => isListVisible = !isListVisible,
+                style =
+                {
+                    backColor = new ColorModule(50),
+                    fontColor = new ColorModule(192),
+                    drawHover = true
+                }
             };
 
-            optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), (int) back.width,
-                i => options[i], () => options.Count, 4, padding: 2)
+            var defItem = new DefaultListItem((int) back.width, () => options.Count, i => options[i])
             {
-                IndividualClick = i =>
+                onClick = (i, _) =>
                 {
                     Value = i;
                     onChange?.Invoke(options[i], i);
                     isListVisible = false;
-                },
+                }
+            };
+            optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), defItem, 4, padding: 2)
+            {
                 outsideClick = () =>
                 {
                     if (isListVisible && !text.Rect.IsMouseIn()) isListVisible = false;

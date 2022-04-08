@@ -34,7 +34,10 @@ namespace RayWrapper.Objs
 
         private readonly Scrollbar _bar;
         private readonly IDictionary<string, Scene> _tabContents = new Dictionary<string, Scene>();
-        private readonly IList<Label> _tabs = new List<Label>();
+
+        private readonly IDictionary<string, Label> _tabs = new Dictionary<string, Label>();
+
+        // private readonly IList<Label> _tabs = new List<Label>();
         private readonly IList<string> _tabOrder = new List<string>();
         private readonly int _padding = 7;
         private string _currentTab;
@@ -62,7 +65,7 @@ namespace RayWrapper.Objs
             {
                 if (!GameBox.IsMouseOccupied)
                 {
-                    _tabs.Each(t => t.Update());
+                    _tabs.Values.Each(t => t.Update());
                 }
             }
             catch (InvalidOperationException)
@@ -78,7 +81,7 @@ namespace RayWrapper.Objs
         {
             if (!(!drawIfLowTabs && _tabs.Count < 2))
             {
-                _rect.MaskDraw(() => { _tabs.Each(t => t.Render()); });
+                _rect.MaskDraw(() => { _tabs.Values.Each(t => t.Render()); });
 
                 if (outline) _rect.DrawHallowRect(BLACK);
                 if (_bar.Amount() > 1) _bar.Render();
@@ -94,8 +97,9 @@ namespace RayWrapper.Objs
         {
             var startX = _rect.x - _offset;
             var hOff = outline ? 2 : 0;
-            foreach (var l in _tabs)
+            foreach (var t in _tabOrder)
             {
+                var l = _tabs[t];
                 var newPos = new Vector2(startX, _rect.y + hOff);
                 l.Position = newPos;
                 startX += l.Size.X + _padding;
@@ -123,17 +127,10 @@ namespace RayWrapper.Objs
                     }
                 }
             };
+            _tabs.Add(name, l);
 
-            if (insert != -1)
-            {
-                _tabs.Insert(insert, l);
-                _tabOrder.Insert(insert, name);
-            }
-            else
-            {
-                _tabs.Add(l);
-                _tabOrder.Add(name);
-            }
+            if (insert != -1) _tabOrder.Insert(insert, name);
+            else _tabOrder.Add(name);
         }
 
         public void AddTab(string tabName, params IGameObject[] gobjs)
@@ -163,6 +160,7 @@ namespace RayWrapper.Objs
             if (!_tabContents.ContainsKey(tabName)) return;
             _tabContents.Remove(tabName);
             _tabOrder.Remove(tabName);
+            _tabs.Remove(tabName);
             if (_currentTab == tabName) _currentTab = _tabContents.Any() ? _tabContents.Keys.First() : null;
             Refresh();
             _bar.Update();
@@ -176,7 +174,7 @@ namespace RayWrapper.Objs
             _tabContents[tabName].RegisterGameObj(gobjs);
         }
 
-        public float GetTabLength() => _tabs.Sum(t => t.Size.X) + (_tabs.Count - 1) * _padding;
+        public float GetTabLength() => _tabs.Values.Sum(t => t.Size.X) + (_tabs.Count - 1) * _padding;
 
         public string GetCurrentTab() => _currentTab;
         public bool ContainsTab(string tabName) => _tabContents.ContainsKey(tabName);

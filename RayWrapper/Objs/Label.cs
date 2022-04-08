@@ -42,13 +42,18 @@ namespace RayWrapper.Objs
 
         protected override void UpdateCall()
         {
-            if (Rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) clicked?.Invoke();
+            if (clicked is not null) ClickCheck(clicked);
         }
 
         protected override void RenderCall()
         {
             style.Draw(text, Rect);
             if (tooltip is not null && !IsMouseOccupied) tooltip.Draw(Rect);
+        }
+
+        public void ClickCheck(Action onClick)
+        {
+            if (Rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) onClick?.Invoke();
         }
 
         public class Style : IStyle<Style>
@@ -112,12 +117,12 @@ namespace RayWrapper.Objs
             {
                 var textSize = textStyle.MeasureText(text);
                 var shrink = back.Shrink(4);
+                var hover = back.IsMouseIn();
+                textStyle.color = drawColor.Invoke(fontColor, hover);
+                backStyle.color = drawColor.Invoke(backColor, hover);
+
                 backStyle.Draw(back);
                 if (drawOutline) outline.Draw(back);
-
-                var hover = back.IsMouseIn();
-                backStyle.color = drawColor.Invoke(backColor, hover);
-                textStyle.color = drawColor.Invoke(fontColor, hover);
 
                 switch (drawMode)
                 {

@@ -35,9 +35,9 @@ namespace RayWrapper.Vars
                 StringBuilder sb = new();
                 Random r = new();
                 var charStop = r.Next(100, 151);
-                
+
                 for (var i = 0; i < charStop; i++) sb.Append((char) r.Next(0, 256));
-                
+
                 var str = sb.ToString();
                 var enc = _cypher.encrypt!.Invoke(str);
                 var dec = _cypher.decrypt!.Invoke(enc);
@@ -58,7 +58,7 @@ namespace RayWrapper.Vars
                 throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
         }
 
-        void LoadString(string data);
+        void LoadString(string data, string file);
         string SaveString();
         string FileName();
     }
@@ -75,7 +75,24 @@ namespace RayWrapper.Vars
             _fileName = fileName;
         }
 
-        public void LoadString(string data) => _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
+        public void LoadString(string data, string file)
+        {
+            try
+            {
+                _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
+            }
+            catch (JsonSerializationException)
+            {
+                Logger.Log(Warning, $"CORRUPTED SAVE DATA IN: {file}!! DO YOU WANT TO CONTINUE? (y/n)");
+                if (Console.ReadKey(true).Key == ConsoleKey.N)
+                {
+                    Logger.Log("SHUTTING DOWN");
+                    Dispose();
+                }
+
+                Logger.Log("CONTINUING");
+            }
+        }
 
         public string SaveString()
         {
@@ -111,7 +128,7 @@ namespace RayWrapper.Vars
             var file = $"{path}/{t.FileName()}.RaySaveWrap";
             if (!File.Exists(file)) return;
             using var sr = new StreamReader(file);
-            t.LoadString(sr.ReadToEnd());
+            t.LoadString(sr.ReadToEnd(), file);
             sr.Close();
         }
 
@@ -154,7 +171,9 @@ namespace RayWrapper.Vars
             var path = GetSavePath;
             if (!Directory.Exists(path)) return;
             foreach (var file in saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap").Where(File.Exists))
+            {
                 File.Delete(file);
+            }
         }
     }
 }

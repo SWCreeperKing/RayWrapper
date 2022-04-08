@@ -8,27 +8,25 @@ namespace RayWrapper.Vars
     {
         public IDictionary<string, T> flags = new Dictionary<string, T>();
 
-        public string StringToHex(string text) => string.Join(string.Empty, text.Select(c => ((int)c).ToString("X2")));
-
-        public T GetFlag(string hex, T def = default)
+        public T GetFlag(Enum e, T def = default)
         {
-            if (flags.ContainsKey(hex)) return flags[hex];
-            return flags[hex] = def;
+            if (flags.ContainsKey(e.ToString())) return flags[e.ToString()];
+            return flags[e.ToString()] = def;
         }
 
-        public void SetFlag(string hex, T t) => flags[hex] = t; 
-        
+        public void SetFlag(Enum e, T t) => flags[e.ToString()] = t;
+
         public T this[Enum e]
         {
-            get => GetFlag(StringToHex($"{e}"));
-            set => SetFlag(StringToHex($"{e}"), value);
+            get => GetFlag(e);
+            set => SetFlag(e, value);
         }
 
         public T this[params Enum[] ee]
         {
             set
             {
-                foreach (var e in ee) SetFlag(StringToHex($"{e}"), value);
+                foreach (var e in ee) SetFlag(e, value);
             }
         }
     }

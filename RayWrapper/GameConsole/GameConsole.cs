@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
@@ -45,16 +46,14 @@ namespace RayWrapper.GameConsole
                 WriteToConsole(write);
             };
 
-            history = new ListView(new Vector2(12, 50), (int) (WindowSize.X - 24),
-                i => _lines[Math.Abs(_lines.Count - 1 - i)], () => _lines.Count,
-                (int) Math.Floor((WindowSize.Y - 50) / 45))
+            DefaultListItem defItem = new((int) (WindowSize.X - 24), () => _lines.Count,
+                i => _lines[Math.Abs(_lines.Count - 1 - i)]);
+            defItem.labelStyle.fontColor = new ColorModule(() =>
             {
-                fontColors = i =>
-                {
-                    var key = Math.Abs(_lines.Count - 1 - i);
-                    return _colors.ContainsKey(key) ? _colors[key] : Raylib.DARKGREEN;
-                }
-            };
+                var key = Math.Abs(_lines.Count - 1 - defItem.itemNum);
+                return _colors.ContainsKey(key) ? _colors[key] : Raylib.DARKGREEN;
+            });
+            history = new ListView(new Vector2(12, 50), defItem, (int) Math.Floor((WindowSize.Y - 50) / 45));
         }
 
         protected override void UpdateCall()
@@ -74,7 +73,7 @@ namespace RayWrapper.GameConsole
         {
             Logger.Log(Logger.Level.Info,
                 $"from GameConsole: {string.Join("\n\t>", texts.Select(s => regString.IsMatch(s) ? s[(s.IndexOf('|') + 1)..] : s))}");
-            int ToColor(string text) => Math.Clamp(int.Parse(text), 0, 255);
+            int ToColor(string text) => Math.Clamp(int.Parse(text, CultureInfo.InvariantCulture), 0, 255);
             if (!texts.Any())
             {
                 WriteToConsole($"{CommandLineColor.YELLOW}An Attempt to write to the console was made");

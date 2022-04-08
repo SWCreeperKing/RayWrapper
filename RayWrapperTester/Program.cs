@@ -96,8 +96,10 @@ namespace RayWrapperTester
 
             var arr = new List<string>
                 { "1", "2", "22", "hi", "bye", "no", "u", "yeet", "8", "not 10", "double 1", "yes", "no" };
-            _lv = new ListView(new Vector2(40, 100), 500, i => arr[i], () => arr.Count, 12);
-            _lv.IndividualClick = i => Console.WriteLine($"{i}: {arr[i]}");
+
+            DefaultListItem defItem = new(500, () => arr.Count, i => arr[i])
+                { onClick = (i, _) => Logger.Log($"{i}: {arr[i]}") };
+            _lv = new ListView(new Vector2(40, 100), defItem, 12);
 
             _dd = new DropDown(pos, "option 1", "option duo", "option non", "option hi",
                 "option option", "option setting", "option N");

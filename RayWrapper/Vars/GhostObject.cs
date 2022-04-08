@@ -11,5 +11,13 @@ namespace RayWrapper.Vars
         }
 
         public override Vector2 Size => Vector2.Zero;
+
+        protected override void UpdateCall()
+        {
+        }
+
+        protected override void RenderCall()
+        {
+        }
     }
 }
