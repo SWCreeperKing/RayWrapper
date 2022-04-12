@@ -581,5 +581,7 @@ namespace RayWrapper
         {
             return Math.Sqrt(Math.Pow(pos2.X - pos1.X, 2) + Math.Pow(pos2.Y - pos1.Y, 2));
         }
+
+        public static string GetString(this Color c) => $"({c.r}, {c.g}, {c.b}, {c.a})";
     }
 }

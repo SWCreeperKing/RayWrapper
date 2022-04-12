@@ -168,6 +168,16 @@ namespace RayWrapper
 
             SetTargetFPS(FPS = fps);
             SetWindowSize((int) windowSize.X, (int) windowSize.Y);
+
+            try
+            {
+                Text.Style.SetDefaultFont(LoadFont("AddedAssets/CascadiaMono.ttf"));
+            }
+            catch (Exception e)
+            {
+                Logger.Log(Warning, $"Could not load Custom Font:\n{e.Message}");
+            }
+
             Start();
         }
 
@@ -366,7 +376,7 @@ namespace RayWrapper
         /// Toggles the ingame console
         /// </summary>
         public static void ToggleConsole() => _isConsole.Flip();
-        
+
         # region save system
 
         public static void InitSaveSystem(string developerName, string appName) =>

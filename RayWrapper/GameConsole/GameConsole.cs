@@ -47,12 +47,19 @@ namespace RayWrapper.GameConsole
             };
 
             DefaultListItem defItem = new((int) (WindowSize.X - 24), () => _lines.Count,
-                i => _lines[Math.Abs(_lines.Count - 1 - i)]);
-            defItem.labelStyle.fontColor = new ColorModule(() =>
+                i => _lines[Math.Abs(_lines.Count - 1 - i)])
             {
-                var key = Math.Abs(_lines.Count - 1 - defItem.itemNum);
-                return _colors.ContainsKey(key) ? _colors[key] : Raylib.DARKGREEN;
-            });
+                fontColorLookup = i =>
+                {
+                    var key = Math.Abs(_lines.Count - 1 - i);
+                    return _colors.ContainsKey(key) ? _colors[key] : Raylib.DARKGREEN;
+                },
+                labelStyle =
+                {
+                    drawHover = false
+                }
+            };
+
             history = new ListView(new Vector2(12, 50), defItem, (int) Math.Floor((WindowSize.Y - 50) / 45));
         }
 

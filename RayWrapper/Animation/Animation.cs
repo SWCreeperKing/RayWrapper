@@ -12,7 +12,7 @@ namespace RayWrapper.Animation
         public int animationStep;
         public long stepTime;
         public long animationTime;
-        public IList<Func<bool>> stepConditions = new List<Func<bool>>();
+        public IDictionary<int, Func<bool>> stepConditions = new Dictionary<int, Func<bool>>();
         public Action onInit = null;
         public Action onEnd = null;
 
@@ -34,10 +34,11 @@ namespace RayWrapper.Animation
             _transitions[animationStep].Each(transition => transition.InitTransition());
             onInit?.Invoke();
         }
-
+        
+        /// <returns>if the animation has completed</returns>
         public bool UpdateAnimation()
         {
-            if (stepConditions.Count <= animationStep && !_transitions.ContainsKey(animationStep)) return true;
+            if (!stepConditions.ContainsKey(animationStep) && !_transitions.ContainsKey(animationStep)) return true;
             if (_lastTime == -1) _lastTime = GameBox.GetTimeMs();
             var deltaTime = GameBox.GetTimeMs() - _lastTime;
             _lastTime = GameBox.GetTimeMs();
@@ -50,7 +51,7 @@ namespace RayWrapper.Animation
                 return false;
             }
 
-            if (stepConditions.Count > animationStep && !stepConditions[animationStep].Invoke()) return false;
+            if (stepConditions.ContainsKey(animationStep) && !stepConditions[animationStep].Invoke()) return false;
             animationStep++;
             stepTime = 0;
             if (!_transitions.ContainsKey(animationStep)) return false;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
@@ -57,9 +56,6 @@ namespace RayWrapperTester
 
         public override void Init()
         {
-            // Text.defaultStyle.SetFilter(TextureFilter.TEXTURE_FILTER_POINT);
-            Text.Style.SetDefaultFont("CascadiaMono.ttf");
-
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
 
@@ -207,7 +203,11 @@ namespace RayWrapperTester
             aniBC.Clicked += () => Animator.AddAnimation(new Mover());
 
             Button aniBT = new(new Vector2(20, 160), "Queue Trigger Animation");
-            aniBT.Clicked += () => Animator.AddToAnimationQueue(new InteractionAnimation());
+            aniBT.Clicked += () =>
+            {
+                Animator.AddToAnimationQueue(new InteractionAnimation());
+                Logger.Log("added to queue");
+            };
 
             _tbv.AddTab("Animation Test", aniB, aniBC, aniBT);
             var pb = new ProgressBar(100, 100, 400, 30, () => _percent);

@@ -8,25 +8,27 @@ namespace RayWrapper.Objs
     {
         public override Vector2 Position
         {
-            get => _Texture.Position;
-            set => _Texture.Position = value;
+            get => _texture.Position;
+            set => _texture.Position = value;
         }
 
-        public override Vector2 Size => _Texture.Size;
+        public override Vector2 Size => _texture.Size;
 
         public int ImageAlpha
         {
-            get => _Texture.ImageAlpha;
-            set => _Texture.ImageAlpha = value;
+            get => _texture.ImageAlpha;
+            set => _texture.ImageAlpha = value;
         } // transparency b/t 0-255
 
         public int Rotation
         {
-            get => _Texture.rotation;
-            set => _Texture.rotation = value;
+            get => _texture.rotation;
+            set => _texture.rotation = value;
         } // 0 to 360
 
-        private TextureObj _Texture;
+        public Texture Texture => _texture;
+
+        private TextureObj _texture;
         private Image _image;
         private Rectangle _textSize;
 
@@ -45,19 +47,19 @@ namespace RayWrapper.Objs
         public ImageObj(Image image, Vector2 pos)
         {
             _image = image;
-            _Texture = new TextureObj(image.Texture(), pos);
-            _textSize = RectWrapper.AssembleRectFromVec(Vector2.Zero, _Texture.Size);
+            _texture = new TextureObj(image.Texture(), pos);
+            _textSize = RectWrapper.AssembleRectFromVec(Vector2.Zero, _texture.Size);
         }
 
-        protected override void UpdateCall() => _Texture.Update();
-        protected override void RenderCall() => _Texture.Render();
+        protected override void UpdateCall() => _texture.Update();
+        protected override void RenderCall() => _texture.Render();
 
         public void RenderTo(Rectangle rect, Color? tint = null, Vector2? origin = null, float rotation = 0)
         {
-            Raylib.DrawTexturePro(_Texture, _textSize, rect, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
+            Raylib.DrawTexturePro(_texture, _textSize, rect, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
         }
 
-        public void SetSize(Vector2 size) => _Texture.SetSize(size);
+        public void SetSize(Vector2 size) => _texture.SetSize(size);
         ~ImageObj() => Raylib.UnloadImage(_image);
     }
 }
