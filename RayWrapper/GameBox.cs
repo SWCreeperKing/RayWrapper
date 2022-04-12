@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Numerics;
+using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Raylib_CsLo;
@@ -90,6 +93,8 @@ namespace RayWrapper
         public static List<SlotBase> dragCollision = new();
         public static int tooltipLayers = 1;
         public static List<Tooltip> tooltips = new();
+        public static int defFontSize = 32;
+        public static int toCodePoint = 1000;
 
         private static readonly List<ISave> SaveList = new();
         private static bool _hasInit;
@@ -171,11 +176,30 @@ namespace RayWrapper
 
             try
             {
-                Text.Style.SetDefaultFont(LoadFont("AddedAssets/CascadiaMono.ttf"));
+                var asm = Assembly.GetExecutingAssembly();
+                var stream = asm.GetManifestResourceStream("RayWrapper.Resources.AddedAssets.CascadiaMono.ttf");
+                var ms = new MemoryStream();
+                stream.CopyTo(ms);
+                var byteArr = ms.ToArray();
+
+                unsafe
+                {
+                    fixed (byte* bytes = byteArr)
+                    {
+                        var font = LoadFontFromMemory("ttf", bytes, byteArr.Length, defFontSize, null, toCodePoint);
+                        Text.Style.SetDefaultFont(font);
+                        Logger.Log(font.baseSize);
+                    }
+                }
+
+                stream.Close();
+                ms.Close();
+                
+                Logger.Log($"Loaded font? {Text.Style.DefaultFont is not null}");
             }
             catch (Exception e)
             {
-                Logger.Log(Warning, $"Could not load Custom Font:\n{e.Message}");
+                Logger.Log(Warning, $"Could not load Default Font: CascadiaCodeMono.ttf: {e.Message}");
             }
 
             Start();

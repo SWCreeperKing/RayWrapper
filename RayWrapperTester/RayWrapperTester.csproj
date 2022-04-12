@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Raylib-CsLo" Version="4.0.1" />
@@ -18,6 +14,10 @@
 
     <ItemGroup>
         <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 
 </Project>
