@@ -177,25 +177,20 @@ namespace RayWrapper
             try
             {
                 var asm = Assembly.GetExecutingAssembly();
-                var stream = asm.GetManifestResourceStream("RayWrapper.Resources.AddedAssets.CascadiaMono.ttf");
-                var ms = new MemoryStream();
-                stream.CopyTo(ms);
-                var byteArr = ms.ToArray();
-
+                var stream = asm.GetManifestResourceStream("RayWrapper.Resources.AddedAssets.Font.CascadiaMono.ttf");
+                
+                var byteArr = new byte[stream.Length];
+                stream.Read(byteArr,0,(int)stream.Length);
+                stream.Close();
+                
                 unsafe
                 {
                     fixed (byte* bytes = byteArr)
                     {
-                        var font = LoadFontFromMemory("ttf", bytes, byteArr.Length, defFontSize, null, toCodePoint);
+                        var font = LoadFontFromMemory(".ttf", bytes, byteArr.Length, defFontSize, null, toCodePoint);
                         Text.Style.SetDefaultFont(font);
-                        Logger.Log(font.baseSize);
                     }
                 }
-
-                stream.Close();
-                ms.Close();
-                
-                Logger.Log($"Loaded font? {Text.Style.DefaultFont is not null}");
             }
             catch (Exception e)
             {

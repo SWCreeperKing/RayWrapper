@@ -17,7 +17,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageVersion>0.4.0-beta-8.5</PackageVersion>
-        <PackageReleaseNotes>-Using EmbeddedResource tag</PackageReleaseNotes>
+        <PackageReleaseNotes>-Default Font is now CascadiaCodeMono</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -32,5 +32,9 @@
 
     <ItemGroup Label="Resources">
         <EmbeddedResource Include="Resources/**/*.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Resources\AddedAssets\Font\CascadiaCode_License.txt" />
     </ItemGroup>    
 </Project>
