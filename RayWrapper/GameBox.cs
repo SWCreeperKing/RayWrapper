@@ -93,8 +93,6 @@ namespace RayWrapper
         public static List<SlotBase> dragCollision = new();
         public static int tooltipLayers = 1;
         public static List<Tooltip> tooltips = new();
-        public static int defFontSize = 32;
-        public static int toCodePoint = 1000;
 
         private static readonly List<ISave> SaveList = new();
         private static bool _hasInit;
@@ -173,23 +171,26 @@ namespace RayWrapper
 
             SetTargetFPS(FPS = fps);
             SetWindowSize((int) windowSize.X, (int) windowSize.Y);
+            
+            Text.Style.SetDefaultFont(LoadDefaultFont());
 
+            Start();
+        }
+
+        public unsafe static Font LoadDefaultFont(int fontSize = 32, int toCodePoint = 1000)
+        {
             try
             {
                 var asm = Assembly.GetExecutingAssembly();
                 var stream = asm.GetManifestResourceStream("RayWrapper.Resources.AddedAssets.Font.CascadiaMono.ttf");
-                
+
                 var byteArr = new byte[stream.Length];
-                stream.Read(byteArr,0,(int)stream.Length);
+                stream.Read(byteArr, 0, (int) stream.Length);
                 stream.Close();
-                
-                unsafe
+
+                fixed (byte* bytes = byteArr)
                 {
-                    fixed (byte* bytes = byteArr)
-                    {
-                        var font = LoadFontFromMemory(".ttf", bytes, byteArr.Length, defFontSize, null, toCodePoint);
-                        Text.Style.SetDefaultFont(font);
-                    }
+                    return LoadFontFromMemory(".ttf", bytes, byteArr.Length, fontSize, null, toCodePoint);
                 }
             }
             catch (Exception e)
@@ -197,7 +198,7 @@ namespace RayWrapper
                 Logger.Log(Warning, $"Could not load Default Font: CascadiaCodeMono.ttf: {e.Message}");
             }
 
-            Start();
+            return GetFontDefault();
         }
 
         /// <summary>
