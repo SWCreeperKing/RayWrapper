@@ -58,6 +58,8 @@ namespace RayWrapperTester
 
         public override void Init()
         {
+            Logger.Log(LoadJsonFromWeb("https://api.dictionaryapi.dev/api/v2/entries/en/hello").Result);
+
             var screen = WindowSize;
             Vector2 pos = new(75, 80);
 

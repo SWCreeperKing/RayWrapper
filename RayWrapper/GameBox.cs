@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Numerics;
 using System.Reflection;
 using System.Resources;
@@ -171,7 +172,7 @@ namespace RayWrapper
 
             SetTargetFPS(FPS = fps);
             SetWindowSize((int) windowSize.X, (int) windowSize.Y);
-            
+
             Text.Style.SetDefaultFont(LoadDefaultFont());
 
             Start();
@@ -434,21 +435,21 @@ namespace RayWrapper
         /// yoink some json from the web
         /// </summary>
         /// <param name="site">website url</param>
-        /// <param name="isSuccessful">if the yoink was successful</param>
         /// <returns>the yoinked data</returns>
-        public static dynamic LoadJsonFromWeb(string site, out bool isSuccessful)
+        public static async Task<dynamic> LoadJsonFromWeb(string site)
         {
-            isSuccessful = true;
             try
             {
-                return JsonConvert.DeserializeObject(new WebClient().DownloadString(site));
+                var client = new HttpClient();
+                using var response = await client.GetAsync(site);
+                using var content = response.Content;
+                return JsonConvert.DeserializeObject(await content.ReadAsStringAsync());
             }
             catch (Exception e)
             {
                 Logger.Log(Warning, $"Cannot load json from web:\n{e.Message}\n{e.Source}");
             }
 
-            isSuccessful = false;
             return null;
         }
 
