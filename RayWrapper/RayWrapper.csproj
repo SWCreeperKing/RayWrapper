@@ -16,8 +16,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-beta-9</PackageVersion>
-        <PackageReleaseNotes>-Support for MouseCursor state changing</PackageReleaseNotes>
+        <PackageVersion>0.4.0-beta-9.1</PackageVersion>
+        <PackageReleaseNotes>-Some small fixes with the cursor</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

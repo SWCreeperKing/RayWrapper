@@ -1,19 +1,23 @@
-﻿using System;
 using System.Numerics;
 using RayWrapper.Vars;
 
 namespace RayWrapper.Objs;
 
-public class EmptyRender : GameObject
+public class ScreenManager : GameObject
 {
     public override Vector2 Position { get; set; }
     public override Vector2 Size { get; }
-    public Action toRender;
-    public EmptyRender(Action toRender) => this.toRender = toRender;
 
+    public ScreenManager()
+    {
+        
+    }
+    
     protected override void UpdateCall()
     {
     }
 
-    protected override void RenderCall() => toRender?.Invoke();
+    protected override void RenderCall()
+    {
+    }
 }

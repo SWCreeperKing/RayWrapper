@@ -1,7 +1,6 @@
-﻿namespace RayWrapper.Var_Interfaces
+﻿namespace RayWrapper.Var_Interfaces;
+
+public interface IStyle<T>
 {
-    public interface IStyle<T>
-    {
-        public T Copy();
-    }
+    public T Copy();
 }

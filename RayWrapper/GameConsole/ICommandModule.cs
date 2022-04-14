@@ -1,6 +1,5 @@
-﻿namespace RayWrapper.GameConsole
+﻿namespace RayWrapper.GameConsole;
+
+public interface ICommandModule
 {
-    public interface ICommandModule
-    {
-    }
 }

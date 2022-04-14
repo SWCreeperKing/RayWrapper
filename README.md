@@ -53,7 +53,7 @@ TODO: Insert usage instructions here. Say some stuff about adding the NuGet pack
 ```C#
 new GameBox(new Program(), new Vector2(window width, window height), "title");
 
-public partial class Program : GameLoop 
+public partial class Program : GameScene 
 {
     public override void Init() 
     {

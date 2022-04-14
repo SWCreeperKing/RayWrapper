@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Linq;
 
-namespace RayWrapper.GameConsole
+namespace RayWrapper.GameConsole;
+
+[AttributeUsage(AttributeTargets.Method)]
+public class AliasAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class AliasAttribute : Attribute
-    {
-        public string[] aliases;
-        public AliasAttribute(params string[] aliases) => this.aliases = aliases.Select(a => a.ToLower()).ToArray();
-    }
+    public string[] aliases;
+    public AliasAttribute(params string[] aliases) => this.aliases = aliases.Select(a => a.ToLower()).ToArray();
 }

@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace RayWrapper.GameConsole
+namespace RayWrapper.GameConsole;
+
+[AttributeUsage(AttributeTargets.Method)]
+public class HelpAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class HelpAttribute : Attribute
-    {
-        public string definition;
-        public HelpAttribute(string definition) => this.definition = $"\t{definition}".Replace("\n", "\n\t");
-    }
+    public string definition;
+    public HelpAttribute(string definition) => this.definition = $"\t{definition}".Replace("\n", "\n\t");
 }

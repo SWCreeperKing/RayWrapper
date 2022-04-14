@@ -10,170 +10,169 @@ using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.Vars.Logger.Level;
 
-namespace RayWrapper.Vars
+namespace RayWrapper.Vars;
+
+public interface ISave
 {
-    public interface ISave
+    private static (Func<string, string> encrypt, Func<string, string> decrypt) _cypher = (null, null);
+    public static bool isCypherValid { get; private set; }
+
+    public static (Func<string, string> encrypt, Func<string, string> decrypt) Cypher
     {
-        private static (Func<string, string> encrypt, Func<string, string> decrypt) _cypher = (null, null);
-        public static bool isCypherValid { get; private set; }
-
-        public static (Func<string, string> encrypt, Func<string, string> decrypt) Cypher
+        get => _cypher;
+        set
         {
-            get => _cypher;
-            set
+            _cypher = value;
+            isCypherValid = true;
+            if (_cypher.encrypt is null || _cypher.decrypt is null) isCypherValid = false;
+            if (!isCypherValid)
             {
-                _cypher = value;
-                isCypherValid = true;
-                if (_cypher.encrypt is null || _cypher.decrypt is null) isCypherValid = false;
-                if (!isCypherValid)
-                {
-                    if (_cypher.encrypt is null) Logger.Log(Error, "Encryption is Null");
-                    if (_cypher.decrypt is null) Logger.Log(Error, "Decryption is Null");
-                    return;
-                }
-
-                StringBuilder sb = new();
-                Random r = new();
-                var charStop = r.Next(100, 151);
-
-                for (var i = 0; i < charStop; i++) sb.Append((char) r.Next(0, 256));
-
-                var str = sb.ToString();
-                var enc = _cypher.encrypt!.Invoke(str);
-                var dec = _cypher.decrypt!.Invoke(enc);
-                var flawless = str != enc;
-
-                if (!flawless) Logger.Log(Warning, "ENCRYPTION RESULTS IN BASE STRING");
-                isCypherValid = str == dec;
-                Logger.Log(isCypherValid ? Info : Error,
-                    isCypherValid
-                        ? $"Encryption Analysis Completed {(flawless ? "Flawlessly!" : "And Resulted In NO Change!")}"
-                        : "DECRYPTION DOES NOT RESULT THE INPUT TEXT");
+                if (_cypher.encrypt is null) Logger.Log(Error, "Encryption is Null");
+                if (_cypher.decrypt is null) Logger.Log(Error, "Decryption is Null");
+                return;
             }
-        }
 
-        public static void IsSaveInitCheck()
-        {
-            if (!SaveInit)
-                throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
-        }
+            StringBuilder sb = new();
+            Random r = new();
+            var charStop = r.Next(100, 151);
 
-        void LoadString(string data, string file);
-        string SaveString();
-        string FileName();
+            for (var i = 0; i < charStop; i++) sb.Append((char) r.Next(0, 256));
+
+            var str = sb.ToString();
+            var enc = _cypher.encrypt!.Invoke(str);
+            var dec = _cypher.decrypt!.Invoke(enc);
+            var flawless = str != enc;
+
+            if (!flawless) Logger.Log(Warning, "ENCRYPTION RESULTS IN BASE STRING");
+            isCypherValid = str == dec;
+            Logger.Log(isCypherValid ? Info : Error,
+                isCypherValid
+                    ? $"Encryption Analysis Completed {(flawless ? "Flawlessly!" : "And Resulted In NO Change!")}"
+                    : "DECRYPTION DOES NOT RESULT THE INPUT TEXT");
+        }
     }
 
-    public class SaveItem<T> : ISave
+    public static void IsSaveInitCheck()
     {
-        private T _t;
-        private string _fileName;
-
-        public SaveItem(T obj, string fileName)
-        {
-            ISave.IsSaveInitCheck();
-            _t = obj ?? throw new NullReferenceException();
-            _fileName = fileName;
-        }
-
-        public void LoadString(string data, string file)
-        {
-            try
-            {
-                _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
-            }
-            catch (JsonSerializationException)
-            {
-                Logger.Log(Warning, $"CORRUPTED SAVE DATA IN: {file}!! DO YOU WANT TO CONTINUE? (y/n)");
-                if (Console.ReadKey(true).Key == ConsoleKey.N)
-                {
-                    Logger.Log("SHUTTING DOWN");
-                    Dispose();
-                }
-
-                Logger.Log("CONTINUING");
-            }
-        }
-
-        public string SaveString()
-        {
-            try
-            {
-                return Encrypt(JsonConvert.SerializeObject(_t));
-            }
-            catch (InvalidOperationException e)
-            {
-                Logger.Log(Warning, $"ERR: {e.Message} HANDLED");
-                Task.Delay(1).GetAwaiter().GetResult();
-                return SaveString();
-            }
-        }
-
-        public string FileName() => _fileName;
-
-        public static string Encrypt(string str) => ISave.isCypherValid ? ISave.Cypher.encrypt.Invoke(str) : str;
-        public static string Decrypt(string str) => ISave.isCypherValid ? ISave.Cypher.decrypt.Invoke(str) : str;
+        if (!SaveInit)
+            throw new Exception("GameBox.InitSaveSystem() Not called, Save System Not Initialized");
     }
 
-    public static class SaveExt
+    void LoadString(string data, string file);
+    string SaveString();
+    string FileName();
+}
+
+public class SaveItem<T> : ISave
+{
+    private T _t;
+    private string _fileName;
+
+    public SaveItem(T obj, string fileName)
     {
-        public static void SaveToFile(this ISave t, string path)
-        {
-            using var sw = File.CreateText($"{path}/{t.FileName()}.RaySaveWrap");
-            sw.Write(t.SaveString());
-            sw.Close();
-        }
+        ISave.IsSaveInitCheck();
+        _t = obj ?? throw new NullReferenceException();
+        _fileName = fileName;
+    }
 
-        public static void LoadToFile(this ISave t, string path)
+    public void LoadString(string data, string file)
+    {
+        try
         {
-            var file = $"{path}/{t.FileName()}.RaySaveWrap";
-            if (!File.Exists(file)) return;
-            using var sr = new StreamReader(file);
-            t.LoadString(sr.ReadToEnd(), file);
-            sr.Close();
+            _t.Set(JsonConvert.DeserializeObject<T>(Decrypt(data)));
         }
-
-        public static void SaveItems(this List<ISave> saveList)
+        catch (JsonSerializationException)
         {
-            WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
-            var start = GetTimeMs();
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            foreach (var t in saveList) t.SaveToFile(path);
-            WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
+            Logger.Log(Warning, $"CORRUPTED SAVE DATA IN: {file}!! DO YOU WANT TO CONTINUE? (y/n)");
+            if (Console.ReadKey(true).Key == ConsoleKey.N)
+            {
+                Logger.Log("SHUTTING DOWN");
+                Dispose();
+            }
+
+            Logger.Log("CONTINUING");
         }
+    }
 
-        public static void LoadItems(this List<ISave> saveList)
+    public string SaveString()
+    {
+        try
         {
-            WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
-            var start = GetTimeMs();
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) return;
-            foreach (var t in saveList) t.LoadToFile(path);
-            WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
+            return Encrypt(JsonConvert.SerializeObject(_t));
         }
-
-        public static void DeleteFile(this IEnumerable<ISave> saveList, string name)
+        catch (InvalidOperationException e)
         {
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) return;
-            var file = $"{path}/{saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
-            Console.WriteLine($"> DELETED {file} <");
-            if (!File.Exists(file)) return;
+            Logger.Log(Warning, $"ERR: {e.Message} HANDLED");
+            Task.Delay(1).GetAwaiter().GetResult();
+            return SaveString();
+        }
+    }
+
+    public string FileName() => _fileName;
+
+    public static string Encrypt(string str) => ISave.isCypherValid ? ISave.Cypher.encrypt.Invoke(str) : str;
+    public static string Decrypt(string str) => ISave.isCypherValid ? ISave.Cypher.decrypt.Invoke(str) : str;
+}
+
+public static class SaveExt
+{
+    public static void SaveToFile(this ISave t, string path)
+    {
+        using var sw = File.CreateText($"{path}/{t.FileName()}.RaySaveWrap");
+        sw.Write(t.SaveString());
+        sw.Close();
+    }
+
+    public static void LoadToFile(this ISave t, string path)
+    {
+        var file = $"{path}/{t.FileName()}.RaySaveWrap";
+        if (!File.Exists(file)) return;
+        using var sr = new StreamReader(file);
+        t.LoadString(sr.ReadToEnd(), file);
+        sr.Close();
+    }
+
+    public static void SaveItems(this List<ISave> saveList)
+    {
+        WriteToConsole($"{SKYBLUE}Saving Start @ {DateTime.Now:G}");
+        var start = GetTimeMs();
+        ISave.IsSaveInitCheck();
+        var path = GetSavePath;
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+        foreach (var t in saveList) t.SaveToFile(path);
+        WriteToConsole($"{SKYBLUE}Saved in {new TimeVar(GetTimeMs() - start)}");
+    }
+
+    public static void LoadItems(this List<ISave> saveList)
+    {
+        WriteToConsole($"{SKYBLUE}Loading Start @ {DateTime.Now:G}");
+        var start = GetTimeMs();
+        ISave.IsSaveInitCheck();
+        var path = GetSavePath;
+        if (!Directory.Exists(path)) return;
+        foreach (var t in saveList) t.LoadToFile(path);
+        WriteToConsole($"{SKYBLUE}Loaded in {new TimeVar(GetTimeMs() - start)}");
+    }
+
+    public static void DeleteFile(this IEnumerable<ISave> saveList, string name)
+    {
+        ISave.IsSaveInitCheck();
+        var path = GetSavePath;
+        if (!Directory.Exists(path)) return;
+        var file = $"{path}/{saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
+        Console.WriteLine($"> DELETED {file} <");
+        if (!File.Exists(file)) return;
+        File.Delete(file);
+    }
+
+    public static void DeleteAll(this IEnumerable<ISave> saveList)
+    {
+        ISave.IsSaveInitCheck();
+        var path = GetSavePath;
+        if (!Directory.Exists(path)) return;
+        foreach (var file in saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap").Where(File.Exists))
+        {
             File.Delete(file);
-        }
-
-        public static void DeleteAll(this IEnumerable<ISave> saveList)
-        {
-            ISave.IsSaveInitCheck();
-            var path = GetSavePath;
-            if (!Directory.Exists(path)) return;
-            foreach (var file in saveList.Select(t => $"{path}/{t.FileName()}.RaySaveWrap").Where(File.Exists))
-            {
-                File.Delete(file);
-            }
         }
     }
 }

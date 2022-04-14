@@ -9,190 +9,189 @@ using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.GeneralWrapper;
 
-namespace RayWrapper.Objs
-{
-    public class InputBox : GameObject
-    {
-        public static Style defaultStyle = new();
+namespace RayWrapper.Objs;
 
-        // func: isControl?, cursor pos, max leng, current text
-        // func return: (cursorpos, text)
-        private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
-            new Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>>()
+public class InputBox : GameObject
+{
+    public static Style defaultStyle = new();
+
+    // func: isControl?, cursor pos, max leng, current text
+    // func return: (cursorpos, text)
+    private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
+        new Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>>()
+        {
+            { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
+            { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
             {
-                { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
-                { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
+                KeyboardKey.KEY_BACKSPACE, (c, p, _, s) =>
                 {
-                    KeyboardKey.KEY_BACKSPACE, (c, p, _, s) =>
+                    if (!c)
                     {
-                        if (!c)
-                        {
-                            if (p > 0) s = s.Remove(p-- - 1, 1);
-                            return (p, s);
-                        }
-                
-                        var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
-                        return (lastSpace, s.Remove(lastSpace, p - lastSpace));
-                    }
-                },
-                { KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s) },
-                { KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s) },
-                { KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s) },
-                {
-                    KeyboardKey.KEY_V, (c, p, m, s) =>
-                    {
-                        if (!c || s.Length >= m) return (p, s);
-                        var txt = FromClipboard().Replace("\r", string.Empty).Replace("\n", " ");
-                        var txtLength = Math.Min(m - s.Length, txt!.Length);
-                        return (p + txtLength, s.Insert(p, txt[..txtLength] ?? string.Empty));
-                    }
-                },
-                {
-                    KeyboardKey.KEY_C, (c, p, _, s) =>
-                    {
-                        if (c) SetClipboardText(s);
+                        if (p > 0) s = s.Remove(p-- - 1, 1);
                         return (p, s);
                     }
+                
+                    var lastSpace = Math.Max(0, s[..p].LastIndexOf(' '));
+                    return (lastSpace, s.Remove(lastSpace, p - lastSpace));
                 }
-            };
-
-        public override Vector2 Position
-        {
-            get => _label.Position;
-            set => _label.Position = value;
-        }
-
-        public override Vector2 Size => _label.Size;
-
-        public Style style = defaultStyle.Copy();
-
-        private int _curPos;
-        private int _frameTime;
-        private readonly Label _label;
-        private long _lastTime;
-        private readonly int _max;
-        private bool _selected;
-        private readonly int _show;
-        private string _text = string.Empty;
-        public Action<string> onEnter;
-        public Action<string> onExit;
-
-        public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40)
-        {
-            _show = maxCharacterShow;
-            _max = maxCharacters;
-            _label = new Label(
-                new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y + 8),
-                string.Join(",", Enumerable.Repeat(" ", _show)))
+            },
+            { KeyboardKey.KEY_DELETE, (_, p, _, s) => (p, p < s.Length ? s.Remove(p, 1) : s) },
+            { KeyboardKey.KEY_HOME, (_, _, _, s) => (0, s) },
+            { KeyboardKey.KEY_END, (_, _, _, s) => (s.Length, s) },
             {
-                style = style.labelStyle
-            };
-            _lastTime = GetTimeMs();
-        }
-
-        protected override void UpdateCall()
-        {
-            var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
-            switch (isLeft)
-            {
-                case true when !_label.Rect.IsMouseIn() && _selected:
-                    _selected = false;
-                    onExit?.Invoke(_text);
-                    break;
-                case true when !_selected && _label.Rect.IsMouseIn():
-                    _selected = true;
-                    break;
-            }
-
-            if (_selected)
-            {
-                Input();
-                foreach (var (_, v) in _actions.Where(key => IsKeyDown(key.Key) && GetTimeMs() - _lastTime > 133))
+                KeyboardKey.KEY_V, (c, p, m, s) =>
                 {
-                    (_curPos, _text) =
-                        v.Invoke(
-                            IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
-                            IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
-                    _lastTime = GetTimeMs();
+                    if (!c || s.Length >= m) return (p, s);
+                    var txt = FromClipboard().Replace("\r", string.Empty).Replace("\n", " ");
+                    var txtLength = Math.Min(m - s.Length, txt!.Length);
+                    return (p + txtLength, s.Insert(p, txt[..txtLength] ?? string.Empty));
+                }
+            },
+            {
+                KeyboardKey.KEY_C, (c, p, _, s) =>
+                {
+                    if (c) SetClipboardText(s);
+                    return (p, s);
                 }
             }
+        };
 
-            var fps = GetFPS();
+    public override Vector2 Position
+    {
+        get => _label.Position;
+        set => _label.Position = value;
+    }
 
-            _frameTime %= Math.Max(1, fps); // fix divide by 0
-            _frameTime++;
+    public override Vector2 Size => _label.Size;
 
-            var flash = _frameTime % (fps * .33) > fps * .18;
-            var start = 0;
-            var end = Math.Min(_show, _text.Length);
-            var curs = _curPos;
+    public Style style = defaultStyle.Copy();
 
-            if (curs >= _show / 2)
-            {
-                (start, curs, end) = (curs - _show / 2, _show / 2, Math.Min(_text.Length, _curPos + _show / 2));
-            }
+    private int _curPos;
+    private int _frameTime;
+    private readonly Label _label;
+    private long _lastTime;
+    private readonly int _max;
+    private bool _selected;
+    private readonly int _show;
+    private string _text = string.Empty;
+    public Action<string> onEnter;
+    public Action<string> onExit;
 
-            if (start > _max - _show)
-            {
-                (start, curs) = (_max - _show, _curPos - (_max - _show));
-            }
+    public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40)
+    {
+        _show = maxCharacterShow;
+        _max = maxCharacters;
+        _label = new Label(
+            new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y + 8),
+            string.Join(",", Enumerable.Repeat(" ", _show)))
+        {
+            style = style.labelStyle
+        };
+        _lastTime = GetTimeMs();
+    }
 
-            _label.text =
-                $"{style.startChar} {(_selected ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)}") : _text[start..end])}";
-            _label.Update();
+    protected override void UpdateCall()
+    {
+        var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+        switch (isLeft)
+        {
+            case true when !_label.Rect.IsMouseIn() && _selected:
+                _selected = false;
+                onExit?.Invoke(_text);
+                break;
+            case true when !_selected && _label.Rect.IsMouseIn():
+                _selected = true;
+                break;
         }
 
-        protected override void RenderCall()
+        if (_selected)
         {
-            _label.Render();
-            if (_label.Rect.IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
-        }
-
-        public void Input()
-        {
-            var (c, cc) = (GetCharPressed(), GetKeyPressed());
-            while (c > 0 || cc > 0)
+            Input();
+            foreach (var (_, v) in _actions.Where(key => IsKeyDown(key.Key) && GetTimeMs() - _lastTime > 133))
             {
-                if ((KeyboardKey) cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
-                // todo: find a way to fix it
-                // this is for holding backspace 
-                //
-                // if ((KeyboardKey) cc == KeyboardKey.KEY_BACKSPACE)
-                // {
-                //     if (IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) || IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL))
-                //     {
-                //         var lastSpace = Math.Max(0, _text[.._curPos].LastIndexOf(' '));
-                //         _text = _text.Remove(lastSpace, _curPos - lastSpace);
-                //         _curPos = lastSpace;
-                //     }
-                //     else
-                //     {
-                //         if (_curPos > 0) _text = _text.Remove(_curPos-- - 1, 1);
-                //     }
-                // }
-
-                if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
-                (c, cc) = (GetCharPressed(), GetKeyPressed());
+                (_curPos, _text) =
+                    v.Invoke(
+                        IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) ||
+                        IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL), _curPos, _max, _text);
+                _lastTime = GetTimeMs();
             }
         }
 
-        public void Clear() => (_text, _curPos) = (string.Empty, 0);
-        public void SetText(string text) => (_text, _curPos) = (text, text.Length);
-        public string GetText() => _text;
+        var fps = GetFPS();
 
-        public class Style : IStyle<Style>
+        _frameTime %= Math.Max(1, fps); // fix divide by 0
+        _frameTime++;
+
+        var flash = _frameTime % (fps * .33) > fps * .18;
+        var start = 0;
+        var end = Math.Min(_show, _text.Length);
+        var curs = _curPos;
+
+        if (curs >= _show / 2)
         {
-            public Label.Style labelStyle = new();
-            public char startChar = '>';
-            public char cursorChar = '|';
+            (start, curs, end) = (curs - _show / 2, _show / 2, Math.Min(_text.Length, _curPos + _show / 2));
+        }
 
-            public Style Copy()
+        if (start > _max - _show)
+        {
+            (start, curs) = (_max - _show, _curPos - (_max - _show));
+        }
+
+        _label.text =
+            $"{style.startChar} {(_selected ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)}") : _text[start..end])}";
+        _label.Update();
+    }
+
+    protected override void RenderCall()
+    {
+        _label.Render();
+        if (_label.Rect.IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
+    }
+
+    public void Input()
+    {
+        var (c, cc) = (GetCharPressed(), GetKeyPressed());
+        while (c > 0 || cc > 0)
+        {
+            if ((KeyboardKey) cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
+            // todo: find a way to fix it
+            // this is for holding backspace 
+            //
+            // if ((KeyboardKey) cc == KeyboardKey.KEY_BACKSPACE)
+            // {
+            //     if (IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) || IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL))
+            //     {
+            //         var lastSpace = Math.Max(0, _text[.._curPos].LastIndexOf(' '));
+            //         _text = _text.Remove(lastSpace, _curPos - lastSpace);
+            //         _curPos = lastSpace;
+            //     }
+            //     else
+            //     {
+            //         if (_curPos > 0) _text = _text.Remove(_curPos-- - 1, 1);
+            //     }
+            // }
+
+            if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
+            (c, cc) = (GetCharPressed(), GetKeyPressed());
+        }
+    }
+
+    public void Clear() => (_text, _curPos) = (string.Empty, 0);
+    public void SetText(string text) => (_text, _curPos) = (text, text.Length);
+    public string GetText() => _text;
+
+    public class Style : IStyle<Style>
+    {
+        public Label.Style labelStyle = new();
+        public char startChar = '>';
+        public char cursorChar = '|';
+
+        public Style Copy()
+        {
+            return new Style
             {
-                return new Style
-                {
-                    labelStyle = labelStyle.Copy(), startChar = startChar, cursorChar = cursorChar
-                };
-            }
+                labelStyle = labelStyle.Copy(), startChar = startChar, cursorChar = cursorChar
+            };
         }
     }
 }

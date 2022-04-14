@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace RayWrapper.GameConsole
+namespace RayWrapper.GameConsole;
+
+[AttributeUsage(AttributeTargets.Method)]
+public class CommandAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class CommandAttribute : Attribute
-    {
-        public string name;
-        public CommandAttribute(string name) => this.name = name.ToLower();
-    }
+    public string name;
+    public CommandAttribute(string name) => this.name = name.ToLower();
 }

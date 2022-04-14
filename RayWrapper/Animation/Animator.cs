@@ -2,48 +2,47 @@
 using System.Linq;
 using ZimonIsHimUtils.ExtensionMethods;
 
-namespace RayWrapper.Animation
+namespace RayWrapper.Animation;
+
+public static class Animator
 {
-    public static class Animator
+    private static Queue<Animation> _animationQueue = new();
+    private static List<Animation> _animationList = new();
+
+    public static void AddToAnimationQueue(Animation ani) => _animationQueue.Enqueue(ani);
+
+    public static void AddAnimation(Animation ani)
     {
-        private static Queue<Animation> _animationQueue = new();
-        private static List<Animation> _animationList = new();
+        _animationList.Add(ani);
+        ani.InitAnimation();
+    }
 
-        public static void AddToAnimationQueue(Animation ani) => _animationQueue.Enqueue(ani);
+    private static Animation _queuedAnimation;
 
-        public static void AddAnimation(Animation ani)
+    public static void Update()
+    {
+        var remove = _animationList.Where(a => a.UpdateAnimation());
+        if (remove.Any())
         {
-            _animationList.Add(ani);
-            ani.InitAnimation();
+            foreach (var animation in remove) animation.onEnd?.Invoke();
+            _animationList.RemoveAll(a => remove.Contains(a));
         }
 
-        private static Animation _queuedAnimation;
-
-        public static void Update()
+        if (_queuedAnimation is null)
         {
-            var remove = _animationList.Where(a => a.UpdateAnimation());
-            if (remove.Any())
-            {
-                foreach (var animation in remove) animation.onEnd?.Invoke();
-                _animationList.RemoveAll(a => remove.Contains(a));
-            }
-
-            if (_queuedAnimation is null)
-            {
-                if (_animationQueue.Count == 0) return;
-                _queuedAnimation = _animationQueue.Dequeue();
-                _queuedAnimation.InitAnimation();
-            }
-
-            if (!_queuedAnimation.UpdateAnimation()) return;
-            _queuedAnimation.onEnd?.Invoke();
-            _queuedAnimation = null;
+            if (_animationQueue.Count == 0) return;
+            _queuedAnimation = _animationQueue.Dequeue();
+            _queuedAnimation.InitAnimation();
         }
 
-        public static void Render()
-        {
-            _queuedAnimation?.Render();
-            _animationList.Each(animation => animation.Render());
-        }
+        if (!_queuedAnimation.UpdateAnimation()) return;
+        _queuedAnimation.onEnd?.Invoke();
+        _queuedAnimation = null;
+    }
+
+    public static void Render()
+    {
+        _queuedAnimation?.Render();
+        _animationList.Each(animation => animation.Render());
     }
 }

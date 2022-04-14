@@ -1,11 +1,10 @@
-﻿namespace RayWrapper.Var_Interfaces
+﻿namespace RayWrapper.Var_Interfaces;
+
+public interface IGameObjReg
 {
-    public interface IGameObjReg
-    {
-        void UpdateReg();
-        void RenderReg();
-        void RegisterGameObj(params IGameObject[] igo);
-        void DeregisterGameObj(IGameObject igo);
-        IGameObject[] GetRegistry();
-    }
+    void UpdateReg();
+    void RenderReg();
+    void RegisterGameObj(params IGameObject[] igo);
+    void DeregisterGameObj(IGameObject igo);
+    IGameObject[] GetRegistry();
 }
