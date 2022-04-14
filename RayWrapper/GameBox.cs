@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Numerics;
 using System.Reflection;
-using System.Resources;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Raylib_CsLo;
@@ -20,6 +17,7 @@ using RayWrapper.Objs.Slot;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.RectWrapper;
@@ -102,11 +100,13 @@ namespace RayWrapper
         private static bool _isConsole;
         private static bool _isDrawing;
         private static bool _isEnding;
+        private static MouseCursor _currentMouse;
         private static Task _collisionLoop;
         private static RenderTexture _target;
         private static List<Scheduler> _schedulers = new();
         private static List<Scheduler> _schedulerQueue = new();
         private static DefaultTooltip _debugTooltip;
+        private static List<MouseCursor> _mouseCursors = new();
         private static List<Action> _staticInit = new();
         private static List<Action> _staticUpdate = new();
         private static List<Action> _staticRender = new();
@@ -252,7 +252,20 @@ namespace RayWrapper
                         }
 
                     if (!enableConsole && _isConsole) _isConsole = false;
+                    
                     Render();
+                    
+                    if (mouseOccupier is not null)
+                    {
+                        SetMouseCursorRay(mouseOccupier.GetOccupiedCursor());
+                    }
+                    else if (_mouseCursors.Any())
+                    {
+                        SetMouseCursorRay(_mouseCursors[^1]);
+                        _mouseCursors.Clear();
+                    }
+                    else if (_currentMouse != MOUSE_CURSOR_DEFAULT) SetMouseCursorRay(MOUSE_CURSOR_DEFAULT);
+
                 }
             }
             catch (Exception e)
@@ -422,6 +435,14 @@ namespace RayWrapper
             float Calc(float m, int s, float w) => (m - (s - w * scale) * 0.5f) / scale;
             mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
             mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
+        }
+
+        public static void SetMouseCursor(MouseCursor cursor) => _mouseCursors.Add(cursor);
+
+        private static void SetMouseCursorRay(MouseCursor cursor)
+        {
+            Raylib.SetMouseCursor(cursor);
+            _currentMouse = cursor;
         }
 
         /// <summary>

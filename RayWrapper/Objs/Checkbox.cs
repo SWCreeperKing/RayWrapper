@@ -3,6 +3,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
@@ -60,8 +61,8 @@ namespace RayWrapper.Objs
 
         protected override void UpdateCall()
         {
-            if (!AssembleRectFromVec(Position, _textBox).IsMouseIn() ||
-                !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
+            var rect = AssembleRectFromVec(Position, _textBox); 
+            if (!rect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
             isChecked = !isChecked;
             checkChange?.Invoke(isChecked);
         }
@@ -72,6 +73,7 @@ namespace RayWrapper.Objs
             var mouseIsIn = AssembleRectFromVec(Position, _textBox).IsMouseIn() && !IsMouseOccupied;
 
             style.Draw(_text, _textPos, isChecked, mouseIsIn, rect.Grow(3), rect.Shrink(3));
+            if (rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
         }
 
         public class Style : IStyle<Style>

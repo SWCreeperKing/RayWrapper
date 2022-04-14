@@ -5,6 +5,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Vars;
+using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
@@ -22,7 +23,7 @@ namespace RayWrapper.Objs.TreeView
         public bool verticalMovement = true;
         public bool horizontalMovement = true;
         public float defaultScale = 32;
-        public float distanceThreshold = .15f;
+        public float distanceThreshold = .12f;
         public string selected;
         public Rectangle bounds = Max;
         public Rectangle mask = Zero;
@@ -32,6 +33,7 @@ namespace RayWrapper.Objs.TreeView
         private Vector2 _lastPos;
         private Vector2 _moveChange;
         private float _scale;
+        private bool _isOverThreash = false;
         private List<string> _tooltipList = new();
 
         public TreeView(params NodeChain[] chains)
@@ -43,6 +45,7 @@ namespace RayWrapper.Objs.TreeView
 
         protected override void UpdateCall()
         {
+            _isOverThreash = false;
             if (alertQueue.Count > 0 || IsMouseOccupied && mouseOccupier != this) return;
             if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();
             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask.IsEqualTo(Zero)
@@ -59,6 +62,7 @@ namespace RayWrapper.Objs.TreeView
                     return;
                 }
 
+                _isOverThreash = true;
                 _moveChange += new Vector2(horizontalMovement ? toMove.X : 0, verticalMovement ? toMove.Y : 0);
                 _moveChange = new Vector2(Math.Clamp(_moveChange.X, bounds.x, bounds.width),
                     Math.Clamp(_moveChange.Y, bounds.y, bounds.height));
@@ -90,5 +94,10 @@ namespace RayWrapper.Objs.TreeView
         }
 
         public void ResetPos() => (_moveChange, _scale) = (Vector2.Zero, _scale = defaultScale);
+
+        public override MouseCursor GetOccupiedCursor()
+        {
+            return _isOverThreash ? MOUSE_CURSOR_RESIZE_ALL : MOUSE_CURSOR_ARROW;
+        }
     }
 }

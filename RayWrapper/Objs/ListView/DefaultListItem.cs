@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using Raylib_CsLo;
+using static Raylib_CsLo.MouseCursor;
 
 namespace RayWrapper.Objs;
 
@@ -28,6 +29,13 @@ public class DefaultListItem : IListItem
         this.item = item;
         _itemSizeReal = new Vector2(width, height);
         _itemSize = new Vector2(width - 20, height); // account for scrollbar 
+        
+        labelStyle.drawColor = (c, b) =>
+        {
+            if (onClick is null) return c;
+            if (!labelStyle.drawHover) return c;
+            return b ? c.MakeLighter() : c;
+        };
     }
 
     public int ListSize() => arraySize.Invoke();
@@ -42,6 +50,8 @@ public class DefaultListItem : IListItem
         var s = this.item.Invoke(item);
         var rect = RectWrapper.AssembleRectFromVec(offset, _itemSize);
         labelStyle.Draw(s, rect);
-        if (rect.IsMouseIn() && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) onClick?.Invoke(item, s);
+        if (!rect.IsMouseIn() || onClick is null) return; 
+        GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) onClick?.Invoke(item, s);
     }
 }

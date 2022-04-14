@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
@@ -21,7 +22,6 @@ namespace RayWrapper.Objs
         public bool randomPitch = true;
 
         private readonly IList<Action> _clickEvent = new List<Action>();
-        private bool disabledCache;
 
         public Actionable<string> Text
         {
@@ -56,8 +56,8 @@ namespace RayWrapper.Objs
         public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, Vector2.Zero), text,
             Label.Style.DrawMode.SizeToText)
         {
-        }        
-        
+        }
+
         public Button(Vector2 pos, Actionable<string> text) : this(AssembleRectFromVec(pos, Vector2.Zero), text,
             Label.Style.DrawMode.SizeToText)
         {
@@ -87,15 +87,15 @@ namespace RayWrapper.Objs
             };
         }
 
-        protected override void UpdateCall()
-        {
-            baseL.Update();
-            if (isDisabled == disabledCache) return;
-            disabledCache = (bool) isDisabled;
-            if (!isDisabled) return;
-        }
+        protected override void UpdateCall() => baseL.Update();
 
-        protected override void RenderCall() => baseL.Render();
+        protected override void RenderCall()
+        {
+            baseL.Render();
+            if (!Rect.IsMouseIn()) return;
+            if (_clickEvent.Any() && !isDisabled) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_POINTING_HAND);
+            else if (_clickEvent.Any()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_NOT_ALLOWED);
+        }
 
         /// <summary>
         ///     Execute all methods subscribed to the on click event
@@ -113,7 +113,7 @@ namespace RayWrapper.Objs
                 if (isDisabled) return c.MakeDarker();
                 return b ? c.MakeLighter() : c;
             };
-            
+
             baseL.style = this.style.labelStyle;
         }
 
@@ -148,7 +148,7 @@ namespace RayWrapper.Objs
                 labelStyle.fontColor = new ColorModule(() => FontColor);
                 return this;
             }
-            
+
             public Style Copy()
             {
                 return new Style

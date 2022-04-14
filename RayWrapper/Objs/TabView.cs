@@ -6,6 +6,7 @@ using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs
@@ -58,9 +59,6 @@ namespace RayWrapper.Objs
 
         protected override void UpdateCall()
         {
-            _bar.Update();
-
-
             try
             {
                 if (!GameBox.IsMouseOccupied)
@@ -73,6 +71,7 @@ namespace RayWrapper.Objs
                 // catches Collection was modified error
             }
 
+            if (_bar.Amount() > 1) _bar.Update();
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
             _tabContents[_currentTab].Update();
         }
@@ -85,6 +84,11 @@ namespace RayWrapper.Objs
 
                 if (outline) _rect.DrawHallowRect(BLACK);
                 if (_bar.Amount() > 1) _bar.Render();
+                
+                _tabs.Values.Each(t =>
+                {
+                    if (t.Rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+                });
             }
 
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;

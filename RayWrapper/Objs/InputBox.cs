@@ -82,7 +82,7 @@ namespace RayWrapper.Objs
             _show = maxCharacterShow;
             _max = maxCharacters;
             _label = new Label(
-                new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y),
+                new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y + 8),
                 string.Join(",", Enumerable.Repeat(" ", _show)))
             {
                 style = style.labelStyle
@@ -142,7 +142,11 @@ namespace RayWrapper.Objs
             _label.Update();
         }
 
-        protected override void RenderCall() => _label.Render();
+        protected override void RenderCall()
+        {
+            _label.Render();
+            if (_label.Rect.IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
+        }
 
         public void Input()
         {

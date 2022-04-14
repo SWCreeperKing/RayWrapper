@@ -5,6 +5,7 @@ using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
+using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 
@@ -124,11 +125,13 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             if (Amount() == 1) return; // ignore loss of precision
+            if (container.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             style.Draw(container, bar,
                 IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn());
         }
 
         public float Amount() => Math.Max(amountInvoke?.Invoke() ?? 0, 1);
+        public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;
 
         public class Style : IStyle<Style>
         {

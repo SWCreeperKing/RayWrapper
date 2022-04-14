@@ -20,5 +20,7 @@ namespace RayWrapper.Var_Interfaces
         void ReserveV2();
         Vector2 GetReserveV2();
         void SetPositionAsReserveV2();
+
+        MouseCursor GetOccupiedCursor();
     }
 }

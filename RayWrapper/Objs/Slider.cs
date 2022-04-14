@@ -3,6 +3,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
+using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
@@ -59,6 +60,8 @@ namespace RayWrapper.Objs
             var rect = AssembleRectFromVec(Position, newS);
             style.Draw(back, rect, back.IsMouseIn() || mouseOccupier == this);
         }
+
+        public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;
 
         public class Style : IStyle<Style>
         {

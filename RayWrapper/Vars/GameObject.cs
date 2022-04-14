@@ -57,6 +57,7 @@ namespace RayWrapper.Vars
         public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);
         public Vector2 GetReserveV2() => _freezeV2;
         public void SetPositionAsReserveV2() => Position = _freezeV2;
+        public virtual MouseCursor GetOccupiedCursor() => MouseCursor.MOUSE_CURSOR_RESIZE_ALL;
 
         ~GameObject() => gameObjects--;
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Vars;
+using static Raylib_CsLo.MouseCursor;
 
 namespace RayWrapper.Objs
 {
@@ -94,6 +95,7 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             if (isListVisible) optionDisplay.Render();
+            if (text.Rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             text.text = $"{(isListVisible ? arrowUp : arrowDown)}| {options[Value]}";
             text.Render();
         }
