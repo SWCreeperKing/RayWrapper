@@ -17,7 +17,7 @@ public class ExamplesHome : GhostObject
 
     public ExamplesHome()
     {
-        DefaultListItem listItem = new(425, () => localExamples.Count, i => localExamples[i])
+        DefaultListItem listItem = new(565, () => localExamples.Count, i => localExamples[i])
         {
             onClick = (_, s) =>
             {
@@ -35,15 +35,15 @@ public class ExamplesHome : GhostObject
 
         Text infoText = new(
             "This is the Example Project of Example Projects!\nUse the InputBox to Search:\n\n\nPressing enter or clicking outside the box\nwill execute the search\n\nyou can also press ` to open the console!",
-            new Vector2(475, 150));
+            new Vector2(615, 150));
 
-        InputBox exampleSearch = new(new Vector2(590, 230))
+        InputBox exampleSearch = new(new Vector2(725, 230))
         {
             onEnter = Search,
             onExit = Search
         };
 
-        Button saveTest = new(new Vector2(475, 600), "Test Saving/Loading (look at console)");
+        Button saveTest = new(new Vector2(610, 600), "Test Saving/Loading (look at console)");
         saveTest.Clicked += SaveTesting;
 
         RegisterGameObj(exampleList, infoText, exampleSearch, saveTest);

@@ -20,7 +20,7 @@ public class TreeViewTest : Example
             new Box(new Vector2(1, 3), "hi2") { completed = true },
             new Ball(new Vector2(3, 1), "hi3") { completed = true },
             new Ball(new Vector2(3, 3), "hi4") { completed = true },
-            new ImageNode(new ImageObj("Images/Untitled.png"), new Vector2(10, 2), new Vector2(4), "Image :D")
+            new ImageNode(new ImageObj("Assets/Images/Untitled.png"), new Vector2(10, 2), new Vector2(4), "Image :D")
         );
         
         nodeChain.AddBranch(new NodeChain(new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")),

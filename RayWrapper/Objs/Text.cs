@@ -84,7 +84,7 @@ namespace RayWrapper.Objs
                         Font.DrawTextRec(text, rect, color, fontSize, spacing, useWordWrap);
                         break;
                     case DrawMode.Center:
-                        Font.DrawCenterText(rect.Center(), text, color, fontSize, spacing, rotationOrigin, rotation);
+                        Font.DrawCenterText(text, rect.Pos(), color, fontSize, spacing, rotationOrigin, rotation);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -100,7 +100,7 @@ namespace RayWrapper.Objs
                         Font.DrawText(text, pos, color, fontSize, spacing, rotationOrigin, rotation);
                         break;
                     case DrawMode.Center:
-                        Font.DrawCenterText(pos, text, color, fontSize, spacing, rotationOrigin, rotation);
+                        Font.DrawCenterText(text, pos, color, fontSize, spacing, rotationOrigin, rotation);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -130,7 +130,7 @@ namespace RayWrapper.Objs
             {
                 rotationOrigin = MeasureText(text) / 2;
             }
-            
+
             public Style Copy()
             {
                 var clone = new Style

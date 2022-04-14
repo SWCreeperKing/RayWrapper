@@ -21,6 +21,7 @@ namespace RayWrapper.Objs
         }
 
         public override Vector2 Size { get; }
+        public string PureText { get; private set; }
 
         public Text.Style style = defaultStyle.Copy();
 
@@ -61,6 +62,7 @@ namespace RayWrapper.Objs
 
         public void UpdateText(string text)
         {
+            PureText = RegExPlain.Replace(RegEx.Replace(text, ""), "");
             List<PrintData> datas = new();
 
             var position = _pos;

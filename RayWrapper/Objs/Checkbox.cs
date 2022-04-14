@@ -70,10 +70,11 @@ namespace RayWrapper.Objs
         protected override void RenderCall()
         {
             var rect = AssembleRectFromVec(Position + _posOff, _size);
-            var mouseIsIn = AssembleRectFromVec(Position, _textBox).IsMouseIn() && !IsMouseOccupied;
+            var rect2 = AssembleRectFromVec(Position, _textBox);
+            var mouseIsIn = rect2.IsMouseIn() && !IsMouseOccupied;
 
             style.Draw(_text, _textPos, isChecked, mouseIsIn, rect.Grow(3), rect.Shrink(3));
-            if (rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            if (rect2.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
         }
 
         public class Style : IStyle<Style>

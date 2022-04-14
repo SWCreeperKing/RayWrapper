@@ -74,10 +74,8 @@ namespace RayWrapper.Objs
                 {
                     textStyle.drawMode = value switch
                     {
-                        DrawMode.AlignLeft => Text.Style.DrawMode.Normal,
+                        DrawMode.AlignLeft or DrawMode.AlignRight or DrawMode.SizeToText => Text.Style.DrawMode.Normal,
                         DrawMode.AlignCenter => Text.Style.DrawMode.Center,
-                        DrawMode.AlignRight => Text.Style.DrawMode.Normal,
-                        DrawMode.SizeToText => Text.Style.DrawMode.Normal,
                         DrawMode.WrapText => Text.Style.DrawMode.Wrap,
                         _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
                     };

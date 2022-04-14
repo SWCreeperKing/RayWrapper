@@ -185,7 +185,7 @@ namespace RayWrapper
                 var asm = Assembly.GetExecutingAssembly();
                 var stream = asm.GetManifestResourceStream("RayWrapper.Resources.AddedAssets.Font.CascadiaMono.ttf");
 
-                var byteArr = new byte[stream.Length];
+                var byteArr = new byte[stream!.Length];
                 stream.Read(byteArr, 0, (int) stream.Length);
                 stream.Close();
 
@@ -265,7 +265,6 @@ namespace RayWrapper
                         _mouseCursors.Clear();
                     }
                     else if (_currentMouse != MOUSE_CURSOR_DEFAULT) SetMouseCursorRay(MOUSE_CURSOR_DEFAULT);
-
                 }
             }
             catch (Exception e)

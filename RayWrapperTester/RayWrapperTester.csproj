@@ -10,14 +10,14 @@
         <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Raylib-CsLo" Version="4.0.1" />
+        <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Images/**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
+        <Content Include="Assets/**">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

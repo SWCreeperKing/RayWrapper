@@ -85,10 +85,10 @@ namespace RayWrapper.Objs
                 if (outline) _rect.DrawHallowRect(BLACK);
                 if (_bar.Amount() > 1) _bar.Render();
                 
-                _tabs.Values.Each(t =>
-                {
-                    if (t.Rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-                });
+                // _tabs.Values.Each(t =>
+                // {
+                //     if (t.Rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+                // });
             }
 
             if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
@@ -126,7 +126,12 @@ namespace RayWrapper.Objs
                     drawMode = Label.Style.DrawMode.AlignCenter,
                     drawColor = (c, b) =>
                     {
-                        if (name == _currentTab) return c.MakeDarker();
+                        if (name == _currentTab)
+                        {
+                            if (b) GameBox.SetMouseCursor(MOUSE_CURSOR_NOT_ALLOWED);
+                            return c.MakeDarker();
+                        }
+                        if (b) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
                         return b ? c.MakeLighter() : c;
                     }
                 }

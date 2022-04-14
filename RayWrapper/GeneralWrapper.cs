@@ -58,7 +58,7 @@ namespace RayWrapper
         /// <param name="spacing">the spacing of the characters</param>
         /// <param name="origin">origin for rotation</param>
         /// <param name="rotation">rotation for text in degrees</param>
-        public static void DrawCenterText(this Font font, Vector2 pos, string text, Color color, float fontSize = 24,
+        public static void DrawCenterText(this Font font, string text, Vector2 pos, Color color, float fontSize = 24,
             float spacing = 1.5f, Vector2? origin = null, float rotation = 0)
         {
             var center = pos - MeasureTextEx(font, text, fontSize, spacing) / 2;

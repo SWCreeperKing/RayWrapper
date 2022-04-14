@@ -13,8 +13,8 @@ public class SlotTest : Example
     {
         RectItem ri = new(new Vector2(400), new Vector2(75)) { slotDependent = false, id = "blue", color = BLUE };
         CircleItem ci = new(new Vector2(400, 475), new Vector2(75)) { color = RED, id = "red" };
-        ImageObj io = new("Images/Untitled.png", new Vector2(400, 550));
-        ImageObj io2 = new("Images/Untitled.png", new Vector2(1025, 300));
+        ImageObj io = new("Assets/Images/Untitled.png", new Vector2(400, 550));
+        ImageObj io2 = new("Assets/Images/Untitled.png", new Vector2(1025, 300));
         
         io.SetSize(new Vector2(75));
         io2.SetSize(new Vector2(75));

@@ -16,8 +16,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-beta-8.5</PackageVersion>
-        <PackageReleaseNotes>-Default Font is now CascadiaCodeMono</PackageReleaseNotes>
+        <PackageVersion>0.4.0-beta-9</PackageVersion>
+        <PackageReleaseNotes>-Support for MouseCursor state changing</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
