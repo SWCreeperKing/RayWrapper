@@ -1,7 +1,6 @@
 using System.Numerics;
 using RayWrapper.Animation;
 using RayWrapper.Objs;
-using RayWrapper.Vars;
 using RayWrapperTester.Animations;
 using RayWrapperTester.Example_Setup;
 
