@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
@@ -18,10 +19,10 @@ public partial class Program : GameLoop
     public override void Init()
     {
         InitSaveSystem("SW_CreeperKing", "SaveTesting");
-        
+
         // basic encryption
         ISave.Cypher = (s => string.Join("", s.Reverse()), s => string.Join("", s.Reverse()));
-        
+
         ExampleRegister.Init();
         localExamples = ExampleRegister.Examples.Keys.ToList();
 

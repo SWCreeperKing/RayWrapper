@@ -24,7 +24,7 @@ public static class SceneManager
         HasInit.Remove(id);
     }
 
-    private static void CheckScene(string id)
+    public static void CheckScene(string id)
     {
         if (!Scenes.ContainsKey(id)) throw new ArgumentException($"There is no Scene matching the ID [{id}]");
     }

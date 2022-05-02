@@ -1,7 +1,7 @@
-﻿using System;
-using DiscordRPC;
+﻿using DiscordRPC;
 using RayWrapper.Vars;
 using static RayWrapper.GameConsole.CommandLineColor;
+using static RayWrapper.GameConsole.CommandRegister;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.Vars.Logger.Level;
 
@@ -24,6 +24,7 @@ namespace RayWrapper.Discord;
 /// <remarks>images must be registered with the developer portal to use them, to use them return the name of the image</remarks>
 public static class DiscordIntegration
 {
+    public static string discordAppId = string.Empty;
     public static DiscordRpcClient discord;
     public static bool discordAlive;
     public static DateTime now;
@@ -34,7 +35,18 @@ public static class DiscordIntegration
     public static Func<string> smallImage;
     public static Func<string> smallText;
 
-    public static void Init() => now = DateTime.UtcNow;
+    private static bool _initDiscord;
+
+    public static void Init(string discordAppId)
+    {
+        if (_initDiscord) return;
+        _initDiscord = true;
+        DiscordIntegration.discordAppId = discordAppId;
+        if (discordAppId != string.Empty) CheckDiscord(discordAppId);
+        GameBox.AddScheduler(new Scheduler(100, UpdateActivity));
+        RegisterCommand<DiscordCommands>();
+        now = DateTime.UtcNow;
+    }
 
     public static void CheckDiscord(string appId, bool retry = true)
     {

@@ -21,7 +21,7 @@ public class Cooldown
     /// <returns>if the cooldown is ready (resets cooldown if <paramref name="resetTimeOnTrue"/> is true)</returns>
     public bool UpdateTime(bool resetTimeOnTrue = true)
     {
-        if (lastTick + durationMs > GetTimeMs()) return false;
+        if (!IsTime()) return false;
         if (resetTimeOnTrue) ResetTick();
         return true;
     }
@@ -31,6 +31,7 @@ public class Cooldown
     /// </summary>
     public void ResetTick() => lastTick = GetTimeMs();
 
+    public bool IsTime() => lastTick + durationMs <= GetTimeMs();
     public float GetRemainingTime() => Math.Max(durationMs - (GetTimeMs() - lastTick), 0);
     public float GetTimePercent() => Math.Clamp((float) (GetTimeMs() - lastTick) / durationMs, 0, 1);
 }

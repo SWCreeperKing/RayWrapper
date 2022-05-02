@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using RayWrapper.Discord;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
@@ -97,16 +96,6 @@ public class DefaultCommands : ICommandModule
             return "Could not parse scale";
         SetWindowSize((int) (WindowSize.X * f), (int) (WindowSize.Y * f));
         return $"Set Resolution to a scale of <{f}>";
-    }
-
-    [Command("discord"), Help("discord rich presence status/recheck")]
-    public static string DiscordCheck(string[] args)
-    {
-        if (discordAppId == string.Empty) return $"Discord Integration is not set up for [{AppName}]";
-        if (DiscordIntegration.discordAlive) return $"[{AppName}] is Connected to discord!";
-        WriteToConsole("Disconnected from discord, attempting to connect");
-        DiscordIntegration.CheckDiscord(discordAppId);
-        return DiscordIntegration.discordAlive ? "Reconnected!" : "Failed, Try again later!";
     }
 
     [Command("printstat"), Help("Creates a status file from the logger")]

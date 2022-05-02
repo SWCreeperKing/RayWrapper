@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper.Animation;
-using RayWrapper.Discord;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
@@ -69,7 +68,6 @@ public class GameBox
     public static bool SaveInit { get; private set; }
     public static Vector2 WindowSize { get; private set; }
 
-    public static string discordAppId = string.Empty;
     public static float scale;
     public static long gameObjects = 0;
     public static bool IsMouseOccupied => mouseOccupier != null;
@@ -95,7 +93,6 @@ public class GameBox
     private static readonly List<ISave> SaveList = new();
     private static bool _hasInit;
     private static bool _initCollision;
-    private static bool _initDiscord;
     private static bool _isConsole;
     private static bool _isDrawing;
     private static bool _isEnding;
@@ -175,10 +172,17 @@ public class GameBox
         SetWindowSize((int) windowSize.X, (int) windowSize.Y);
 
         Text.Style.SetDefaultFont(LoadDefaultFont());
-
+        
         Start();
     }
 
+    public static void SwitchScene(string id)
+    {
+        SceneManager.CheckScene(id);
+        if (!SceneManager.HasInit[id]) SceneManager.InitScene(id);
+        _currentScene = id;
+    } 
+    
     public unsafe static Font LoadDefaultFont(int fontSize = 32, int toCodePoint = 1000)
     {
         try
@@ -284,18 +288,6 @@ public class GameBox
 
         Logger.Log(Special, "All Tasks ended successfully");
         Dispose();
-    }
-
-    /// <summary>
-    /// Initialize <see cref="DiscordIntegration"/>
-    /// </summary>
-    public static void InitDiscord()
-    {
-        if (_initDiscord) return;
-        _initDiscord = true;
-        DiscordIntegration.Init();
-        if (discordAppId != string.Empty) DiscordIntegration.CheckDiscord(discordAppId);
-        AddScheduler(new Scheduler(100, DiscordIntegration.UpdateActivity));
     }
 
     private static void Update()
