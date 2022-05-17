@@ -140,7 +140,7 @@ public class GameBox
     }
 
     public GameBox(GameLoop loop, Vector2 windowSize, string title = "Untitled Window", int fps = 60,
-        string iconPath = "")
+        string iconPath = "", bool resizable = true)
     {
         if (_hasInit) throw new ApplicationException("Only 1 instance of GameBox can be created");
         unsafe
@@ -149,7 +149,7 @@ public class GameBox
         }
 
         _hasInit = true;
-        SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
+        if (resizable) SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
         WindowSize = windowSize;
         SceneManager.AddScene("main", loop);
         InitWindow((int) WindowSize.X, (int) WindowSize.Y, Title = title);

@@ -8,27 +8,27 @@ public class ImageObj : GameObject
 {
     public override Vector2 Position
     {
-        get => _texture.Position;
-        set => _texture.Position = value;
+        get => texture.Position;
+        set => texture.Position = value;
     }
 
-    public override Vector2 Size => _texture.Size;
+    public override Vector2 Size => texture.Size;
 
     public int ImageAlpha
     {
-        get => _texture.ImageAlpha;
-        set => _texture.ImageAlpha = value;
+        get => texture.ImageAlpha;
+        set => texture.ImageAlpha = value;
     } // transparency b/t 0-255
 
     public int Rotation
     {
-        get => _texture.rotation;
-        set => _texture.rotation = value;
+        get => texture.rotation;
+        set => texture.rotation = value;
     } // 0 to 360
 
-    public Texture Texture => _texture;
-
-    private TextureObj _texture;
+    public Rectangle Rect => RectWrapper.AssembleRectFromVec(texture.Position, texture.Size);
+    public TextureObj texture;
+    
     private Image _image;
     private Rectangle _textSize;
 
@@ -47,18 +47,21 @@ public class ImageObj : GameObject
     public ImageObj(Image image, Vector2 pos)
     {
         _image = image;
-        _texture = new TextureObj(image.Texture(), pos);
-        _textSize = RectWrapper.AssembleRectFromVec(Vector2.Zero, _texture.Size);
+        texture = new TextureObj(image.Texture(), pos);
+        _textSize = RectWrapper.AssembleRectFromVec(Vector2.Zero, texture.Size);
     }
 
-    protected override void UpdateCall() => _texture.Update();
-    protected override void RenderCall() => _texture.Render();
+    protected override void UpdateCall() => texture.Update();
+    protected override void RenderCall() => texture.Render();
 
     public void RenderTo(Rectangle rect, Color? tint = null, Vector2? origin = null, float rotation = 0)
     {
-        Raylib.DrawTexturePro(_texture, _textSize, rect, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
+        Raylib.DrawTexturePro(texture, _textSize, rect, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
     }
+    
+    public void SetSize(Vector2 size) => texture.SetSize(size);
 
-    public void SetSize(Vector2 size) => _texture.SetSize(size);
+    public static implicit operator ImageObj(string path) => new(path);
+    
     ~ImageObj() => Raylib.UnloadImage(_image);
 }

@@ -42,14 +42,22 @@ public class TextLabelButtonExample : Example
             new Scheduler(50, () => { testSpin.style.rotation = (testSpin.style.rotation + 3) % 360; }));
 
         Text textTest = new(new Actionable<string>(() => $"Hello, world! [i] is {_buttonInc}"), new Vector2(12, 100));
-        RichText richTextTest = new("Testing [#fF0a0a]rich\n [!aqua]text [!gold]test",  new Vector2(12, 500));
+        RichText richTextTest = new("Testing [#fF0a0a]rich\n [!aqua]text [!gold]test", new Vector2(12, 500));
 
         KeyButton kb = new(new Vector2(12, 400), KeyboardKey.KEY_C)
         {
             keyChange = key => Logger.Log($"New Key from Key Button: {key}")
         };
+
+        ImageButton imageButton = new("Assets/Images/Untitled.png", new Vector2(900, 100));
+        imageButton.Clicked += () => Logger.Log("Clicked Image");
         
-        RegisterGameObj(testButton, _testLabel, testSpin, textTest, richTextTest, kb);
+        ImageButton imageButtonDisabled = new("Assets/Images/Untitled.png", new Rectangle(900, 300, 32, 32))
+        {
+            isDisabled = true
+        };
+
+        RegisterGameObj(testButton, _testLabel, testSpin, textTest, richTextTest, kb, imageButton, imageButtonDisabled);
     }
 
     protected override void UpdateCall()

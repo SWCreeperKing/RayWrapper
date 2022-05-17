@@ -35,6 +35,9 @@ public class ColorModule
     public static implicit operator ColorModule(Color cm) => new(cm);
     public static implicit operator ColorModule(Func<Color> cm) => new(cm);
 
+    public Color ReturnDarker() => ((Color) this).MakeDarker();
+    public Color ReturnLighter() => ((Color) this).MakeLighter(); 
+    
     public override string ToString()
     {
         var color = (Color) this;

@@ -16,8 +16,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-beta-9.1</PackageVersion>
-        <PackageReleaseNotes>-Some small fixes with the cursor</PackageReleaseNotes>
+        <PackageVersion>0.4.0-beta-9.2.1</PackageVersion>
+        <PackageReleaseNotes>Image Button Fixed</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -34,6 +34,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Resources\AddedAssets\Font\CascadiaCode_License.txt"/>
+      <Content Include="Resources\AddedAssets\Font\CascadiaCode_License.txt" />
     </ItemGroup>
 </Project>
