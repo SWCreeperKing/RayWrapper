@@ -84,7 +84,7 @@ public class Text : GameObject
                     Font.DrawTextRec(text, rect, color, fontSize, spacing, useWordWrap);
                     break;
                 case DrawMode.Center:
-                    Font.DrawCenterText(text, rect.Pos(), color, fontSize, spacing, rotationOrigin, rotation);
+                    Font.DrawCenterText(text, rect.Center(), color, fontSize, spacing, rotationOrigin, rotation);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -54,6 +54,15 @@ public static class DiscordIntegration
         discordAlive = true;
         try
         {
+            discord.UpdateStartTime(now);
+        }
+        catch
+        {
+            // look man, idk 
+        }
+
+        try
+        {
             discord = new DiscordRpcClient(appId, autoEvents: false)
             {
                 SkipIdenticalPresence = true
@@ -94,7 +103,6 @@ public static class DiscordIntegration
         try
         {
             if (!discordAlive) return;
-            discord.UpdateStartTime(now);
             if (details is not null) discord.UpdateDetails(details.Invoke());
             if (state is not null) discord.UpdateState(state.Invoke());
             if (largeImage is not null && largeText is not null)

@@ -4,11 +4,29 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>RayWrapper.Discord</PackageId>
+        <Authors>SW_CreeperKing</Authors>
+        <Description>This is the Discord Rich Presence addon to RayWrapper</Description>
+        <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
+        <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <DebugSymbols>true</DebugSymbols>
+        <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
+        <AppxSymbolPackageOutput>snupkg</AppxSymbolPackageOutput>
+        <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1.1</PackageVersion>
+        <PackageReleaseNotes>-small potential bug fix</PackageReleaseNotes>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-      <PackageReference Include="RayWrapper" Version="0.4.0-beta-9.1" />
+      <PackageReference Include="RayWrapper" Version="0.4.0-beta-9.2.1" />
     </ItemGroup>
 
 </Project>

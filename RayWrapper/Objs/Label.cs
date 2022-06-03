@@ -129,7 +129,7 @@ public class Label : GameObject
                         new Vector2(shrink.x, shrink.y + (shrink.height / 2 - textSize.Y / 2)));
                     break;
                 case DrawMode.AlignCenter:
-                    textStyle.Draw(text, shrink.Center());
+                    textStyle.Draw(text, shrink);
                     break;
                 case DrawMode.AlignRight:
                     textStyle.Draw(text,

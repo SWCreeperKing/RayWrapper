@@ -16,8 +16,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.4.0-beta-9.2.1</PackageVersion>
-        <PackageReleaseNotes>Image Button Fixed</PackageReleaseNotes>
+        <PackageVersion>0.4.0-beta-9.2.3</PackageVersion>
+        <PackageReleaseNotes>-Added TextureAtlas</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
