@@ -65,11 +65,14 @@ public class GameBox
     public static string DeveloperName { get; private set; }
     public static string AppName { get; private set; } = "Unknown App";
     public static string Title { get; private set; }
+    public static long DeltaTime => thisTick - lastTick;
     public static bool SaveInit { get; private set; }
     public static Vector2 WindowSize { get; private set; }
 
     public static float scale;
     public static long gameObjects = 0;
+    public static long lastTick;
+    public static long thisTick;
     public static bool IsMouseOccupied => mouseOccupier != null;
     public static bool conserveCpu;
     public static bool enableConsole = true;
@@ -172,7 +175,7 @@ public class GameBox
         SetWindowSize((int) windowSize.X, (int) windowSize.Y);
 
         Text.Style.SetDefaultFont(LoadDefaultFont());
-        
+
         Start();
     }
 
@@ -181,8 +184,8 @@ public class GameBox
         SceneManager.CheckScene(id);
         if (!SceneManager.HasInit[id]) SceneManager.InitScene(id);
         _currentScene = id;
-    } 
-    
+    }
+
     public unsafe static Font LoadDefaultFont(int fontSize = 32, int toCodePoint = 1000)
     {
         try
@@ -235,9 +238,11 @@ public class GameBox
         SceneManager.InitScene("main");
         try
         {
+            lastTick = GetTimeMs();
             GC.Collect();
             while (!WindowShouldClose())
             {
+                thisTick = GetTimeMs();
                 CalcMousePos();
                 if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && enableConsole) _isConsole = !_isConsole;
                 else
@@ -270,6 +275,8 @@ public class GameBox
                     _mouseCursors.Clear();
                 }
                 else if (_currentMouse != MOUSE_CURSOR_DEFAULT) SetMouseCursorRay(MOUSE_CURSOR_DEFAULT);
+
+                lastTick = thisTick;
             }
         }
         catch (Exception e)
@@ -336,7 +343,7 @@ public class GameBox
 
         _staticRender.ForEach(a => a.Invoke());
         SceneManager.RenderScene(_currentScene);
-        
+
         if (_isConsole) singleConsole.Render();
         else
         {

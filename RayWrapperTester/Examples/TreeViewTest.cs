@@ -5,6 +5,7 @@ using RayWrapper.Objs;
 using RayWrapper.Objs.TreeView;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
+using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static RayWrapper.RectWrapper;
 
@@ -22,17 +23,24 @@ public class TreeViewTest : Example
             new Ball(new Vector2(3, 3), "hi4") { completed = true },
             new ImageNode(new ImageObj("Assets/Images/Untitled.png"), new Vector2(10, 2), new Vector2(4), "Image :D")
         );
-        
-        nodeChain.AddBranch(new NodeChain(new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")),
+
+        nodeChain.AddBranch(new NodeChain(
+                new Ball(new Vector2(4, 8), new Vector2(2, 1), "yeet")
+                {
+                    completed = new Actionable<bool>(() =>
+                    {
+                        return Raylib.IsKeyDown(KeyboardKey.KEY_SPACE);
+                    })
+                }),
             nodeChain.nodes.Count - 2);
-        
+
         TreeView tv = new(nodeChain)
         {
             axisOffset = new Vector2(5, 5), verticalMovement = false,
             bounds = new Rectangle(0, 0, 15, 0),
             mask = AssembleRectFromVec(Vector2.Zero, GameBox.WindowSize).ExtendPos(new Vector2(0, -60))
         };
-        
+
         RegisterGameObj(tv);
     }
 }

@@ -48,7 +48,6 @@ public class TextLabelButtonExample : Example
         {
             keyChange = key => Logger.Log($"New Key from Key Button: {key}")
         };
-
         ImageButton imageButton = new("Assets/Images/Untitled.png", new Vector2(900, 100));
         imageButton.Clicked += () => Logger.Log("Clicked Image");
         

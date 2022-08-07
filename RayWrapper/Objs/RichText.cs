@@ -9,6 +9,7 @@ namespace RayWrapper.Objs;
 
 public class RichText : GameObject
 {
+
     public static Text.Style defaultStyle = new();
 
     private static readonly Regex RegEx = new(@"\[#([0-9a-fA-F]{6})\]");
