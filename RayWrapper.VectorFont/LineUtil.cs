@@ -5,7 +5,7 @@ namespace RayWrapper.VectorFont;
 
 public static class LineUtil
 {
-        public static void DrawBezQuadLineTriangle(Vector2 startPos, Vector2 endPos, Vector2 controlPos, float thickness,
+    public static void DrawBezQuadLineTriangle(Vector2 startPos, Vector2 endPos, Vector2 controlPos, float thickness,
         Color color, int segments = 24)
     {
         Vector2 Radius(Vector2 pos1, Vector2 pos2)
@@ -48,7 +48,6 @@ public static class LineUtil
         }
     }
 
-
     public static void DrawBezCubicLineTriangle(Vector2 startPos, Vector2 endPos, Vector2 startControlPos,
         Vector2 endControlPos, float thickness, Color color, int segments = 24)
     {
@@ -71,8 +70,8 @@ public static class LineUtil
         {
             var t = step * i;
             var a = (float) Math.Pow(1 - t, 3);
-            var b = (float) (3*Math.Pow(1 - t, 2)*t);
-            var c = (float) (3*(1-t)*Math.Pow(t, 2));
+            var b = (float) (3 * Math.Pow(1 - t, 2) * t);
+            var c = (float) (3 * (1 - t) * Math.Pow(t, 2));
             var d = (float) Math.Pow(t, 3);
 
             current = a * startPos + b * startControlPos + c * endControlPos + d * endPos;
