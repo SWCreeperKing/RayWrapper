@@ -49,8 +49,7 @@ public class Graph : GameObject
         }
 
         var mouse = GameBox.mousePos;
-        _closest = _cacheValues.Select(v2 => (pos: v2, dist: Vector2.Distance(mouse, v2))).OrderBy(t => t.dist)
-            .First().pos;
+        _closest = _cacheValues.Select(v2 => (pos: v2, dist: Vector2.Distance(mouse, v2))).MinBy(t => t.dist).pos;
     }
 
     protected override void RenderCall()

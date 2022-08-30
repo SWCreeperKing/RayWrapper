@@ -12,12 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="C:\Users\pizza\.nuget\packages\raywrapper\0.4.0-beta-9.2.3\contentFiles\any\net6.0\Resources\AddedAssets\Font\MyVecctorFont.json">
-        <Link>Resources\AddedAssets\Font\MyVecctorFont.json</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Update="VectorFontRegister.cs">
         <Link>Resources\VectorFontRegister.cs</Link>
       </Compile>

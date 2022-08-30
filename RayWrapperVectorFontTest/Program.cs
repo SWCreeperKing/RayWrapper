@@ -7,6 +7,7 @@ using RayWrapper.VectorFont;
 
 new GameBox(new Program(), new Vector2(1280, 720));
 
+[Obsolete("Looks good at big sizes, but not small, might remake later for normal graphical use and not just font use")]
 public partial class Program : GameLoop
 {
     public override void Init()

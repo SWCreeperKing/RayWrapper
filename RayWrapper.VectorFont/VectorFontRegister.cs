@@ -7,7 +7,7 @@ namespace RayWrapper.VectorFont;
 
 public class VectorFontRegister
 {
-    public static int minThickness = 2;
+    public static float minThickness = 2.15f;
 
     public abstract record Drawable
     {
@@ -58,6 +58,24 @@ public class VectorFontRegister
         {
             DrawRectangleLinesEx(RectWrapper.AssembleRectFromVec(position + Pos * scale, Size * scale),
                 Math.Max(minThickness, Thickness * scale), color);
+        }
+    }
+
+    public record Circle(Vector2 Pos, float Radius) : Drawable
+    {
+        public override void Draw(Vector2 position, float scale, Color color)
+        {
+            DrawCircleV(position + Pos * scale, Radius * scale, color);
+        }
+    }
+
+    public record Ring(Vector2 Pos, float Radius, float Thickness, float StartAngle, float EndAngle) : Drawable
+    {
+        public override void Draw(Vector2 position, float scale, Color color)
+        {
+            var thick = Math.Max(minThickness, Thickness * scale);
+            var r = Radius * scale;
+            DrawRing(position + Pos * scale, r - thick, r, StartAngle, EndAngle, 0, color);
         }
     }
 }
