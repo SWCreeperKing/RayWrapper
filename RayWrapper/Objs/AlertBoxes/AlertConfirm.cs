@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace RayWrapper.Objs;
+namespace RayWrapper.Objs.AlertBoxes;
 
 public class AlertConfirm : AlertBase
 {

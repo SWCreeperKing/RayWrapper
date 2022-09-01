@@ -3,7 +3,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using static Raylib_CsLo.MouseCursor;
 
-namespace RayWrapper.Objs;
+namespace RayWrapper.Objs.ListView;
 
 public class DefaultListItem : IListItem
 {

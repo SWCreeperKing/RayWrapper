@@ -2,6 +2,8 @@ using System.Linq;
 using System.Numerics;
 using RayWrapper;
 using RayWrapper.Objs;
+using RayWrapper.Objs.AlertBoxes;
+using RayWrapper.Objs.ListView;
 using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static Program;
@@ -61,6 +63,8 @@ public class ExamplesHome : GhostObject
     {
         var t = new Test();
         t.i = 10;
+        GameBox.RegisterSaveItem(t, "test");
+        
         Logger.Log($"i = {t.i}"); // 10
         GameBox.SaveItems();
         

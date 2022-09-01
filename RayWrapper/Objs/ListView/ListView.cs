@@ -5,7 +5,7 @@ using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 
-namespace RayWrapper.Objs;
+namespace RayWrapper.Objs.ListView;
 
 public class ListView : GameObject
 {

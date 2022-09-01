@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Objs.ListView;
 using RayWrapper.Vars;
 using static Raylib_CsLo.MouseCursor;
 
@@ -28,7 +29,7 @@ public class DropDown : GameObject
     public int fontSize = 24;
     public bool isListVisible;
     public Action<string, int> onChange = null; // op, val
-    public ListView optionDisplay;
+    public ListView.ListView optionDisplay;
     public List<string> options;
     public Label text;
 
@@ -77,7 +78,7 @@ public class DropDown : GameObject
                 isListVisible = false;
             }
         };
-        optionDisplay = new ListView(new Vector2(back.x, back.y + back.height + 2), defItem, 4, padding: 2)
+        optionDisplay = new ListView.ListView(new Vector2(back.x, back.y + back.height + 2), defItem, 4, padding: 2)
         {
             outsideClick = () =>
             {

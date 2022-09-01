@@ -5,7 +5,7 @@ using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static RayWrapper.GameBox;
 
-namespace RayWrapper.Objs;
+namespace RayWrapper.Objs.AlertBoxes;
 
 public abstract class AlertBase : GameObject
 {

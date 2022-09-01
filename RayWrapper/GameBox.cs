@@ -12,6 +12,7 @@ using Raylib_CsLo;
 using RayWrapper.Animation;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
+using RayWrapper.Objs.AlertBoxes;
 using RayWrapper.Objs.Slot;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
@@ -373,9 +374,9 @@ public class GameBox
         if (showFps || isDebugTool) DrawFPS((int) fpsPos.X, (int) fpsPos.Y);
 
         var texture = _target.texture;
-
         EndTextureMode();
         SetTextureFilter(texture, targetTextureFilter);
+        
         BeginDrawing();
         ClearBackground(letterboxColor);
         DrawTexturePro(texture, new Rectangle(0, 0, texture.width, -texture.height),
