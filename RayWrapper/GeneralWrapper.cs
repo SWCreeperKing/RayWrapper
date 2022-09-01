@@ -368,7 +368,7 @@ public static class GeneralWrapper
     }
 
     /// <summary>
-    /// adds a next for floats for <see cref="Random"/>
+    /// adds a next for floating point number for <see cref="Random"/>
     /// </summary>
     /// <param name="r">the <see cref="Random"/> to use</param>
     /// <param name="min">min number [inclusive]</param>
@@ -376,6 +376,9 @@ public static class GeneralWrapper
     /// todo: make sure that this is max exclusive
     /// <returns>a random float b/t <paramref name="min"/> and <paramref name="max"/></returns>
     public static float Next(this Random r, float min, float max) => (float) (r.NextDouble() * (max - min) + min);
+
+    /// <inheritdoc cref="Next(System.Random,float,float)"/>
+    public static double Next(this Random r, double min, double max) => r.NextDouble() * (max - min) + min;
 
     /// <summary>
     /// converts an array of floats into an array of points based on a given <see cref="Rectangle"/>
@@ -506,8 +509,7 @@ public static class GeneralWrapper
     /// <param name="v2">position of circle</param>
     /// <param name="r">radius of circle</param>
     /// <param name="color">color of circle</param>
-    public static void DrawCircle(this Vector2 v2, float r, Color? color = null) =>
-        DrawCircleV(v2, r, color ?? WHITE);
+    public static void DrawCircle(this Vector2 v2, float r, Color? color = null) => DrawCircleV(v2, r, color ?? WHITE);
 
     /// <summary>
     /// use <see cref="Fix(float)"/> on x and y of vector
@@ -582,5 +584,13 @@ public static class GeneralWrapper
         return Math.Sqrt(Math.Pow(pos2.X - pos1.X, 2) + Math.Pow(pos2.Y - pos1.Y, 2));
     }
 
+    public static Vector2 Next(this Random r, Vector2 v21, Vector2 v22)
+    {
+        var (x1, x2) = v21.X > v22.X ? (v22.X, v21.X) : (v21.X, v22.X);
+        var (y1, y2) = v21.Y > v22.Y ? (v22.Y, v21.Y) : (v21.Y, v22.Y);
+        return new Vector2(r.Next(x1, x2), r.Next(y1, y2));
+    }
+
     public static string GetString(this Color c) => $"({c.r}, {c.g}, {c.b}, {c.a})";
+    public static int Next(this Random r, Range range) => r.Next(range.Start.Value, range.End.Value);
 }

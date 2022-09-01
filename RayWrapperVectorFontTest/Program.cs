@@ -1,7 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper;
+using RayWrapper.Objs;
 using RayWrapper.Vars;
 using RayWrapper.VectorFont;
 
@@ -12,7 +14,8 @@ public partial class Program : GameLoop
 {
     public override void Init()
     {
-        RegisterGameObj(new VectorFont());
+        GameBox.targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
+        RegisterGameObj(new VectorFont(), new Text("b", GameBox.WindowSize / 2 + new Vector2(-30, 0)));
     }
 
     public override void UpdateLoop()

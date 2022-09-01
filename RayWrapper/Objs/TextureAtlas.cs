@@ -38,9 +38,9 @@ public class TextureAtlas
         Raylib.DrawTexturePro(texture, src, dest, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
     }
 
-    public TextureAtlas Register(string id, int x, int y, int? w = null, int? h = null)
+    public TextureAtlas Register(string id, int x, int y, int w = 1, int h = 1)
     {
-        var src = new Rectangle(x * pixelScale, y * pixelScale, w ?? pixelScale, h ?? pixelScale);
+        var src = new Rectangle(x * pixelScale, y * pixelScale, w * pixelScale, h * pixelScale);
         imageRegistry.Add(id, src);
         return this;
     }

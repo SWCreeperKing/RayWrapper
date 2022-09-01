@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.VectorFont", "Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperVectorFontTest", "RayWrapperVectorFontTest\RayWrapperVectorFontTest.csproj", "{07D13ED4-6862-41D5-9851-154690A63D94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.ParticleControl", "RayWrapper.ParticleControl\RayWrapper.ParticleControl.csproj", "{C37AAAB1-CB9C-4C0D-90AA-EAC7B3364136}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTesterParticle", "RayWrapperTesterParticle\RayWrapperTesterParticle.csproj", "{D2831138-A2A0-440B-9EAB-04E5F00161C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +58,13 @@ Global
 		{07D13ED4-6862-41D5-9851-154690A63D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07D13ED4-6862-41D5-9851-154690A63D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07D13ED4-6862-41D5-9851-154690A63D94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C37AAAB1-CB9C-4C0D-90AA-EAC7B3364136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C37AAAB1-CB9C-4C0D-90AA-EAC7B3364136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C37AAAB1-CB9C-4C0D-90AA-EAC7B3364136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C37AAAB1-CB9C-4C0D-90AA-EAC7B3364136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2831138-A2A0-440B-9EAB-04E5F00161C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2831138-A2A0-440B-9EAB-04E5F00161C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2831138-A2A0-440B-9EAB-04E5F00161C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2831138-A2A0-440B-9EAB-04E5F00161C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
