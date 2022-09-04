@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using RayWrapper.Vars;
 
 namespace RayWrapper.Objs;

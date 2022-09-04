@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Objs;
 
@@ -75,5 +76,21 @@ public class TextureAtlas
     {
         Raylib.UnloadImage(image);
         Raylib.UnloadTexture(texture);
+    }
+
+    public record AtlasTexture(TextureAtlas Atlas, string Id, Vector2? Origin = null,
+        float Rotation = 0, Color? Tint = null)
+    {
+        public void Draw(Vector2 pos, Vector2 size, float scale)
+        {
+            Atlas.Draw(Id, pos, size, (Origin ?? Vector2.Zero) * scale, Rotation, Tint ?? Raylib.WHITE);
+        }
+    }
+
+    public record CompoundAtlasTexture(params AtlasTexture[] Textures)
+    {
+        public void Draw(Vector2 pos, Vector2 size, float scale) => Textures.Each(t => t.Draw(pos, size, scale));
+
+        public static implicit operator CompoundAtlasTexture(AtlasTexture t) => new(t);
     }
 }

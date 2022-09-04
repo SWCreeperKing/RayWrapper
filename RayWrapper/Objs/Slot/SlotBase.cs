@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
-using Raylib_CsLo;
 using RayWrapper.Vars;
-using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs.Slot;
 
