@@ -10,7 +10,7 @@ using static Program;
 
 namespace RayWrapperTester;
 
-public class ExamplesHome : GhostObject
+public class ExamplesHome : GameObject
 {
     public class Test
     {

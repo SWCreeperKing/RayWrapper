@@ -19,26 +19,15 @@ public class Slider : GameObject
     public Action<float> onDone;
     public float value;
 
-    private readonly Vector2 _size;
-    private Vector2 _pos;
-
-    public Slider(Rectangle rect) => (_pos, _size) = (rect.Pos(), rect.Size());
+    public Slider(Rectangle rect) => (pos, size) = (rect.Pos(), rect.Size());
 
     public Slider(float x, float y, float width, float height) =>
-        (_pos, _size) = (new Vector2(x, y), new Vector2(width, height));
-
-    public override Vector2 Position
-    {
-        get => _pos;
-        set => _pos = value;
-    }
-
-    public override Vector2 Size => _size + new Vector2(style.outlineStyle.thickness);
+        (pos, size) = (new Vector2(x, y), new Vector2(width, height));
 
     protected override void UpdateCall()
     {
         if (IsMouseOccupied && mouseOccupier != this) return;
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && AssembleRectFromVec(Position, _size).IsMouseIn())
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && AssembleRectFromVec(pos, size).IsMouseIn())
         {
             mouseOccupier = this;
         }
@@ -50,15 +39,22 @@ public class Slider : GameObject
 
         if (mouseOccupier != this) return;
         var mouse = mousePos;
-        value = Math.Clamp(mouse.X - Position.X, 0, _size.X) / _size.X;
+        value = Math.Clamp(mouse.X - pos.X, 0, size.X) / size.X;
     }
 
     protected override void RenderCall()
     {
-        var newS = new Vector2(_size.X * (isVertical ? 1 : value), _size.Y * (isVertical ? value : 1));
-        var back = AssembleRectFromVec(Position, _size);
-        var rect = AssembleRectFromVec(Position, newS);
+        var newS = new Vector2(size.X * (isVertical ? 1 : value), size.Y * (isVertical ? value : 1));
+        var back = AssembleRectFromVec(pos, size);
+        var rect = AssembleRectFromVec(pos, newS);
         style.Draw(back, rect, back.IsMouseIn() || mouseOccupier == this);
+    }
+
+    protected override Vector2 GetSize() => size + new Vector2(style.outlineStyle.thickness);
+
+    protected override void UpdatedSize(Vector2 newSize)
+    {
+        base.UpdatedSize(newSize - new Vector2(style.outlineStyle.thickness));
     }
 
     public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;

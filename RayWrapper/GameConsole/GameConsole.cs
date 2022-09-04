@@ -20,9 +20,6 @@ public class GameConsole : GameObject
     private static IList<string> _lines = new List<string>();
     private static Dictionary<int, Color> _colors = new();
 
-    public override Vector2 Position { get; set; }
-    public override Vector2 Size { get; }
-
     public ListView history;
     public InputBox ib;
 
@@ -62,19 +59,14 @@ public class GameConsole : GameObject
         };
 
         history = new ListView(new Vector2(12, 50), defItem, (int) Math.Floor((WindowSize.Y - 50) / 45));
+
+        RegisterGameObj(history, ib);
     }
 
-    protected override void UpdateCall()
-    {
-        history.Update();
-        ib.Update();
-    }
 
     protected override void RenderCall()
     {
         new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
-        history.Render();
-        ib.Render();
     }
 
     public static void WriteToConsole(params string[] texts)

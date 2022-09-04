@@ -10,14 +10,6 @@ namespace RayWrapper.Animation.SinglePurposeObjects;
 /// </summary>
 public class Rect : GameObject, ISizeable, IAlphable
 {
-    public override Vector2 Position
-    {
-        get => rect.Pos();
-        set => rect.MoveTo(value);
-    }
-
-    public override Vector2 Size => rect.Size();
-
     public ColorModule ColorMod
     {
         get => ((Color) _color).SetAlpha(alpha);
@@ -42,12 +34,9 @@ public class Rect : GameObject, ISizeable, IAlphable
 
     public Rect(Rectangle rect) => this.rect = rect;
 
-    protected override void UpdateCall()
-    {
-    }
-
     protected override void RenderCall()
     {
+        var rect = GetRect();
         if (isRound)
         {
             rect.DrawRounded(ColorMod, roundness);
@@ -60,11 +49,28 @@ public class Rect : GameObject, ISizeable, IAlphable
         }
     }
 
-    public void SetSize(Vector2 size) => rect = rect.SetSize(size);
-    public void AddSize(Vector2 size) => SetSize(Size + size);
+    protected override Vector2 GetPosition()
+    {
+        return base.GetPosition();
+    }
 
-    public static implicit operator Rectangle(Rect rect) => rect.rect;
-    public static implicit operator Rect(Rectangle rect) => new(rect);
+    protected override Vector2 GetSize()
+    {
+        return base.GetSize();
+    }
+
+    protected override void UpdatePosition(Vector2 newPos)
+    {
+        base.UpdatePosition(newPos);
+    }
+
+    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
+
+    public void SetSize(Vector2 size) => this.size = size;
+    public void AddSize(Vector2 size) => this.size += size;
     public int GetAlpha() => alpha;
     public void SetAlpha(int alpha) => this.alpha = alpha;
+    
+    public static implicit operator Rectangle(Rect rect) => rect.GetRect();
+    public static implicit operator Rect(Rectangle rect) => new(rect);
 }

@@ -15,19 +15,6 @@ public class TabView : GameObject
 {
     public static Style defaultStyle = new();
 
-    public override Vector2 Position
-    {
-        get => _rect.Pos();
-        set
-        {
-            _rect.MoveTo(value);
-            _bar.Position = value + new Vector2(0, 40);
-            Refresh();
-        }
-    }
-
-    public override Vector2 Size => _rect.Size();
-
     public Style style = defaultStyle.Copy();
     public bool drawIfLowTabs = false;
     public bool outline = true;
@@ -93,6 +80,21 @@ public class TabView : GameObject
 
         if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
         _tabContents[_currentTab].Render();
+    }
+    
+    protected override Vector2 GetPosition() => _rect.Pos();
+    protected override Vector2 GetSize() => _rect.Size();
+    protected override void UpdatePosition(Vector2 newPos)
+    {
+        _rect.MoveTo(newPos);
+        _bar.Position = newPos + new Vector2(0, 40);
+        Refresh();
+    }
+
+    protected override void UpdatedSize(Vector2 newSize)
+    {
+        _rect.SetSize(newSize);
+        Refresh();
     }
 
     public void Refresh() => ReCalculate();

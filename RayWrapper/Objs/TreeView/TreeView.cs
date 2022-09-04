@@ -16,9 +16,6 @@ public class TreeView : GameObject
 {
     public readonly List<NodeChain> chains = new();
 
-    public override Vector2 Position { get; set; }
-    public override Vector2 Size => mask.IsEqualTo(Zero) ? WindowSize : mask.Size();
-
     public bool enableScaling = true;
     public bool verticalMovement = true;
     public bool horizontalMovement = true;

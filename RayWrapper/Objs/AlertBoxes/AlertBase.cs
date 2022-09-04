@@ -10,10 +10,6 @@ namespace RayWrapper.Objs.AlertBoxes;
 public abstract class AlertBase : GameObject
 {
     public static Style defaultStyle = new();
-
-    public override Vector2 Position { get; set; }
-    public override Vector2 Size { get; }
-
     public Style style = defaultStyle.Copy();
     public string title;
     public string message;
@@ -45,6 +41,7 @@ public abstract class AlertBase : GameObject
     /// stuff needs to init rather than constructor since base constructor runs first
     /// </summary>
     public abstract void Init();
+
     public abstract Vector2 AddedBackSize();
     public abstract void UpdateAdded();
     public abstract void RenderAdded(Vector2 startPos, Vector2 size);

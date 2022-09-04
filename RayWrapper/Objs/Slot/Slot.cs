@@ -8,5 +8,5 @@ public class Slot : SlotBase
     {
     }
 
-    protected override void Draw() => rect.DrawHallowRect(color, thickness);
+    protected override void Draw() => GetRect().DrawHallowRect(color, thickness);
 }

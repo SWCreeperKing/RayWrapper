@@ -18,14 +18,6 @@ public class Label : GameObject
             ? AssembleRectFromVec(_back.Pos(), style.textStyle.MeasureText(text)).Grow(4)
             : _back;
 
-    public override Vector2 Position
-    {
-        get => Rect.Pos();
-        set => _back.MoveTo(value);
-    }
-
-    public override Vector2 Size => Rect.Size();
-
     public Style style = defaultStyle.Copy();
     public Action clicked;
     public Actionable<string> text;
@@ -50,6 +42,11 @@ public class Label : GameObject
         style.Draw(text, Rect);
         if (tooltip is not null && !IsMouseOccupied) tooltip.Draw(Rect);
     }
+
+    protected override Vector2 GetPosition() => Rect.Pos();
+    protected override Vector2 GetSize() => Rect.Size();
+    protected override void UpdatePosition(Vector2 newPos) => _back.MoveTo(newPos);
+    protected override void UpdatedSize(Vector2 newSize) => _back.SetSize(newSize);
 
     public void ClickCheck(Action onClick)
     {

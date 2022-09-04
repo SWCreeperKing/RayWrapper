@@ -56,7 +56,4 @@ public class VectorFont : GameObject
         // DrawBezQuadLineTriangle(pos1, pos2, GameBox.mousePos, 30, Raylib.GOLD);
         // // Raylib.DrawLineBezierQuad(pos1, pos2, GameBox.mousePos, 30, Raylib.BLUE);
     }
-
-    public override Vector2 Position { get; set; }
-    public override Vector2 Size { get; }
 }

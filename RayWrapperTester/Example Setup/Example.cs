@@ -6,7 +6,7 @@ using RayWrapper.Vars;
 
 namespace RayWrapperTester.Example_Setup;
 
-public abstract class Example : GhostObject
+public abstract class Example : GameObject
 {
     public Example(string tabName)
     {

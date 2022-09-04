@@ -28,19 +28,11 @@ public class KeyButton : GameObject
         };
         core.SetStyle(defaultStyle.Copy());
         core.Clicked += () => _acceptingChange = !_acceptingChange;
+        RegisterGameObj(core);
     }
-
-    public override Vector2 Position
-    {
-        get => core.Position;
-        set => core.Position = value;
-    }
-
-    public override Vector2 Size => core.Size;
 
     protected override void UpdateCall()
     {
-        core.Update();
         if (!_acceptingChange) return;
         var pressed = Raylib.GetKeyPressed();
         if (pressed == 0) return;
@@ -49,5 +41,8 @@ public class KeyButton : GameObject
         _acceptingChange = false;
     }
 
-    protected override void RenderCall() => core.Render();
+    protected override Vector2 GetPosition() => core.Position;
+    protected override Vector2 GetSize() => core.Size;
+    protected override void UpdatePosition(Vector2 newPos) => core.Position = newPos;
+    protected override void UpdatedSize(Vector2 newSize) => core.Size = newSize;
 }

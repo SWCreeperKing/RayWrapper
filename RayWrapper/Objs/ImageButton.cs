@@ -13,14 +13,6 @@ public class ImageButton : GameObject
 {
     public static Style defaultStyle = new();
 
-    public override Vector2 Position
-    {
-        get => image.Position;
-        set => image.Position = value;
-    }
-
-    public override Vector2 Size => image.Size;
-
     public Style style = defaultStyle.Copy();
     public ImageObj image;
     public Rectangle? sizeOverride;
@@ -44,7 +36,7 @@ public class ImageButton : GameObject
         this.image.Position = position;
         this.image.texture.ImageAlpha = 170;
     }
-    
+
     public ImageButton(ImageObj image, Rectangle sizeOverride)
     {
         this.image = image;
@@ -57,7 +49,7 @@ public class ImageButton : GameObject
         image.Update();
         var rect = sizeOverride ?? image.Rect;
         var over = rect.Grow(style.imageMargin);
-        
+
         if (!over.IsMouseIn()) return;
         tooltip?.Draw(over);
         if (!Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) return;
@@ -68,15 +60,20 @@ public class ImageButton : GameObject
     {
         var rect = sizeOverride ?? image.Rect;
         var over = rect.Grow(style.imageMargin);
-        
+
         style.Draw(over, isDisabled);
         if (sizeOverride is null) image.Render();
         else image.RenderTo(sizeOverride.Value);
-        
+
         if (!over.IsMouseIn()) return;
         if (_clickEvent.Any() && !isDisabled) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_POINTING_HAND);
         else if (_clickEvent.Any()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_NOT_ALLOWED);
     }
+
+    protected override Vector2 GetPosition() => image.Position;
+    protected override Vector2 GetSize() => image.Size;
+    protected override void UpdatePosition(Vector2 newPos) => image.Position = newPos;
+    protected override void UpdatedSize(Vector2 newSize) => image.Size = newSize;
 
     public void Click() => _clickEvent.Each(a => a.Invoke());
 

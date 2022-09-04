@@ -12,14 +12,6 @@ public class Graph : GameObject
 {
     public readonly Vector2 neg = new(-1, -1);
 
-    public override Vector2 Position
-    {
-        get => rect.Pos();
-        set => rect.MoveTo(value);
-    }
-
-    public override Vector2 Size => rect.Size();
-
     public Rectangle rect;
     public ColorModule lineColor = DARKBLUE;
     public int thickness = 3;
@@ -68,6 +60,11 @@ public class Graph : GameObject
         _closest.DrawCircle(3);
         if (_realVal.ContainsKey(_closest)) tooltip.Draw();
     }
+
+    protected override Vector2 GetPosition() => rect.Pos();
+    protected override Vector2 GetSize() => rect.Size();
+    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
+    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
 
     public void UpdateVal()
     {

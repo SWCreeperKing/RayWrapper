@@ -9,36 +9,23 @@ namespace RayWrapper.Objs;
 
 public class RichText : GameObject
 {
-
     public static Text.Style defaultStyle = new();
 
-    private static readonly Regex RegEx = new(@"\[#([0-9a-fA-F]{6})\]");
-    private static readonly Regex RegExPlain = new(@"\[![a-zA-Z]+\]");
+    private static readonly Regex RegEx = new(@"\[#([0-9a-fA-F]{6})\]", RegexOptions.Compiled);
+    private static readonly Regex RegExPlain = new(@"\[![a-zA-Z]+\]", RegexOptions.Compiled);
 
-    public override Vector2 Position
-    {
-        get => _pos;
-        set => _pos = value;
-    }
-
-    public override Vector2 Size { get; }
     public string PureText { get; private set; }
 
     public Text.Style style = defaultStyle.Copy();
 
     private PrintData[] _data;
-    private Vector2 _pos;
 
     public RichText(string text, Vector2 pos)
     {
-        _pos = pos;
+        this.pos = pos;
         UpdateText(text);
     }
-
-    protected override void UpdateCall()
-    {
-    }
-
+    
     protected override void RenderCall()
     {
         if (_data is null) return;
@@ -66,7 +53,7 @@ public class RichText : GameObject
         PureText = RegExPlain.Replace(RegEx.Replace(text, ""), "");
         List<PrintData> datas = new();
 
-        var position = _pos;
+        var position = pos;
         var color = Raylib.RAYWHITE;
         string mText;
 
@@ -91,7 +78,7 @@ public class RichText : GameObject
 
             datas.Add(new PrintData(position, mText, color));
             position.Y += addedY;
-            position.X = _pos.X;
+            position.X = pos.X;
         }
 
         _data = datas.ToArray();

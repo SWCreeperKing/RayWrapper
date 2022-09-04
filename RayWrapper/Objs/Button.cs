@@ -35,13 +35,6 @@ public class Button : GameObject
         set => baseL.tooltip = value;
     }
 
-    public override Vector2 Position
-    {
-        get => baseL.Position;
-        set => baseL.Position = value;
-    }
-
-    public override Vector2 Size => baseL.Size;
     public Rectangle Rect => baseL.Rect;
 
     /// <summary>
@@ -97,13 +90,15 @@ public class Button : GameObject
         else if (_clickEvent.Any()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_NOT_ALLOWED);
     }
 
+    protected override Vector2 GetPosition() => baseL.Position;
+    protected override Vector2 GetSize() => baseL.Size;
+    protected override void UpdatePosition(Vector2 newPos) => baseL.Position = newPos;
+    protected override void UpdatedSize(Vector2 newSize) => baseL.Size = newSize;
+
     /// <summary>
     ///     Execute all methods subscribed to the on click event
     /// </summary>
-    public void Click()
-    {
-        _clickEvent.Each(a => a.Invoke());
-    }
+    public void Click() => _clickEvent.Each(a => a.Invoke());
 
     public void SetStyle(Style style)
     {

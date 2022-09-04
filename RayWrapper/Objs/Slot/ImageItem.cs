@@ -11,7 +11,7 @@ public class ImageItem : SlotItem
     public override void Draw(Vector2 pos, Vector2 size, int alpha)
     {
         img.Position = pos;
-        img.SetSize(size);
+        img.Size = size;
         if (img.ImageAlpha != alpha) img.ImageAlpha = alpha;
         img.Render();
     }

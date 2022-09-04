@@ -78,10 +78,8 @@ public class GameBox
     public static bool conserveCpu;
     public static bool enableConsole = true;
     public static bool f11Fullscreen = true;
-    public static bool isDebugTool;
     public static bool showFps = false;
     public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
-    public static GameObject debugContext = null;
     public static IGameObject mouseOccupier;
     public static Vector2 fpsPos = Vector2.One;
     public static Vector2 mousePos;
@@ -106,7 +104,6 @@ public class GameBox
     private static RenderTexture _target;
     private static List<Scheduler> _schedulers = new();
     private static List<Scheduler> _schedulerQueue = new();
-    private static DefaultTooltip _debugTooltip;
     private static List<MouseCursor> _mouseCursors = new();
     private static List<Action> _staticInit = new();
     private static List<Action> _staticUpdate = new();
@@ -165,12 +162,6 @@ public class GameBox
             singleConsole = new GameConsole.GameConsole();
             CommandRegister.RegisterCommand<DefaultCommands>();
         }
-
-        _debugTooltip = new DefaultTooltip(new Actionable<string>(() => $@"({mousePos.X},{mousePos.Y}){
-            (IsMouseOccupied ? $"\nocc: {mouseOccupier}" : string.Empty)
-        }{
-            (debugContext is not null ? $"\nP: {debugContext.Position}\nS: {debugContext.Size}" : string.Empty)
-        }{(debugContext?.debugString is not null ? $"{debugContext.debugString}" : "")}"));
 
         SetTargetFPS(FPS = fps);
         SetWindowSize((int) windowSize.X, (int) windowSize.Y);
@@ -310,12 +301,6 @@ public class GameBox
 
         Animator.Update();
 
-        if (IsKeyPressed(KeyboardKey.KEY_F3))
-        {
-            isDebugTool = !isDebugTool;
-            WriteToConsole($"toggled debug via F3: {isDebugTool}");
-        }
-
         _staticUpdate.ForEach(a => a.Invoke());
         SceneManager.UpdateScene(_currentScene);
     }
@@ -356,8 +341,6 @@ public class GameBox
             }
         }
 
-        if (isDebugTool) _debugTooltip.Draw();
-
         if (tooltips.Any())
         {
             var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
@@ -370,8 +353,6 @@ public class GameBox
 
             tooltips.Clear();
         }
-
-        if (showFps || isDebugTool) DrawFPS((int) fpsPos.X, (int) fpsPos.Y);
 
         var texture = _target.texture;
         EndTextureMode();

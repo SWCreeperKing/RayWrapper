@@ -21,7 +21,7 @@ public class TitleScreen : Example
 }
 
 // these classes can be in their own files
-class Logo : GhostObject
+class Logo : GameObject
 {
     public Logo()
     {
@@ -38,7 +38,7 @@ class Logo : GhostObject
     }
 }
 
-class Title : GhostObject
+class Title : GameObject
 {
     public Title()
     {

@@ -17,7 +17,6 @@ public class Scrollbar : GameObject
 
     public Style style = defaultStyle.Copy();
     public Rectangle bar = RectWrapper.Zero;
-    public Rectangle container;
     public int minSizePercent = 20;
     public bool isVertical;
     public Func<float> amountInvoke;
@@ -29,27 +28,13 @@ public class Scrollbar : GameObject
 
     public Scrollbar(Rectangle rect, bool isVertical = true)
     {
-        container = rect.Clone();
+        (pos, size) = (rect.Pos(), rect.Size());
         this.isVertical = isVertical;
     }
 
     public float Value { get; private set; }
 
-    public override Vector2 Position
-    {
-        get => container.Pos();
-        set
-        {
-            var offset = GetOffset;
-            container.MoveTo(value);
-            bar.MoveTo(value);
-            MoveBar(offset);
-        }
-    }
-
-    public override Vector2 Size => container.Size();
-
-    public float GetOffset => isVertical ? container.y - bar.y : container.x - bar.x;
+    public float GetOffset => isVertical ? pos.Y - bar.y : pos.X - bar.x;
 
     public event Action<float> OnMoveEvent
     {
@@ -69,7 +54,6 @@ public class Scrollbar : GameObject
     public void ClampBounds()
     {
         CalcBarSize();
-        var (size, pos) = (container.Size(), container.Pos());
         (bar.width, bar.height) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
         var (hMax, wMax) = (pos.Y + size.Y, pos.X + size.X);
         bar.y = Math.Clamp(bar.y, pos.Y, (int) (isVertical ? hMax - _visibleSize : hMax));
@@ -78,7 +62,6 @@ public class Scrollbar : GameObject
 
     public void CalcVal()
     {
-        var (size, pos) = (container.Size(), container.Pos());
         var sub1 = isVertical ? bar.y - pos.Y : bar.x - pos.X;
         var sub2 = Math.Max((isVertical ? size.Y : size.X) - _visibleSize, 1);
         Value = Math.Clamp(sub1 / sub2 * (Amount() - 1), 0, float.MaxValue - 1);
@@ -86,7 +69,6 @@ public class Scrollbar : GameObject
 
     public void CalcBarSize()
     {
-        var size = container.Size();
         var rSize = isVertical ? size.Y : size.X;
         _trueSize = rSize / Amount();
         _visibleSize = Math.Max(_trueSize, rSize * (minSizePercent / 100f));
@@ -110,8 +92,7 @@ public class Scrollbar : GameObject
 
         if (mouseOccupier != this)
         {
-            if (!IsMouseOccupied && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
-                container.IsMouseIn())
+            if (!IsMouseOccupied && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && GetRect().IsMouseIn())
                 MoveBar((isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X) + _visibleSize / 2);
 
             _lastMouse = Vector2.Zero;
@@ -125,10 +106,20 @@ public class Scrollbar : GameObject
     protected override void RenderCall()
     {
         if (Amount() == 1) return; // ignore loss of precision
+        var container = GetRect();
         if (container.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
         style.Draw(container, bar,
             IsMouseOccupied && mouseOccupier == this || !IsMouseOccupied && container.IsMouseIn());
     }
+
+    protected override void UpdatePosition(Vector2 newPos)
+    {
+        var offset = GetOffset;
+        bar.MoveTo(newPos);
+        MoveBar(offset);
+        base.UpdatePosition(newPos);
+    }
+
 
     public float Amount() => Math.Max(amountInvoke?.Invoke() ?? 0, 1);
     public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;

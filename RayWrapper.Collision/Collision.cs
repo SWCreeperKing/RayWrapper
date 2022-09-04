@@ -55,14 +55,6 @@ public static class Collision
 
         StaticRender += () =>
         {
-            if (isDebugTool)
-            {
-                foreach (var r in _collisionSectors)
-                {
-                    r.DrawHallowRect(Raylib.RED);
-                }
-            }
-
             foreach (var c in _collisionObjects)
             {
                 try

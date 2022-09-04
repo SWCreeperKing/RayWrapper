@@ -85,9 +85,6 @@ public class DefaultCommands : ICommandModule
         return help.Select(s => $"{CYAN}{s}").ToArray();
     }
 
-    [Command("toggledebug"), Help("toggle debug tools")]
-    public static string ToggleDebug(string[] args) => $"Toggled debug tools ({isDebugTool = !isDebugTool})";
-
     [Command("setscale"), Help("sets the window size based on scale")]
     public static string SetScale(string[] args)
     {

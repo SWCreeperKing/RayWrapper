@@ -10,13 +10,9 @@ public interface IGameObject
 
     void Update();
     void Render();
-        
-    // TODO: Remove if not appropriate in interface.
-    float FullLength { get; }
-    float FullHeight { get; }
 
     // TODO: Remove if not appropriate in interface.
-    Rectangle GetDebugRect();
+    Rectangle GetRect();
     void ReserveV2();
     Vector2 GetReserveV2();
     void SetPositionAsReserveV2();

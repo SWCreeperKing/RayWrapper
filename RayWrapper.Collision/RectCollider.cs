@@ -5,8 +5,6 @@ namespace RayWrapper.Collision;
 
 public abstract class RectCollider : Collider
 {
-    public override Vector2 Size => rect.Size();
-
     public Rectangle rect;
 
     public RectCollider(Rectangle rect) : base(rect.Pos()) => this.rect = rect;
@@ -19,6 +17,10 @@ public abstract class RectCollider : Collider
             _ => false
         };
 
+    protected override Vector2 GetPosition() => rect.Pos();
+    protected override Vector2 GetSize() => rect.Size();
+    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
+    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
     public override bool SampleCollision(Rectangle c) => Raylib.CheckCollisionRecs(this, c);
     public static implicit operator Rectangle(RectCollider rc) => rc.rect.Clone();
 }

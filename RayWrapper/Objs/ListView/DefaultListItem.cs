@@ -41,7 +41,7 @@ public class DefaultListItem : IListItem
     public int ListSize() => arraySize.Invoke();
     public Vector2 ItemSize() => _itemSizeReal;
 
-    public void Render(Vector2 offset, int item)
+    public void Render(Vector2 offset, int item, bool isMouseActive)
     {
         labelStyle.fontColor = fontColorLookup?.Invoke(item) ?? fontColor;
         labelStyle.backColor = backColorLookup?.Invoke(item) ?? backColor;
@@ -50,7 +50,8 @@ public class DefaultListItem : IListItem
         var s = this.item.Invoke(item);
         var rect = RectWrapper.AssembleRectFromVec(offset, _itemSize);
         labelStyle.Draw(s, rect);
-        if (!rect.IsMouseIn() || onClick is null) return; 
+        
+        if (!isMouseActive || !rect.IsMouseIn() || onClick is null) return; 
         GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
         if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) onClick?.Invoke(item, s);
     }

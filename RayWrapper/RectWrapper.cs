@@ -50,14 +50,6 @@ public static class RectWrapper
     public static void Draw(this Rectangle rect, Color color) => DrawRectangleRec(rect, color);
 
     /// <summary>
-    /// Grows a <see cref="Rectangle"/> from its center
-    /// </summary>
-    /// <param name="rect"><see cref="Rectangle"/> to grow</param>
-    /// <param name="changeBy">Amount to grow the rectangle by</param>
-    /// <returns>The <paramref name="rect"/> that grew from its center by <paramref name="changeBy"/></returns>
-    public static Rectangle Grow(this Rectangle rect, int changeBy) => rect.Shrink(-changeBy);
-
-    /// <summary>
     /// Adjusts the width and height of a <see cref="Rectangle"/>
     /// </summary>
     /// <param name="rect"><see cref="Rectangle"/> to adjust</param>
@@ -144,7 +136,15 @@ public static class RectWrapper
     /// <param name="rect">the <see cref="Rectangle"/> to set the size of</param>
     /// <param name="v2">what the <see cref="Rectangle"/>'s size should be</param>
     /// <returns>the <see cref="Rectangle"/> with the new size</returns>
-    public static Rectangle SetSize(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
+    public static void SetSize(this ref Rectangle rect, Vector2 v2) => (rect.width, rect.height) = (v2.X, v2.Y);
+
+    /// <summary>
+    /// Copies the <see cref="Rectangle"/> and sets its size to the given <see cref="Vector2"/>
+    /// </summary>
+    /// <param name="rect">the <see cref="Rectangle"/> to set the size of</param>
+    /// <param name="v2">what the <see cref="Rectangle"/>'s size should be</param>
+    /// <returns>the <see cref="Rectangle"/> with the new size</returns>
+    public static Rectangle NewSetSize(this Rectangle rect, Vector2 v2) => new(rect.x, rect.y, v2.X, v2.Y);
 
     /// <summary>
     /// Checks if 2 <see cref="Rectangle"/>s are colliding
@@ -266,15 +266,27 @@ public static class RectWrapper
     }
 
     /// <summary>
+    /// Grows a <see cref="Rectangle"/> from its center
+    /// </summary>
+    /// <param name="rect"><see cref="Rectangle"/> to grow</param>
+    /// <param name="changeBy">Amount to grow the rectangle by</param>
+    /// <returns>The <paramref name="rect"/> that grew from its center by <paramref name="changeBy"/></returns>
+    public static Rectangle Grow(this Rectangle rect, int changeBy) 
+    {
+        return new Rectangle(rect.x - changeBy, rect.y - changeBy, rect.width + changeBy * 2,
+            rect.height + changeBy * 2);
+    }
+
+    /// <summary>
     /// shrinks a given <see cref="Rectangle"/>'s position and size
     /// </summary>
     /// <param name="rect">the <see cref="Rectangle"/> to shrink</param>
-    /// <param name="changeBuy">the amount to shrink by</param>
+    /// <param name="changeBy">the amount to shrink by</param>
     /// <returns>the shrunk <see cref="Rectangle"/></returns>
-    public static Rectangle Shrink(this Rectangle rect, int changeBuy)
+    public static Rectangle Shrink(this Rectangle rect, int changeBy)
     {
-        return new Rectangle(rect.x + changeBuy, rect.y + changeBuy, rect.width - changeBuy * 2,
-            rect.height - changeBuy * 2);
+        return new Rectangle(rect.x + changeBy, rect.y + changeBy, rect.width - changeBy * 2,
+            rect.height - changeBy * 2);
     }
 
     /// <summary>

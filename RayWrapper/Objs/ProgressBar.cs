@@ -7,17 +7,9 @@ using static RayWrapper.RectWrapper;
 
 namespace RayWrapper.Objs;
 
+// todo: see if to merge progress bar and slider
 public class ProgressBar : GameObject
 {
-    // todo: see if to merge progress bar and slider
-    public override Vector2 Position
-    {
-        get => _pos;
-        set => _pos = value;
-    }
-
-    public override Vector2 Size => AssembleRectFromVec(Position, size).Grow(outlineThickness).Size();
-
     // todo progressbar style
     public ColorModule backColor = new(BLACK);
     public ColorModule fillColor = new(RAYWHITE);
@@ -27,28 +19,21 @@ public class ProgressBar : GameObject
     public bool isVertical;
     public int outlineThickness = 3;
     public Func<float> percent;
-    public Vector2 size;
     public bool useGradient = true;
     public Tooltip tooltip;
 
-    private Vector2 _pos;
-
     public ProgressBar(Rectangle rect, Func<float> percent)
     {
-        (this.percent, _pos, size) = (percent, rect.Pos(), rect.Size());
+        (this.percent, pos, size) = (percent, rect.Pos(), rect.Size());
         tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
             FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
     }
 
     public ProgressBar(float x, float y, float width, float height, Func<float> percent)
     {
-        (this.percent, _pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
+        (this.percent, pos, size) = (percent, new Vector2(x, y), new Vector2(width, height));
         tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
             FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
-    }
-
-    protected override void UpdateCall()
-    {
     }
 
     protected override void RenderCall()

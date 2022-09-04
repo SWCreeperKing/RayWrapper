@@ -11,14 +11,6 @@ public class Text : GameObject
 {
     public static Style defaultStyle = new();
 
-    public override Vector2 Position
-    {
-        get => rect.Pos();
-        set => rect.MoveTo(value);
-    }
-
-    public override Vector2 Size => rect.Size();
-
     public Style style = defaultStyle.Copy();
     public Actionable<string> text;
     public Rectangle rect;
@@ -36,12 +28,11 @@ public class Text : GameObject
         if (color is not null) style.color = color;
     }
 
-    [Obsolete("Not Used")]
-    protected override void UpdateCall()
-    {
-    }
-
     protected override void RenderCall() => style.Draw(text, rect);
+    protected override Vector2 GetPosition() => rect.Pos();
+    protected override Vector2 GetSize() => rect.Size();
+    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
+    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
     public Vector2 MeasureText() => style.MeasureText(text);
 
     public class Style : IStyle<Style>
@@ -109,7 +100,6 @@ public class Text : GameObject
 
         public static void SetDefaultFont(string fileName) => SetDefaultFont(LoadFont(fileName));
         public static void SetDefaultFont(Font font) => DefaultFont = font;
-
         public void SetFont(string fileName) => SetFont(LoadFont(fileName));
 
         public void SetFont(Font font)
@@ -125,11 +115,7 @@ public class Text : GameObject
         }
 
         public Vector2 MeasureText(string text) => Font.MeasureText(text, fontSize, spacing);
-
-        public void SetRotationOriginToCenter(string text)
-        {
-            rotationOrigin = MeasureText(text) / 2;
-        }
+        public void SetRotationOriginToCenter(string text) => rotationOrigin = MeasureText(text) / 2;
 
         public Style Copy()
         {

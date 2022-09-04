@@ -5,6 +5,7 @@ namespace RayWrapper.Objs.AlertBoxes;
 public class AlertInput : AlertBase
 {
     private InputBox _input;
+    private int minCharacterShow = 10;
     private int maxCharacterShow = 20;
     private int maxCharacters = 40;
 
@@ -15,7 +16,7 @@ public class AlertInput : AlertBase
 
     public override void Init()
     {
-        _input = new InputBox(Vector2.Zero, maxCharacterShow, maxCharacters)
+        _input = new InputBox(Vector2.Zero, minCharacterShow..maxCharacterShow, maxCharacters)
         {
             onEnter = _ => Hide()
         };
@@ -30,5 +31,5 @@ public class AlertInput : AlertBase
         _input.Render();
     }
 
-    public override string ResultMessage() => _input.GetText();
+    public override string ResultMessage() => _input.Text;
 }

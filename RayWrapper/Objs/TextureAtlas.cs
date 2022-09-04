@@ -23,6 +23,20 @@ public class TextureAtlas
         texture = image.Texture();
     }
 
+    public void Draw(string id, Rectangle destRect, Vector2? origin = null,
+        float rotation = 0, Color? tint = null)
+    {
+        Raylib.DrawTexturePro(texture, imageRegistry[id], destRect, origin ?? Vector2.Zero, rotation,
+            tint ?? Raylib.WHITE);
+    }
+
+    public void Draw(string id, Vector2 pos, Vector2? size = null, Vector2? origin = null,
+        float rotation = 0, Color? tint = null)
+    {
+        var dest = RectWrapper.AssembleRectFromVec(pos, size ?? new Vector2(pixelScale));
+        Raylib.DrawTexturePro(texture, imageRegistry[id], dest, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
+    }
+
     public void Draw(string id, float x, float y, float? w = null, float? h = null, Vector2? origin = null,
         float rotation = 0, Color? tint = null)
     {

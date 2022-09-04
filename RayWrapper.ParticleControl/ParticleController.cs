@@ -7,18 +7,9 @@ namespace RayWrapper.ParticleControl;
 
 public class ParticleController : GameObject
 {
-    public override Vector2 Position
-    {
-        get => _pos;
-        set => _pos = value;
-    }
-
-    public override Vector2 Size => _size;
     public List<Particle.Data> particleData = new();
-
+    
     private List<Particle> _particles = new();
-    private Vector2 _pos;
-    private Vector2 _size;
 
     protected override void UpdateCall()
     {

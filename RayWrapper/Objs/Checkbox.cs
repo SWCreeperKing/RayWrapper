@@ -24,19 +24,7 @@ public class Checkbox : GameObject
             _textBox = new Vector2(35 + _textLength, 40);
         }
     }
-
-    public override Vector2 Position
-    {
-        get => _pos;
-        set
-        {
-            _pos = value;
-            _textPos = value + _textOff;
-        }
-    }
-
-    public override Vector2 Size => _textBox;
-
+    
     public Style style = defaultStyle.Copy();
     public Action<bool> checkChange;
     public bool isChecked;
@@ -45,7 +33,6 @@ public class Checkbox : GameObject
     private readonly Vector2 _size = new(20);
     private readonly Vector2 _textOff = new(35, 5);
 
-    private Vector2 _pos;
     private Vector2 _textPos;
     private Vector2 _textBox;
     private string _text;
@@ -53,7 +40,7 @@ public class Checkbox : GameObject
 
     public Checkbox(Vector2 pos, string text = "Untitled Checkbox")
     {
-        _pos = pos;
+        this.pos = pos;
         _text = text;
         _textPos = pos + _textOff;
         Text = text;
@@ -75,6 +62,14 @@ public class Checkbox : GameObject
 
         style.Draw(_text, _textPos, isChecked, mouseIsIn, rect.Grow(3), rect.Shrink(3));
         if (rect2.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+    }
+    
+    protected override Vector2 GetSize() => _textBox;
+
+    protected override void UpdatePosition(Vector2 newPos)
+    {
+        base.UpdatePosition(newPos);
+        _textPos = newPos + _textOff;
     }
 
     public class Style : IStyle<Style>

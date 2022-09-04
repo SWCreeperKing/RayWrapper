@@ -18,7 +18,7 @@ public class InputBox : GameObject
     // func: isControl?, cursor pos, max leng, current text
     // func return: (cursorpos, text)
     private readonly IDictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>> _actions =
-        new Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>>()
+        new Dictionary<KeyboardKey, Func<bool, int, int, string, (int cur, string txt)>>
         {
             { KeyboardKey.KEY_LEFT, (_, p, _, s) => (p > 0 ? p - 1 : p, s) },
             { KeyboardKey.KEY_RIGHT, (_, p, _, s) => (p < s.Length ? p + 1 : p, s) },
@@ -42,22 +42,22 @@ public class InputBox : GameObject
                 }
             }
         };
-
-    public override Vector2 Position
+    
+    public string Text
     {
-        get => _label.Position;
-        set => _label.Position = value;
+        get => _text;
+        set => (_text, _curPos) = (value, value.Length);
     }
 
-    public override Vector2 Size => _label.Size;
-
     public Style style = defaultStyle.Copy();
+    public bool numbersOnly;
     public Action<string> onEnter;
     public Action<string> onExit;
+    public Action<string> onInput;
 
     private readonly Label _label;
     private readonly int _max;
-    private readonly int _show;
+    private readonly Range _show;
     private int _curPos;
     private int _frameTime;
     private long _lastTime;
@@ -66,21 +66,32 @@ public class InputBox : GameObject
     private Cooldown _backspaceCool = new(650);
     private Cooldown _deleteCool = new(55);
 
-    public InputBox(Vector2 pos, int maxCharacterShow = 20, int maxCharacters = 40)
+    public InputBox(Vector2 pos) : this(pos, 10..20)
     {
-        _show = maxCharacterShow;
-        _max = maxCharacters;
-        _label = new Label(
-            new Rectangle(pos.X, pos.Y, 16 * _show, style.labelStyle.textStyle.MeasureText("!").Y + 8),
-            string.Join(",", Enumerable.Repeat(" ", _show)))
+    }
+
+    public InputBox(Vector2 pos, int characterShow, int characters = 40) : this(pos, characterShow..characterShow,
+        characters)
+    {
+    }
+
+    public InputBox(Vector2 pos, Range characterShow, int characters = 40)
+    {
+        _show = characterShow;
+        _max = characters;
+        _label = new Label(new Vector2(pos.X, pos.Y), "")
         {
             style = style.labelStyle
         };
+        _label.style.drawMode = Label.Style.DrawMode.SizeToText;
         _lastTime = GetTimeMs();
     }
 
+    public int Showing() => Math.Clamp(_text.Length, _show.Start.Value, _show.End.Value);
+
     protected override void UpdateCall()
     {
+        var startText = _text;
         var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
         switch (isLeft)
         {
@@ -101,6 +112,7 @@ public class InputBox : GameObject
                 (_curPos, _text) = v.Invoke(IsControl(), _curPos, _max, _text);
                 _lastTime = GetTimeMs();
             }
+
             BackSpaceCheck();
         }
 
@@ -109,25 +121,42 @@ public class InputBox : GameObject
         _frameTime %= Math.Max(1, fps); // fix divide by 0
         _frameTime++;
 
+        var show = Showing();
         var flash = _frameTime % (fps * .33) > fps * .18;
         var start = 0;
-        var end = Math.Min(_show, _text.Length);
+        var end = Math.Min(show, _text.Length);
         var curs = _curPos;
 
-        if (curs >= _show / 2)
+        if (curs >= show / 2)
         {
-            (start, curs, end) = (curs - _show / 2, _show / 2, Math.Min(_text.Length, _curPos + _show / 2));
+            (start, curs, end) = (curs - show / 2, show / 2, Math.Min(_text.Length, _curPos + show / 2));
         }
 
-        if (start > _max - _show)
+        if (start > _max - show)
         {
-            (start, curs) = (_max - _show, _curPos - (_max - _show));
+            (start, curs) = (_max - show, _curPos - (_max - show));
         }
 
-        _label.text =
-            $"{style.startChar} {(_selected ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)}") : _text[start..end])}";
+        var text = _selected
+            ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)} ")
+            : _text[start..end];
+        if (text.Length < show) text += string.Join("", Enumerable.Repeat(" ", show - text.Length));
+        _label.text = $"{style.start}{text}{style.end}";
         _label.Update();
+        
+        if (_text != startText) onInput?.Invoke(_text);
     }
+    
+    protected override void RenderCall()
+    {
+        _label.Render();
+        if (_label.Rect.IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
+    }
+    
+    protected override Vector2 GetPosition() => _label.Position;
+    protected override Vector2 GetSize() => _label.Size;
+    protected override void UpdatePosition(Vector2 newPos) => _label.Position = newPos;
+    protected override void UpdatedSize(Vector2 newSize) => _label.Size = newSize;
 
     public void BackSpaceCheck()
     {
@@ -158,11 +187,6 @@ public class InputBox : GameObject
         if (_backspaceCool.IsTime() && _deleteCool.UpdateTime()) BackSpacePressed();
     }
 
-    protected override void RenderCall()
-    {
-        _label.Render();
-        if (_label.Rect.IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
-    }
 
     public void Input()
     {
@@ -170,27 +194,30 @@ public class InputBox : GameObject
         while (c > 0 || cc > 0)
         {
             if (cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
-            if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
+            if (numbersOnly)
+            {
+                if (c is >= 48 and <= 57 or 69 or 101 or 44 or 46 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
+            }
+            else if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
             (c, cc) = (GetCharPressed(), GetKeyPressed_());
         }
     }
 
     public bool IsControl() => IsKeyDown(KeyboardKey.KEY_LEFT_CONTROL) || IsKeyDown(KeyboardKey.KEY_RIGHT_CONTROL);
     public void Clear() => (_text, _curPos) = (string.Empty, 0);
-    public void SetText(string text) => (_text, _curPos) = (text, text.Length);
-    public string GetText() => _text;
 
     public class Style : IStyle<Style>
     {
         public Label.Style labelStyle = new();
-        public char startChar = '>';
+        public string start = "> ";
+        public string end = " ";
         public char cursorChar = '|';
 
         public Style Copy()
         {
             return new Style
             {
-                labelStyle = labelStyle.Copy(), startChar = startChar, cursorChar = cursorChar
+                labelStyle = labelStyle.Copy(), start = start, end = end, cursorChar = cursorChar
             };
         }
     }

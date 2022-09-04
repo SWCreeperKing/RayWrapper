@@ -7,12 +7,6 @@ namespace RayWrapper.Collision;
 
 public abstract class Collider : GameObject
 {
-    public override Vector2 Position
-    {
-        get => _pos;
-        set => _pos = value;
-    }
-
     public static long id;
     public Vector2 velocity = Vector2.Zero;
 
@@ -25,25 +19,17 @@ public abstract class Collider : GameObject
     /// </summary>
     public bool removeWhenOutOfBounds = true;
 
-    private Vector2 _pos;
     private readonly List<Collider> _buffer = new();
     private readonly List<Collider> _backBuffer = new();
 
     protected Collider(Vector2 pos)
     {
-        (_pos, currentId) = (pos, id);
+        (this.pos, currentId) = (pos, id);
         AddObject(this);
         id++;
     }
 
-    protected override void UpdateCall()
-    {
-    }
-
-    public void PhysicUpdate(float dt)
-    {
-        _pos += velocity * dt;
-    }
+    public void PhysicUpdate(float dt) => pos += velocity * dt;
 
     public void DoCollision(Collider c, bool chain = true)
     {
@@ -59,7 +45,7 @@ public abstract class Collider : GameObject
             if (_buffer.Contains(c) && !_backBuffer.Contains(c)) FirstCollision(c);
             if (_buffer.Contains(c) && _backBuffer.Contains(c)) InCollision(c);
         }
-        
+
         foreach (var c in _backBuffer)
         {
             // to reduce mem allow, as `Where` will cause like 100mb of extra ram xd

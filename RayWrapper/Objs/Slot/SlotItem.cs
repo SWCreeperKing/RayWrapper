@@ -9,41 +9,33 @@ namespace RayWrapper.Objs.Slot;
 
 public abstract class SlotItem : GameObject
 {
-    public override Vector2 Position
-    {
-        get => rect.Pos();
-        set => rect.MoveTo(value);
-    }
-
-    public override Vector2 Size => rect.Size();
-
     public string id;
     public Vector2 beforeCords;
-    public Rectangle rect;
     public SlotBase slot;
-    public bool drawPhantom = true;
     public bool slotDependent = true;
 
-    public SlotItem(Vector2 pos, Vector2 size) => rect = RectWrapper.AssembleRectFromVec(pos, size);
+    public SlotItem(Vector2 pos, Vector2 size) => (this.pos, this.size) = (pos, size);
 
     protected override void UpdateCall()
     {
+        var rect = GetRect();
         if (rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !IsMouseOccupied)
         {
             mouseOccupier = this;
             beforeCords = rect.Pos();
         }
         else if (mouseOccupier == this && IsMouseButtonUp(MOUSE_LEFT_BUTTON))
-            SlotThis(dragCollision.FirstOrDefault(s => s.rect.IsMouseIn()));
+            SlotThis(dragCollision.FirstOrDefault(s => s.GetRect().IsMouseIn()));
 
         if (mouseOccupier == this) Position = mousePos - Size / 2;
     }
 
     protected override void RenderCall()
     {
+        var rect = GetRect();
         var occ = mouseOccupier == this;
-        Draw(Position, Size, occ && rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? 128 : 255);
-        if (occ && drawPhantom) Draw(beforeCords, Size, 32);
+        Draw(beforeCords, Size, occ && rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? 128 : 255);
+        if (occ) Draw(Position, Size, 32);
     }
 
     public abstract void Draw(Vector2 pos, Vector2 size, int alpha);
