@@ -70,8 +70,8 @@ public class ListView : GameObject
                 var a = itemTemplate.ListSize();
                 
                 // smooth scrolling, help from chocobogamer#4214
-                _bar.MoveBar(scroll * (((_itemSize.Y + _padding) * ((float) a / _itemsToShow) - _padding) /
-                                       (((_itemSize.Y + _padding) * a - _padding) / _bar.Size.X)));
+                _bar.MoveBar(scroll * (((size.Y + _padding) * ((float) a / _itemsToShow) - _padding) /
+                                       (((size.Y + _padding) * a - _padding) / _bar.Size.Y)));
                 
                 _bar.Update();
             }
