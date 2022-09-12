@@ -19,6 +19,6 @@ public abstract class CircleCollider : Collider
         };
 
     protected override Vector2 GetSize() => new(radius * 2);
-    protected override void UpdatedSize(Vector2 newSize) => radius = newSize.X;
+    protected override void UpdateSize(Vector2 newSize) => radius = newSize.X;
     public override bool SampleCollision(Rectangle c) => Raylib.CheckCollisionCircleRec(Position, radius, c);
 }

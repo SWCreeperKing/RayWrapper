@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTesterCollision",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.Collision", "RayWrapper.Collision\RayWrapper.Collision.csproj", "{8FD93073-1065-4DAA-9454-6235E8E03C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.Base", "RayWrapper.Base\RayWrapper.Base.csproj", "{96C58EC6-F213-4608-8EB9-B7857A80B9D9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.Discord", "RayWrapper.Discord\RayWrapper.Discord.csproj", "{A9B6C5CE-5C94-43F5-863C-1FDA9441E8E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.VectorFont", "RayWrapper.VectorFont\RayWrapper.VectorFont.csproj", "{6D48BB98-18DE-46E6-8D8C-930FD1B3D14D}"
@@ -42,10 +40,6 @@ Global
 		{8FD93073-1065-4DAA-9454-6235E8E03C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FD93073-1065-4DAA-9454-6235E8E03C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FD93073-1065-4DAA-9454-6235E8E03C70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96C58EC6-F213-4608-8EB9-B7857A80B9D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96C58EC6-F213-4608-8EB9-B7857A80B9D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96C58EC6-F213-4608-8EB9-B7857A80B9D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96C58EC6-F213-4608-8EB9-B7857A80B9D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9B6C5CE-5C94-43F5-863C-1FDA9441E8E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9B6C5CE-5C94-43F5-863C-1FDA9441E8E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9B6C5CE-5C94-43F5-863C-1FDA9441E8E2}.Release|Any CPU.ActiveCfg = Release|Any CPU

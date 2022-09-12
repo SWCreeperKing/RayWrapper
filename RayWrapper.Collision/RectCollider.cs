@@ -20,7 +20,7 @@ public abstract class RectCollider : Collider
     protected override Vector2 GetPosition() => rect.Pos();
     protected override Vector2 GetSize() => rect.Size();
     protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
-    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
+    protected override void UpdateSize(Vector2 newSize) => rect.SetSize(newSize);
     public override bool SampleCollision(Rectangle c) => Raylib.CheckCollisionRecs(this, c);
     public static implicit operator Rectangle(RectCollider rc) => rc.rect.Clone();
 }

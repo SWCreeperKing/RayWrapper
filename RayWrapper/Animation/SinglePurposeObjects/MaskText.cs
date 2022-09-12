@@ -49,8 +49,8 @@ public class MaskText : GameObject, ISizeable, IAlphable
         tooltip?.Draw(rect);
     }
 
-    public void SetSize(Vector2 size) => this.size = size;
-    public void AddSize(Vector2 size) => this.size += size;
+    public void SetSize(Vector2 size) => Size = size;
+    public void AddSize(Vector2 size) => Size += size;
     public int GetAlpha() => alpha;
     public void SetAlpha(int alpha) => this.alpha = alpha;
     

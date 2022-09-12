@@ -93,7 +93,7 @@ public class Button : GameObject
     protected override Vector2 GetPosition() => baseL.Position;
     protected override Vector2 GetSize() => baseL.Size;
     protected override void UpdatePosition(Vector2 newPos) => baseL.Position = newPos;
-    protected override void UpdatedSize(Vector2 newSize) => baseL.Size = newSize;
+    protected override void UpdateSize(Vector2 newSize) => baseL.Size = newSize;
 
     /// <summary>
     ///     Execute all methods subscribed to the on click event

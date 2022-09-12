@@ -49,25 +49,13 @@ public class Rect : GameObject, ISizeable, IAlphable
         }
     }
 
-    protected override Vector2 GetPosition()
-    {
-        return base.GetPosition();
-    }
+    protected override Vector2 GetPosition() => rect.Pos();
+    protected override Vector2 GetSize() => rect.Size();
+    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
+    protected override void UpdateSize(Vector2 newSize) => rect.SetSize(newSize);
 
-    protected override Vector2 GetSize()
-    {
-        return base.GetSize();
-    }
-
-    protected override void UpdatePosition(Vector2 newPos)
-    {
-        base.UpdatePosition(newPos);
-    }
-
-    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
-
-    public void SetSize(Vector2 size) => this.size = size;
-    public void AddSize(Vector2 size) => this.size += size;
+    public void SetSize(Vector2 size) => Size = size;
+    public void AddSize(Vector2 size) => Size += size;
     public int GetAlpha() => alpha;
     public void SetAlpha(int alpha) => this.alpha = alpha;
     

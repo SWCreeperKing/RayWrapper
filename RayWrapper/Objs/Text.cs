@@ -32,7 +32,7 @@ public class Text : GameObject
     protected override Vector2 GetPosition() => rect.Pos();
     protected override Vector2 GetSize() => rect.Size();
     protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
-    protected override void UpdatedSize(Vector2 newSize) => rect.SetSize(newSize);
+    protected override void UpdateSize(Vector2 newSize) => rect.SetSize(newSize);
     public Vector2 MeasureText() => style.MeasureText(text);
 
     public class Style : IStyle<Style>

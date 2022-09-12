@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
@@ -18,11 +19,14 @@ public abstract class SlotItem : GameObject
     protected override void UpdateCall()
     {
         var rect = GetRect();
+        
         if (rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !IsMouseOccupied)
         {
+            GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_RESIZE_ALL);
             mouseOccupier = this;
             beforeCords = rect.Pos();
         }
+        else if (rect.IsMouseIn() && !IsMouseOccupied) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_POINTING_HAND);
         else if (mouseOccupier == this && IsMouseButtonUp(MOUSE_LEFT_BUTTON))
             SlotThis(dragCollision.FirstOrDefault(s => s.GetRect().IsMouseIn()));
 
@@ -33,8 +37,8 @@ public abstract class SlotItem : GameObject
     {
         var rect = GetRect();
         var occ = mouseOccupier == this;
-        Draw(beforeCords, Size, occ && rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? 128 : 255);
-        if (occ) Draw(Position, Size, 32);
+        Draw(Position, Size, occ && rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) ? 32 : 255);
+        if (occ) Draw(beforeCords, Size, 128);
     }
 
     public abstract void Draw(Vector2 pos, Vector2 size, int alpha);

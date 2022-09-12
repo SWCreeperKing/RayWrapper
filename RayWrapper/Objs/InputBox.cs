@@ -156,7 +156,7 @@ public class InputBox : GameObject
     protected override Vector2 GetPosition() => _label.Position;
     protected override Vector2 GetSize() => _label.Size;
     protected override void UpdatePosition(Vector2 newPos) => _label.Position = newPos;
-    protected override void UpdatedSize(Vector2 newSize) => _label.Size = newSize;
+    protected override void UpdateSize(Vector2 newSize) => _label.Size = newSize;
 
     public void BackSpaceCheck()
     {

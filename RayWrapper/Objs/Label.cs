@@ -46,7 +46,7 @@ public class Label : GameObject
     protected override Vector2 GetPosition() => Rect.Pos();
     protected override Vector2 GetSize() => Rect.Size();
     protected override void UpdatePosition(Vector2 newPos) => _back.MoveTo(newPos);
-    protected override void UpdatedSize(Vector2 newSize) => _back.SetSize(newSize);
+    protected override void UpdateSize(Vector2 newSize) => _back.SetSize(newSize);
 
     public void ClickCheck(Action onClick)
     {

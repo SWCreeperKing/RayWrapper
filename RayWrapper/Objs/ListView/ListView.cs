@@ -101,7 +101,7 @@ public class ListView : GameObject
         _bounds = new Rectangle(newPos.X + 20, newPos.Y, _bounds.width, _bounds.height);
     }
 
-    protected override void UpdatedSize(Vector2 newSize)
+    protected override void UpdateSize(Vector2 newSize)
     {
         var height = GetHeightWithPadding(GetItemShowFromHeight(newSize.Y), _padding);
 

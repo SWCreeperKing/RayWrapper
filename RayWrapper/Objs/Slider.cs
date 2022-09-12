@@ -52,9 +52,9 @@ public class Slider : GameObject
 
     protected override Vector2 GetSize() => size + new Vector2(style.outlineStyle.thickness);
 
-    protected override void UpdatedSize(Vector2 newSize)
+    protected override void UpdateSize(Vector2 newSize)
     {
-        base.UpdatedSize(newSize - new Vector2(style.outlineStyle.thickness));
+        base.UpdateSize(newSize - new Vector2(style.outlineStyle.thickness));
     }
 
     public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;

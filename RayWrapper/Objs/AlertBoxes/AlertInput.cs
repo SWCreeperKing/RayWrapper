@@ -20,14 +20,15 @@ public class AlertInput : AlertBase
         {
             onEnter = _ => Hide()
         };
+        _input.Update();
     }
 
-    public override Vector2 AddedBackSize() => _input.Size;
+    public override Vector2 AddedBackSize() => _input.Size + new Vector2(48, 0);
     public override void UpdateAdded() => _input.Update();
 
     public override void RenderAdded(Vector2 startPos, Vector2 size)
     {
-        _input.Position = startPos + new Vector2(size.X / 2 - _input.Size.X / 2, 0);
+        _input.Position = startPos + new Vector2(size.X / 2 - (_input.Size.X - 10) / 2, 0);
         _input.Render();
     }
 

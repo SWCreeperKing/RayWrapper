@@ -19,7 +19,7 @@ public abstract class GameObject : GameObjReg, IGameObject
     public Vector2 Size
     {
         get => GetSize();
-        set => UpdatedSize(value);
+        set => UpdateSize(value);
     }
 
     public bool updateReturnIfNonVis;
@@ -57,7 +57,7 @@ public abstract class GameObject : GameObjReg, IGameObject
     protected virtual Vector2 GetSize() => size;
 
     protected virtual void UpdatePosition(Vector2 newPos) => pos = newPos;
-    protected virtual void UpdatedSize(Vector2 newSize) => size = newSize;
+    protected virtual void UpdateSize(Vector2 newSize) => size = newSize;
 
     public Rectangle GetRect() => AssembleRectFromVec(Position, Size);
     public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);

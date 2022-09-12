@@ -1,6 +1,8 @@
+using System;
 using System.Numerics;
 using RayWrapper.Objs;
 using RayWrapper.Objs.Slot;
+using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
 
@@ -26,7 +28,7 @@ public class SlotTest : Example
 
         ImageSlot imSl = new(io2) { color = YELLOW };
         ii.SetSlot(imSl);
-
+        
         RegisterGameObj(imSl, ri, ci, ii, sl, sl1, sl2);
     }
 }

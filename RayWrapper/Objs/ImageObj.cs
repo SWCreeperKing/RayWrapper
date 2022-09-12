@@ -6,8 +6,7 @@ using RayWrapper.Vars;
 
 namespace RayWrapper.Objs;
 
-// todo: see if its possible to add support for SixLabors.ImageSharp
-// can probs make RayWrapper.ImageProcessing
+// todo: see if its possible to add support for SixLabors.ImageSharp (can probs make RayWrapper.ImageProcessing)
 public class ImageObj : GameObject
 {
     public readonly string Path;
@@ -39,7 +38,6 @@ public class ImageObj : GameObject
         Path = null;
         _image = image;
         texture = new TextureObj(image.Texture(), pos ?? Vector2.Zero);
-        RegisterGameObj(texture);
     }
 
     public ImageObj(ImageObj imageObj, Vector2? pos = null)
@@ -52,13 +50,9 @@ public class ImageObj : GameObject
         Path = imageObj.Path;
         _image = Raylib.LoadImage(imageObj.Path);
         texture = new TextureObj(_image.Texture(), pos ?? Vector2.Zero);
-        RegisterGameObj(texture);
     }
 
-    protected override Vector2 GetPosition() => texture.Position;
-    protected override Vector2 GetSize() => texture.Size;
-    protected override void UpdatePosition(Vector2 newPos) => texture.Position = newPos;
-    protected override void UpdatedSize(Vector2 newSize) => texture.Size = size;
+    protected override void RenderCall() => texture.Render();
 
     public void RenderTo(Rectangle rect, Color? tint = null, Vector2? origin = null, float rotation = 0)
     {
@@ -66,7 +60,11 @@ public class ImageObj : GameObject
             tint ?? Raylib.WHITE);
     }
 
-    public static implicit operator ImageObj(string path) => new(path);
+    protected override Vector2 GetPosition() => texture.Position;
+    protected override Vector2 GetSize() => texture.Size;
+    protected override void UpdatePosition(Vector2 newPos) => texture.Position = newPos;
+    protected override void UpdateSize(Vector2 newSize) => texture.Size = newSize;
 
+    public static implicit operator ImageObj(string path) => new(path);
     ~ImageObj() => Raylib.UnloadImage(_image);
 }

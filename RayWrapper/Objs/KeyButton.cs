@@ -44,5 +44,5 @@ public class KeyButton : GameObject
     protected override Vector2 GetPosition() => core.Position;
     protected override Vector2 GetSize() => core.Size;
     protected override void UpdatePosition(Vector2 newPos) => core.Position = newPos;
-    protected override void UpdatedSize(Vector2 newSize) => core.Size = newSize;
+    protected override void UpdateSize(Vector2 newSize) => core.Size = newSize;
 }

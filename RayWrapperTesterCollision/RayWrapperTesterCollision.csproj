@@ -50,7 +50,7 @@
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
         <PackageReference Include="Raylib-CsLo" Version="4.0.1" />
-        <PackageReference Include="RayWrapper" Version="0.5.0" />
+        <PackageReference Include="RayWrapper" Version="0.5.1.4" />
         <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
     </ItemGroup>
 

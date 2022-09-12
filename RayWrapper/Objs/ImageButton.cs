@@ -73,7 +73,7 @@ public class ImageButton : GameObject
     protected override Vector2 GetPosition() => image.Position;
     protected override Vector2 GetSize() => image.Size;
     protected override void UpdatePosition(Vector2 newPos) => image.Position = newPos;
-    protected override void UpdatedSize(Vector2 newSize) => image.Size = newSize;
+    protected override void UpdateSize(Vector2 newSize) => image.Size = newSize;
 
     public void Click() => _clickEvent.Each(a => a.Invoke());
 

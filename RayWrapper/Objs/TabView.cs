@@ -91,7 +91,7 @@ public class TabView : GameObject
         Refresh();
     }
 
-    protected override void UpdatedSize(Vector2 newSize)
+    protected override void UpdateSize(Vector2 newSize)
     {
         _rect.SetSize(newSize);
         Refresh();

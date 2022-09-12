@@ -9,7 +9,6 @@ public class TextureAtlasDrawing : GameObject
 {
     public TextureAtlas atlas;
     public string id;
-    public Vector2 size;
     public Vector2? origin = null;
     public int rotation = 0;
     public Color? tint = null;
