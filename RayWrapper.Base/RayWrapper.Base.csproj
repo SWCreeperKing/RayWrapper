@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Raylib-CsLo" Version="4.2.0-alpha1" />
+    </ItemGroup>
+
 </Project>

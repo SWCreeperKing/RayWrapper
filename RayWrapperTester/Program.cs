@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Numerics;
+using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
@@ -17,6 +20,21 @@ public partial class Program : GameLoop
 
     public override void Init()
     {
+        
+        Vector2 biggest = Vector2.Zero;
+        
+        unsafe
+        {
+            for (var i = 0; i < Text.defaultStyle.Font.glyphCount; i++)
+            {
+                var v2 = Text.defaultStyle.Font.recs[i].Size();
+                biggest.X = Math.Max(biggest.X, v2.X);
+                biggest.Y = Math.Max(biggest.Y, v2.Y);
+            }
+        }
+
+        Console.WriteLine($"biggest in font: [{biggest}]");
+
         InitSaveSystem("SW_CreeperKing", "SaveTesting");
 
         // basic encryption

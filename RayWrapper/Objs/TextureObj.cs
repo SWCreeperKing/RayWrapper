@@ -2,6 +2,7 @@
 using Raylib_CsLo;
 using RayWrapper.Vars;
 using static RayWrapper.RectWrapper;
+using Texture = Raylib_CsLo.Texture;
 
 namespace RayWrapper.Objs;
 

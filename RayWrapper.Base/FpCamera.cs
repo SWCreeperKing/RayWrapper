@@ -1,6 +1,6 @@
 namespace RayWrapper.Base;
 
-public class GameObject
+public class FpCamera
 {
     
 }
