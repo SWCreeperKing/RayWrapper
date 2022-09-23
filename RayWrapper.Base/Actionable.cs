@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RayWrapper.Vars;
+﻿namespace RayWrapper.Base;
 
 /// <summary>
 /// this allows for a type to be of either static (variable) or dynamic (function).

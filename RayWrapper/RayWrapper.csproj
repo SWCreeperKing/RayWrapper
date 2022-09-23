@@ -27,8 +27,7 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
-        <PackageReference Include="Raylib-CsLo" Version="4.2.0-alpha1" />
-        <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
+        <PackageReference Include="RayWrapper.Base" Version="0.1.0" />
     </ItemGroup>
 
     <ItemGroup Label="Resources">

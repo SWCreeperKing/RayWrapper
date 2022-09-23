@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base;
+using RayWrapper.Base.Gameobject;
 
 namespace RayWrapper.Objs;
 

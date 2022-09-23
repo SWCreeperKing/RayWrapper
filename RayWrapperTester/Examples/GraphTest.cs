@@ -1,10 +1,11 @@
 using System;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Objs;
-using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapperTester.Examples;
 

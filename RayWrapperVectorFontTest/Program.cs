@@ -7,22 +7,25 @@ using RayWrapper.Objs;
 using RayWrapper.Vars;
 using RayWrapper.VectorFont;
 
-new GameBox(new Program(), new Vector2(1280, 720));
+new GameBox(new RayWrapperVectorFontTest.Program(), new Vector2(1280, 720));
 
-[Obsolete("Looks good at big sizes, but not small, might remake later for normal graphical use and not just font use")]
-public partial class Program : GameLoop
+namespace RayWrapperVectorFontTest
 {
-    public override void Init()
+    [Obsolete("Looks good at big sizes, but not small, might remake later for normal graphical use and not just font use")]
+    public partial class Program : GameLoop
     {
-        GameBox.targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
-        RegisterGameObj(new VectorFont(), new Text("b", GameBox.WindowSize / 2 + new Vector2(-30, 0)));
-    }
+        public override void Init()
+        {
+            GameBox.targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
+            RegisterGameObj(new VectorFont(), new Text("b", GameBox.WindowSize / 2 + new Vector2(-30, 0)));
+        }
 
-    public override void UpdateLoop()
-    {
-    }
+        public override void UpdateLoop()
+        {
+        }
 
-    public override void RenderLoop()
-    {
+        public override void RenderLoop()
+        {
+        }
     }
 }

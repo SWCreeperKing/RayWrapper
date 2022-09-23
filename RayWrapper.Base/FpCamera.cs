@@ -143,7 +143,7 @@ public class FpCamera
         forward.Y = 0;
         forward = Vector3.Normalize(forward);
 
-        var right = new Vector3(forward.Z * -1.0f, 0, forward.X);
+        var right = new Vector3(forward.Z * -1f, 0, forward.X);
         var oldPosition = position;
 
         position += (forward * (directions[MoveFront] - directions[MoveBack]));

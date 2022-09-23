@@ -65,6 +65,8 @@ public class Rectangle
         set => _rect.height = _size.Y = value;
     }
 
+    public ColorModule color = WHITE;
+
     private Rect _rect;
     private Vector2 _pos;
     private Vector2 _size;
@@ -76,7 +78,7 @@ public class Rectangle
     public void MaskDraw(Action draw) => Pos.MaskDraw(Size, draw);
     public bool IsV2In(Vector2 v2) => CheckCollisionPointRec(v2, Rect);
     public bool IsRectIn(Rect rect) => CheckCollisionRecs(Rect, rect);
-    public bool IsCircleIn(Circle c) => c.CheckCollision(Rect);
+    public bool IsCircleIn(Circle c) => c.IsRectIn(Rect);
     public Vector2 Center() => Pos + Size / 2f;
     public Rectangle Clone() => new(Rect);
 
@@ -115,26 +117,23 @@ public class Rectangle
         h = H;
     }
 
-    public void Draw(Color? color = null) => DrawRectangleRec(Rect, color ?? WHITE);
+    public void Draw() => DrawRectangleRec(Rect, color);
 
-    public void DrawPro(Vector2? origin = null, float rotation = 0f, Color? color = null)
+    public void DrawPro(Vector2? origin = null, float rotation = 0f)
     {
-        DrawRectanglePro(Rect, origin ?? Vector2.Zero, rotation, color ?? WHITE);
+        DrawRectanglePro(Rect, origin ?? Vector2.Zero, rotation, color);
     }
 
-    public void DrawLines(float thickness = 3f, Color? color = null)
+    public void DrawLines(float thickness = 3f) => DrawRectangleLinesEx(Rect, thickness, color);
+
+    public void DrawRounded(int segments = 10, float roundness = 1f)
     {
-        DrawRectangleLinesEx(Rect, thickness, color ?? WHITE);
+        DrawRectangleRounded(Rect, roundness, segments, color);
     }
 
-    public void DrawRounded(int segments = 10, float roundness = 1f, Color? color = null)
+    public void DrawRoundedLines(int segments = 10, float roundness = 1f, float thickness = 3f)
     {
-        DrawRectangleRounded(Rect, roundness, segments, color ?? WHITE);
-    }
-
-    public void DrawRoundedLines(int segments = 10, float roundness = 1f, float thickness = 3f, Color? color = null)
-    {
-        DrawRectangleRoundedLines(Rect, roundness, segments, thickness, color ?? WHITE);
+        DrawRectangleRoundedLines(Rect, roundness, segments, thickness, color);
     }
 
     public void DrawGradient(Color c1, Color c2, Color c3, Color c4)

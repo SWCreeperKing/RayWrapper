@@ -1,5 +1,5 @@
 ﻿using System;
-using RayWrapper.Vars;
+using RayWrapper.Base.Gameobject;
 
 namespace RayWrapper.Objs;
 

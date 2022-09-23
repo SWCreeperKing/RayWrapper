@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Var_Interfaces;
-using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper;
 
 public static class RectWrapper
 {
     /// <summary>
-    /// a <see cref="Rectangle"/> with 0 x, y, width, and height
+    /// a <see cref="Raylib_CsLo.Rectangle"/> with 0 x, y, width, and height
     /// </summary>
     public static readonly Rectangle Zero = new(0, 0, 0, 0);
 

@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using RayWrapper.Var_Interfaces;
-using ZimonIsHimUtils.ExtensionMethods;
+﻿using ZimonIsHimUtils.ExtensionMethods;
 
-namespace RayWrapper.Vars;
+namespace RayWrapper.Base.Gameobject;
 
 public abstract class GameObjReg : IGameObjReg
 {

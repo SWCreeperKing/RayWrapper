@@ -22,8 +22,5 @@ public class ImageChangeTransition : Transition
     {
     }
 
-    public override void SnapTransition()
-    {
-        obj.id = toIdAfterDuration;
-    }
+    public override void SnapTransition() => obj.id = toIdAfterDuration;
 }

@@ -1,6 +1,6 @@
 using System.Numerics;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.Objs;
-using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;

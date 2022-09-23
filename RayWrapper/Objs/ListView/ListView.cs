@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper.Objs.ListView;
 

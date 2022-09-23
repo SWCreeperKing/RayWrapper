@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Numerics;
 
 namespace RayWrapper.Objs.ListView;
@@ -15,7 +16,7 @@ public interface IListItem
     public Vector2 ItemSize();
 
     /// <summary>
-    /// renders, but also wants the <see cref="IListItem.Size"/> as a return 
+    /// renders, but also wants the <see cref="Size"/> as a return 
     /// </summary>
     public void Render(Vector2 offset, int item, bool isMouseActive);
 }

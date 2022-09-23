@@ -1,13 +1,12 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Var_Interfaces;
-using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
 
-namespace RayWrapper.Vars;
+namespace RayWrapper.Base.Gameobject;
 
 public abstract class GameObject : GameObjReg, IGameObject
 {
+    public static long gameObjects;
+    
     public Actionable<bool> isVisible = true;
 
     public Vector2 Position
@@ -59,7 +58,7 @@ public abstract class GameObject : GameObjReg, IGameObject
     protected virtual void UpdatePosition(Vector2 newPos) => pos = newPos;
     protected virtual void UpdateSize(Vector2 newSize) => size = newSize;
 
-    public Rectangle GetRect() => AssembleRectFromVec(Position, Size);
+    public Raylib_CsLo.Rectangle GetRect() => new(Position.X, Position.Y, Size.X, Size.Y);
     public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);
     public Vector2 GetReserveV2() => _freezeV2;
     public void SetPositionAsReserveV2() => Position = _freezeV2;

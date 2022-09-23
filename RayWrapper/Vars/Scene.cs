@@ -1,4 +1,6 @@
-﻿namespace RayWrapper.Vars;
+﻿using RayWrapper.Base.Gameobject;
+
+namespace RayWrapper.Vars;
 
 public class Scene : GameObjReg
 {

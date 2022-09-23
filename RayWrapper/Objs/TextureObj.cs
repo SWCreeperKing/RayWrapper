@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base.Gameobject;
 using static RayWrapper.RectWrapper;
 using Texture = Raylib_CsLo.Texture;
 

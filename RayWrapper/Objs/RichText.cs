@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base.Gameobject;
 
 namespace RayWrapper.Objs;
 

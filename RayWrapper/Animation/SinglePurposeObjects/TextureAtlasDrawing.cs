@@ -1,7 +1,7 @@
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.Objs;
-using RayWrapper.Vars;
 
 namespace RayWrapper.Animation.SinglePurposeObjects;
 

@@ -1,7 +1,9 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base;
+using RayWrapper.Base.Gameobject;
 using static Raylib_CsLo.Raylib;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper.Animation.SinglePurposeObjects;
 

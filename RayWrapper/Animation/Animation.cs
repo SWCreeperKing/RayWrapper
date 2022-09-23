@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RayWrapper.Animation.Transitions;
-using RayWrapper.Var_Interfaces;
+using RayWrapper.Base.Gameobject;
 using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Animation;

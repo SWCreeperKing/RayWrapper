@@ -1,13 +1,14 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper;
+using RayWrapper.Base;
 using RayWrapper.Objs;
 using RayWrapper.Objs.TreeView;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
-using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static RayWrapper.RectWrapper;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapperTester.Examples;
 

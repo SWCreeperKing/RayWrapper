@@ -1,12 +1,13 @@
 using System.Linq;
 using System.Numerics;
 using RayWrapper;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.Objs;
 using RayWrapper.Objs.AlertBoxes;
 using RayWrapper.Objs.ListView;
 using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
-using static Program;
+using static RayWrapperTester.Program;
 
 namespace RayWrapperTester;
 

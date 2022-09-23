@@ -1,4 +1,5 @@
 using System.Numerics;
+using static System.Numerics.Vector2;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Base;
@@ -21,4 +22,9 @@ public static class VectorUtil
         if (maskingLayer == 1) EndScissorMode();
         maskingLayer--;
     }
+    
+    public static Vector2 Center(this Vector2 p1, Vector2 p2) => (p1 + p2) / 2;
+    public static Vector2 Center(this Vector2[] poses) => poses.Aggregate((v1, v2) => v1 + v2) / poses.Length;
+    public static float DistanceTo(this Vector2 p1, Vector2 p2) => Distance(p1, p2);
+    public static float SquaredDistanceTo(this Vector2 p1, Vector2 p2) => DistanceSquared(p1, p2);
 }

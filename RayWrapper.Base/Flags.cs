@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace RayWrapper.Vars;
+﻿namespace RayWrapper.Vars;
 
 public class Flags<T>
 {

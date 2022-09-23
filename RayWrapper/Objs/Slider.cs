@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.Var_Interfaces;
-using RayWrapper.Vars;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper.Objs;
 

@@ -4,10 +4,31 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        
+        <PackageId>RayWrapper.Base</PackageId>
+        <Authors>SW_CreeperKing</Authors>
+        <Description>This is the Base package for RayWrapper</Description>
+        <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
+        <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <DebugSymbols>true</DebugSymbols>
+        <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
+        <AppxSymbolPackageOutput>snupkg</AppxSymbolPackageOutput>
+        <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1.0</PackageVersion>
+        <PackageReleaseNotes>-initial release</PackageReleaseNotes>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Raylib-CsLo" Version="4.2.0-alpha1" />
+      <PackageReference Include="Raylib-CsLo" Version="4.2.0.3" />
+      <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
     </ItemGroup>
 
 </Project>

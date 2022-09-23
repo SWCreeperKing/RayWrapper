@@ -1,4 +1,4 @@
-﻿namespace RayWrapper.Var_Interfaces;
+﻿namespace RayWrapper.Base.Gameobject;
 
 public interface IGameObjReg
 {

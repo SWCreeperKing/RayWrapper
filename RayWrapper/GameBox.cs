@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper.Animation;
+using RayWrapper.Base;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.AlertBoxes;
 using RayWrapper.Objs.Slot;
-using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.MouseCursor;
@@ -22,6 +23,7 @@ using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
 using static RayWrapper.RectWrapper;
 using static RayWrapper.Vars.Logger.Level;
+using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper;
 

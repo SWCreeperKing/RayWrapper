@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
+using RayWrapper.Base.Gameobject;
 using RayWrapper.Objs.ListView;
-using RayWrapper.Vars;
 using static Raylib_CsLo.MouseCursor;
 
 namespace RayWrapper.Objs;

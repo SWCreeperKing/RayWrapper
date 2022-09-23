@@ -7,31 +7,34 @@ using RayWrapper.Objs;
 using RayWrapper.ParticleControl;
 using RayWrapper.Vars;
 
-new GameBox(new Program(), new Vector2(1280, 720));
+new GameBox(new RayWrapperTesterParticle.Program(), new Vector2(1280, 720));
 
-public partial class Program : GameLoop
+namespace RayWrapperTesterParticle
 {
-    public Rectangle spawnArea = new(600, 500, 50, 50);
-    public ParticleController pc;
-
-    public override void Init()
+    public partial class Program : GameLoop
     {
-        var ta = new TextureAtlas("Assets/Images/A.png", 16);
-        ta.Register("p1", 0, 0);
+        public Rectangle spawnArea = new(600, 500, 50, 50);
+        public ParticleController pc;
 
-        pc = new ParticleController();
-        pc.particleData.Add(new Particle.Data(ta, "p1", spawnArea, new Vector2(48), 
-            1..3, new Vector2(0, -5), Rotation:..360));
-        RegisterGameObj(pc);
-    }
+        public override void Init()
+        {
+            var ta = new TextureAtlas("Assets/Images/A.png", 16);
+            ta.Register("p1", 0, 0);
 
-    public override void UpdateLoop()
-    {
-        if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) pc.CreateParticle(0);
-    }
+            pc = new ParticleController();
+            pc.particleData.Add(new Particle.Data(ta, "p1", spawnArea, new Vector2(48), 
+                1..3, new Vector2(0, -5), Rotation:..360));
+            RegisterGameObj(pc);
+        }
 
-    public override void RenderLoop()
-    {
-        spawnArea.Draw(Raylib.BLUE);
+        public override void UpdateLoop()
+        {
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) pc.CreateParticle(0);
+        }
+
+        public override void RenderLoop()
+        {
+            spawnArea.Draw(Raylib.BLUE);
+        }
     }
 }

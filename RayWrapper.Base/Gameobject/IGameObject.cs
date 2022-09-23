@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 
-namespace RayWrapper.Var_Interfaces;
+namespace RayWrapper.Base.Gameobject;
 
 public interface IGameObject
 {
@@ -12,7 +12,7 @@ public interface IGameObject
     void Render();
 
     // TODO: Remove if not appropriate in interface.
-    Rectangle GetRect();
+    Raylib_CsLo.Rectangle GetRect();
     void ReserveV2();
     Vector2 GetReserveV2();
     void SetPositionAsReserveV2();

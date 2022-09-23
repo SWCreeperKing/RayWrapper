@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using RayWrapper.Vars;
+using RayWrapper.Base;
 using static Raylib_CsLo.Raylib;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;

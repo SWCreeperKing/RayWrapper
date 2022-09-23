@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
-using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain;
