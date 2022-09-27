@@ -1,4 +1,4 @@
-﻿namespace RayWrapper.Base.Gameobject;
+﻿namespace RayWrapper.Base.GameObject;
 
 public interface IGameObjReg
 {

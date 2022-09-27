@@ -20,8 +20,9 @@ public class Button : GameObject
 
     public Style style { get; private set; } = defaultStyle.Copy();
     public Label baseL;
-    public Sound clickSound;
     public Actionable<bool> isDisabled = false;
+    
+    public Sound clickSound;
     public bool randomPitch = true;
 
     private readonly IList<Action> _clickEvent = new List<Action>();

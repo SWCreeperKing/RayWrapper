@@ -146,11 +146,8 @@ public class GameBox
         string iconPath = "", bool resizable = true)
     {
         if (_hasInit) throw new ApplicationException("Only 1 instance of GameBox can be created");
-        unsafe
-        {
-            SetTraceLogCallback(&Logger.RayLog);
-        }
-
+        
+        Logger.Init();
         _hasInit = true;
         if (resizable) SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
         WindowSize = windowSize;

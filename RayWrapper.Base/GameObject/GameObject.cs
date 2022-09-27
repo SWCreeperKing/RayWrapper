@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 
-namespace RayWrapper.Base.Gameobject;
+namespace RayWrapper.Base.GameObject;
 
 public abstract class GameObject : GameObjReg, IGameObject
 {

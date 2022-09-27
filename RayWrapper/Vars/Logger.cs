@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using Raylib_CsLo;
 using static Raylib_CsLo.TraceLogLevel;
 using static RayWrapper.Vars.Logger.Level;
 using static RayWrapper.Vars.Logger.LoggingLogger.Native;
@@ -26,6 +27,8 @@ public static class Logger
 
     private static IList<string> _log = new List<string>();
     private static bool _hasError;
+
+    public static unsafe void Init() => Raylib.SetTraceLogCallback(&RayLog);
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
     public static unsafe void RayLog(int logLevel, sbyte* text, sbyte* args)
