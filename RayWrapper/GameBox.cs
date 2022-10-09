@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper.Animation;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.GameConsole;
 using RayWrapper.Objs;
 using RayWrapper.Objs.AlertBoxes;
@@ -21,7 +21,6 @@ using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameConsole.GameConsole;
-using static RayWrapper.RectWrapper;
 using static RayWrapper.Vars.Logger.Level;
 using Rectangle = Raylib_CsLo.Rectangle;
 
@@ -102,6 +101,7 @@ public class GameBox
     private static bool _isEnding;
     private static string _currentScene = "main";
     private static MouseCursor _currentMouse;
+    private static RayWrapper.Base.Rectangle _alertBack;
     private static Task _collisionLoop;
     private static RenderTexture _target;
     private static List<Scheduler> _schedulers = new();
@@ -146,7 +146,7 @@ public class GameBox
         string iconPath = "", bool resizable = true)
     {
         if (_hasInit) throw new ApplicationException("Only 1 instance of GameBox can be created");
-        
+
         Logger.Init();
         _hasInit = true;
         if (resizable) SetConfigFlags(ConfigFlags.FLAG_WINDOW_RESIZABLE);
@@ -166,6 +166,7 @@ public class GameBox
         SetWindowSize((int) windowSize.X, (int) windowSize.Y);
 
         Text.Style.SetDefaultFont(LoadDefaultFont());
+        _alertBack = new(Vector2.Zero, windowSize) { color = new Color(0, 0, 0, 75) };
 
         Start();
     }
@@ -335,7 +336,7 @@ public class GameBox
             Animator.Render();
             if (alertQueue.Count > 0)
             {
-                new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 75));
+                _alertBack.Draw();
                 alertQueue.Peek().Render();
             }
         }
@@ -356,7 +357,7 @@ public class GameBox
         var texture = _target.texture;
         EndTextureMode();
         SetTextureFilter(texture, targetTextureFilter);
-        
+
         BeginDrawing();
         ClearBackground(letterboxColor);
         DrawTexturePro(texture, new Rectangle(0, 0, texture.width, -texture.height),
@@ -468,9 +469,12 @@ public class GameBox
             var textSize = defFont.MeasureText(text);
             Vector2 pos = new(mousePos.X - ((int) screenQuad % 2 != 0 ? textSize.X : 0),
                 mousePos.Y - ((int) screenQuad > 2 ? textSize.Y : -33));
-            var rect = AssembleRectFromVec(pos, textSize).Grow(4);
-            rect.Draw(baseTooltipBackColor);
-            rect.DrawHallowRect(((Color) baseTooltipColor).MakeDarker());
+            RayWrapper.Base.Rectangle rect = new(pos, textSize);
+            rect.GrowThis(4);
+            rect.color = baseTooltipColor;
+            rect.Draw();
+            rect.color = baseTooltipColor.ReturnDarker();
+            rect.DrawLines();
             defFont.DrawText(text, pos, baseTooltipColor);
         }
     }

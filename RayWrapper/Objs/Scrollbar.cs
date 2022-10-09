@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.MouseCursor;

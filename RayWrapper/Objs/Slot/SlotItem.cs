@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 

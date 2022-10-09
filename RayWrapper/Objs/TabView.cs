@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
@@ -84,8 +84,8 @@ public class TabView : GameObject
         _tabContents[_currentTab].Render();
     }
     
-    protected override Vector2 GetPosition() => _rect.Pos();
-    protected override Vector2 GetSize() => _rect.Size();
+    protected override Vector2 GetPosition() => _rect.Pos;
+    protected override Vector2 GetSize() => _rect.Size;
     protected override void UpdatePosition(Vector2 newPos)
     {
         _rect.MoveTo(newPos);

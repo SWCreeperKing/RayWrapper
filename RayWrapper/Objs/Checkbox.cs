@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;

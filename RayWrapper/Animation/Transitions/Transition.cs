@@ -1,4 +1,4 @@
-﻿using RayWrapper.Base.Gameobject;
+﻿using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Animation.Transitions;
 

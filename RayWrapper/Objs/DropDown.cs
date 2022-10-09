@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Objs.ListView;
 using static Raylib_CsLo.MouseCursor;
 

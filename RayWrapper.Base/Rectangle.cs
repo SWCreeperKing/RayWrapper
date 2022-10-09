@@ -83,22 +83,30 @@ public class Rectangle
     public Rectangle Clone() => new(Rect);
 
     /// <summary>shrinks all 4 sides by amount</summary>
-    public void Shrink(float amount)
+    public Rectangle ShrinkThis(float amount)
     {
         X += amount;
         Y += amount;
         W -= amount * 2;
         H -= amount * 2;
+        return this;
     }
 
+    /// <summary>Returns new rectangle with all 4 sides shrunk by amount</summary>
+    public Rectangle Shrink(float amount) => new(X + amount, Y + amount, W - amount * 2, H - amount * 2);
+
     /// <summary>Grows all 4 sides by amount</summary>
-    public void Grow(float amount)
+    public Rectangle GrowThis(float amount)
     {
         X -= amount;
         Y -= amount;
         W += amount * 2;
         H += amount * 2;
+        return this;
     }
+
+    /// <summary>Returns new rectangle with all 4 sides grown by amount</summary>
+    public Rectangle Grow(float amount) => new(X - amount, Y - amount, W + amount * 2, H + amount * 2);
 
     /// <summary>Changes the position while keeping the position of the size the same</summary>
     public void ExtendPos(float amount)
@@ -139,6 +147,12 @@ public class Rectangle
     public void DrawGradient(Color c1, Color c2, Color c3, Color c4)
     {
         DrawRectangleGradientEx(Rect, c1, c2, c3, c4);
+    }
+
+    public void DrawGradient(Color c1, Color c2, bool isVertical = false)
+    {
+        if (isVertical) DrawGradientV(c1, c2);
+        else DrawGradientH(c1, c2);
     }
 
     public void DrawGradientV(Color c1, Color c2)

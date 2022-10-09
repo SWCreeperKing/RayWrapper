@@ -2,10 +2,10 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -21,7 +21,7 @@ public class Text : GameObject
     {
         (this.text, style.fontSize) = (text, fontSize);
         if (color is not null) style.color = color;
-        rect = RectWrapper.AssembleRectFromVec(pos, MeasureText());
+        rect = new(pos, MeasureText());
     }
 
     public Text(Actionable<string> text, Rectangle rect, ColorModule color = null, int fontSize = 24)
@@ -31,10 +31,10 @@ public class Text : GameObject
     }
 
     protected override void RenderCall() => style.Draw(text, rect);
-    protected override Vector2 GetPosition() => rect.Pos();
-    protected override Vector2 GetSize() => rect.Size();
-    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
-    protected override void UpdateSize(Vector2 newSize) => rect.SetSize(newSize);
+    protected override Vector2 GetPosition() => rect.Pos;
+    protected override Vector2 GetSize() => rect.Size;
+    protected override void UpdatePosition(Vector2 newPos) => rect.Pos = newPos;
+    protected override void UpdateSize(Vector2 newSize) => rect.Size = newSize;
     public Vector2 MeasureText() => style.MeasureText(text);
 
     public class Style : IStyle<Style>
@@ -71,7 +71,7 @@ public class Text : GameObject
             switch (drawMode)
             {
                 case DrawMode.Normal:
-                    Font.DrawText(text, rect.Pos(), color, fontSize, spacing, rotationOrigin, rotation);
+                    Font.DrawText(text, rect.Pos, color, fontSize, spacing, rotationOrigin, rotation);
                     break;
                 case DrawMode.Wrap:
                     Font.DrawTextRec(text, rect, color, fontSize, spacing, useWordWrap);

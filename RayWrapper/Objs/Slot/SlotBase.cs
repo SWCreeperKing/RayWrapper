@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Objs.Slot;
 

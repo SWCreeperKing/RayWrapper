@@ -2,13 +2,15 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
 using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
+
+// using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -18,7 +20,7 @@ public class Label : GameObject
 
     public Rectangle Rect =>
         style.drawMode is Style.DrawMode.SizeToText
-            ? AssembleRectFromVec(_back.Pos(), style.textStyle.MeasureText(text)).Grow(4)
+            ? new Rectangle(_back.Pos, style.textStyle.MeasureText(text)).Grow(4)
             : _back;
 
     public Style style = defaultStyle.Copy();
@@ -27,9 +29,10 @@ public class Label : GameObject
     public Tooltip tooltip;
 
     private Rectangle _back;
+    private Rectangle _backWithText;
 
     public Label(Vector2 pos, string text = "Untitled Label") : this(
-        AssembleRectFromVec(pos, defaultStyle.textStyle.MeasureText(text)).Grow(4), text)
+        new Rectangle(pos, defaultStyle.textStyle.MeasureText(text)).Grow(4), text)
     {
     }
 
@@ -48,12 +51,12 @@ public class Label : GameObject
 
     protected override Vector2 GetPosition() => Rect.Pos();
     protected override Vector2 GetSize() => Rect.Size();
-    protected override void UpdatePosition(Vector2 newPos) => _back.MoveTo(newPos);
-    protected override void UpdateSize(Vector2 newSize) => _back.SetSize(newSize);
+    protected override void UpdatePosition(Vector2 newPos) => _back.Pos = newPos;
+    protected override void UpdateSize(Vector2 newSize) => _back.Size = newSize;
 
     public void ClickCheck(Action onClick)
     {
-        if (Rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) onClick?.Invoke();
+        if (Rect.IsV2In() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) onClick?.Invoke();
     }
 
     public class Style : IStyle<Style>

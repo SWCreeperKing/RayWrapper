@@ -5,7 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Raylib_CsLo;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 using RayWrapper.Objs.ListView;
 using RayWrapper.Vars;

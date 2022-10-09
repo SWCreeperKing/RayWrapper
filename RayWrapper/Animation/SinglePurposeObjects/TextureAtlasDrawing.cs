@@ -1,6 +1,6 @@
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 
 namespace RayWrapper.Animation.SinglePurposeObjects;

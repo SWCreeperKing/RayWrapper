@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using RayWrapper.Base;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using Rectangle = Raylib_CsLo.Rectangle;

@@ -1,5 +1,5 @@
 using System.Numerics;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;

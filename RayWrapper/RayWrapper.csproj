@@ -27,7 +27,7 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
-        <PackageReference Include="RayWrapper.Base" Version="0.1.0" />
+        <PackageReference Include="RayWrapper.Base" Version="0.2.1.2" />
     </ItemGroup>
 
     <ItemGroup Label="Resources">

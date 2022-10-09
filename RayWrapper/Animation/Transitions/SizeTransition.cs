@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using RayWrapper.Animation.SinglePurposeObjects;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Animation.Transitions;
 

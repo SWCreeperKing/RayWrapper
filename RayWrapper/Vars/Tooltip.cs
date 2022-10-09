@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using RayWrapper.Base;
-using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper.Vars;
 

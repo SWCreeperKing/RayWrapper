@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
 using ZimonIsHimUtils.ExtensionMethods;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -36,7 +37,7 @@ public class TextureAtlas
     public void Draw(string id, Vector2 pos, Vector2? size = null, Vector2? origin = null,
         float rotation = 0, Color? tint = null)
     {
-        var dest = RectWrapper.AssembleRectFromVec(pos, size ?? new Vector2(pixelScale));
+        Rectangle dest = new(pos, size ?? new Vector2(pixelScale));
         Raylib.DrawTexturePro(texture, imageRegistry[id], dest, origin ?? Vector2.Zero, rotation, tint ?? Raylib.WHITE);
     }
 
@@ -108,8 +109,8 @@ public record CompoundAtlasTexture(params AtlasTexture[] Textures)
 
     public void Draw(Rectangle dest, float scale)
     {
-        var pos = dest.Pos();
-        var size = dest.Size();
+        var pos = dest.Pos;
+        var size = dest.Size;
         Textures.Each(t => t.Draw(pos, size, scale));
     }
 

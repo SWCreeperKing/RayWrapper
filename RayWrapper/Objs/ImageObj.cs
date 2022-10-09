@@ -2,7 +2,7 @@
 using System.IO;
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Base.Gameobject;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Objs;
 
