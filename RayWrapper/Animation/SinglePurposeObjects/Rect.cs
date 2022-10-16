@@ -3,7 +3,7 @@ using Raylib_CsLo;
 using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Animation.SinglePurposeObjects;
 
@@ -41,26 +41,26 @@ public class Rect : GameObject, ISizeable, IAlphable
         var rect = GetRect();
         if (isRound)
         {
-            rect.DrawRounded(ColorMod, roundness);
-            if (outline) rect.DrawRoundedLines(OutlineMod, roundness, outlineThickness);
+            rect.DrawRounded(ColorMod, 10, roundness);
+            if (outline) rect.DrawRoundedLines(OutlineMod, 10, roundness, outlineThickness);
         }
         else
         {
             rect.Draw(ColorMod);
-            if (outline) rect.DrawHallowRect(OutlineMod, outlineThickness);
+            if (outline) rect.DrawLines(OutlineMod, outlineThickness);
         }
     }
 
-    protected override Vector2 GetPosition() => rect.Pos();
-    protected override Vector2 GetSize() => rect.Size();
-    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
-    protected override void UpdateSize(Vector2 newSize) => rect.SetSize(newSize);
+    protected override Vector2 GetPosition() => rect.Pos;
+    protected override Vector2 GetSize() => rect.Size;
+    protected override void UpdatePosition(Vector2 newPos) => rect.Pos = newPos;
+    protected override void UpdateSize(Vector2 newSize) => rect.Size = newSize;
 
     public void SetSize(Vector2 size) => Size = size;
     public void AddSize(Vector2 size) => Size += size;
     public int GetAlpha() => alpha;
     public void SetAlpha(int alpha) => this.alpha = alpha;
-    
+
     public static implicit operator Rectangle(Rect rect) => rect.GetRect();
     public static implicit operator Rect(Rectangle rect) => new(rect);
 }

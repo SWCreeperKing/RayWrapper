@@ -1,7 +1,9 @@
 using System;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using static Raylib_CsLo.MouseCursor;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.ListView;
 
@@ -48,7 +50,7 @@ public class DefaultListItem : IListItem
 
         itemNum = item;
         var s = this.item.Invoke(item);
-        var rect = RectWrapper.AssembleRectFromVec(offset, _itemSize);
+        var rect = new Rectangle(offset, _itemSize);
         labelStyle.Draw(s, rect);
         
         if (!isMouseActive || !rect.IsMouseIn() || onClick is null) return; 

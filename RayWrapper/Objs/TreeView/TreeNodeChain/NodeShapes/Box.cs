@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using RayWrapper.Base;
-using static RayWrapper.RectWrapper;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 
@@ -13,9 +13,9 @@ public class Box : NodeShape
         this.tooltip = tooltip;
 
     public override void DrawShape(Vector2 off, float scale) =>
-        AssembleRectFromVec(position * scale + off, size * scale).Draw(completed ? completeColor : color);
+        new Rectangle(position * scale + off, size * scale).Draw(completed ? completeColor : color);
 
     public override void DrawOnHover(Vector2 off, float scale) =>
-        AssembleRectFromVec(position * scale + off, size * scale)
-            .DrawHallowRect(completed ? color : completeColor, (int) (scale / 8f));
+        new Rectangle(position * scale + off, size * scale).DrawLines(completed ? color : completeColor,
+            (int) (scale / 8f));
 }

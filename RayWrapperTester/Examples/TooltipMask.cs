@@ -4,6 +4,7 @@ using RayWrapper;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Examples;
 
@@ -13,12 +14,12 @@ public class TooltipMask : Example
     private Tooltip _tooltip;
     private Text _maskText;
     private Color _maskColor = new(255, 255, 255, 10);
-    private Rectangle _scissorArea;
+    private Rectangle _scissorArea= new(100,  100, 200, 200);
 
     public TooltipMask(string tabName) : base(tabName)
     {
         _tooltip = new GameBox.DefaultTooltip("Testing Tooltip");
-        _scissorArea.Draw(new Color(255, 255, 255, 10));
+        _scissorArea.Draw(_maskColor);
         _maskText = new Text("Move the mouse around to reveal this text!", new Vector2(190, 200));
     }
 

@@ -14,6 +14,7 @@ public class Image : IDisposable
         set => _texture.tint = value;
     }
     
+    public Texture Texture => _texture;
     public int Width => _texture.Width;
     public int Height => _texture.Height;
     public int Mipmaps => _texture.Mipmaps;
@@ -30,12 +31,12 @@ public class Image : IDisposable
     public void Draw(Vector2 pos, Color? tint = null) => DrawTextureV(_texture, pos, tint ?? WHITE);
     public void Draw(int x, int y, Color? tint = null) => DrawTexture(_texture, x, y, tint ?? WHITE);
 
-    public void Draw(Raylib_CsLo.Rectangle src, Vector3 pos, float w, float h, float length)
+    public void Draw(Rectangle src, Vector3 pos, float w, float h, float length)
     {
         DrawCubeTextureRec(_texture, src, pos, w, h, length, Tint);
     }
 
-    public void Draw(NPatchInfo patch, Raylib_CsLo.Rectangle dest, Vector2 origin, float rot)
+    public void Draw(NPatchInfo patch, Rectangle dest, Vector2 origin, float rot)
     {
         DrawTextureNPatch(_texture, patch, dest, origin, rot, Tint);
     }
@@ -56,22 +57,22 @@ public class Image : IDisposable
         DrawTexturePoly(_texture, center, points, texCoords, pointCount, Tint);
     }
 
-    public void Draw(Raylib_CsLo.Rectangle src, Raylib_CsLo.Rectangle dest, Vector2 origin, float rot)
+    public void Draw(Rectangle src, Rectangle dest, Vector2 origin, float rot)
     {
         DrawTexturePro(_texture, src, dest, origin, rot, Tint);
     }
 
-    public void Draw(Vector2 tiling, Vector2 offset, Raylib_CsLo.Rectangle quad)
+    public void Draw(Vector2 tiling, Vector2 offset, Rectangle quad)
     {
         DrawTextureQuad(_texture, tiling, offset, quad, Tint);
     }
 
-    public void Draw(Raylib_CsLo.Rectangle src, Vector2 pos)
+    public void Draw(Rectangle src, Vector2 pos)
     {
         DrawTextureRec(_texture, src, pos, Tint);
     }
 
-    public void Draw(Raylib_CsLo.Rectangle src, Raylib_CsLo.Rectangle dest, Vector2 origin, float rot, float scale)
+    public void Draw(Rectangle src, Rectangle dest, Vector2 origin, float rot, float scale)
     {
         DrawTextureTiled(_texture, src, dest, origin, rot, scale, Tint);
     }

@@ -5,8 +5,7 @@ using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -27,7 +26,7 @@ public class ProgressBar : GameObject
 
     public ProgressBar(Rectangle rect, Func<float> percent)
     {
-        (this.percent, pos, size) = (percent, rect.Pos(), rect.Size());
+        (this.percent, pos, size) = (percent, rect.Pos, rect.Size);
         tooltip = new GameBox.DefaultTooltip(new Actionable<string>(() =>
             FixedPercent() >= 1 ? "100%" : $"{percent.Invoke():##0.00%}"));
     }
@@ -42,16 +41,17 @@ public class ProgressBar : GameObject
     protected override void RenderCall()
     {
         var fill = FixedPercent();
-        var back = AssembleRectFromVec(Position, size).Grow(outlineThickness);
-        if (!useGradient) back.DrawRounded(backColor);
+        var back = new Rectangle(Position, size).GrowThis(outlineThickness);
+        if (!useGradient) back.DrawRounded(color: backColor);
         else back.Draw(backColor);
-        if (fill >= 1) AssembleRectFromVec(Position, size).Draw(finishedColor);
+        
+        if (fill >= 1) new Rectangle(Position, size).Draw(finishedColor);
         else
         {
             var newS = new Vector2(size.X * (isVertical ? 1 : fill), size.Y * (isVertical ? fill : 1));
             if (!useGradient)
-                AssembleRectFromVec(Position, newS).DrawRounded(((Color) fillColor).Percent(toColor, fill));
-            else AssembleRectFromVec(Position, newS).DrawGradient(fillColor, toColor);
+                new Rectangle(Position, newS).DrawRounded(color: ((Color) fillColor).Percent(toColor, fill));
+            else new Rectangle(Position, newS).DrawGradient(fillColor, toColor);
         }
 
         if (!hoverPercent) return;

@@ -6,8 +6,7 @@ using RayWrapper.Var_Interfaces;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -49,7 +48,7 @@ public class Checkbox : GameObject
 
     protected override void UpdateCall()
     {
-        var rect = AssembleRectFromVec(Position, _textBox); 
+        var rect = new Rectangle(Position, _textBox); 
         if (!rect.IsMouseIn() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
         isChecked = !isChecked;
         checkChange?.Invoke(isChecked);
@@ -57,8 +56,8 @@ public class Checkbox : GameObject
 
     protected override void RenderCall()
     {
-        var rect = AssembleRectFromVec(Position + _posOff, _size);
-        var rect2 = AssembleRectFromVec(Position, _textBox);
+        var rect = new Rectangle(Position + _posOff, _size);
+        var rect2 = new Rectangle(Position, _textBox);
         var mouseIsIn = rect2.IsMouseIn() && !IsMouseOccupied;
 
         style.Draw(_text, _textPos, isChecked, mouseIsIn, rect.Grow(3), rect.Shrink(3));

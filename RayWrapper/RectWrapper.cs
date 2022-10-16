@@ -1,7 +1,17 @@
-﻿using RayWrapper.Base;
+﻿using System.Numerics;
+using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Var_Interfaces;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper;
+
+public static class RectWrapper
+{
+    public static bool IsMouseIn(this Rectangle rect) => rect.IsV2In(GameBox.mousePos);
+    public static bool IsMouseIn(this Raylib_CsLo.Rectangle rect) => rect.IsV2In(GameBox.mousePos);
+    public static bool IsV2In(this Raylib_CsLo.Rectangle rect, Vector2 pos) => Raylib.CheckCollisionPointRec(pos, rect);
+}
 
 public class RectStyle : IStyle<RectStyle>
 {
@@ -12,9 +22,8 @@ public class RectStyle : IStyle<RectStyle>
 
     public void Draw(Rectangle rect)
     {
-        rect.color = color;
-        if (rounded) rect.DrawRounded(segments, roundness);
-        else rect.Draw();
+        if (rounded) rect.DrawRounded(color, segments, roundness);
+        else rect.Draw(color);
     }
 
     public RectStyle Copy()
@@ -38,9 +47,8 @@ public class OutlineStyle : IStyle<OutlineStyle>
     public void Draw(Rectangle rect)
     {
         if (!displayOutline) return;
-        rect.color = color;
-        if (rounded) rect.DrawRoundedLines(segments, roundness, thickness);
-        else rect.DrawLines();
+        if (rounded) rect.DrawRoundedLines(color, segments, roundness, thickness);
+        else rect.DrawLines(color: color);
     }
 
     // todo: use source gen for copy??????

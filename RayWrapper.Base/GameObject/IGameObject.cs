@@ -12,7 +12,8 @@ public interface IGameObject
     void Render();
 
     // TODO: Remove if not appropriate in interface.
-    Raylib_CsLo.Rectangle GetRect();
+    Raylib_CsLo.Rectangle GetRawRect();
+    Rectangle GetRect();
     void ReserveV2();
     Vector2 GetReserveV2();
     void SetPositionAsReserveV2();

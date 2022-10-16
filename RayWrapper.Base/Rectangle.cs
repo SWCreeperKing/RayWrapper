@@ -65,15 +65,13 @@ public class Rectangle
         set => _rect.height = _size.Y = value;
     }
 
-    public ColorModule color = WHITE;
-
     private Rect _rect;
     private Vector2 _pos;
     private Vector2 _size;
 
     public Rectangle(Rect rect) => Rect = rect;
     public Rectangle(Vector2 pos, Vector2 size) => Rect = new Rect(pos.X, pos.Y, size.X, size.Y);
-    public Rectangle(float x, float y, float w, float h) => Rect = new Rect(x, y, w, h);
+    public Rectangle(float x = 0, float y = 0, float w = 0, float h = 0) => Rect = new Rect(x, y, w, h);
 
     public void MaskDraw(Action draw) => Pos.MaskDraw(Size, draw);
     public bool IsV2In(Vector2 v2) => CheckCollisionPointRec(v2, Rect);
@@ -109,12 +107,18 @@ public class Rectangle
     public Rectangle Grow(float amount) => new(X - amount, Y - amount, W + amount * 2, H + amount * 2);
 
     /// <summary>Changes the position while keeping the position of the size the same</summary>
-    public void ExtendPos(float amount)
+    public void ExtendPos(float amount) => ExtendPos(amount, amount);
+
+    /// <summary>Changes the position while keeping the position of the size the same</summary>
+    public void ExtendPos(Vector2 amount) => ExtendPos(amount.X, amount.Y);
+
+    /// <summary>Changes the position while keeping the position of the size the same</summary>
+    public void ExtendPos(float xAmount, float yAmount)
     {
-        X -= amount;
-        Y -= amount;
-        W += amount;
-        H += amount;
+        X -= xAmount;
+        Y -= yAmount;
+        W += xAmount;
+        H += yAmount;
     }
 
     public void Deconstruct(out float x, out float y, out float w, out float h)
@@ -125,21 +129,24 @@ public class Rectangle
         h = H;
     }
 
-    public void Draw() => DrawRectangleRec(Rect, color);
+    public void Draw(Color color) => DrawRectangleRec(Rect, color);
 
-    public void DrawPro(Vector2? origin = null, float rotation = 0f)
+    public void DrawPro(Color color, Vector2? origin = null, float rotation = 0f)
     {
         DrawRectanglePro(Rect, origin ?? Vector2.Zero, rotation, color);
     }
 
-    public void DrawLines(float thickness = 3f) => DrawRectangleLinesEx(Rect, thickness, color);
+    public void DrawLines(Color color, float thickness = 3f)
+    {
+        DrawRectangleLinesEx(Rect, thickness, color);
+    }
 
-    public void DrawRounded(int segments = 10, float roundness = 1f)
+    public void DrawRounded(Color color, int segments = 10, float roundness = 1f)
     {
         DrawRectangleRounded(Rect, roundness, segments, color);
     }
 
-    public void DrawRoundedLines(int segments = 10, float roundness = 1f, float thickness = 3f)
+    public void DrawRoundedLines(Color color, int segments = 10, float roundness = 1f, float thickness = 3f)
     {
         DrawRectangleRoundedLines(Rect, roundness, segments, thickness, color);
     }
@@ -164,6 +171,7 @@ public class Rectangle
     {
         DrawRectangleGradientH((int) X, (int) Y, (int) W, (int) H, c1, c2);
     }
+
 
     public static bool operator ==(Rectangle r1, Rect r2) =>
         r1.X == r2.x && r1.Y == r2.y && r1.W == r2.width && r1.H == r2.height;

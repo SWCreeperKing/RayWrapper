@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using RayWrapper;
@@ -19,19 +18,19 @@ namespace RayWrapperTester
 
         public override void Init()
         {
-            var biggest = Vector2.Zero;
-
-            unsafe
-            {
-                for (var i = 0; i < Text.defaultStyle.Font.glyphCount; i++)
-                {
-                    var v2 = Text.defaultStyle.Font.recs[i].Size();
-                    biggest.X = Math.Max(biggest.X, v2.X);
-                    biggest.Y = Math.Max(biggest.Y, v2.Y);
-                }
-            }
-
-            Console.WriteLine($"biggest in font: [{biggest}]");
+            // var biggest = Vector2.Zero;
+            //
+            // unsafe
+            // {
+            //     for (var i = 0; i < Text.defaultStyle.Font.glyphCount; i++)
+            //     {
+            //         var v2 = Text.defaultStyle.Font.recs[i].Size();
+            //         biggest.X = Math.Max(biggest.X, v2.X);
+            //         biggest.Y = Math.Max(biggest.Y, v2.Y);
+            //     }
+            // }
+            //
+            // Console.WriteLine($"biggest in font: [{biggest}]");
 
             InitSaveSystem("SW_CreeperKing", "SaveTesting");
 

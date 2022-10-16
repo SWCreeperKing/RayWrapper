@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using RayWrapper;
+using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 using RayWrapper.Objs.AlertBoxes;

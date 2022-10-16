@@ -10,8 +10,7 @@ using RayWrapper.Vars;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.TreeView;
 
@@ -25,8 +24,8 @@ public class TreeView : GameObject
     public float defaultScale = 32;
     public float distanceThreshold = .12f;
     public string selected;
-    public Rectangle bounds = Max;
-    public Rectangle mask = Zero;
+    public Rectangle bounds = new(Rectangle.Max);
+    public Rectangle mask = new(Rectangle.Zero);
     public Vector2 axisOffset = Vector2.Zero;
     public Tooltip tooltip;
 
@@ -48,8 +47,8 @@ public class TreeView : GameObject
         _isOverThreash = false;
         if (alertQueue.Count > 0 || IsMouseOccupied && mouseOccupier != this) return;
         if (IsMouseButtonPressed(MOUSE_MIDDLE_BUTTON)) ResetPos();
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask.IsEqualTo(Zero)
-                ? AssembleRectFromVec(Vector2.Zero, WindowSize)
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && (mask == Rectangle.Zero
+                ? new Rectangle(Vector2.Zero, WindowSize)
                 : mask).IsMouseIn())
         {
             var curMouse = mousePos;
@@ -64,8 +63,8 @@ public class TreeView : GameObject
 
             _isOverThreash = true;
             _moveChange += new Vector2(horizontalMovement ? toMove.X : 0, verticalMovement ? toMove.Y : 0);
-            _moveChange = new Vector2(Math.Clamp(_moveChange.X, bounds.x, bounds.width),
-                Math.Clamp(_moveChange.Y, bounds.y, bounds.height));
+            _moveChange = new Vector2(Math.Clamp(_moveChange.X, bounds.X, bounds.W),
+                Math.Clamp(_moveChange.Y, bounds.Y, bounds.H));
             (_lastPos, mouseOccupier) = (curMouse, this);
         }
         else mouseOccupier = null;
@@ -78,8 +77,8 @@ public class TreeView : GameObject
     protected override void RenderCall()
     {
         if (!chains.Any()) return;
-        (mask.IsEqualTo(Zero)
-            ? AssembleRectFromVec(Vector2.Zero, WindowSize)
+        (mask == Rectangle.Zero
+            ? new Rectangle(Vector2.Zero, WindowSize)
             : mask).MaskDraw(() =>
         {
             _tooltipList.AddRange(chains

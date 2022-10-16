@@ -7,10 +7,7 @@ using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
 using Rectangle = RayWrapper.Base.Rectangle;
-
-// using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -49,14 +46,14 @@ public class Label : GameObject
         if (tooltip is not null && !IsMouseOccupied) tooltip.Draw(Rect);
     }
 
-    protected override Vector2 GetPosition() => Rect.Pos();
-    protected override Vector2 GetSize() => Rect.Size();
+    protected override Vector2 GetPosition() => Rect.Pos;
+    protected override Vector2 GetSize() => Rect.Size;
     protected override void UpdatePosition(Vector2 newPos) => _back.Pos = newPos;
     protected override void UpdateSize(Vector2 newSize) => _back.Size = newSize;
 
     public void ClickCheck(Action onClick)
     {
-        if (Rect.IsV2In() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) onClick?.Invoke();
+        if (Rect.IsMouseIn() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) onClick?.Invoke();
     }
 
     public class Style : IStyle<Style>
@@ -129,18 +126,18 @@ public class Label : GameObject
             {
                 case DrawMode.AlignLeft:
                     textStyle.Draw(text,
-                        new Vector2(shrink.x, shrink.y + (shrink.height / 2 - textSize.Y / 2)));
+                        new Vector2(shrink.X, shrink.Y + (shrink.H / 2 - textSize.Y / 2)));
                     break;
                 case DrawMode.AlignCenter:
                     textStyle.Draw(text, shrink);
                     break;
                 case DrawMode.AlignRight:
                     textStyle.Draw(text,
-                        new Vector2(shrink.x + shrink.width - textSize.X,
-                            shrink.y + (shrink.height / 2 - textSize.Y / 2)));
+                        new Vector2(shrink.X + shrink.W - textSize.X,
+                            shrink.Y + (shrink.H / 2 - textSize.Y / 2)));
                     break;
                 case DrawMode.SizeToText:
-                    textStyle.Draw(text, shrink.Pos());
+                    textStyle.Draw(text, shrink.Pos);
                     break;
                 case DrawMode.WrapText:
                     textStyle.Draw(text, shrink);

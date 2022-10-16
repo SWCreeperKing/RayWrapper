@@ -6,7 +6,7 @@ using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.ListView;
 
@@ -52,12 +52,12 @@ public class ListView : GameObject
         var value = _bar.Value;
         var strictVal = (int) value;
         var labelPadding = _itemSize.Y + _padding;
-        var y = _bounds.Pos().Y - labelPadding * (value - strictVal);
+        var y = _bounds.Pos.Y - labelPadding * (value - strictVal);
         var mouseActive = _bounds.IsMouseIn();
 
         for (var i = 0; i < Math.Min(_itemsToShow + 1, itemTemplate.ListSize() - strictVal); i++)
         {
-            itemTemplate.Render(new Vector2(_bounds.x, y + labelPadding * i), strictVal + i, mouseActive);
+            itemTemplate.Render(new Vector2(_bounds.X, y + labelPadding * i), strictVal + i, mouseActive);
         }
     }
 
@@ -71,11 +71,11 @@ public class ListView : GameObject
             if (scroll != 0)
             {
                 var a = itemTemplate.ListSize();
-                
+
                 // smooth scrolling, help from chocobogamer#4214
                 _bar.MoveBar(scroll * (((size.Y + _padding) * ((float) a / _itemsToShow) - _padding) /
                                        (((size.Y + _padding) * a - _padding) / _bar.Size.Y)));
-                
+
                 _bar.Update();
             }
 
@@ -86,7 +86,9 @@ public class ListView : GameObject
             return;
         }
 
-        if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || _bounds.ExtendPos(new Vector2(20, 0)).IsMouseIn()) return;
+        var nBounds = new Rectangle(_bounds);
+        nBounds.ExtendPos(20, 0);
+        if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || nBounds.IsMouseIn()) return;
         outsideClick?.Invoke();
     }
 
@@ -95,13 +97,16 @@ public class ListView : GameObject
         _bounds.MaskDraw(DrawTemplate);
 
         if (itemTemplate.ListSize() > _itemsToShow) _bar.Render();
-        tooltip?.Draw(_bounds.ExtendPos(new Vector2(20, 0)));
+        
+        var nBounds = new Rectangle(_bounds);
+        nBounds.ExtendPos(20, 0);
+        tooltip?.Draw(nBounds);
     }
 
     protected override void UpdatePosition(Vector2 newPos)
     {
         _bar.Position = newPos;
-        _bounds = new Rectangle(newPos.X + 20, newPos.Y, _bounds.width, _bounds.height);
+        _bounds = new Rectangle(newPos.X + 20, newPos.Y, _bounds.W, _bounds.H);
     }
 
     protected override void UpdateSize(Vector2 newSize)

@@ -1,11 +1,11 @@
 ﻿using System.Numerics;
-using Raylib_CsLo;
 using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.SinglePurposeObjects;
 using RayWrapper.Animation.Transitions;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Animations;
 

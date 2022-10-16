@@ -7,8 +7,7 @@ using RayWrapper.Objs.TreeView;
 using RayWrapper.Objs.TreeView.TreeNodeChain;
 using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 using RayWrapperTester.Example_Setup;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Examples;
 
@@ -35,11 +34,13 @@ public class TreeViewTest : Example
                 }),
             nodeChain.nodes.Count - 2);
 
+        var mask = new Rectangle(Vector2.Zero, GameBox.WindowSize);
+        mask.ExtendPos(0, -60);
         TreeView tv = new(nodeChain)
         {
             axisOffset = new Vector2(5, 5), verticalMovement = false,
             bounds = new Rectangle(0, 0, 15, 0),
-            mask = AssembleRectFromVec(Vector2.Zero, GameBox.WindowSize).ExtendPos(new Vector2(0, -60))
+            mask = mask
         };
 
         RegisterGameObj(tv);

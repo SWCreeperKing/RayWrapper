@@ -16,10 +16,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.5.1.4</PackageVersion>
-        <PackageReleaseNotes>- animation system works again
-- slots work again
-- image buttons work again</PackageReleaseNotes>
+        <PackageVersion>0.6</PackageVersion>
+        <PackageReleaseNotes>-im tired please send help its almost over 9k lines ;-;</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -27,7 +25,7 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
-        <PackageReference Include="RayWrapper.Base" Version="0.2.1.2" />
+        <PackageReference Include="RayWrapper.Base" Version="0.2.2.5" />
     </ItemGroup>
 
     <ItemGroup Label="Resources">

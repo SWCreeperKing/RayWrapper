@@ -5,7 +5,7 @@ using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Animation.SinglePurposeObjects;
 
@@ -36,7 +36,7 @@ public class MaskText : GameObject, ISizeable, IAlphable
     public MaskText(Actionable<string> text, Rectangle rect)
     {
         this.text = text;
-        (pos, size) = (rect.Pos(), rect.Size());
+        (pos, size) = (rect.Pos, rect.Size);
         
         style.color = new ColorModule(() =>
         {

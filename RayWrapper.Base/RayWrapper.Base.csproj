@@ -19,8 +19,8 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.2.2</PackageVersion>
-        <PackageReleaseNotes>-further additions</PackageReleaseNotes>
+        <PackageVersion>0.2.2.5</PackageVersion>
+        <PackageReleaseNotes>-reorianted all color params for rectangle (im having a stroke)</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

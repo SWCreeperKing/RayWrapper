@@ -4,7 +4,7 @@ using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using static RayWrapper.GameBox;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.AlertBoxes;
 
@@ -53,16 +53,16 @@ public abstract class AlertBase : GameObject
     protected override void RenderCall()
     {
         var shrink = _rect.Shrink(4);
-        var rectPos = shrink.Pos();
+        var rectPos = shrink.Pos;
 
         style.back.Draw(_rect);
-        style.title.Draw(title, new Rectangle(rectPos.X, rectPos.Y, shrink.width, _titleSize.Y).Center());
+        style.title.Draw(title, new Rectangle(rectPos.X, rectPos.Y, shrink.W, _titleSize.Y).Center());
 
         rectPos.Y += _titleSize.Y + 7;
-        style.message.Draw(message, new Rectangle(rectPos.X, rectPos.Y, shrink.width, _messageSize.Y).Center());
+        style.message.Draw(message, new Rectangle(rectPos.X, rectPos.Y, shrink.W, _messageSize.Y).Center());
 
         rectPos.Y += _messageSize.Y + 9;
-        RenderAdded(rectPos, shrink.Size());
+        RenderAdded(rectPos, shrink.Size);
     }
 
     public void Show() => alertQueue.Push(this);

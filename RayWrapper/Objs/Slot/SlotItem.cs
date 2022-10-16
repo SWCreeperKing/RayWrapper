@@ -4,6 +4,7 @@ using Raylib_CsLo;
 using RayWrapper.Base.GameObject;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.Slot;
 
@@ -18,13 +19,13 @@ public abstract class SlotItem : GameObject
 
     protected override void UpdateCall()
     {
-        var rect = GetRect();
+        var rect = new Rectangle(Position, Size);
         
         if (rect.IsMouseIn() && IsMouseButtonDown(MOUSE_LEFT_BUTTON) && !IsMouseOccupied)
         {
             GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_RESIZE_ALL);
             mouseOccupier = this;
-            beforeCords = rect.Pos();
+            beforeCords = rect.Pos;
         }
         else if (rect.IsMouseIn() && !IsMouseOccupied) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_POINTING_HAND);
         else if (mouseOccupier == this && IsMouseButtonUp(MOUSE_LEFT_BUTTON))

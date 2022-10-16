@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
+using static RayWrapper.Base.Ext;
 using static RayWrapper.GameBox;
-using static RayWrapper.GeneralWrapper;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -43,7 +45,7 @@ public class InputBox : GameObject
                 }
             }
         };
-    
+
     public string Text
     {
         get => _text;
@@ -52,13 +54,14 @@ public class InputBox : GameObject
 
     public Style style = defaultStyle.Copy();
     public bool numbersOnly;
+    public bool password;
     public Action<string> onEnter;
     public Action<string> onExit;
     public Action<string> onInput;
 
-    private readonly Label _label;
     private readonly int _max;
-    private readonly Range _show;
+    private float _width;
+    private float _h = 30;
     private int _curPos;
     private int _frameTime;
     private long _lastTime;
@@ -67,40 +70,31 @@ public class InputBox : GameObject
     private Cooldown _backspaceCool = new(650);
     private Cooldown _deleteCool = new(55);
 
-    public InputBox(Vector2 pos) : this(pos, 10..20)
+    public InputBox(int x = 0, int y = 0, float w = 0, int maxCharacters = 40) : this(new Vector2(x, y), w,
+        maxCharacters)
     {
     }
 
-    public InputBox(Vector2 pos, int characterShow, int characters = 40) : this(pos, characterShow..characterShow,
-        characters)
+    public InputBox(Vector2 pos, float width = 0, int maxCharacters = 40)
     {
-    }
-
-    public InputBox(Vector2 pos, Range characterShow, int characters = 40)
-    {
-        _show = characterShow;
-        _max = characters;
-        _label = new Label(new Vector2(pos.X, pos.Y), "")
-        {
-            style = style.labelStyle
-        };
-        _label.style.drawMode = Label.Style.DrawMode.SizeToText;
+        Position = pos;
+        _width = width == 0 ? style.textStyle.MeasureText("Click to start typing").X : width;
+        _max = maxCharacters;
         _lastTime = GetTimeMs();
     }
 
-    public int Showing() => Math.Clamp(_text.Length, _show.Start.Value, _show.End.Value);
-
     protected override void UpdateCall()
     {
+        var rect = GetRect();
         var startText = _text;
         var isLeft = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
         switch (isLeft)
         {
-            case true when !_label.Rect.IsMouseIn() && _selected:
+            case true when !rect.IsMouseIn() && _selected:
                 _selected = false;
                 onExit?.Invoke(_text);
                 break;
-            case true when !_selected && _label.Rect.IsMouseIn():
+            case true when !_selected && rect.IsMouseIn():
                 _selected = true;
                 break;
         }
@@ -117,47 +111,21 @@ public class InputBox : GameObject
             BackSpaceCheck();
         }
 
-        var fps = GetFPS();
+        if (_text != startText) onInput?.Invoke(_text);
+    }
 
+    protected override void RenderCall()
+    {
+        var fps = GetFPS();
         _frameTime %= Math.Max(1, fps); // fix divide by 0
         _frameTime++;
 
-        var show = Showing();
-        var flash = _frameTime % (fps * .33) > fps * .18;
-        var start = 0;
-        var end = Math.Min(show, _text.Length);
-        var curs = _curPos;
-
-        if (curs >= show / 2)
-        {
-            (start, curs, end) = (curs - show / 2, show / 2, Math.Min(_text.Length, _curPos + show / 2));
-        }
-
-        if (start > _max - show)
-        {
-            (start, curs) = (_max - show, _curPos - (_max - show));
-        }
-
-        var text = _selected
-            ? _text[start..end].Insert(curs, $"{(flash ? ' ' : style.cursorChar)} ")
-            : _text[start..end];
-        if (text.Length < show) text += string.Join("", Enumerable.Repeat(" ", show - text.Length));
-        _label.text = $"{style.start}{text}{style.end}";
-        _label.Update();
-        
-        if (_text != startText) onInput?.Invoke(_text);
+        var txt = password ? string.Join("", Enumerable.Repeat("*", _text.Length)) : _text;
+        style.Draw(txt, Position, _width, _curPos, _selected, _frameTime % (fps * .33) > fps * .18);
     }
-    
-    protected override void RenderCall()
-    {
-        _label.Render();
-        if (_label.Rect.IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
-    }
-    
-    protected override Vector2 GetPosition() => _label.Position;
-    protected override Vector2 GetSize() => _label.Size;
-    protected override void UpdatePosition(Vector2 newPos) => _label.Position = newPos;
-    protected override void UpdateSize(Vector2 newSize) => _label.Size = newSize;
+
+    protected override Vector2 GetSize() => new(_width, _h);
+    protected override void UpdateSize(Vector2 newSize) => _width = newSize.X;
 
     public void BackSpaceCheck()
     {
@@ -188,7 +156,6 @@ public class InputBox : GameObject
         if (_backspaceCool.IsTime() && _deleteCool.UpdateTime()) BackSpacePressed();
     }
 
-
     public void Input()
     {
         var (c, cc) = (GetCharPressed(), GetKeyPressed_());
@@ -197,9 +164,11 @@ public class InputBox : GameObject
             if (cc == KeyboardKey.KEY_ENTER) onEnter?.Invoke(_text);
             if (numbersOnly)
             {
-                if (c is >= 48 and <= 57 or 69 or 101 or 44 or 46 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
+                if (c is >= 48 and <= 57 or 69 or 101 or 44 or 46 && _text.Length < _max)
+                    _text = _text.Insert(_curPos++, $"{(char) c}");
             }
             else if (c is >= 32 and <= 125 && _text.Length < _max) _text = _text.Insert(_curPos++, $"{(char) c}");
+
             (c, cc) = (GetCharPressed(), GetKeyPressed_());
         }
     }
@@ -209,16 +178,69 @@ public class InputBox : GameObject
 
     public class Style : IStyle<Style>
     {
-        public Label.Style labelStyle = new();
-        public string start = "> ";
-        public string end = " ";
+        public string phantomText = "Click to start typing";
+        public RectStyle backStyle = new();
+        public OutlineStyle outline = new();
+        public Text.Style textStyle = new();
+        public Color phantomColor = WHITE.SetAlpha(150);
+        public Color fontColor = SKYBLUE;
         public char cursorChar = '|';
+        public char emptyChar = ' ';
+
+        private bool _showPhantom;
+
+        public void Draw(string text, Vector2 pos, float width, int cursorPosition, bool selected, bool cursorVisible)
+        {
+            _showPhantom = !text.Trim().Any() && !selected;
+            textStyle.color = _showPhantom ? phantomColor : fontColor;
+
+            var rect = new Rectangle(pos, textStyle.MeasureText(text) with { X = width });
+            if (rect.Grow(4).IsMouseIn()) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_IBEAM);
+
+            Rectangle vRect, g4;
+            if (selected)
+            {
+                var nText = text.Insert(cursorPosition, (cursorVisible ? cursorChar : emptyChar).ToString());
+                var nRect = rect.Clone();
+                var size = textStyle.MeasureText(nText);
+                size = size with { X = size.X - rect.W };
+
+                vRect = rect.Clone();
+                vRect.H = size.Y;
+                
+                g4 = vRect.Grow(4);
+                backStyle.Draw(g4);
+                outline.Draw(g4);
+
+                if (size.X <= 0)
+                {
+                    vRect.MaskDraw(() => textStyle.Draw(nText, rect));
+                    return;
+                }
+
+                var percent = (float) cursorPosition / text.Length;
+                nRect.X -= size.X * percent;
+
+                vRect.MaskDraw(() => textStyle.Draw(nText, nRect.Pos));
+                return;
+            }
+
+            var rText = _showPhantom ? phantomText : text;
+            vRect = rect.Clone();
+            vRect.H = textStyle.MeasureText(rText).Y;
+            
+            g4 = vRect.Grow(4);
+            backStyle.Draw(g4);
+            outline.Draw(g4);
+            vRect.MaskDraw(() => textStyle.Draw(rText, rect));
+        }
 
         public Style Copy()
         {
             return new Style
             {
-                labelStyle = labelStyle.Copy(), start = start, end = end, cursorChar = cursorChar
+                backStyle = backStyle.Copy(), textStyle = textStyle.Copy(), cursorChar = cursorChar, outline = outline,
+                emptyChar = emptyChar, phantomText = phantomText, phantomColor = phantomColor, fontColor = fontColor
             };
         }
     }

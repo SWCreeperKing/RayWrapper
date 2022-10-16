@@ -10,6 +10,7 @@ using RayWrapper.Objs;
 using RayWrapper.Objs.ListView;
 using RayWrapper.Vars;
 using static RayWrapper.GameBox;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.GameConsole;
 
@@ -24,6 +25,9 @@ public class GameConsole : GameObject
     public ListView history;
     public InputBox ib;
 
+    private static readonly Color BackColor = new(0, 0, 0, 150);
+    private readonly Rectangle back;
+
     public GameConsole()
     {
         if (singleConsole is not null)
@@ -31,7 +35,7 @@ public class GameConsole : GameObject
 
         singleConsole = this;
 
-        ib = new InputBox(new Vector2(12, 10), 78, 200);
+        ib = new InputBox(new Vector2(12, 10), WindowSize.X - 20);
         ib.onEnter = s =>
         {
             if (s.Length < 1) return;
@@ -61,14 +65,12 @@ public class GameConsole : GameObject
 
         history = new ListView(new Vector2(12, 50), defItem, (int) Math.Floor((WindowSize.Y - 50) / 45));
 
+        back = new Rectangle(Vector2.Zero, WindowSize);
         RegisterGameObj(history, ib);
     }
 
 
-    protected override void RenderCall()
-    {
-        new Rectangle(0, 0, WindowSize.X, WindowSize.Y).Draw(new Color(0, 0, 0, 150));
-    }
+    protected override void RenderCall() => back.Draw(BackColor);
 
     public static void WriteToConsole(params string[] texts)
     {

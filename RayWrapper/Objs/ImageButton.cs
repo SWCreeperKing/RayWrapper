@@ -8,7 +8,7 @@ using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -37,20 +37,20 @@ public class ImageButton : GameObject
     {
         this.image = image;
         this.image.Position = position;
-        this.image.texture.ImageAlpha = 170;
+        this.image.ImageAlpha = 170;
     }
 
     public ImageButton(ImageObj image, Rectangle sizeOverride)
     {
         this.image = image;
         this.sizeOverride = sizeOverride;
-        this.image.texture.ImageAlpha = 170;
+        this.image.ImageAlpha = 170;
     }
 
     protected override void UpdateCall()
     {
         image.Update();
-        var rect = sizeOverride ?? image.Rect;
+        var rect = sizeOverride ?? image.GetRect();
         var over = rect.Grow(style.imageMargin);
 
         if (!over.IsMouseIn()) return;
@@ -61,12 +61,12 @@ public class ImageButton : GameObject
 
     protected override void RenderCall()
     {
-        var rect = sizeOverride ?? image.Rect;
+        var rect = sizeOverride ?? image.GetRect();
         var over = rect.Grow(style.imageMargin);
 
         style.Draw(over, isDisabled);
         if (sizeOverride is null) image.Render();
-        else image.RenderTo(sizeOverride.Value);
+        else image.RenderTo(sizeOverride);
 
         if (!over.IsMouseIn()) return;
         if (_clickEvent.Any() && !isDisabled) GameBox.SetMouseCursor(MouseCursor.MOUSE_CURSOR_POINTING_HAND);

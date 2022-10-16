@@ -1,7 +1,7 @@
 using System.Numerics;
-using Raylib_CsLo;
 using RayWrapper.Objs;
 using RayWrapperTester.Example_Setup;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Examples;
 

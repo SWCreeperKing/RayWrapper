@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.Slot;
 
@@ -16,6 +16,6 @@ public class RectItem : SlotItem
     public override void Draw(Vector2 pos, Vector2 size, int alpha)
     {
         var (r, g, b, _) = color;
-        new Rectangle(pos.X, pos.Y, size.X, size.Y).Draw(new Color(r, g, b, alpha));
+        new Rectangle(pos.X, pos.Y, size.X, size.Y).Draw(new Color(r,g,b,alpha));
     }
 }

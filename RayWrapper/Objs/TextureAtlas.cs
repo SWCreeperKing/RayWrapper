@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,17 +6,19 @@ using System.Numerics;
 using Raylib_CsLo;
 using ZimonIsHimUtils.ExtensionMethods;
 using Rectangle = RayWrapper.Base.Rectangle;
+using Texture = RayWrapper.Base.Texture;
+using Image = RayWrapper.Base.Image;
 
 namespace RayWrapper.Objs;
 
-public class TextureAtlas
+public class TextureAtlas : IDisposable
 {
     public Image image;
     public Texture texture;
     public int pixelScale;
     public Dictionary<string, Rectangle> imageRegistry = new();
 
-    public TextureAtlas(string imagePath, int pixelScale) : this(Raylib.LoadImage(imagePath), pixelScale)
+    public TextureAtlas(string imagePath, int pixelScale) : this(new Image(imagePath), pixelScale)
     {
         if (!File.Exists(imagePath)) throw new FileNotFoundException($"[{imagePath}] is not a valid file path");
     }
@@ -24,7 +27,7 @@ public class TextureAtlas
     {
         this.image = image;
         this.pixelScale = pixelScale;
-        texture = image.Texture();
+        texture = image.Texture;
     }
 
     public void Draw(string id, Rectangle destRect, Vector2? origin = null,
@@ -87,10 +90,10 @@ public class TextureAtlas
         return this;
     }
 
-    ~TextureAtlas()
+    public void Dispose()
     {
-        Raylib.UnloadImage(image);
-        Raylib.UnloadTexture(texture);
+        image.Dispose();
+        texture.Dispose();
     }
 }
 

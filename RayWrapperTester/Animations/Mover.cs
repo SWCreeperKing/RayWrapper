@@ -4,6 +4,7 @@ using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.SinglePurposeObjects;
 using RayWrapper.Animation.Transitions;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Animations;
 

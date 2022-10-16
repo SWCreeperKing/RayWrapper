@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using RayWrapper.Vars;
 
 namespace RayWrapper.Objs.Slot;
 

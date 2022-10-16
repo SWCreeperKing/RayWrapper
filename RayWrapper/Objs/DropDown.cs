@@ -7,6 +7,7 @@ using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Objs.ListView;
 using static Raylib_CsLo.MouseCursor;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -44,7 +45,7 @@ public class DropDown : GameObject
     {
         var longest = options.OrderByDescending(s => s.Length).First();
         _size = (Text.Style.DefaultFont ?? Raylib.GetFontDefault()).MeasureText($"^|||y{longest}", fontSize);
-        var back = RectWrapper.AssembleRectFromVec(Position, _size).Grow(4);
+        var back = new Rectangle(Position, _size).Grow(4);
         text = new Label(back, options[Value])
         {
             clicked = () => isListVisible = !isListVisible,
@@ -56,7 +57,7 @@ public class DropDown : GameObject
             }
         };
 
-        var defItem = new DefaultListItem((int) back.width, () => options.Count, i => options[i])
+        var defItem = new DefaultListItem((int) back.W, () => options.Count, i => options[i])
         {
             onClick = (i, _) =>
             {
@@ -65,7 +66,7 @@ public class DropDown : GameObject
                 isListVisible = false;
             }
         };
-        optionDisplay = new ListView.ListView(new Vector2(back.x, back.y + back.height + 2), defItem, 4, padding: 2)
+        optionDisplay = new ListView.ListView(new Vector2(back.X, back.Y + back.H + 2), defItem, 4, padding: 2)
         {
             outsideClick = () =>
             {
@@ -94,7 +95,7 @@ public class DropDown : GameObject
     {
         base.UpdatePosition(newPos);
         text.Position = pos;
-        optionDisplay.Position = newPos + new Vector2(0, text.Rect.height + 2);
+        optionDisplay.Position = newPos + new Vector2(0, text.Rect.H + 2);
         UpdateChanges();
     }
 }

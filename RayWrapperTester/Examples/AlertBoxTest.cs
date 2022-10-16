@@ -21,8 +21,9 @@ public class AlertBoxTest : Example
         bbb.Clicked += () => new AlertInput("Testing", "Hello?") { onResult = Logger.Log }.Show();
 
         var inputBox = new InputBox(pos + new Vector2(300, 0));
-        var inputBoxSmall = new InputBox(pos + new Vector2(300, 50), 7, 7) { numbersOnly = true };
+        var inputBoxSmall = new InputBox(pos + new Vector2(300, 50), maxCharacters: 7) { numbersOnly = true };
+        var inputBoxPass = new InputBox(pos + new Vector2(300, 100), maxCharacters: 7) { password = true };
 
-        RegisterGameObj(b, bb, bbb, inputBox, inputBoxSmall);
+        RegisterGameObj(b, bb, bbb, inputBox, inputBoxSmall, inputBoxPass);
     }
 }

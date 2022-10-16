@@ -6,7 +6,7 @@ using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -57,16 +57,16 @@ public class Graph : GameObject
             else _cacheValues.DrawArrAsLine(lineColor, thickness); 
         });
 
-        grow.DrawHallowRect(BLACK);
+        grow.DrawLines(color: BLACK);
         if (_closest == neg) return;
         _closest.DrawCircle(3);
         if (_realVal.ContainsKey(_closest)) tooltip.Draw();
     }
 
-    protected override Vector2 GetPosition() => rect.Pos();
-    protected override Vector2 GetSize() => rect.Size();
-    protected override void UpdatePosition(Vector2 newPos) => rect.MoveTo(newPos);
-    protected override void UpdateSize(Vector2 newSize) => rect.SetSize(newSize);
+    protected override Vector2 GetPosition() => rect.Pos;
+    protected override Vector2 GetSize() => rect.Size;
+    protected override void UpdatePosition(Vector2 newPos) => rect.Pos = newPos;
+    protected override void UpdateSize(Vector2 newSize) => rect.Size = newSize;
 
     public void UpdateVal()
     {
@@ -80,10 +80,10 @@ public class Graph : GameObject
         var maxCalc = val.Where(v2 => v2.X < maxC && v2.Y < maxC);
         var min = new Vector2(minCalc.Min(v => v.X), minCalc.Min(v => v.Y));
         var max = new Vector2(maxCalc.Max(v => v.X), maxCalc.Max(v => v.Y));
-        var scaling = (max - min) / rect.Size();
+        var scaling = (max - min) / rect.Size;
             
         _cacheValues = val.Select(v2 =>
-                (v2 - min) / scaling * new Vector2(1, -1) + rect.Pos() + new Vector2(0, rect.height))
+                (v2 - min) / scaling * new Vector2(1, -1) + rect.Pos + new Vector2(0, rect.H))
             .ToArray();
             
         for (var i = 0; i < val.Count; i++)

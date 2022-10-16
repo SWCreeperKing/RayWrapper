@@ -3,6 +3,7 @@ using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -21,7 +22,7 @@ public class KeyButton : GameObject
     public KeyButton(Vector2 pos, KeyboardKey key)
     {
         this.key = key;
-        core = new Button(RectWrapper.AssembleRectFromVec(pos, new Vector2(0, 0)), $" {this.key.GetString()} ",
+        core = new Button(new Rectangle(pos, new Vector2(0, 0)), $" {this.key.GetString()} ",
             Label.Style.DrawMode.SizeToText)
         {
             Text = new Actionable<string>(string.Empty,

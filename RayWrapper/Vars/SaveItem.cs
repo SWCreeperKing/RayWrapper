@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using RayWrapper.Base;
 using static RayWrapper.GameBox;
 using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.GameConsole;

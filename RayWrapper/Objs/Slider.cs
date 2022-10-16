@@ -4,11 +4,11 @@ using Raylib_CsLo;
 using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
+using RayWrapper.Vars;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -21,15 +21,27 @@ public class Slider : GameObject
     public Action<float> onDone;
     public float value;
 
-    public Slider(Rectangle rect) => (pos, size) = (rect.Pos(), rect.Size());
+    private Rectangle _rect;
+    private Rectangle _rect2;
 
-    public Slider(float x, float y, float width, float height) =>
-        (pos, size) = (new Vector2(x, y), new Vector2(width, height));
+    public Slider(Vector2 pos, Vector2 size) : this(new Rectangle(pos, size))
+    {
+    }
+
+    public Slider(float x, float y, float width, float height) : this(new Rectangle(x, y, width, height))
+    {
+    }
+
+    public Slider(Rectangle rect)
+    {
+        _rect = new Rectangle(rect);
+        _rect2 = new Rectangle(rect);
+    }
 
     protected override void UpdateCall()
     {
         if (IsMouseOccupied && mouseOccupier != this) return;
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && AssembleRectFromVec(pos, size).IsMouseIn())
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && _rect.IsMouseIn())
         {
             mouseOccupier = this;
         }
@@ -40,23 +52,22 @@ public class Slider : GameObject
         }
 
         if (mouseOccupier != this) return;
-        var mouse = mousePos;
-        value = Math.Clamp(mouse.X - pos.X, 0, size.X) / size.X;
+        value = Math.Clamp(mousePos.X - Position.X, 0, Size.X) / Size.X;
     }
 
     protected override void RenderCall()
     {
-        var newS = new Vector2(size.X * (isVertical ? 1 : value), size.Y * (isVertical ? value : 1));
-        var back = AssembleRectFromVec(pos, size);
-        var rect = AssembleRectFromVec(pos, newS);
-        style.Draw(back, rect, back.IsMouseIn() || mouseOccupier == this);
+        _rect2.Size = new Vector2(Size.X * (isVertical ? 1 : value), Size.Y * (isVertical ? value : 1));
+        style.Draw(_rect, _rect2, _rect.IsMouseIn() || mouseOccupier == this);
     }
 
-    protected override Vector2 GetSize() => size + new Vector2(style.outlineStyle.thickness);
+    protected override Vector2 GetPosition() => _rect.Pos;
+    protected override Vector2 GetSize() => _rect.Size + new Vector2(style.outlineStyle.thickness);
+    protected override void UpdatePosition(Vector2 newPos) => _rect.Pos = _rect2.Pos = newPos;
 
     protected override void UpdateSize(Vector2 newSize)
     {
-        base.UpdateSize(newSize - new Vector2(style.outlineStyle.thickness));
+        _rect.Size = newSize - new Vector2(style.outlineStyle.thickness);
     }
 
     public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;

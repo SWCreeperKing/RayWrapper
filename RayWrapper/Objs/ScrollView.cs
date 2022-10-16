@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_CsLo;
 using RayWrapper.Base.GameObject;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -21,12 +21,12 @@ public class ScrollView : GameObject
 
     public ScrollView(Rectangle rect)
     {
-        _rect = new Rectangle(rect.x + 20, rect.y, rect.width - 20, rect.height - 20);
-        _yScroll = new Scrollbar(new Rectangle(rect.x, rect.y, 20, rect.height - 20));
-        _xScroll = new Scrollbar(new Rectangle(rect.x + 20, rect.y + rect.height - 20, rect.width - 20, 20))
+        _rect = new Rectangle(rect.X + 20, rect.Y, rect.W - 20, rect.H - 20);
+        _yScroll = new Scrollbar(new Rectangle(rect.X, rect.Y, 20, rect.H - 20));
+        _xScroll = new Scrollbar(new Rectangle(rect.X + 20, rect.Y + rect.H - 20, rect.W - 20, 20))
             { isVertical = false };
-        pos = _rect.Pos();
-        _trueSize = size = _rect.Size();
+        pos = _rect.Pos;
+        _trueSize = size = _rect.Size;
         _xScroll.amountInvoke = () => Math.Abs(_trueSize.X - size.X) + 1;
         _yScroll.amountInvoke = () => Math.Abs(_trueSize.Y - size.Y) + 1;
         _xScroll.OnMoveEvent += _ => Recalc();
@@ -49,14 +49,14 @@ public class ScrollView : GameObject
 
         if (_trueSize.X >= size.X) _xScroll.Render();
         if (_trueSize.Y >= size.Y) _yScroll.Render();
-        _rect.DrawHallowRect(BLACK, 1);
+        _rect.DrawLines(BLACK, 1);
     }
 
     protected override void UpdatePosition(Vector2 newPos)
     {
-        _rect.MoveTo(newPos);
-        _yScroll.Position = new Vector2(_rect.x, _rect.y);
-        _xScroll.Position = new Vector2(_rect.x + 20, _rect.y + _rect.height - 20);
+        _rect.Pos = newPos;
+        _yScroll.Position = new Vector2(_rect.X, _rect.Y);
+        _xScroll.Position = new Vector2(_rect.X + 20, _rect.Y + _rect.H - 20);
     }
 
     public void Recalc()
@@ -69,7 +69,7 @@ public class ScrollView : GameObject
         _trueSize = new Vector2(Math.Max(_trueSize.X, v2s.Max(g => g.X) + 6),
             Math.Max(_trueSize.Y, v2s.Max(g => g.Y) + 6));
         _posOffset = new Vector2(_xScroll.Value, _yScroll.Value) - new Vector2(3);
-        var tempRect = new Rectangle(_rect.x + _posOffset.X, _rect.y + _posOffset.Y, _rect.width, _rect.height);
+        var tempRect = new Rectangle(_rect.X + _posOffset.X, _rect.Y + _posOffset.Y, _rect.W, _rect.H);
         _renderList.Clear();
         _renderList = _gos.Where(g => CheckCollisionRecs(g.GetRect(), tempRect)).ToList();
         foreach (var go in _renderList) go.Position -= _posOffset;

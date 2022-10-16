@@ -1,7 +1,7 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base;
-using static RayWrapper.RectWrapper;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
 
@@ -29,14 +29,14 @@ public class AtlasNode : NodeShape
 
     public override void DrawShape(Vector2 off, float scale)
     {
-        var rect = AssembleRectFromVec(position * scale + off, size * scale);
+        var rect = new Rectangle(position * scale + off, size * scale);
         rect.Draw(completed ? completeColor : color);
         image.Draw(rect, scale);
     }
 
     public override void DrawOnHover(Vector2 off, float scale)
     {
-        var rect = AssembleRectFromVec(position * scale + off, size * scale);
-        rect.Grow((int) (scale / 8f * 1.5f)).DrawHallowRect(outLineColor);
+        var rect = new Rectangle(position * scale + off, size * scale);
+        rect.Grow((int) (scale / 8f * 1.5f)).DrawLines(outLineColor);
     }
 }

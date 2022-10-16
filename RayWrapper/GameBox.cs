@@ -94,6 +94,7 @@ public class GameBox
     public static List<Tooltip> tooltips = new();
 
     private static readonly List<ISave> SaveList = new();
+    private static readonly Color AlertBackColor = new(0, 0, 0, 75);
     private static bool _hasInit;
     private static bool _initCollision;
     private static bool _isConsole;
@@ -166,7 +167,7 @@ public class GameBox
         SetWindowSize((int) windowSize.X, (int) windowSize.Y);
 
         Text.Style.SetDefaultFont(LoadDefaultFont());
-        _alertBack = new(Vector2.Zero, windowSize) { color = new Color(0, 0, 0, 75) };
+        _alertBack = new(Vector2.Zero, windowSize);
 
         Start();
     }
@@ -336,7 +337,7 @@ public class GameBox
             Animator.Render();
             if (alertQueue.Count > 0)
             {
-                _alertBack.Draw();
+                _alertBack.Draw(AlertBackColor);
                 alertQueue.Peek().Render();
             }
         }
@@ -469,12 +470,9 @@ public class GameBox
             var textSize = defFont.MeasureText(text);
             Vector2 pos = new(mousePos.X - ((int) screenQuad % 2 != 0 ? textSize.X : 0),
                 mousePos.Y - ((int) screenQuad > 2 ? textSize.Y : -33));
-            RayWrapper.Base.Rectangle rect = new(pos, textSize);
-            rect.GrowThis(4);
-            rect.color = baseTooltipColor;
-            rect.Draw();
-            rect.color = baseTooltipColor.ReturnDarker();
-            rect.DrawLines();
+            var rect = new Base.Rectangle(pos, textSize).GrowThis(4);
+            rect.Draw(baseTooltipBackColor);
+            rect.DrawLines(color: baseTooltipColor.ReturnDarker());
             defFont.DrawText(text, pos, baseTooltipColor);
         }
     }

@@ -6,8 +6,7 @@ using RayWrapper.Objs;
 using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Examples;
 
@@ -19,7 +18,7 @@ public class TextLabelButtonExample : Example
 
     public TextLabelButtonExample(string tabName) : base(tabName)
     {
-        var testButton = new Button(AssembleRectFromVec(new Vector2(12, 130), new Vector2(200, 200)), "Just a Name")
+        var testButton = new Button(new Rectangle(12, 130, 200, 200), "Just a Name")
         {
             isDisabled = new Actionable<bool>(false, () => _buttonInc > 10)
         };
@@ -29,7 +28,7 @@ public class TextLabelButtonExample : Example
             testButton.baseL.style.drawMode = (Label.Style.DrawMode) (_buttonInc % 5);
         };
 
-        _testLabel = new Label(AssembleRectFromVec(new Vector2(475, 80), new Vector2(200, 200)),
+        _testLabel = new Label(new Rectangle(475, 80, 200, 200),
             "Look! I can move with the arrow keys!")
         {
             style =
@@ -52,7 +51,7 @@ public class TextLabelButtonExample : Example
         };
         ImageButton imageButton = new("Assets/Images/Untitled.png", new Vector2(900, 100));
         imageButton.Clicked += () => Logger.Log("Clicked Image");
-        
+
         ImageButton imageButtonDisabled = new("Assets/Images/Untitled.png", new Rectangle(900, 300, 32, 32))
         {
             isDisabled = true

@@ -3,6 +3,9 @@ using System.IO;
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base.GameObject;
+using static RayWrapper.Base.Ext;
+using Rectangle = RayWrapper.Base.Rectangle;
+using Texture = RayWrapper.Base.Texture;
 
 namespace RayWrapper.Objs;
 
@@ -13,20 +16,14 @@ public class ImageObj : GameObject
 
     public int ImageAlpha
     {
-        get => texture.ImageAlpha;
-        set => texture.ImageAlpha = value;
-    } // transparency b/t 0-255
+        get => texture.tint.a;
+        set => texture.tint = texture.tint with { a = (byte) value };
+    }
 
-    public int Rotation
-    {
-        get => texture.rotation;
-        set => texture.rotation = value;
-    } // 0 to 360
-
-    public Rectangle Rect => RectWrapper.AssembleRectFromVec(texture.Position, texture.Size);
-    public TextureObj texture;
+    public Texture texture;
 
     private Image _image;
+    private Rectangle _rect;
 
     public ImageObj(string imageFile, Vector2? pos = null) : this(Raylib.LoadImage(imageFile), pos ?? Vector2.Zero)
     {
@@ -35,9 +32,12 @@ public class ImageObj : GameObject
 
     public ImageObj(Image image, Vector2? pos = null)
     {
+        Position = pos ?? Vector2.Zero;
+        Size = image.Size();
+        _rect = new Rectangle(Vector2.Zero, Size);
         Path = null;
         _image = image;
-        texture = new TextureObj(image.Texture(), pos ?? Vector2.Zero);
+        texture = image.Texture();
     }
 
     public ImageObj(ImageObj imageObj, Vector2? pos = null)
@@ -47,23 +47,20 @@ public class ImageObj : GameObject
             throw new ArgumentException($"ImageObj given does not have a valid path: {imageObj.Path}");
         }
 
+        Position = pos ?? Vector2.Zero;
+        Size = imageObj.Size;
+        _rect = imageObj._rect;
         Path = imageObj.Path;
         _image = Raylib.LoadImage(imageObj.Path);
-        texture = new TextureObj(_image.Texture(), pos ?? Vector2.Zero);
+        texture = imageObj.texture;
     }
 
-    protected override void RenderCall() => texture.Render();
+    protected override void RenderCall() => RenderTo(GetRect());
 
-    public void RenderTo(Rectangle rect, Color? tint = null, Vector2? origin = null, float rotation = 0)
+    public void RenderTo(Rectangle rect, Vector2? origin = null, float rotation = 0)
     {
-        Raylib.DrawTexturePro(texture, texture.SourceRect, rect, origin ?? Vector2.Zero, rotation,
-            tint ?? Raylib.WHITE);
+        texture.Draw(_rect, rect, origin ?? Vector2.Zero, rotation);
     }
-
-    protected override Vector2 GetPosition() => texture.Position;
-    protected override Vector2 GetSize() => texture.Size;
-    protected override void UpdatePosition(Vector2 newPos) => texture.Position = newPos;
-    protected override void UpdateSize(Vector2 newSize) => texture.Size = newSize;
 
     public static implicit operator ImageObj(string path) => new(path);
     ~ImageObj() => Raylib.UnloadImage(_image);

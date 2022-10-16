@@ -5,7 +5,7 @@ using RayWrapper.Base;
 using RayWrapper.Objs;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapperTester.Examples;
 

@@ -9,7 +9,7 @@ using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -18,7 +18,7 @@ public class Scrollbar : GameObject
     public static Style defaultStyle = new();
 
     public Style style = defaultStyle.Copy();
-    public Rectangle bar = RectWrapper.Zero;
+    public Rectangle bar = new();
     public int minSizePercent = 20;
     public bool isVertical;
     public Func<float> amountInvoke;
@@ -30,13 +30,13 @@ public class Scrollbar : GameObject
 
     public Scrollbar(Rectangle rect, bool isVertical = true)
     {
-        (pos, size) = (rect.Pos(), rect.Size());
+        (pos, size) = (rect.Pos, rect.Size);
         this.isVertical = isVertical;
     }
 
     public float Value { get; private set; }
 
-    public float GetOffset => isVertical ? pos.Y - bar.y : pos.X - bar.x;
+    public float GetOffset => isVertical ? pos.Y - bar.Y : pos.X - bar.X;
 
     public event Action<float> OnMoveEvent
     {
@@ -47,8 +47,8 @@ public class Scrollbar : GameObject
     public void MoveBar(float offset)
     {
         CalcBarSize();
-        if (isVertical) bar.y -= offset;
-        else bar.x -= offset;
+        if (isVertical) bar.Y -= offset;
+        else bar.X -= offset;
         ClampBounds();
         _onMove.Each(a => a.Invoke(Value));
     }
@@ -56,15 +56,15 @@ public class Scrollbar : GameObject
     public void ClampBounds()
     {
         CalcBarSize();
-        (bar.width, bar.height) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
+        (bar.W, bar.H) = isVertical ? (size.X, _visibleSize) : (_visibleSize, size.Y);
         var (hMax, wMax) = (pos.Y + size.Y, pos.X + size.X);
-        bar.y = Math.Clamp(bar.y, pos.Y, (int) (isVertical ? hMax - _visibleSize : hMax));
-        bar.x = Math.Clamp(bar.x, pos.X, (int) (isVertical ? wMax : wMax - _visibleSize));
+        bar.Y = Math.Clamp(bar.Y, pos.Y, (int) (isVertical ? hMax - _visibleSize : hMax));
+        bar.X = Math.Clamp(bar.X, pos.X, (int) (isVertical ? wMax : wMax - _visibleSize));
     }
 
     public void CalcVal()
     {
-        var sub1 = isVertical ? bar.y - pos.Y : bar.x - pos.X;
+        var sub1 = isVertical ? bar.Y - pos.Y : bar.X - pos.X;
         var sub2 = Math.Max((isVertical ? size.Y : size.X) - _visibleSize, 1);
         Value = Math.Clamp(sub1 / sub2 * (Amount() - 1), 0, float.MaxValue - 1);
     }
@@ -95,7 +95,7 @@ public class Scrollbar : GameObject
         if (mouseOccupier != this)
         {
             if (!IsMouseOccupied && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && GetRect().IsMouseIn())
-                MoveBar((isVertical ? bar.y - mousePos.Y : bar.x - mousePos.X) + _visibleSize / 2);
+                MoveBar((isVertical ? bar.Y - mousePos.Y : bar.X - mousePos.X) + _visibleSize / 2);
 
             _lastMouse = Vector2.Zero;
             return;
@@ -117,11 +117,10 @@ public class Scrollbar : GameObject
     protected override void UpdatePosition(Vector2 newPos)
     {
         var offset = GetOffset;
-        bar.MoveTo(newPos);
+        bar.Pos = newPos;
         MoveBar(offset);
         base.UpdatePosition(newPos);
     }
-
 
     public float Amount() => Math.Max(amountInvoke?.Invoke() ?? 0, 1);
     public override MouseCursor GetOccupiedCursor() => isVertical ? MOUSE_CURSOR_RESIZE_NS : MOUSE_CURSOR_RESIZE_EW;

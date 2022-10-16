@@ -9,7 +9,7 @@ using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -27,9 +27,9 @@ public class TabView : GameObject
 
     private readonly IDictionary<string, Label> _tabs = new Dictionary<string, Label>();
 
-    // private readonly IList<Label> _tabs = new List<Label>();
     private readonly IList<string> _tabOrder = new List<string>();
     private readonly int _padding = 7;
+    
     private string _currentTab;
     private float _offset;
     private Rectangle _rect;
@@ -38,7 +38,7 @@ public class TabView : GameObject
     {
         _rect = new Rectangle(pos.X, pos.Y, width, 35);
         _bar = new Scrollbar(new Rectangle(pos.X, pos.Y + 35, width, 18), false)
-            { amountInvoke = () => GetTabLength() - _rect.width, style = style.scrollStyle };
+            { amountInvoke = () => GetTabLength() - _rect.W, style = style.scrollStyle };
         _bar.OnMoveEvent += f =>
         {
             _offset = f;
@@ -71,13 +71,8 @@ public class TabView : GameObject
         {
             _rect.MaskDraw(() => { _tabs.Values.Each(t => t.Render()); });
 
-            if (outline) _rect.DrawHallowRect(BLACK);
+            if (outline) _rect.DrawLines(color: BLACK);
             if (_bar.Amount() > 1) _bar.Render();
-                
-            // _tabs.Values.Each(t =>
-            // {
-            //     if (t.Rect.IsMouseIn()) GameBox.SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-            // });
         }
 
         if (_currentTab is null || !_tabContents.ContainsKey(_currentTab)) return;
@@ -88,14 +83,14 @@ public class TabView : GameObject
     protected override Vector2 GetSize() => _rect.Size;
     protected override void UpdatePosition(Vector2 newPos)
     {
-        _rect.MoveTo(newPos);
+        _rect.Pos = newPos;
         _bar.Position = newPos + new Vector2(0, 40);
         Refresh();
     }
 
     protected override void UpdateSize(Vector2 newSize)
     {
-        _rect.SetSize(newSize);
+        _rect.Size = newSize;
         Refresh();
     }
 
@@ -103,12 +98,12 @@ public class TabView : GameObject
 
     public void ReCalculate()
     {
-        var startX = _rect.x - _offset;
+        var startX = _rect.X - _offset;
         var hOff = outline ? 2 : 0;
         foreach (var t in _tabOrder)
         {
             var l = _tabs[t];
-            var newPos = new Vector2(startX, _rect.y + hOff);
+            var newPos = new Vector2(startX, _rect.Y + hOff);
             l.Position = newPos;
             startX += l.Size.X + _padding;
         }
@@ -116,7 +111,7 @@ public class TabView : GameObject
 
     private void NewTab(string name, int insert = -1)
     {
-        Label l = new(new Vector2(0, _rect.y), name)
+        Label l = new(new Vector2(0, _rect.Y), name)
         {
             clicked = () =>
             {

@@ -9,8 +9,7 @@ using RayWrapper.Var_Interfaces;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.RectWrapper;
-using Rectangle = Raylib_CsLo.Rectangle;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Objs;
 
@@ -50,12 +49,12 @@ public class Button : GameObject
         remove => _clickEvent.Remove(value);
     }
 
-    public Button(Vector2 pos, string text = "Untitled Button") : this(AssembleRectFromVec(pos, Vector2.Zero), text,
+    public Button(Vector2 pos, string text = "Untitled Button") : this(new Rectangle(pos, Vector2.Zero), text,
         Label.Style.DrawMode.SizeToText)
     {
     }
 
-    public Button(Vector2 pos, Actionable<string> text) : this(AssembleRectFromVec(pos, Vector2.Zero), text,
+    public Button(Vector2 pos, Actionable<string> text) : this(new Rectangle(pos, Vector2.Zero), text,
         Label.Style.DrawMode.SizeToText)
     {
         Text = text;
