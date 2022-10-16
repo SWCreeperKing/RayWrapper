@@ -4,7 +4,6 @@ using Raylib_CsLo;
 using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Var_Interfaces;
-using RayWrapper.Vars;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;

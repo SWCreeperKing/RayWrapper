@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base.GameObject;
 using static RayWrapper.Collision.Collision;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Collision;
 

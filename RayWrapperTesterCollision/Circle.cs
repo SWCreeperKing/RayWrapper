@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper;
+using RayWrapper.Base;
 using RayWrapper.Collision;
 
 namespace RayWrapperTesterCollision;
@@ -10,7 +10,7 @@ public class Circle : CircleCollider
 {
     public static Random r = new();
 
-    public Circle(Vector2 pos) : base(new RayWrapper.Vars.Circle(pos, 10))
+    public Circle(Vector2 pos) : base(new RayWrapper.Base.Circle(pos, 10))
     {
         var phi = 2 * Math.PI * r.NextDouble();
         var vx = .25f * Math.Cos(phi);

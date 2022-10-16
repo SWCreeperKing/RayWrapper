@@ -8,13 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RayWrapper" Version="0.5.1.4" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="VectorFontRegister.cs">
-        <Link>Resources\VectorFontRegister.cs</Link>
-      </Compile>
+      <PackageReference Include="RayWrapper" Version="0.6.0" />
     </ItemGroup>
 
 </Project>

@@ -26,6 +26,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RayWrapper" Version="0.5.1.4" />
+      <PackageReference Include="RayWrapper" Version="0.6.0" />
     </ItemGroup>
 </Project>

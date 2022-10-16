@@ -1,7 +1,8 @@
 ﻿using System.Numerics;
-using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base.GameObject;
 using ZimonIsHimUtils.ExtensionMethods;
+using RayWrapper.Base;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.ParticleControl;
 
@@ -51,7 +52,7 @@ public class VectorRanger
 
     public static implicit operator VectorRanger(Vector2 v2) => new() { v2 = v2 };
     public static implicit operator VectorRanger((Vector2 v21, Vector2 v22) v) => new() { v2 = v.v21, endV2 = v.v22 };
-    public static implicit operator VectorRanger(Rectangle r) => new() { v2 = r.Pos(), endV2 = r.Pos() + r.Size() };
+    public static implicit operator VectorRanger(Rectangle r) => new() { v2 = r.Pos, endV2 = r.Pos + r.Size };
 
     public static implicit operator Vector2(VectorRanger vr) =>
         vr.endV2 is null ? vr.v2 : GameBox.Random.Next(vr.v2, vr.endV2!.Value);

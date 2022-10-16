@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper;
+using RayWrapper.Base;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using static Raylib_CsLo.Raylib;

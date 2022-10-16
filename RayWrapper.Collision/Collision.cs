@@ -1,10 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
-using Raylib_CsLo;
 using RayWrapper.GameConsole;
 using static RayWrapper.GameBox;
-using static RayWrapper.RectWrapper;
 using static RayWrapper.Vars.Logger;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Collision;
 
@@ -47,7 +46,7 @@ public static class Collision
         for (var y = 0; y < sectorsY; y++)
         for (var x = 0; x < sectorsX; x++)
         {
-            _collisionSectors[sectorsX * y + x] = AssembleRectFromVec(sectorSize * new Vector2(x, y), sectorSize);
+            _collisionSectors[sectorsX * y + x] = new Rectangle(sectorSize * new Vector2(x, y), sectorSize);
         }
 
         var ts = new CancellationTokenSource();
@@ -93,7 +92,7 @@ public static class Collision
                     {
                         _collisionObjects.Remove(obj.currentId, out _);
                     }
-                    
+
                     _collisionObjectsAdd.Clear();
                     _collisionObjectsRemove.Clear();
 

@@ -1,5 +1,6 @@
 using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Objs;
 
 namespace RayWrapper.ParticleControl;

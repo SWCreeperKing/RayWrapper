@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
+using RayWrapper.Base.GameObject;
 using RayWrapper.Vars;
-using static RayWrapper.VectorFont.VectorFontRegister;
 
 namespace RayWrapper.VectorFont;
 
@@ -11,15 +11,15 @@ public class VectorFont : GameObject
     public int segments = 15;
     public Vector2 center;
 
-    public Drawable[] b =
-    {
-        // "line": [0, 0, 0, 1, 0.1]
-        new Line(new Vector2(0, 0), new Vector2(0, 1), .1f),
-        // "line": [0, 0.5, 0, 0.92, 0.5, 0.5, 0.5, 1, 0.1]
-        // new CubeBezierLine(new Vector2(0, .5f), new Vector2(0, .92f), new Vector2(.5f, .5f), new Vector2(.5f, 1), .1f)
-        // "ring": [0.5, 0.75, 0.1, 0.35, 0, 360]
-        new Ring(new Vector2(.25f, .75f), .25f, .1f, 0, 360)
-    };
+    // public Drawable[] b =
+    // {
+    //     // "line": [0, 0, 0, 1, 0.1]
+    //     new Line(new Vector2(0, 0), new Vector2(0, 1), .1f),
+    //     // "line": [0, 0.5, 0, 0.92, 0.5, 0.5, 0.5, 1, 0.1]
+    //     // new CubeBezierLine(new Vector2(0, .5f), new Vector2(0, .92f), new Vector2(.5f, .5f), new Vector2(.5f, 1), .1f)
+    //     // "ring": [0.5, 0.75, 0.1, 0.35, 0, 360]
+    //     new Ring(new Vector2(.25f, .75f), .25f, .1f, 0, 360)
+    // };
 
     public VectorFont()
     {
@@ -47,7 +47,7 @@ public class VectorFont : GameObject
     protected override void RenderCall()
     {
         Raylib.DrawText($"{scale}", 0, 0, 25, Raylib.GOLD);
-        foreach (var t in b) t.Draw(center, scale, Raylib.BLUE);
+        // foreach (var t in b) t.Draw(center, scale, Raylib.BLUE);
         // var pos1 = new Vector2(50, 200);
         // var pos2 = new Vector2(200);
         //

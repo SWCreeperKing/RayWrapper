@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Vars;
+using RayWrapper.Base;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Collision;
 
@@ -14,7 +15,7 @@ public abstract class CircleCollider : Collider
         c switch
         {
             CircleCollider cc => Raylib.CheckCollisionCircles(Position, radius, cc.Position, cc.radius),
-            RectCollider rc => Raylib.CheckCollisionCircleRec(Position, radius, rc),
+            RectCollider rc => Raylib.CheckCollisionCircleRec(Position, radius, rc.rect),
             _ => false
         };
 

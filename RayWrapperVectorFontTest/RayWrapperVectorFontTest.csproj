@@ -7,8 +7,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\RayWrapper.VectorFont\RayWrapper.VectorFont.csproj" />
-    </ItemGroup>
-
 </Project>

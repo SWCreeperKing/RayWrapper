@@ -6,6 +6,7 @@ using RayWrapper;
 using RayWrapper.Objs;
 using RayWrapper.ParticleControl;
 using RayWrapper.Vars;
+using Rectangle = RayWrapper.Base.Rectangle;
 
 new GameBox(new RayWrapperTesterParticle.Program(), new Vector2(1280, 720));
 
