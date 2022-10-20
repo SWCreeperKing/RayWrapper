@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace RayWrapper.Vars;
+namespace RayWrapper.Base;
 
 public static class LanguageReader
 {

@@ -1,10 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using Raylib_CsLo;
 using static Raylib_CsLo.TraceLogLevel;
-using static RayWrapper.Vars.Logger.Level;
-using static RayWrapper.Vars.Logger.LoggingLogger.Native;
+using static RayWrapper.Base.Logger.Level;
+using static RayWrapper.Base.Logger.LoggingLogger.Native;
 
-namespace RayWrapper.Vars;
+namespace RayWrapper.Base;
 
 public static class Logger
 {

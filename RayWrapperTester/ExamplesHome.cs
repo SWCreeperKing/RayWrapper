@@ -66,7 +66,7 @@ public class ExamplesHome : GameObject
         var t = new Test();
         t.i = 10;
         GameBox.RegisterSaveItem(t, "test");
-        
+
         Logger.Log($"i = {t.i}"); // 10
         GameBox.SaveItems();
         

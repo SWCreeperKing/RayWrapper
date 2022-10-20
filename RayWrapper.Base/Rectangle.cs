@@ -171,8 +171,7 @@ public class Rectangle
     {
         DrawRectangleGradientH((int) X, (int) Y, (int) W, (int) H, c1, c2);
     }
-
-
+    
     public static bool operator ==(Rectangle r1, Rect r2) =>
         r1.X == r2.x && r1.Y == r2.y && r1.W == r2.width && r1.H == r2.height;
 

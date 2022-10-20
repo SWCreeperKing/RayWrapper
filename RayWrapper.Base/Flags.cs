@@ -1,4 +1,4 @@
-﻿namespace RayWrapper.Vars;
+﻿namespace RayWrapper.Base;
 
 public class Flags<T>
 {

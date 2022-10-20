@@ -406,6 +406,11 @@ public class GameBox
     public static void LoadItems() => SaveList.LoadItems();
     public static void DeleteFile(string name) => SaveList.DeleteFile(name);
     public static void DeleteAll() => SaveList.DeleteAll();
+    
+    /// <summary>
+    /// NEVER CHANGE REFERENCE OF <paramref name="obj"/>
+    /// SAVING DEPENDS ON KEEPING REFERENCE
+    /// </summary>
     public static void RegisterSaveItem<T>(T obj, string fileName) => SaveList.Add(new SaveItem<T>(obj, fileName));
     public static void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
