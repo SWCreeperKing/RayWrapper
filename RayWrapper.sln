@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTesterParticle", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.Base", "RayWrapper.Base\RayWrapper.Base.csproj", "{EC1F9D8F-00EC-48C0-852B-D005E20E04C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapper.Imgui", "RayWrapper.Imgui\RayWrapper.Imgui.csproj", "{1F89009F-3AA8-41D2-9079-1653DA8F960D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayWrapperTesterImgui", "RayWrapperTesterImgui\RayWrapperTesterImgui.csproj", "{B0644F9B-C6C4-4590-97C0-78BD56B31BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +58,13 @@ Global
 		{EC1F9D8F-00EC-48C0-852B-D005E20E04C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC1F9D8F-00EC-48C0-852B-D005E20E04C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC1F9D8F-00EC-48C0-852B-D005E20E04C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F89009F-3AA8-41D2-9079-1653DA8F960D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F89009F-3AA8-41D2-9079-1653DA8F960D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F89009F-3AA8-41D2-9079-1653DA8F960D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F89009F-3AA8-41D2-9079-1653DA8F960D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0644F9B-C6C4-4590-97C0-78BD56B31BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0644F9B-C6C4-4590-97C0-78BD56B31BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0644F9B-C6C4-4590-97C0-78BD56B31BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0644F9B-C6C4-4590-97C0-78BD56B31BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
