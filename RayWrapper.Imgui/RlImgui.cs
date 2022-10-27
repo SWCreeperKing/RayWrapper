@@ -88,10 +88,11 @@ public static class RlImgui
         SetupMouseCursors();
 
         ImGui.SetCurrentContext(imGuiContext);
-        var fonts = ImGui.GetIO().Fonts;
-        ImGui.GetIO().Fonts.AddFontDefault();
-
         var io = ImGui.GetIO();
+        
+        io.Fonts.AddFontDefault();
+        io.FontGlobalScale = 1.5f;
+        
         io.KeyMap[(int) ImGuiKey.Tab] = (int) KeyboardKey.KEY_TAB;
         io.KeyMap[(int) ImGuiKey.LeftArrow] = (int) KeyboardKey.KEY_LEFT;
         io.KeyMap[(int) ImGuiKey.RightArrow] = (int) KeyboardKey.KEY_RIGHT;
@@ -148,20 +149,20 @@ public static class RlImgui
 
         if ((io.ConfigFlags & ImGuiConfigFlags.NoMouseCursorChange) != 0) return;
 
-        var imgui_cursor = ImGui.GetMouseCursor();
-        if (imgui_cursor == _currentMouseCursor && !io.MouseDrawCursor) return;
+        var imguiCursor = ImGui.GetMouseCursor();
+        if (imguiCursor == _currentMouseCursor && !io.MouseDrawCursor) return;
 
-        _currentMouseCursor = imgui_cursor;
-        if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor.None) Raylib.HideCursor();
+        _currentMouseCursor = imguiCursor;
+        if (io.MouseDrawCursor || imguiCursor == ImGuiMouseCursor.None) Raylib.HideCursor();
         else
         {
             Raylib.ShowCursor();
 
             if ((io.ConfigFlags & ImGuiConfigFlags.NoMouseCursorChange) != 0) return;
 
-            Raylib.SetMouseCursor(!_mouseCursorMap.ContainsKey(imgui_cursor)
+            Raylib.SetMouseCursor(!_mouseCursorMap.ContainsKey(imguiCursor)
                 ? MouseCursor.MOUSE_CURSOR_DEFAULT
-                : _mouseCursorMap[imgui_cursor]);
+                : _mouseCursorMap[imguiCursor]);
         }
     }
 
@@ -200,7 +201,6 @@ public static class RlImgui
         var c = BitConverter.GetBytes(idx_vert.col);
 
         RlGl.rlColor4ub(c[0], c[1], c[2], c[3]);
-
         RlGl.rlTexCoord2f(idx_vert.uv.X, idx_vert.uv.Y);
         RlGl.rlVertex2f(idx_vert.pos.X, idx_vert.pos.Y);
     }

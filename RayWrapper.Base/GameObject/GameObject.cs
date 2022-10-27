@@ -1,9 +1,10 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Base.GameObject;
 
-public abstract class GameObject : GameObjReg, IGameObject
+public abstract class GameObject : TypeRegister<IGameObject>, IGameObject
 {
     public static long gameObjects;
     
@@ -34,14 +35,14 @@ public abstract class GameObject : GameObjReg, IGameObject
     {
         if (updateReturnIfNonVis && !isVisible) return;
         UpdateCall();
-        UpdateReg();
+        register.Each(o => o.Update());
     }
 
     public void Render()
     {
         if (!isVisible) return;
         RenderCall();
-        RenderReg();
+        register.Each(o => o.Render());
     }
 
     protected virtual void UpdateCall()
