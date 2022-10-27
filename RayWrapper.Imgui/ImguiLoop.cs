@@ -1,4 +1,5 @@
 using RayWrapper.Imgui.Widgets;
+using RayWrapper.Imgui.Widgets.Base;
 using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 
@@ -9,7 +10,7 @@ public abstract class ImguiLoop : GameLoop
     private static bool _hasInit;
     private readonly List<IWBase> _registry = new();
 
-    public override void Init()
+    public sealed override void Init()
     {
         if (!_hasInit)
         {
@@ -22,13 +23,13 @@ public abstract class ImguiLoop : GameLoop
 
     public abstract void NormalInit();
 
-    public override void UpdateLoop()
+    public sealed override void UpdateLoop()
     {
         NormalUpdateLoop();
         UpdateReg();
     }
 
-    public override void RenderLoop()
+    public sealed override void RenderLoop()
     {
         NormalRenderLoop();
         RlImgui.Begin();

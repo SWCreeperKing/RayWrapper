@@ -1,8 +1,10 @@
 ﻿using System.Numerics;
+using ImGuiNET;
 using RayWrapper;
 using RayWrapper.Imgui;
 using RayWrapper.Imgui.Widgets;
 using RayWrapper.Vars;
+using Window = RayWrapper.Imgui.Widgets.Window;
 
 new GameBox(new RayWrapperTesterImgui.Program(), new Vector2(1280, 800));
 
@@ -12,11 +14,12 @@ namespace RayWrapperTesterImgui
     {
         private string[] items = { "a", "b", "b", "c", "e", "d", "f", "x", "y", "m", "z" };
         private Func<int> w1Out, w2Out;
-            
+
         public override void NormalInit()
         {
-            var w1 = new Window("test 1").AddListView("", () => items, out w1Out);
-            var w2 = new Window("test 2").AddListView("", () => items, out w2Out);
+            var w1 = new Window("test 1").AddListView("", () => items, out w1Out)
+                .AddButton("button", () => Logger.Log("pushed"));
+            var w2 = new Window("test 2").AddListView("", () => items, out w2Out).AddBullet("hi");
             RegisterWidgets(w1, w2);
         }
 
@@ -26,6 +29,13 @@ namespace RayWrapperTesterImgui
             var w2i = w2Out.Invoke();
             if (w1i != -1) Logger.Log($"Selected from w1: [{items[w1i]}]");
             if (w2i != -1) Logger.Log($"Selected from w2: [{items[w2i]}]");
+        }
+
+        public int v = 0;
+
+        public override void ImguiRenderLoop()
+        {
+            // ImGui.ImageButton("tab");
         }
     }
 }

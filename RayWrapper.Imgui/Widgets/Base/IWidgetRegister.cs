@@ -1,4 +1,4 @@
-namespace RayWrapper.Imgui.Widgets;
+namespace RayWrapper.Imgui.Widgets.Base;
 
 public interface IWidgetRegister
 {

@@ -32,7 +32,7 @@ public class TreeView : GameObject
     private Vector2 _lastPos;
     private Vector2 _moveChange;
     private float _scale;
-    private bool _isOverThreash = false;
+    private bool _isOverThreash;
     private List<string> _tooltipList = new();
 
     public TreeView(params NodeChain[] chains)

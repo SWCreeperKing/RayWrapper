@@ -64,12 +64,12 @@ public class FpCamera
     protected Vector2 fov = Vector2.Zero;
     protected Vector2 prevMousePos = Vector2.Zero;
     protected Vector2 angle = Vector2.Zero; // Camera angle in plane XZ
-    protected float targetDist = 0; // Camera distance from position to target
+    protected float targetDist; // Camera distance from position to target
     protected float playerEyesPos = 0.5f; // Player eyes position from ground (in meters)
     protected float currentBobble;
     protected bool focused = true;
 
-    private Camera3D _camera = new();
+    private Camera3D _camera;
 
     public PositionCallback? validateCamPos = null;
 

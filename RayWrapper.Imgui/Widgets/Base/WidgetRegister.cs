@@ -1,6 +1,6 @@
 using ZimonIsHimUtils.ExtensionMethods;
 
-namespace RayWrapper.Imgui.Widgets;
+namespace RayWrapper.Imgui.Widgets.Base;
 
 public abstract class WidgetRegister : IWidgetRegister
 {

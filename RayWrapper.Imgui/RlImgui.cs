@@ -89,10 +89,10 @@ public static class RlImgui
 
         ImGui.SetCurrentContext(imGuiContext);
         var io = ImGui.GetIO();
-        
+
         io.Fonts.AddFontDefault();
         io.FontGlobalScale = 1.5f;
-        
+
         io.KeyMap[(int) ImGuiKey.Tab] = (int) KeyboardKey.KEY_TAB;
         io.KeyMap[(int) ImGuiKey.LeftArrow] = (int) KeyboardKey.KEY_LEFT;
         io.KeyMap[(int) ImGuiKey.RightArrow] = (int) KeyboardKey.KEY_RIGHT;
@@ -323,4 +323,6 @@ public static class RlImgui
 
         ImGui.Image(new IntPtr(image.id), new Vector2(destWidth, destHeight), uv0, uv1);
     }
+
+    public static Vector4 ToV4(this Color color) => new(color.r, color.g, color.b, color.a);
 }

@@ -12,4 +12,8 @@
       <PackageReference Include="RayWrapper" Version="0.6.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Widgets\Base" />
+    </ItemGroup>
+
 </Project>
