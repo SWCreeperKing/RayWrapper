@@ -1,18 +1,19 @@
 using ImGuiNET;
 using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Vars;
+using static ImGuiNET.ImGuiWindowFlags;
 
 namespace RayWrapper.Imgui.Widgets;
 
 public abstract class WindowBase : WidgetRegister, IWBase
 {
+    public bool closable;
     public bool isOpen = true;
-    public ImGuiWindowFlags configFlags = ImGuiWindowFlags.AlwaysAutoResize;
+    public ImGuiWindowFlags configFlags;
 
     private string _name;
 
-    protected WindowBase(string name) => _name = name;
-
-    protected WindowBase(string name, ImGuiWindowFlags configFlags)
+    protected WindowBase(string name, ImGuiWindowFlags configFlags = AlwaysAutoResize)
     {
         _name = name;
         this.configFlags = configFlags;
@@ -20,13 +21,22 @@ public abstract class WindowBase : WidgetRegister, IWBase
 
     public void Update()
     {
+        if (!isOpen && closable) return;
         UpdateCall();
         UpdateReg();
     }
 
     public void Render()
     {
-        ImGui.Begin(_name, ref isOpen, configFlags);
+        if (!isOpen && closable) return;
+        var begin = closable ? ImGui.Begin(_name, ref isOpen, configFlags) : ImGui.Begin(_name, configFlags);
+        if (!begin)
+        {
+            Logger.Log("e");
+            ImGui.End();
+            return;
+        }
+
         RenderCall();
         RenderReg();
         ImGui.End();
@@ -38,22 +48,35 @@ public abstract class WindowBase : WidgetRegister, IWBase
         DisposeReg();
     }
 
-    public virtual void UpdateCall()
+    protected virtual void UpdateCall()
     {
     }
 
-    public virtual void RenderCall()
+    protected virtual void RenderCall()
     {
     }
 
-    public virtual void DisposeCall()
+    protected virtual void DisposeCall()
     {
     }
 }
 
 public partial class Window : WindowBase
 {
-    public Window(string name) : base(name)
+    public Window(string name, ImGuiWindowFlags configFlags = AlwaysAutoResize) : base(name, configFlags)
     {
+    }
+
+    public Window AddNonWidget(Action nonWidget)
+    {
+        RegisterWidget(new EmptyWidget(nonWidget));
+        return this;
+    }
+
+    public class EmptyWidget : Widget
+    {
+        public Action action;
+        public EmptyWidget(Action action) => this.action = action;
+        protected override void RenderCall() => action?.Invoke();
     }
 }

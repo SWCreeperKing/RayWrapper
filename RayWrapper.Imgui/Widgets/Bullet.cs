@@ -9,7 +9,7 @@ public class Bullet : Widget
 
     public Bullet(string text = "") => this.text = text;
 
-    public override void RenderCall()
+    protected override void RenderCall()
     {
         if (text == "") ImGui.Bullet();
         else ImGui.BulletText(text);

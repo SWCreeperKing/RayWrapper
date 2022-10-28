@@ -198,9 +198,9 @@ public static class RlImgui
 
     private static void TriangleVert(ImDrawVertPtr idx_vert)
     {
-        var c = BitConverter.GetBytes(idx_vert.col);
+        var c = ImGui.ColorConvertU32ToFloat4(idx_vert.col);
 
-        RlGl.rlColor4ub(c[0], c[1], c[2], c[3]);
+        RlGl.rlColor4f(c.X, c.Y, c.Z, c.W);
         RlGl.rlTexCoord2f(idx_vert.uv.X, idx_vert.uv.Y);
         RlGl.rlVertex2f(idx_vert.pos.X, idx_vert.pos.Y);
     }
@@ -208,12 +208,10 @@ public static class RlImgui
     private static void RenderTriangles(uint count, uint indexStart, ImVector<ushort> indexBuffer,
         ImPtrVector<ImDrawVertPtr> vertBuffer, IntPtr texturePtr)
     {
-        if (count < 3)
-            return;
+        if (count < 3) return;
 
         uint textureId = 0;
-        if (texturePtr != IntPtr.Zero)
-            textureId = (uint) texturePtr.ToInt32();
+        if (texturePtr != IntPtr.Zero) textureId = (uint) texturePtr.ToInt32();
 
         RlGl.rlBegin(RlGl.RL_TRIANGLES);
         RlGl.rlSetTexture(textureId);
@@ -325,4 +323,49 @@ public static class RlImgui
     }
 
     public static Vector4 ToV4(this Color color) => new(color.r, color.g, color.b, color.a);
+    public static Vector2 MeasureText(this string text) => ImGui.CalcTextSize(text);
+
+    public static Vector2 MeasureText(this string text, bool hideAfterDoubleHash)
+    {
+        return ImGui.CalcTextSize(text, hideAfterDoubleHash);
+    }
+
+    public static Vector2 MeasureText(this string text, bool hideAfterDoubleHash, float wrapWidth)
+    {
+        return ImGui.CalcTextSize(text, hideAfterDoubleHash, wrapWidth);
+    }
+
+    public static Vector2 MeasureText(this string text, float wrapWidth) => ImGui.CalcTextSize(text, wrapWidth);
+    public static Vector2 MeasureText(this string text, int start) => ImGui.CalcTextSize(text, start);
+
+    public static Vector2 MeasureText(this string text, int start, bool hideAfterDoubleHash)
+    {
+        return ImGui.CalcTextSize(text, start, hideAfterDoubleHash);
+    }
+
+    public static Vector2 MeasureText(this string text, int start, float wrapWidth)
+    {
+        return ImGui.CalcTextSize(text, start, wrapWidth);
+    }
+
+    public static Vector2 MeasureText(this string text, int start, int length)
+    {
+        return ImGui.CalcTextSize(text, start, length);
+    }
+
+    public static Vector2 MeasureText(this string text, int start, int length, bool hideAfterDoubleHash)
+    {
+        return ImGui.CalcTextSize(text, start, length, hideAfterDoubleHash);
+    }
+
+    public static Vector2 MeasureText(this string text, int start, int length, bool hideAfterDoubleHash,
+        float wrapWidth)
+    {
+        return ImGui.CalcTextSize(text, start, length, hideAfterDoubleHash, wrapWidth);
+    }
+
+    public static Vector2 MeasureText(this string text, int start, int length, float wrapWidth)
+    {
+        return ImGui.CalcTextSize(text, start, length, wrapWidth);
+    }
 }

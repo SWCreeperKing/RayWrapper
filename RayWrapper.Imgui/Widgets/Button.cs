@@ -83,7 +83,7 @@ public class Button : Widget
         _type = ButtonType.Image;
     }
 
-    public override void RenderCall()
+    protected override void RenderCall()
     {
         if (CheckButton()) clicked.Invoke();
     }

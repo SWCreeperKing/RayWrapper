@@ -6,15 +6,15 @@ public abstract class Widget : WidgetRegister, IWidget
     public void Render() => RenderCall();
     public void Dispose() => DisposeCall();
 
-    public virtual void UpdateCall()
+    protected virtual void UpdateCall()
     {
     }
 
-    public virtual void RenderCall()
+    protected virtual void RenderCall()
     {
     }
 
-    public virtual void DisposeCall()
+    protected virtual void DisposeCall()
     {
     }
 }
