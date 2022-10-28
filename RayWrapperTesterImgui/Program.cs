@@ -2,6 +2,7 @@
 using ImGuiNET;
 using RayWrapper;
 using RayWrapper.Imgui;
+using RayWrapper.Imgui.Widgets;
 using RayWrapper.Vars;
 using Window = RayWrapper.Imgui.Widgets.Window;
 
@@ -19,7 +20,7 @@ namespace RayWrapperTesterImgui
             var w1 = new Window("test 1")
                 .AddListView("", () => items, out w1Out)
                 .AddButton("button", () => Logger.Log("pushed"))
-                .AddInputBox("input", "base", "hint", Logger.Log);
+                .AddInputBox("input", new Hint("", Logger.Log, "Hint"));
             var w2 = new Window("test 2")
                 .AddListView("", () => items, out w2Out)
                 .AddCheckBox("hi", out _)
