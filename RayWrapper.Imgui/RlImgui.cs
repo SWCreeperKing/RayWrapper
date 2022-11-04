@@ -25,7 +25,14 @@ namespace RayWrapper.Imgui;
 
 public static class RlImgui
 {
-    internal static IntPtr imGuiContext = IntPtr.Zero;
+    public static readonly Vector2 V2MaxValue = new(float.MaxValue, float.MaxValue);
+    public static readonly Vector2 V2MinValue = new(float.MinValue, float.MinValue);
+    public static readonly Vector3 V3MaxValue = new(float.MaxValue, float.MaxValue, float.MaxValue);
+    public static readonly Vector3 V3MinValue = new(float.MinValue, float.MinValue, float.MinValue);
+    public static readonly Vector4 V4MaxValue = new(float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue);
+    public static readonly Vector4 V4MinValue = new(float.MinValue, float.MinValue, float.MinValue, float.MinValue);
+
+    public static IntPtr imGuiContext = IntPtr.Zero;
     private static ImGuiMouseCursor _currentMouseCursor = ImGuiMouseCursor.COUNT;
     private static Dictionary<ImGuiMouseCursor, MouseCursor> _mouseCursorMap;
     private static KeyboardKey[] _keyEnumMap;
@@ -91,7 +98,6 @@ public static class RlImgui
         var io = ImGui.GetIO();
 
         io.Fonts.AddFontDefault();
-        io.FontGlobalScale = 1.5f;
 
         io.KeyMap[(int) ImGuiKey.Tab] = (int) KeyboardKey.KEY_TAB;
         io.KeyMap[(int) ImGuiKey.LeftArrow] = (int) KeyboardKey.KEY_LEFT;
@@ -368,4 +374,6 @@ public static class RlImgui
     {
         return ImGui.CalcTextSize(text, start, length, wrapWidth);
     }
+
+    public static void SetScale(float scale = 1) => ImGui.GetIO().FontGlobalScale = scale;
 }

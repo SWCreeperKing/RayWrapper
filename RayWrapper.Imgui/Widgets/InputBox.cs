@@ -26,12 +26,30 @@ public abstract class InputTypeBase<T> : IInputType
     public virtual void Invoke() => outVar?.Invoke(inVar);
 }
 
-public class StringType : InputTypeBase<string>
+public class InputInts : InputTypeBase<int[]>
+{
+    public InputInts(int[] inVar, Action<int[]> outVar) : base(inVar, outVar)
+    {
+        if (inVar.Length is < 2 or > 4) throw new ArgumentException("InputInts array must be of length: 2, 3, or 4");
+    }
+
+    public override bool Render(string label, ImGuiInputTextFlags flags)
+    {
+        return inVar.Length switch
+        {
+            2 => ImGui.InputInt2(label, ref inVar[0], flags),
+            3 => ImGui.InputInt3(label, ref inVar[0], flags),
+            4 => ImGui.InputInt4(label, ref inVar[0], flags)
+        };
+    }
+}
+
+public class InputString : InputTypeBase<string>
 {
     private byte[] _rInVar;
     private uint _maxLength;
 
-    public StringType(string inVar, Action<string> outVar, uint maxLength = 512) : base(inVar, outVar)
+    public InputString(string inVar, Action<string> outVar, uint maxLength = 512) : base(inVar, outVar)
     {
         _rInVar = Encoding.ASCII.GetBytes(inVar);
         _maxLength = (uint) Math.Max(maxLength, _rInVar.Length);
@@ -46,12 +64,12 @@ public class StringType : InputTypeBase<string>
     public override void Invoke() => outVar?.Invoke(Encoding.UTF8.GetString(_rInVar).TrimEnd('\0'));
 }
 
-public class Hint : InputTypeBase<string>
+public class InputHint : InputTypeBase<string>
 {
     private string _hint;
     private uint _maxLength;
 
-    public Hint(string inVar, Action<string> outVar, string hint, uint maxLength = 512) : base(inVar, outVar)
+    public InputHint(string inVar, Action<string> outVar, string hint, uint maxLength = 512) : base(inVar, outVar)
     {
         _hint = hint;
         _maxLength = (uint) Math.Max(inVar.Length, maxLength);
@@ -63,12 +81,12 @@ public class Hint : InputTypeBase<string>
     }
 }
 
-public class Multi : InputTypeBase<string>
+public class InputMulti : InputTypeBase<string>
 {
     private Vector2 _size;
     private uint _maxLength;
 
-    public Multi(string inVar, Action<string> outVar, Vector2 size, uint maxLength = 512) : base(inVar, outVar)
+    public InputMulti(string inVar, Action<string> outVar, Vector2 size, uint maxLength = 512) : base(inVar, outVar)
     {
         _size = size;
         _maxLength = (uint) Math.Max(inVar.Length, maxLength);
@@ -94,9 +112,9 @@ public abstract class NumberInputType<T> : InputTypeBase<T>
     }
 }
 
-public class IntType : NumberInputType<int>
+public class InputInt : NumberInputType<int>
 {
-    public IntType(int inVar, Action<int> outVar, int step = 1, int fastStep = 5) : base(inVar, outVar, "", step,
+    public InputInt(int inVar, Action<int> outVar, int step = 1, int fastStep = 5) : base(inVar, outVar, "", step,
         fastStep)
     {
     }
@@ -107,9 +125,9 @@ public class IntType : NumberInputType<int>
     }
 }
 
-public class FloatType : NumberInputType<float>
+public class InputFloat : NumberInputType<float>
 {
-    public FloatType(float inVar, Action<float> outVar, string format = "", float step = 1, float fastStep = 5) : base(
+    public InputFloat(float inVar, Action<float> outVar, string format = "", float step = 1, float fastStep = 5) : base(
         inVar, outVar, format, step, fastStep)
     {
     }
@@ -120,9 +138,9 @@ public class FloatType : NumberInputType<float>
     }
 }
 
-public class DoubleType : NumberInputType<double>
+public class InputDouble : NumberInputType<double>
 {
-    public DoubleType(double inVar, Action<double> outVar, string format = "", double step = 1,
+    public InputDouble(double inVar, Action<double> outVar, string format = "", double step = 1,
         double fastStep = 5) : base(
         inVar, outVar, format, step, fastStep)
     {
@@ -144,9 +162,9 @@ public abstract class VectorInputType<T> : InputTypeBase<T>
     }
 }
 
-public class Vector2Type : VectorInputType<Vector2>
+public class InputVector2 : VectorInputType<Vector2>
 {
-    public Vector2Type(Vector2 inVar, Action<Vector2> outVar, string format = "") : base(inVar, outVar, format)
+    public InputVector2(Vector2 inVar, Action<Vector2> outVar, string format = "") : base(inVar, outVar, format)
     {
     }
 
@@ -156,9 +174,9 @@ public class Vector2Type : VectorInputType<Vector2>
     }
 }
 
-public class Vector3Type : VectorInputType<Vector3>
+public class InputVector3 : VectorInputType<Vector3>
 {
-    public Vector3Type(Vector3 inVar, Action<Vector3> outVar, string format = "") : base(inVar, outVar, format)
+    public InputVector3(Vector3 inVar, Action<Vector3> outVar, string format = "") : base(inVar, outVar, format)
     {
     }
 
@@ -168,9 +186,9 @@ public class Vector3Type : VectorInputType<Vector3>
     }
 }
 
-public class Vector4Type : VectorInputType<Vector4>
+public class InputVector4 : VectorInputType<Vector4>
 {
-    public Vector4Type(Vector4 inVar, Action<Vector4> outVar, string format = "") : base(inVar, outVar, format)
+    public InputVector4(Vector4 inVar, Action<Vector4> outVar, string format = "") : base(inVar, outVar, format)
     {
     }
 

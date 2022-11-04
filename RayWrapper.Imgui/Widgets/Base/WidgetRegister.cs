@@ -10,8 +10,8 @@ public abstract class WidgetRegister : IWidgetRegister
     public void RenderReg() => _registry.Each(a => a.Render());
     public void DisposeReg() => _registry.Each(a => a.Dispose());
     public void RegisterWidget(IWidget igo) => _registry.Add(igo);
-    public void RegisterWidgets(params IWidget[] igo) => _registry.AddRange(igo);
+    public void RegisterWidget(params IWidget[] igo) => _registry.AddRange(igo);
     public void DeregisterWidget(IWidget igo) => _registry.Remove(igo);
-    public void DeregisterWidgets(params IWidget[] igo) => _registry.RemoveAll(igo.Contains);
+    public void DeregisterWidget(params IWidget[] igo) => _registry.RemoveAll(igo.Contains);
     public IWidget[] GetRegistry() => _registry.ToArray();
 }

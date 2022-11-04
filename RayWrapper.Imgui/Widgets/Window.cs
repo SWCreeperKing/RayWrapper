@@ -1,6 +1,5 @@
 using ImGuiNET;
 using RayWrapper.Imgui.Widgets.Base;
-using RayWrapper.Vars;
 using static ImGuiNET.ImGuiWindowFlags;
 
 namespace RayWrapper.Imgui.Widgets;
@@ -32,7 +31,6 @@ public abstract class WindowBase : WidgetRegister, IWBase
         var begin = closable ? ImGui.Begin(_name, ref isOpen, configFlags) : ImGui.Begin(_name, configFlags);
         if (!begin)
         {
-            Logger.Log("e");
             ImGui.End();
             return;
         }
