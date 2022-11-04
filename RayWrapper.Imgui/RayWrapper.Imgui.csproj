@@ -5,11 +5,27 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PackageId>RayWrapper.Imgui</PackageId>
+        <Authors>SW_CreeperKing</Authors>
+        <Description>This is the Imgui addon to RayWrapper</Description>
+        <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
+        <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
+        <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1</PackageVersion>
+        <PackageReleaseNotes>-initial release</PackageReleaseNotes>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="ImGui.NET" Version="1.88.0" />
-      <PackageReference Include="RayWrapper" Version="0.6.0" />
+      <PackageReference Include="RayWrapper" Version="0.6.1" />
     </ItemGroup>
 
     <ItemGroup>

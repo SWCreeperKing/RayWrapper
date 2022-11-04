@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using RayWrapper;
+using RayWrapper.Base;
 using RayWrapper.Objs;
 using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;

@@ -1,19 +1,20 @@
 ﻿using RayWrapper.Base.GameObject;
+using ZimonIsHimUtils.ExtensionMethods;
 
 namespace RayWrapper.Vars;
 
-public abstract class GameLoop : GameObjReg
+public abstract class GameLoop : TypeRegister<IGameObject>
 {
     public void Update()
     {
         UpdateLoop();
-        UpdateReg();
+        register.Each(o => o.Update());
     }
 
     public void Render()
     {
         RenderLoop();
-        RenderReg();
+        register.Each(o => o.Render());
     }
 
     public abstract void Init();

@@ -9,7 +9,7 @@ using RayWrapper.Base;
 using static RayWrapper.GameBox;
 using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.GameConsole;
-using static RayWrapper.Vars.Logger.Level;
+using static RayWrapper.Base.Logger.Level;
 
 namespace RayWrapper.Vars;
 

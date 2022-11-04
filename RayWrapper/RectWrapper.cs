@@ -8,7 +8,6 @@ namespace RayWrapper;
 
 public static class RectWrapper
 {
-    public static bool IsMouseIn(this Rectangle rect) => rect.IsV2In(GameBox.mousePos);
     public static bool IsMouseIn(this Raylib_CsLo.Rectangle rect) => rect.IsV2In(GameBox.mousePos);
     public static bool IsV2In(this Raylib_CsLo.Rectangle rect, Vector2 pos) => Raylib.CheckCollisionPointRec(pos, rect);
 }

@@ -11,6 +11,7 @@ public static class Input
         Mouse, GamepadLeft, GamepadRight
     }
 
+    //todo: doesn't work? 
     public static Positional MousePosition { get; private set; }
     public static Vector2 MouseWheel { get; private set; }
     public static Positional GamepadCursorLeft { get; private set; }
@@ -60,7 +61,7 @@ public static class Input
     public static Vector2 ProcessPosition(Vector2 pos)
     {
         var rawProcess = processPositions?.Invoke(pos) ?? pos;
-        return Vector2.Min(Vector2.Zero, Vector2.Max(maxWindowSize, rawProcess));
+        return Vector2.Max(Vector2.Zero, Vector2.Min(maxWindowSize, rawProcess));
     }
 
     public static Vector2 GetMousePositionRaw() => GetMousePosition();
@@ -85,4 +86,6 @@ public readonly struct Positional
         this.lastPosition = lastPosition;
         delta = currentPosition - lastPosition;
     }
+
+    public override string ToString() => $"[{currentPosition}-{lastPosition}={delta}]";
 }

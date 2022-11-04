@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using RayWrapper;
 using RayWrapper.Animation;
 using RayWrapper.Animation.SinglePurposeObjects;
 using RayWrapper.Animation.Transitions;

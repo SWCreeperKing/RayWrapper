@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using RayWrapper.Vars;
+using RayWrapper.Base;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.GameBox;

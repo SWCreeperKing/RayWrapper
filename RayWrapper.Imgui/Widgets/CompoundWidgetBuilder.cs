@@ -59,15 +59,40 @@ public abstract class WindowBase : WidgetRegister, IWBase
     }
 }
 
-public partial class Window : WindowBase
+public partial class CompoundWidgetBuilder : WidgetRegister
 {
-    public Window(string name, ImGuiWindowFlags configFlags = AlwaysAutoResize) : base(name, configFlags)
-    {
-    }
-
-    public Window AddNonWidget(Action nonWidget)
+    public CompoundWidgetBuilder AddNonWidget(Action nonWidget)
     {
         RegisterWidget(new EmptyWidget(nonWidget));
+        return this;
+    }
+
+    public CompoundWidgetBuilder AddWidget(IWidget widget)
+    {
+        RegisterWidget(widget);
+        return this;
+    }
+
+    public WindowBase ToWindow(string name, ImGuiWindowFlags configFlags = AlwaysAutoResize)
+    {
+        Window window = new(name, configFlags);
+        window.RegisterWidget(GetRegistry());
+        return window;
+    }
+
+    public CompoundWidgetBuilder ToWindow(out Window window, string name,
+        ImGuiWindowFlags configFlags = AlwaysAutoResize)
+    {
+        window = new(name, configFlags);
+        window.RegisterWidget(GetRegistry());
+        return this;
+    }
+
+    public Tooltip ToTooltip() => new Tooltip().Add(GetRegistry());
+
+    public CompoundWidgetBuilder ToTooltip(out Tooltip tooltip)
+    {
+        tooltip = new Tooltip().Add(GetRegistry());
         return this;
     }
 
@@ -76,5 +101,12 @@ public partial class Window : WindowBase
         public Action action;
         public EmptyWidget(Action action) => this.action = action;
         protected override void RenderCall() => action?.Invoke();
+    }
+
+    public class Window : WindowBase
+    {
+        public Window(string name, ImGuiWindowFlags configFlags = AlwaysAutoResize) : base(name, configFlags)
+        {
+        }
     }
 }

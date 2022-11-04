@@ -20,8 +20,8 @@ using RayWrapper.Vars;
 using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.MouseCursor;
 using static Raylib_CsLo.Raylib;
+using static RayWrapper.Base.Logger.Level;
 using static RayWrapper.GameConsole.GameConsole;
-using static RayWrapper.Vars.Logger.Level;
 using Rectangle = Raylib_CsLo.Rectangle;
 
 namespace RayWrapper;
@@ -83,7 +83,7 @@ public class GameBox
     public static TextureFilter targetTextureFilter = TextureFilter.TEXTURE_FILTER_POINT;
     public static IGameObject mouseOccupier;
     public static Vector2 fpsPos = Vector2.One;
-    public static Vector2 mousePos;
+    public static Vector2 mousePos => Input.MousePosition.currentPosition;
     public static Stack<AlertBase> alertQueue = new();
     public static ColorModule backgroundColor = new(40);
     public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
@@ -227,16 +227,26 @@ public class GameBox
             }
         });
 
+        Input.Init(WindowSize);
+        Input.processPositions = v2 =>
+        {
+            float Calc(float m, int s, float w) => (m - (s - w * scale) * 0.5f) / scale;
+            return new Vector2(Calc(v2.X, GetScreenWidth(), WindowSize.X), Calc(v2.Y, GetScreenHeight(), WindowSize.Y));
+        };
+
         _staticInit.ForEach(a => a.Invoke());
         SceneManager.InitScene("main");
         try
         {
             lastTick = GetTimeMs();
+            
             GC.Collect();
             while (!WindowShouldClose())
             {
                 thisTick = GetTimeMs();
-                CalcMousePos();
+                scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
+                Input.Update();
+                
                 if (IsKeyPressed(KeyboardKey.KEY_GRAVE) && enableConsole) _isConsole = !_isConsole;
                 else
                     switch (alertQueue.Count)
@@ -304,22 +314,6 @@ public class GameBox
 
         _staticUpdate.ForEach(a => a.Invoke());
         SceneManager.UpdateScene(_currentScene);
-    }
-
-    public static void RenderRenderTexture(RenderTexture Texture, Vector2 pos, Action update, Action draw)
-    {
-        if (!_isDrawing) return;
-        var before = new Vector2(mousePos.X, mousePos.Y);
-        mousePos.X -= pos.X;
-        mousePos.Y -= pos.Y;
-        update.Invoke();
-        BeginTextureMode(Texture);
-        draw.Invoke();
-        BeginTextureMode(_target);
-        DrawTexturePro(Texture.texture, new Rectangle(0, 0, Texture.texture.width, -Texture.texture.height),
-            new Rectangle(pos.X, pos.Y, Texture.texture.width, Texture.texture.height),
-            Vector2.Zero, 0, WHITE);
-        mousePos = before;
     }
 
     private static void Render()
@@ -406,24 +400,16 @@ public class GameBox
     public static void LoadItems() => SaveList.LoadItems();
     public static void DeleteFile(string name) => SaveList.DeleteFile(name);
     public static void DeleteAll() => SaveList.DeleteAll();
-    
+
     /// <summary>
     /// NEVER CHANGE REFERENCE OF <paramref name="obj"/>
     /// SAVING DEPENDS ON KEEPING REFERENCE
     /// </summary>
     public static void RegisterSaveItem<T>(T obj, string fileName) => SaveList.Add(new SaveItem<T>(obj, fileName));
+
     public static void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 
     #endregion
-
-    public static void CalcMousePos()
-    {
-        var mouse = GetMousePosition();
-        scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
-        float Calc(float m, int s, float w) => (m - (s - w * scale) * 0.5f) / scale;
-        mousePos.X = Calc(mouse.X, GetScreenWidth(), WindowSize.X);
-        mousePos.Y = Calc(mouse.Y, GetScreenHeight(), WindowSize.Y);
-    }
 
     public static void SetMouseCursor(MouseCursor cursor) => _mouseCursors.Add(cursor);
 

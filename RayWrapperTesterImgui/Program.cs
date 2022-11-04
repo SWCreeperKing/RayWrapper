@@ -1,11 +1,13 @@
 ﻿using System.Numerics;
 using ImGuiNET;
+using Raylib_CsLo;
 using RayWrapper;
+using RayWrapper.Base;
 using RayWrapper.Imgui;
 using RayWrapper.Imgui.Widgets;
-using RayWrapper.Vars;
 using static ImGuiNET.ImGuiTableFlags;
-using Window = RayWrapper.Imgui.Widgets.Window;
+using Rectangle = RayWrapper.Base.Rectangle;
+using Tooltip = RayWrapper.Imgui.Widgets.Tooltip;
 
 new GameBox(new RayWrapperTesterImgui.Program(), new Vector2(1280, 800));
 
@@ -17,6 +19,7 @@ namespace RayWrapperTesterImgui
         private Func<int> w1Out, w2Out;
         private Table _table;
         private (float, float, float)[] arrayFloats;
+        private Tooltip _tooltip;
 
         public override void NormalInit()
         {
@@ -38,19 +41,27 @@ namespace RayWrapperTesterImgui
                     _ => arrayFloats
                 }));
 
-            var w1 = new Window("test 1")
+            _tooltip = new CompoundWidgetBuilder()
+                .AddText("tool tip test")
+                .AddPlotLines("plot", () => vals)
+                .ToTooltip();
+            
+            var w1 = new CompoundWidgetBuilder()
                 .AddListView("", () => items, out w1Out)
                 .AddButton("button", () => Logger.Log("pushed"))
                 .AddInputBox("input", new InputHint("", Logger.Log, "Hint"))
                 .AddInputBox("int3 input",
-                    new InputInts(new[] { 3, 5, 6, 9 }, arr => Logger.Log($"{arr[0]}, {arr[1]}, {arr[2]}, {arr[3]}")));
-            var w2 = new Window("test 2")
+                    new InputInts(new[] { 3, 5, 6, 9 }, arr => Logger.Log($"{arr[0]}, {arr[1]}, {arr[2]}, {arr[3]}")))
+                .ToWindow("test 1");
+            
+            var w2 = new CompoundWidgetBuilder()
                 .AddListView("", () => items, out w2Out)
                 .AddCheckBox("hi", out _)
                 .AddNonWidget(ImGui.SameLine)
                 .AddBullet("hi")
                 .AddProgressBar(() => i / 1000f, new Vector2(250, 25))
-                .AddSlider("slider", new SliderFloat(50, f => Logger.Log(f)));
+                .AddSlider("slider", new SliderFloat(50, f => Logger.Log(f)))
+                .ToWindow("test 2");
             RegisterWidgets(w1, w2, new ExampleWindow("example window"));
             // RlImgui.SetScale(2);
         }
@@ -72,13 +83,21 @@ namespace RayWrapperTesterImgui
         public float[] vals = { 53.3f, 35.6f, 34, 23, 74 };
         public float rad;
         public ImGuiSortDirection dirCache = ImGuiSortDirection.None;
-        
-        static int flags = (int) (Borders | RowBg);
+        public Vector3 color;
+        public Rectangle rect = new(10, 10, 50, 50);
         
         public override void ImguiRenderLoop()
         {
-            _table.Render();
+            // if (ImGui.ColorPicker3("color", ref color)) Logger.Log("bool");
+            // ImGui.ColorEdit3("color", ref color);
+            if (rect.IsMouseIn()) _tooltip.Render();
+            // _table.Render();
             // ImGui.ShowDemoWindow();
+        }
+
+        public override void NormalRenderLoop()
+        {
+            rect.Draw(Raylib.DARKBLUE);
         }
     }
 }

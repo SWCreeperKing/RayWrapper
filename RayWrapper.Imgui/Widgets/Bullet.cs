@@ -16,9 +16,9 @@ public class Bullet : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddBullet(string text = "")
+    public CompoundWidgetBuilder AddBullet(string text = "")
     {
         RegisterWidget(new Bullet(text));
         return this;

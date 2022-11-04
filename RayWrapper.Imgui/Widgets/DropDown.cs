@@ -36,9 +36,9 @@ public class DropDown : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddDropDown(string name, Func<string[]> array, out Func<int> selected, bool selectable = true)
+    public CompoundWidgetBuilder AddDropDown(string name, Func<string[]> array, out Func<int> selected, bool selectable = true)
     {
         var dd = new DropDown(name, array) { selectable = selectable };
         selected = () => dd.Changed(out var nSelect) ? nSelect : -1;

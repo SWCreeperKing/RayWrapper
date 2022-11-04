@@ -127,34 +127,34 @@ public class Button : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddButton(string label, Action clicked, Vector2? maxSize = null)
+    public CompoundWidgetBuilder AddButton(string label, Action clicked, Vector2? maxSize = null)
     {
         RegisterWidget(new Button(label, clicked, maxSize));
         return this;
     }
 
-    public Window AddButton(string label, Action clicked, ImGuiDir direction)
+    public CompoundWidgetBuilder AddButton(string label, Action clicked, ImGuiDir direction)
     {
         RegisterWidget(new Button(label, clicked, direction));
         return this;
     }
 
-    public Window AddButton(string label, Action clicked, bool startActive)
+    public CompoundWidgetBuilder AddButton(string label, Action clicked, bool startActive)
     {
         RegisterWidget(new Button(label, clicked, startActive));
         return this;
     }
 
-    public Window AddButton(string label, Action clicked, Color color,
+    public CompoundWidgetBuilder AddButton(string label, Action clicked, Color color,
         ImGuiColorEditFlags flags = ImGuiColorEditFlags.DefaultOptions, Vector2? maxSize = null)
     {
         RegisterWidget(new Button(label, clicked, color, flags, maxSize));
         return this;
     }
 
-    public Window AddButton(IntPtr texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null,
+    public CompoundWidgetBuilder AddButton(IntPtr texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null,
         Vector2? uv1 = null, int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
     {
         RegisterWidget(new Button(texture, clicked, maxSize, uv0, uv1, framePadding, backgroundColor, tint));

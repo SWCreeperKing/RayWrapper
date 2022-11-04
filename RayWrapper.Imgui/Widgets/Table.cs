@@ -141,9 +141,9 @@ public class Table : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddTable(string name, ImGuiTableFlags flags = Borders, Vector2? outerSize = null,
+    public CompoundWidgetBuilder AddTable(string name, ImGuiTableFlags flags = Borders, Vector2? outerSize = null,
         float innerSize = 0, params Column[] columns)
     {
         Table table = new(name, flags, outerSize, innerSize);

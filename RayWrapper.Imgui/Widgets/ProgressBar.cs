@@ -24,9 +24,9 @@ public class ProgressBar : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddProgressBar(Func<float> percent, Vector2 size, Func<float, string> format = null)
+    public CompoundWidgetBuilder AddProgressBar(Func<float> percent, Vector2 size, Func<float, string> format = null)
     {
         RegisterWidget(new ProgressBar(percent, size, format));
         return this;

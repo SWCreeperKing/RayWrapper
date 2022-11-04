@@ -51,9 +51,9 @@ public class PlotHistogram : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddPlotHistogram(string label, Func<float[]> arrFunc, string overlayText = "", int offset = 0,
+    public CompoundWidgetBuilder AddPlotHistogram(string label, Func<float[]> arrFunc, string overlayText = "", int offset = 0,
         Vector2? scale = null, Vector2? size = null, int? stride = null)
     {
         RegisterWidget(new PlotHistogram(label, arrFunc, overlayText, offset, scale, size, stride));

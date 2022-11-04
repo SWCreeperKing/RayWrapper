@@ -6,7 +6,6 @@ using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 using RayWrapper.Objs.AlertBoxes;
 using RayWrapper.Objs.ListView;
-using RayWrapper.Vars;
 using RayWrapperTester.Example_Setup;
 using static RayWrapperTester.Program;
 

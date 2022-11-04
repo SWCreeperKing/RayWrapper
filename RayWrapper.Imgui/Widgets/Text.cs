@@ -66,15 +66,15 @@ public class Text : Widget
     public float GetTextLineHeightWithSpacing() => ImGui.GetTextLineHeightWithSpacing();
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddText(string text, Color? color = null, Text.Format format = Text.Format.Normal)
+    public CompoundWidgetBuilder AddText(string text, Color? color = null, Text.Format format = Text.Format.Normal)
     {
         RegisterWidget(new Text(text, color, format));
         return this;
     }
 
-    public Window AddText(string text, string fmt)
+    public CompoundWidgetBuilder AddText(string text, string fmt)
     {
         RegisterWidget(new Text(text, fmt));
         return this;

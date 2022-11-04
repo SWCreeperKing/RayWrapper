@@ -36,9 +36,9 @@ public class ListView : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddListView(string name, Func<string[]> array, out Func<int> selected, bool selectable = true)
+    public CompoundWidgetBuilder AddListView(string name, Func<string[]> array, out Func<int> selected, bool selectable = true)
     {
         var ls = new ListView(name, array) { selectable = selectable };
         selected = () => ls.Changed(out var nSelect) ? nSelect : -1;

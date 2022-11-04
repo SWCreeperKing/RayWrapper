@@ -137,9 +137,9 @@ public class NumberDrag : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddNumberDrag(string label, INumberDrag numberDrag, string format = "",
+    public CompoundWidgetBuilder AddNumberDrag(string label, INumberDrag numberDrag, string format = "",
         ImGuiSliderFlags flags = ImGuiSliderFlags.None)
     {
         RegisterWidget(new NumberDrag(label, numberDrag, format, flags));

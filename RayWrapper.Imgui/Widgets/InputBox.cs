@@ -217,9 +217,9 @@ public class InputBox : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddInputBox(string label, IInputType inputType, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None)
+    public CompoundWidgetBuilder AddInputBox(string label, IInputType inputType, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None)
     {
         RegisterWidget(new InputBox(label, inputType, flags));
         return this;

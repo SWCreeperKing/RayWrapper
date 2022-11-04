@@ -2,7 +2,7 @@
 using System.Numerics;
 using RayWrapper.GameConsole;
 using static RayWrapper.GameBox;
-using static RayWrapper.Vars.Logger;
+using static RayWrapper.Base.Logger;
 using Rectangle = RayWrapper.Base.Rectangle;
 
 namespace RayWrapper.Collision;

@@ -132,7 +132,7 @@ public static class RlImgui
             var monitor = Raylib.GetCurrentMonitor();
             io.DisplaySize = new Vector2(Raylib.GetMonitorWidth(monitor), Raylib.GetMonitorHeight(monitor));
         }
-        else io.DisplaySize = new Vector2(Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+        else io.DisplaySize = GameBox.WindowSize;
 
         io.DisplayFramebufferScale = new Vector2(1, 1);
         io.DeltaTime = Raylib.GetFrameTime();
@@ -329,6 +329,14 @@ public static class RlImgui
     }
 
     public static Vector4 ToV4(this Color color) => new(color.r, color.g, color.b, color.a);
+    public static Vector3 ToV3(this Color color) => new(color.r, color.g, color.b);
+    public static Color ToColor(this Vector3 color) => new((short) color.X, (short) color.Y, (short) color.Z, 255);
+
+    public static Color ToColor(this Vector4 color)
+    {
+        return new((short) color.X, (short) color.Y, (short) color.Z, (short) color.W);
+    }
+
     public static Vector2 MeasureText(this string text) => ImGui.CalcTextSize(text);
 
     public static Vector2 MeasureText(this string text, bool hideAfterDoubleHash)

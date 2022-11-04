@@ -75,6 +75,7 @@ public class Rectangle
 
     public void MaskDraw(Action draw) => Pos.MaskDraw(Size, draw);
     public bool IsV2In(Vector2 v2) => CheckCollisionPointRec(v2, Rect);
+    public bool IsMouseIn() => IsV2In(Input.MousePosition.currentPosition);
     public bool IsRectIn(Rect rect) => CheckCollisionRecs(Rect, rect);
     public bool IsCircleIn(Circle c) => c.IsRectIn(Rect);
     public Vector2 Center() => Pos + Size / 2f;

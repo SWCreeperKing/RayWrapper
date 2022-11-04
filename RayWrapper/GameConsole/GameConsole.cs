@@ -5,10 +5,10 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Raylib_CsLo;
+using RayWrapper.Base;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Objs;
 using RayWrapper.Objs.ListView;
-using RayWrapper.Vars;
 using static RayWrapper.GameBox;
 using Rectangle = RayWrapper.Base.Rectangle;
 

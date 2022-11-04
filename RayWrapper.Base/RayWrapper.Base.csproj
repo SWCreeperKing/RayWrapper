@@ -19,8 +19,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.2.2.5</PackageVersion>
-        <PackageReleaseNotes>-reorianted all color params for rectangle (im having a stroke)</PackageReleaseNotes>
+        <PackageVersion>0.2.3.1</PackageVersion>
+        <PackageReleaseNotes>-fixed minmax error
+-rectangle.ismousein</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

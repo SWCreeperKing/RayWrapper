@@ -1,9 +1,10 @@
 ﻿using DiscordRPC;
+using RayWrapper.Base;
 using RayWrapper.Vars;
 using static RayWrapper.GameConsole.CommandLineColor;
 using static RayWrapper.GameConsole.CommandRegister;
 using static RayWrapper.GameConsole.GameConsole;
-using static RayWrapper.Vars.Logger.Level;
+using static RayWrapper.Base.Logger.Level;
 
 namespace RayWrapper.Discord;
 

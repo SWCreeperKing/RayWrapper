@@ -186,9 +186,9 @@ public class Slider : Widget
     }
 }
 
-public partial class Window
+public partial class CompoundWidgetBuilder
 {
-    public Window AddSlider(string label, ISlider type, string format = "",
+    public CompoundWidgetBuilder AddSlider(string label, ISlider type, string format = "",
         ImGuiSliderFlags flags = ImGuiSliderFlags.None)
     {
         RegisterWidget(new Slider(label, type, format, flags));
