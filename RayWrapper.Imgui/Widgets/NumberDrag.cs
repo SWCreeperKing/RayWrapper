@@ -1,6 +1,6 @@
 using System.Numerics;
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
@@ -115,7 +115,7 @@ public class DragVector4 : NumberDragBase<Vector4, float>
     }
 }
 
-public class NumberDrag : Widget
+public class NumberDrag : GameObject
 {
     public string label;
     public string format;
@@ -142,7 +142,7 @@ public partial class CompoundWidgetBuilder
     public CompoundWidgetBuilder AddNumberDrag(string label, INumberDrag numberDrag, string format = "",
         ImGuiSliderFlags flags = ImGuiSliderFlags.None)
     {
-        RegisterWidget(new NumberDrag(label, numberDrag, format, flags));
+        RegisterGameObj(new NumberDrag(label, numberDrag, format, flags));
         return this;
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using RayWrapper;
-using RayWrapper.Base;
-using RayWrapper.Objs;
-using RayWrapper.Vars;
+using Raylib_CsLo;
+using RayWrapper.Base.GameBox;
+using RayWrapper.Base.SaveSystem;
+using RayWrapper.LegacyUI.TreeView;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
-using static RayWrapper.GameBox;
 
 new GameBox(new RayWrapperTester.Program(), new Vector2(1280, 720), "Hallo World");
 
@@ -33,7 +33,7 @@ namespace RayWrapperTester
             //
             // Console.WriteLine($"biggest in font: [{biggest}]");
 
-            InitSaveSystem("SW_CreeperKing", "SaveTesting");
+            SaveExt.InitSaveSystem("SW_CreeperKing", "SaveTesting");
 
             // basic encryption
             ISave.Cypher = (s => string.Join("", s.Reverse()), s => string.Join("", s.Reverse()));
@@ -41,13 +41,13 @@ namespace RayWrapperTester
             ExampleRegister.Init();
             localExamples = ExampleRegister.Examples.Keys.ToList();
 
-            exampleView = new TabView(Vector2.Zero, WindowSize.X);
+            exampleView = new TabView(Vector2.Zero, GameBox.WindowSize.X);
             exampleView.AddTab("Home", new ExamplesHome());
 
             RegisterGameObj(exampleView);
         }
 
-        public override void UpdateLoop()
+        public override void UpdateLoop(float dt)
         {
         }
 

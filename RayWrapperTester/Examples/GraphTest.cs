@@ -1,11 +1,11 @@
 using System;
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Base;
-using RayWrapper.Objs;
+using RayWrapper.Base.Primitives;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Examples;
 
@@ -39,7 +39,7 @@ public class GraphTest : Example
         RegisterGameObj(grafText, _graf);
     }
 
-    protected override void UpdateCall()
+    protected override void UpdateCall(float dt)
     {
         if (!IsKeyPressed(KeyboardKey.KEY_R)) return;
         _currGraf++;

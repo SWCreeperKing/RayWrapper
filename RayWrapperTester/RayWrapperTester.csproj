@@ -2,11 +2,13 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\RayWrapper.LegacyUI\RayWrapper.LegacyUI.csproj" />
         <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 

@@ -18,10 +18,10 @@ public class ExampleWindow : WindowBase
         var arr = Enumerable.Repeat(0f, r.Next(40, 50)).Select(i => (float) (r.Next(60, 80) * r.NextDouble()))
             .ToArray();
         var plot = new PlotLines("plot", () => arr);
-        RegisterWidget(new CheckBox("check 1"), cb2, plot);
+        RegisterGameObj(new CheckBox("check 1"), cb2, plot);
     }
 
-    protected override void UpdateCall() => cb3.Update();
-    protected override void RenderCall() => cb3.Render();
-    protected override void DisposeCall() => cb3.Dispose();
+    protected override void WindowUpdate(float dt) => cb3.Update(dt);
+    protected override void WindowRender() => cb3.Render();
+    protected override void WindowDispose() => cb3.Dispose();
 }

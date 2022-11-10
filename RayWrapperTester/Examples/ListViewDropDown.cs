@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Numerics;
-using RayWrapper.Base;
-using RayWrapper.Objs;
-using RayWrapper.Objs.ListView;
+using RayWrapper.Base.GameBox;
+using RayWrapper.LegacyUI.ListView;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 
 namespace RayWrapperTester.Examples;

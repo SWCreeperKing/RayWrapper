@@ -1,10 +1,10 @@
 using System.Numerics;
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class PlotLines : Widget
+public class PlotLines : GameObject
 {
     private string _label;
     private string _overlayText;
@@ -26,7 +26,7 @@ public class PlotLines : Widget
 
     protected override void RenderCall()
     {
-        var arr = _arrFunc.Invoke();
+        var arr = _arrFunc();
         if (!arr.Any()) return;
 
         if (_scale is null) ImGui.PlotLines(_label, ref arr[0], arr.Length, _offset, _overlayText);
@@ -48,7 +48,7 @@ public partial class CompoundWidgetBuilder
     public CompoundWidgetBuilder AddPlotLines(string label, Func<float[]> arrFunc, string overlayText = "", int offset = 0,
         Vector2? scale = null, Vector2? size = null)
     {
-        RegisterWidget(new PlotLines(label, arrFunc, overlayText, offset, scale, size));
+        RegisterGameObj(new PlotLines(label, arrFunc, overlayText, offset, scale, size));
         return this;
     }
 }

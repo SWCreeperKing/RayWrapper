@@ -3,40 +3,24 @@ using RayWrapper.Imgui.Widgets.Base;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class Tooltip : WidgetRegister, IWidget
+public class Tooltip : SubRegister<Tooltip>
 {
-    public void Update() => UpdateReg();
-
-    public void Render()
+    public override bool Begin()
     {
         ImGui.BeginTooltip();
-        RenderReg();
-        ImGui.EndTooltip();
+        return true;
     }
 
-    public void Dispose() => DisposeReg();
+    public override void End() => ImGui.EndTooltip();
+}
 
-    public Tooltip Add(IWidget widget)
+public partial class CompoundWidgetBuilder
+{
+    public Tooltip ToTooltip() => new Tooltip().Add(GetRegistry());
+
+    public CompoundWidgetBuilder ToTooltip(out Tooltip tooltip)
     {
-        RegisterWidget(widget);
-        return this;
-    }
-    
-    public Tooltip Add(params IWidget[] widget)
-    {
-        RegisterWidget(widget);
-        return this;
-    }
-    
-    public Tooltip Remove(IWidget widget)
-    {
-        DeRegisterWidget(widget);
-        return this;
-    }
-    
-    public Tooltip Remove(params IWidget[] widget)
-    {
-        DeRegisterWidget(widget);
+        tooltip = new Tooltip().Add(GetRegistry());
         return this;
     }
 }

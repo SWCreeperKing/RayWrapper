@@ -1,9 +1,9 @@
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class Bullet : Widget
+public class Bullet : GameObject
 {
     public string text;
 
@@ -20,7 +20,7 @@ public partial class CompoundWidgetBuilder
 {
     public CompoundWidgetBuilder AddBullet(string text = "")
     {
-        RegisterWidget(new Bullet(text));
+        RegisterGameObj(new Bullet(text));
         return this;
     }
 }

@@ -72,12 +72,12 @@ public static class DiscordIntegration
 
             RichPresence rp = new();
             var assets = rp.Assets = new Assets();
-            if (details is not null) rp.Details = details.Invoke();
-            if (state is not null) rp.State = state.Invoke();
-            if (largeImage is not null) assets.LargeImageKey = largeImage.Invoke();
-            if (largeText is not null) assets.LargeImageText = largeText.Invoke();
-            if (smallImage is not null) assets.SmallImageKey = smallImage.Invoke();
-            if (smallText is not null) assets.SmallImageText = smallText.Invoke();
+            if (details is not null) rp.Details = details();
+            if (state is not null) rp.State = state();
+            if (largeImage is not null) assets.LargeImageKey = largeImage();
+            if (largeText is not null) assets.LargeImageText = largeText();
+            if (smallImage is not null) assets.SmallImageKey = smallImage();
+            if (smallText is not null) assets.SmallImageText = smallText();
 
             discord.SetPresence(rp);
             UpdateActivity();
@@ -104,12 +104,10 @@ public static class DiscordIntegration
         try
         {
             if (!discordAlive) return;
-            if (details is not null) discord.UpdateDetails(details.Invoke());
-            if (state is not null) discord.UpdateState(state.Invoke());
-            if (largeImage is not null && largeText is not null)
-                discord.UpdateLargeAsset(largeImage.Invoke(), largeText.Invoke());
-            if (smallImage is not null && smallText is not null)
-                discord.UpdateSmallAsset(smallImage.Invoke(), smallText.Invoke());
+            if (details is not null) discord.UpdateDetails(details());
+            if (state is not null) discord.UpdateState(state());
+            if (largeImage is not null && largeText is not null) discord.UpdateLargeAsset(largeImage(), largeText());
+            if (smallImage is not null && smallText is not null) discord.UpdateSmallAsset(smallImage(), smallText());
             discord.Invoke();
         }
         catch (Exception e)

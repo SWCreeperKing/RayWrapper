@@ -1,12 +1,11 @@
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper;
-using RayWrapper.Base;
-using RayWrapper.Objs;
-using RayWrapper.Vars;
+using RayWrapper.Base.GameBox;
+using RayWrapper.Base.Primitives;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Examples;
 
@@ -39,7 +38,7 @@ public class TextLabelButtonExample : Example
 
         Text testSpin = new("WWEEEEEE!!", GameBox.WindowSize / 2);
         testSpin.style.SetRotationOriginToCenter("WWEEEEEE!!");
-        GameBox.AddScheduler(
+        SchedulerSetup.AddScheduler(
             new Scheduler(50, () => { testSpin.style.rotation = (testSpin.style.rotation + 3) % 360; }));
 
         Text textTest = new(new Actionable<string>(() => $"Hello, world! [i] is {_buttonInc}"), new Vector2(12, 100));
@@ -60,7 +59,7 @@ public class TextLabelButtonExample : Example
         RegisterGameObj(testButton, _testLabel, testSpin, textTest, richTextTest, kb, imageButton, imageButtonDisabled);
     }
 
-    protected override void UpdateCall()
+    protected override void UpdateCall(float dt)
     {
         if (IsKeyDown(KeyboardKey.KEY_LEFT)) _testLabel.Position += new Vector2(-3, 0);
         else if (IsKeyDown(KeyboardKey.KEY_RIGHT)) _testLabel.Position += new Vector2(3, 0);

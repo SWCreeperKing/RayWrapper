@@ -1,6 +1,6 @@
 using System.Numerics;
-using RayWrapper.Animation;
-using RayWrapper.Objs;
+using RayWrapper.LegacyUI.Animation;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Animations;
 using RayWrapperTester.Example_Setup;
 

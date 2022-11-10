@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
-using RayWrapper.Animation;
-using RayWrapper.Animation.SinglePurposeObjects;
-using RayWrapper.Animation.Transitions;
+using RayWrapper.LegacyUI.Animation;
+using RayWrapper.LegacyUI.Animation.SinglePurposeObjects;
+using RayWrapper.LegacyUI.Animation.Transitions;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.GameBox;
-using Rectangle = RayWrapper.Base.Rectangle;
+using static RayWrapper.Base.GameBox.GameBox;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Animations;
 

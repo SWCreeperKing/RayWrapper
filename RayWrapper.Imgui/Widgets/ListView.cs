@@ -1,9 +1,9 @@
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class ListView : Widget
+public class ListView : GameObject
 {
     public string name;
     public Func<string[]> array;
@@ -19,7 +19,7 @@ public class ListView : Widget
 
     protected override void RenderCall()
     {
-        var arr = array.Invoke();
+        var arr = array();
         prevSelected = selected;
         ImGui.ListBox(name, ref selected, arr, arr.Length);
 
@@ -42,7 +42,7 @@ public partial class CompoundWidgetBuilder
     {
         var ls = new ListView(name, array) { selectable = selectable };
         selected = () => ls.Changed(out var nSelect) ? nSelect : -1;
-        RegisterWidget(ls);
+        RegisterGameObj(ls);
         return this;
     }
 }

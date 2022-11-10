@@ -1,11 +1,11 @@
 using System.Numerics;
 using ImGuiNET;
 using Raylib_CsLo;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class ColorPicker : Widget
+public class ColorPicker : GameObject
 {
     public string name;
     public Action<Color> onChange;
@@ -27,8 +27,8 @@ public class ColorPicker : Widget
     {
         if (pickAlpha)
         {
-            if (ImGui.ColorPicker4(name, ref color4)) onChange.Invoke(color4.ToColor());
-        } else if (ImGui.ColorPicker3(name, ref color3)) onChange.Invoke(color3.ToColor());
+            if (ImGui.ColorPicker4(name, ref color4)) onChange(color4.ToColor());
+        } else if (ImGui.ColorPicker3(name, ref color3)) onChange(color3.ToColor());
     }
 }
 
@@ -36,7 +36,7 @@ public partial class CompoundWidgetBuilder
 {
     public CompoundWidgetBuilder AddColorPicker(string name, Action<Color> onChange, Color? color = null, bool pickAlpha = false)
     {
-        RegisterWidget(new ColorPicker(name, onChange, color, pickAlpha));
+        RegisterGameObj(new ColorPicker(name, onChange, color, pickAlpha));
         return this;
     }
 }

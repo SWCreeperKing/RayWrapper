@@ -1,6 +1,6 @@
 using System.Numerics;
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 using static ImGuiNET.ImGuiTableFlags;
 
 namespace RayWrapper.Imgui.Widgets;
@@ -40,7 +40,7 @@ public class Column : ColumnBase
     }
 
     public override void RenderHeader(uint id) => ImGui.TableSetupColumn(header, flags, widthOrWeight, id);
-    public override void DrawRow(int row) => fromArray.Invoke(row);
+    public override void DrawRow(int row) => fromArray(row);
 }
 
 public class SortableColumn : Column
@@ -59,7 +59,7 @@ public class SortableColumn : Column
     public override void SortSettings(ImGuiSortDirection sortDir)
     {
         if (_sortCache == sortDir) return;
-        onSort.Invoke(_sortCache = sortDir);
+        onSort(_sortCache = sortDir);
     }
 
     public void SetPreferredSort(ImGuiSortDirection sort)
@@ -78,19 +78,19 @@ public class SortableColumn : Column
     }
 }
 
-public class Table : Widget
+public class Table : GameObject
 {
-    public string name;
+    public string nameId;
     public ImGuiTableFlags flags;
     public Vector2 outerSize;
     public float innerSize;
 
     private List<Column> _columns = new();
 
-    public Table(string name, ImGuiTableFlags flags = Borders, Vector2? outerSize = null,
+    public Table(string nameId, ImGuiTableFlags flags = Borders, Vector2? outerSize = null,
         float innerSize = 0)
     {
-        this.name = name;
+        this.nameId = nameId;
         this.flags = flags;
         this.outerSize = outerSize ?? Vector2.Zero;
         this.innerSize = innerSize;
@@ -98,9 +98,9 @@ public class Table : Widget
 
     protected override void RenderCall()
     {
-        if (!ImGui.BeginTable(name, _columns.Count, flags, outerSize, innerSize)) return;
+        if (!ImGui.BeginTable(nameId, _columns.Count, flags, outerSize, innerSize)) return;
 
-        var maxSize = _columns.Select(c => c.arraySize.Invoke()).Min();
+        var maxSize = _columns.Select(c => c.arraySize()).Min();
         for (var i = 0; i < _columns.Count; i++) _columns[i].RenderHeader((uint) i);
         ImGui.TableHeadersRow();
         
@@ -148,7 +148,7 @@ public partial class CompoundWidgetBuilder
     {
         Table table = new(name, flags, outerSize, innerSize);
         table.AddColumn(columns);
-        RegisterWidget(table);
+        RegisterGameObj(table);
         return this;
     }
 }

@@ -1,9 +1,9 @@
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class CheckBox : Widget
+public class CheckBox : GameObject
 {
     public string label;
     public bool isChecked;
@@ -33,7 +33,7 @@ public partial class CompoundWidgetBuilder
     {
         var cb = new CheckBox(label, isChecked, clicked);
         changed = cb.Changed; 
-        RegisterWidget(cb);
+        RegisterGameObj(cb);
         return this;
     }
 }

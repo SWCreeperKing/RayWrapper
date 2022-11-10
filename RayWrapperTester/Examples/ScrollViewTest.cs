@@ -1,7 +1,7 @@
 using System.Numerics;
-using RayWrapper.Objs;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Examples;
 

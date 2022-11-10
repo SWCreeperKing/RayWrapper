@@ -1,10 +1,10 @@
 using System.Numerics;
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class PlotHistogram : Widget
+public class PlotHistogram : GameObject
 {
     private string _label;
     private string _overlayText;
@@ -28,7 +28,7 @@ public class PlotHistogram : Widget
 
     protected override void RenderCall()
     {
-        var arr = _arrFunc.Invoke();
+        var arr = _arrFunc();
         if (!arr.Any()) return;
 
         if (_scale is null) ImGui.PlotHistogram(_label, ref arr[0], arr.Length, _offset, _overlayText);
@@ -56,7 +56,7 @@ public partial class CompoundWidgetBuilder
     public CompoundWidgetBuilder AddPlotHistogram(string label, Func<float[]> arrFunc, string overlayText = "", int offset = 0,
         Vector2? scale = null, Vector2? size = null, int? stride = null)
     {
-        RegisterWidget(new PlotHistogram(label, arrFunc, overlayText, offset, scale, size, stride));
+        RegisterGameObj(new PlotHistogram(label, arrFunc, overlayText, offset, scale, size, stride));
         return this;
     }
 }

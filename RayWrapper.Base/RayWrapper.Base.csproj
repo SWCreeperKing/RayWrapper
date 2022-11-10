@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -25,11 +25,16 @@
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
       <PackageReference Include="Raylib-CsLo" Version="4.2.0.3" />
       <PackageReference Include="ZimonIsHimUtils" Version="1.1.0" />
     </ItemGroup>
 
+    <ItemGroup Label="Resources">
+        <EmbeddedResource Include="Resources/**/*.*" />
+    </ItemGroup>
 </Project>

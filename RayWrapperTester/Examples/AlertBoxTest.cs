@@ -1,7 +1,7 @@
 using System.Numerics;
-using RayWrapper.Base;
-using RayWrapper.Objs;
-using RayWrapper.Objs.AlertBoxes;
+using RayWrapper.Base.GameBox;
+using RayWrapper.LegacyUI.AlertBoxes;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 
 namespace RayWrapperTester.Examples;
@@ -20,9 +20,9 @@ public class AlertBoxTest : Example
         bb.Clicked += () => new AlertConfirm("Testing", "Just testing alert\nboxes").Show();
         bbb.Clicked += () => new AlertInput("Testing", "Hello?") { onResult = Logger.Log }.Show();
 
-        var inputBox = new InputBox(pos + new Vector2(300, 0));
-        var inputBoxSmall = new InputBox(pos + new Vector2(300, 50), maxCharacters: 7) { numbersOnly = true };
-        var inputBoxPass = new InputBox(pos + new Vector2(300, 100), maxCharacters: 7) { password = true };
+        var inputBox = new InputBox(pos + new Vector2(300, 0), 200);
+        var inputBoxSmall = new InputBox(pos + new Vector2(300, 50), 200, maxCharacters: 7) { numbersOnly = true };
+        var inputBoxPass = new InputBox(pos + new Vector2(300, 100), 200, maxCharacters: 7) { password = true };
 
         RegisterGameObj(b, bb, bbb, inputBox, inputBoxSmall, inputBoxPass);
     }

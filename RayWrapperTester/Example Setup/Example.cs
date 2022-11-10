@@ -1,8 +1,8 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base.GameObject;
-using RayWrapper.Objs;
-using RayWrapper.Objs.AlertBoxes;
+using RayWrapper.LegacyUI.AlertBoxes;
+using RayWrapper.LegacyUI.UI;
 
 namespace RayWrapperTester.Example_Setup;
 

@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 using RayWrapper.Base.GameObject;
 using ZimonIsHimUtils.ExtensionMethods;
-using RayWrapper.Base;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
+using static RayWrapper.Base.Extras.Core;
 
 namespace RayWrapper.ParticleControl;
 
@@ -12,7 +12,7 @@ public class ParticleController : GameObject
     
     private List<Particle> _particles = new();
 
-    protected override void UpdateCall()
+    protected override void UpdateCall(float dt)
     {
         _particles.Each(p => p.Update());
         _particles = _particles.Where(p => !p.IsDead()).ToList();

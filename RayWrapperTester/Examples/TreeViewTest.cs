@@ -1,13 +1,13 @@
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper;
-using RayWrapper.Base;
-using RayWrapper.Objs;
-using RayWrapper.Objs.TreeView;
-using RayWrapper.Objs.TreeView.TreeNodeChain;
-using RayWrapper.Objs.TreeView.TreeNodeChain.NodeShapes;
+using RayWrapper.Base.GameBox;
+using RayWrapper.Base.Primitives;
+using RayWrapper.LegacyUI.TreeView;
+using RayWrapper.LegacyUI.TreeView.TreeNodeChain;
+using RayWrapper.LegacyUI.TreeView.TreeNodeChain.NodeShapes;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Examples;
 

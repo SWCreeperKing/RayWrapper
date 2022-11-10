@@ -1,12 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Numerics;
+﻿using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Objs;
 using RayWrapper.ParticleControl;
-using RayWrapper.Vars;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 new GameBox(new RayWrapperTesterParticle.Program(), new Vector2(1280, 720));
 
@@ -28,7 +25,7 @@ namespace RayWrapperTesterParticle
             RegisterGameObj(pc);
         }
 
-        public override void UpdateLoop()
+        public override void UpdateLoop(float dt)
         {
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) pc.CreateParticle(0);
         }

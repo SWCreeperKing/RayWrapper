@@ -20,6 +20,8 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using ImGuiNET;
 using Raylib_CsLo;
+using RayWrapper.Base.GameBox;
+using static RayWrapper.Base.GameBox.AttributeManager;
 
 namespace RayWrapper.Imgui;
 
@@ -32,13 +34,15 @@ public static class RlImgui
     public static readonly Vector4 V4MaxValue = new(float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue);
     public static readonly Vector4 V4MinValue = new(float.MinValue, float.MinValue, float.MinValue, float.MinValue);
 
-    public static IntPtr imGuiContext = IntPtr.Zero;
+    public static nint imGuiContext = nint.Zero;
     private static ImGuiMouseCursor _currentMouseCursor = ImGuiMouseCursor.COUNT;
     private static Dictionary<ImGuiMouseCursor, MouseCursor> _mouseCursorMap;
     private static KeyboardKey[] _keyEnumMap;
     private static Texture _fontTexture;
 
-    public static void Setup(bool darkTheme = true)
+    [GameBoxWedge(PlacerType.AfterInit)] public static void Setup() => Setup(true);
+
+    public static void Setup(bool darkTheme)
     {
         _mouseCursorMap = new Dictionary<ImGuiMouseCursor, MouseCursor>();
         _keyEnumMap = Enum.GetValues(typeof(KeyboardKey)) as KeyboardKey[];
@@ -87,7 +91,7 @@ public static class RlImgui
 
         _fontTexture = Raylib.LoadTextureFromImage(image);
 
-        io.Fonts.SetTexID(new IntPtr(_fontTexture.id));
+        io.Fonts.SetTexID(new nint(_fontTexture.id));
     }
 
     public static void EndInitImGui()
@@ -98,7 +102,6 @@ public static class RlImgui
         var io = ImGui.GetIO();
 
         io.Fonts.AddFontDefault();
-
         io.KeyMap[(int) ImGuiKey.Tab] = (int) KeyboardKey.KEY_TAB;
         io.KeyMap[(int) ImGuiKey.LeftArrow] = (int) KeyboardKey.KEY_LEFT;
         io.KeyMap[(int) ImGuiKey.RightArrow] = (int) KeyboardKey.KEY_RIGHT;
@@ -187,6 +190,7 @@ public static class RlImgui
         }
     }
 
+    [GameBoxWedge(PlacerType.BeforeRender)]
     public static void Begin()
     {
         ImGui.SetCurrentContext(imGuiContext);
@@ -212,12 +216,12 @@ public static class RlImgui
     }
 
     private static void RenderTriangles(uint count, uint indexStart, ImVector<ushort> indexBuffer,
-        ImPtrVector<ImDrawVertPtr> vertBuffer, IntPtr texturePtr)
+        ImPtrVector<ImDrawVertPtr> vertBuffer, nint texturePtr)
     {
         if (count < 3) return;
 
         uint textureId = 0;
-        if (texturePtr != IntPtr.Zero) textureId = (uint) texturePtr.ToInt32();
+        if (texturePtr != nint.Zero) textureId = (uint) texturePtr.ToInt32();
 
         RlGl.rlBegin(RlGl.RL_TRIANGLES);
         RlGl.rlSetTexture(textureId);
@@ -258,7 +262,7 @@ public static class RlImgui
                 EnableScissor(cmd.ClipRect.X - data.DisplayPos.X, cmd.ClipRect.Y - data.DisplayPos.Y,
                     cmd.ClipRect.Z - (cmd.ClipRect.X - data.DisplayPos.X),
                     cmd.ClipRect.W - (cmd.ClipRect.Y - data.DisplayPos.Y));
-                if (cmd.UserCallback != IntPtr.Zero)
+                if (cmd.UserCallback != nint.Zero)
                 {
                     var cb = Marshal.GetDelegateForFunctionPointer<Callback>(cmd.UserCallback);
                     cb(commandList, cmd);
@@ -277,6 +281,7 @@ public static class RlImgui
         RlGl.rlEnableBackfaceCulling();
     }
 
+    [GameBoxWedge(PlacerType.AfterRender)]
     public static void End()
     {
         ImGui.SetCurrentContext(imGuiContext);
@@ -288,15 +293,15 @@ public static class RlImgui
 
     public static void Image(Texture image)
     {
-        ImGui.Image(new IntPtr(image.id), new Vector2(image.width, image.height));
+        ImGui.Image(new nint(image.id), new Vector2(image.width, image.height));
     }
 
     public static void ImageSize(Texture image, int width, int height)
     {
-        ImGui.Image(new IntPtr(image.id), new Vector2(width, height));
+        ImGui.Image(new nint(image.id), new Vector2(width, height));
     }
 
-    public static void ImageSize(Texture image, Vector2 size) => ImGui.Image(new IntPtr(image.id), size);
+    public static void ImageSize(Texture image, Vector2 size) => ImGui.Image(new nint(image.id), size);
 
     public static void ImageRect(Texture image, int destWidth, int destHeight, Rectangle sourceRect)
     {
@@ -325,11 +330,13 @@ public static class RlImgui
             uv1.Y = uv0.Y + sourceRect.height / image.height;
         }
 
-        ImGui.Image(new IntPtr(image.id), new Vector2(destWidth, destHeight), uv0, uv1);
+        ImGui.Image(new nint(image.id), new Vector2(destWidth, destHeight), uv0, uv1);
     }
 
-    public static Vector4 ToV4(this Color color) => new(color.r, color.g, color.b, color.a);
-    public static Vector3 ToV3(this Color color) => new(color.r, color.g, color.b);
+    public static Vector4 ToV4(this Color color) => new Vector4(color.r, color.g, color.b, color.a) / 255f;
+    public static Vector3 ToV3(this Color color) => new Vector3(color.r, color.g, color.b) / 255f;
+    public static uint ToUint(this Vector4 color) => ImGui.ColorConvertFloat4ToU32(color);
+    public static uint ToUint(this Color color) => color.ToV4().ToUint();
     public static Color ToColor(this Vector3 color) => new((short) color.X, (short) color.Y, (short) color.Z, 255);
 
     public static Color ToColor(this Vector4 color)
@@ -384,4 +391,11 @@ public static class RlImgui
     }
 
     public static void SetScale(float scale = 1) => ImGui.GetIO().FontGlobalScale = scale;
+
+    public static void DrawBezierCurve(this ImDrawListPtr ptr, Vector2 pos1, Vector2 pos2, uint color, float thickness)
+    {
+        Vector2 p1 = new(pos1.X, pos2.Y);
+        Vector2 p2 = new(pos2.X, pos1.Y);
+        ptr.AddBezierCubic(pos1, p2, p1, pos2, color, thickness);
+    }
 }

@@ -1,6 +1,6 @@
 using System.Numerics;
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
@@ -165,7 +165,7 @@ public class VSliderInt : VSliderBase<int>
     }
 }
 
-public class Slider : Widget
+public class Slider : GameObject
 {
     private string _label;
     private ISlider _type;
@@ -191,7 +191,7 @@ public partial class CompoundWidgetBuilder
     public CompoundWidgetBuilder AddSlider(string label, ISlider type, string format = "",
         ImGuiSliderFlags flags = ImGuiSliderFlags.None)
     {
-        RegisterWidget(new Slider(label, type, format, flags));
+        RegisterGameObj(new Slider(label, type, format, flags));
         return this;
     }
 }

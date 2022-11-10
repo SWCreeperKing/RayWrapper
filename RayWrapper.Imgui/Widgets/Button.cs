@@ -1,11 +1,11 @@
 using System.Numerics;
 using ImGuiNET;
 using Raylib_CsLo;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class Button : Widget
+public class Button : GameObject
 {
     private enum ButtonType
     {
@@ -28,7 +28,7 @@ public class Button : Widget
     private Vector2 _maxSize = Vector2.Zero;
 
     //img button
-    private IntPtr _texture;
+    private nint _texture;
     private Vector2? _uv0, _uv1;
     private int _framePadding = int.MinValue;
     private Vector4? _backgroundColor, _tint;
@@ -41,9 +41,9 @@ public class Button : Widget
         _type = maxSize is null ? ButtonType.Small : ButtonType.Normal;
     }
 
-    public Button(string label, Action clicked, ImGuiDir direction)
+    public Button(string labelId, Action clicked, ImGuiDir direction)
     {
-        this.label = label;
+        label = labelId;
         this.clicked = clicked;
         _dir = direction;
         _type = ButtonType.Arrow;
@@ -57,11 +57,11 @@ public class Button : Widget
         _type = ButtonType.Radio;
     }
 
-    public Button(string label, Action clicked, Color color,
+    public Button(string descId, Action clicked, Color color,
         ImGuiColorEditFlags flags = ImGuiColorEditFlags.DefaultOptions,
         Vector2? maxSize = null)
     {
-        this.label = label;
+        label = descId;
         this.clicked = clicked;
         _color = color.ToV4();
         _colorFlags = flags;
@@ -69,7 +69,7 @@ public class Button : Widget
         _type = ButtonType.Color;
     }
 
-    public Button(IntPtr texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null, Vector2? uv1 = null,
+    public Button(nint texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null, Vector2? uv1 = null,
         int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
     {
         _texture = texture;
@@ -85,7 +85,7 @@ public class Button : Widget
 
     protected override void RenderCall()
     {
-        if (CheckButton()) clicked.Invoke();
+        if (CheckButton()) clicked();
     }
 
     public bool CheckButton() =>
@@ -131,33 +131,33 @@ public partial class CompoundWidgetBuilder
 {
     public CompoundWidgetBuilder AddButton(string label, Action clicked, Vector2? maxSize = null)
     {
-        RegisterWidget(new Button(label, clicked, maxSize));
+        RegisterGameObj(new Button(label, clicked, maxSize));
         return this;
     }
 
     public CompoundWidgetBuilder AddButton(string label, Action clicked, ImGuiDir direction)
     {
-        RegisterWidget(new Button(label, clicked, direction));
+        RegisterGameObj(new Button(label, clicked, direction));
         return this;
     }
 
     public CompoundWidgetBuilder AddButton(string label, Action clicked, bool startActive)
     {
-        RegisterWidget(new Button(label, clicked, startActive));
+        RegisterGameObj(new Button(label, clicked, startActive));
         return this;
     }
 
     public CompoundWidgetBuilder AddButton(string label, Action clicked, Color color,
         ImGuiColorEditFlags flags = ImGuiColorEditFlags.DefaultOptions, Vector2? maxSize = null)
     {
-        RegisterWidget(new Button(label, clicked, color, flags, maxSize));
+        RegisterGameObj(new Button(label, clicked, color, flags, maxSize));
         return this;
     }
 
-    public CompoundWidgetBuilder AddButton(IntPtr texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null,
+    public CompoundWidgetBuilder AddButton(nint texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null,
         Vector2? uv1 = null, int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
     {
-        RegisterWidget(new Button(texture, clicked, maxSize, uv0, uv1, framePadding, backgroundColor, tint));
+        RegisterGameObj(new Button(texture, clicked, maxSize, uv0, uv1, framePadding, backgroundColor, tint));
         return this;
     }
 }

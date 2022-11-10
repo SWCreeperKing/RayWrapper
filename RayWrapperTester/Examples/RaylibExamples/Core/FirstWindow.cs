@@ -1,7 +1,6 @@
 using Raylib_CsLo;
-using RayWrapper;
-using RayWrapper.Objs;
-using RayWrapper.Vars;
+using RayWrapper.Base.GameBox;
+using RayWrapper.LegacyUI.UI;
 
 namespace RayWrapperTester.Examples.RaylibExamples.Core;
 
@@ -28,7 +27,7 @@ public partial class Program : GameLoop
     }
     
     // tip: DO NOT init new objects everytime in Update/Render Loops
-    public override void UpdateLoop()
+    public override void UpdateLoop(float dt)
     {
         // put update loop stuff here
     }

@@ -1,10 +1,9 @@
 using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper;
-using RayWrapper.Objs;
-using RayWrapper.Vars;
+using RayWrapper.Base.GameBox;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Examples;
 
@@ -18,16 +17,16 @@ public class TooltipMask : Example
 
     public TooltipMask(string tabName) : base(tabName)
     {
-        _tooltip = new GameBox.DefaultTooltip("Testing Tooltip");
+        _tooltip = new DefaultTooltip("Testing Tooltip");
         _scissorArea.Draw(_maskColor);
         _maskText = new Text("Move the mouse around to reveal this text!", new Vector2(190, 200));
     }
 
-    protected override void UpdateCall()
+    protected override void UpdateCall(float dt)
     {
-        var mouse = GameBox.mousePos;
+        var mouse = Input.MousePosition.currentPosition;
         _scissorArea = new Rectangle(mouse.X - 100, mouse.Y - 100, 200, 200);
-        _maskText.Update();
+        _maskText.Update(dt);
     }
 
     protected override void RenderCall()

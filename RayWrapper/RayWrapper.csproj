@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">    
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        
+
         <PackageId>RayWrapper</PackageId>
         <Authors>SW_CreeperKing</Authors>
         <Description>This is a Wrapper Project for Raylib-cslo</Description>
@@ -18,10 +18,12 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageVersion>0.6.1</PackageVersion>
         <PackageReleaseNotes>-updated to base 0.2.3.1
--using base's input system </PackageReleaseNotes>
+            -using base's input system
+        </PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,10 +36,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Resources\AddedAssets\Font\CascadiaCode_License.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
+        <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
     </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Text;
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
@@ -198,7 +198,7 @@ public class InputVector4 : VectorInputType<Vector4>
     }
 }
 
-public class InputBox : Widget
+public class InputBox : GameObject
 {
     private ImGuiInputTextFlags _flags;
     private string _label;
@@ -221,7 +221,7 @@ public partial class CompoundWidgetBuilder
 {
     public CompoundWidgetBuilder AddInputBox(string label, IInputType inputType, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None)
     {
-        RegisterWidget(new InputBox(label, inputType, flags));
+        RegisterGameObj(new InputBox(label, inputType, flags));
         return this;
     }
 }

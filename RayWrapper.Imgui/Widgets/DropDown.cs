@@ -1,9 +1,9 @@
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class DropDown : Widget
+public class DropDown : GameObject
 {
     public string name;
     public Func<string[]> array;
@@ -19,7 +19,7 @@ public class DropDown : Widget
 
     protected override void RenderCall()
     {
-        var arr = array.Invoke();
+        var arr = array();
         prevSelected = selected;
         ImGui.Combo(name, ref selected, arr, arr.Length);
 
@@ -42,7 +42,7 @@ public partial class CompoundWidgetBuilder
     {
         var dd = new DropDown(name, array) { selectable = selectable };
         selected = () => dd.Changed(out var nSelect) ? nSelect : -1;
-        RegisterWidget(dd);
+        RegisterGameObj(dd);
         return this;
     }
 }

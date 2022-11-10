@@ -1,11 +1,12 @@
 using System.Linq;
 using System.Numerics;
-using RayWrapper;
-using RayWrapper.Base;
+using RayWrapper.Base.Extras;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Base.GameObject;
-using RayWrapper.Objs;
-using RayWrapper.Objs.AlertBoxes;
-using RayWrapper.Objs.ListView;
+using RayWrapper.Base.SaveSystem;
+using RayWrapper.LegacyUI.AlertBoxes;
+using RayWrapper.LegacyUI.ListView;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 using static RayWrapperTester.Program;
 
@@ -40,7 +41,7 @@ public class ExamplesHome : GameObject
             "This is the Example Project of Example Projects!\nUse the InputBox to Search:\n\n\nPressing enter or clicking outside the box\nwill execute the search\n\nyou can also press ` to open the console!",
             new Vector2(615, 150));
 
-        InputBox exampleSearch = new(new Vector2(725, 230))
+        InputBox exampleSearch = new(new Vector2(725, 230), 500)
         {
             onEnter = Search,
             onExit = Search
@@ -67,21 +68,21 @@ public class ExamplesHome : GameObject
         GameBox.RegisterSaveItem(t, "test");
 
         Logger.Log($"i = {t.i}"); // 10
-        GameBox.SaveItems();
+        SaveExt.SaveItems();
         
         t.i = 2;
         Logger.Log($"i = {t.i}"); // 2
-        GameBox.LoadItems();
+        SaveExt.LoadItems();
         
         Logger.Log($"i = {t.i}"); // 10
         t.Set(new Test());
         Logger.Log($"i = {t.i}"); // 6
-        GameBox.LoadItems();
+        SaveExt.LoadItems();
         
         Logger.Log($"i = {t.i}"); // 10
         t = new Test();
         Logger.Log($"i = {t.i}"); // 6 
-        GameBox.LoadItems();
+        SaveExt.LoadItems();
         
         Logger.Log($"i = {t.i}"); // 6
     }

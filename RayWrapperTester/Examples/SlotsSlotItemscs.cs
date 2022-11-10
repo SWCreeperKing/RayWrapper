@@ -1,6 +1,6 @@
 using System.Numerics;
-using RayWrapper.Objs;
-using RayWrapper.Objs.Slot;
+using RayWrapper.LegacyUI.Slot;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
 

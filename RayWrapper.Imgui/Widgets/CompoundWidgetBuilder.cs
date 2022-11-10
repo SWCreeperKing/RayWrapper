@@ -1,10 +1,10 @@
 using ImGuiNET;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 using static ImGuiNET.ImGuiWindowFlags;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public abstract class WindowBase : WidgetRegister, IWBase
+public abstract class WindowBase : GameObject
 {
     public bool closable;
     public bool isOpen = true;
@@ -18,14 +18,14 @@ public abstract class WindowBase : WidgetRegister, IWBase
         this.configFlags = configFlags;
     }
 
-    public void Update()
+    protected sealed override void UpdateCall(float dt)
     {
         if (!isOpen && closable) return;
-        UpdateCall();
-        UpdateReg();
+        WindowUpdate(dt);
+        UpdateReg(dt);
     }
 
-    public void Render()
+    protected sealed override void RenderCall()
     {
         if (!isOpen && closable) return;
         var begin = closable ? ImGui.Begin(_name, ref isOpen, configFlags) : ImGui.Begin(_name, configFlags);
@@ -35,48 +35,48 @@ public abstract class WindowBase : WidgetRegister, IWBase
             return;
         }
 
-        RenderCall();
+        WindowRender();
         RenderReg();
         ImGui.End();
     }
 
-    public void Dispose()
+    protected sealed override void DisposeCall()
     {
-        DisposeCall();
+        WindowDispose();
         DisposeReg();
     }
 
-    protected virtual void UpdateCall()
+    protected virtual void WindowUpdate(float dt)
     {
     }
 
-    protected virtual void RenderCall()
+    protected virtual void WindowRender()
     {
     }
 
-    protected virtual void DisposeCall()
+    protected virtual void WindowDispose()
     {
     }
 }
 
-public partial class CompoundWidgetBuilder : WidgetRegister
+public partial class CompoundWidgetBuilder : TypeRegister<IGameObject>
 {
     public CompoundWidgetBuilder AddNonWidget(Action nonWidget)
     {
-        RegisterWidget(new EmptyWidget(nonWidget));
+        RegisterGameObj(new EmptyWidget(nonWidget));
         return this;
     }
 
-    public CompoundWidgetBuilder AddWidget(IWidget widget)
+    public CompoundWidgetBuilder AddWidget(IGameObject widget)
     {
-        RegisterWidget(widget);
+        RegisterGameObj(widget);
         return this;
     }
 
     public WindowBase ToWindow(string name, ImGuiWindowFlags configFlags = AlwaysAutoResize)
     {
         Window window = new(name, configFlags);
-        window.RegisterWidget(GetRegistry());
+        window.RegisterGameObj(GetRegistry());
         return window;
     }
 
@@ -84,19 +84,11 @@ public partial class CompoundWidgetBuilder : WidgetRegister
         ImGuiWindowFlags configFlags = AlwaysAutoResize)
     {
         window = new(name, configFlags);
-        window.RegisterWidget(GetRegistry());
+        window.RegisterGameObj(GetRegistry());
         return this;
     }
 
-    public Tooltip ToTooltip() => new Tooltip().Add(GetRegistry());
-
-    public CompoundWidgetBuilder ToTooltip(out Tooltip tooltip)
-    {
-        tooltip = new Tooltip().Add(GetRegistry());
-        return this;
-    }
-
-    public class EmptyWidget : Widget
+    public class EmptyWidget : GameObject
     {
         public Action action;
         public EmptyWidget(Action action) => this.action = action;

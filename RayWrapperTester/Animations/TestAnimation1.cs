@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
-using RayWrapper;
-using RayWrapper.Animation;
-using RayWrapper.Animation.SinglePurposeObjects;
-using RayWrapper.Animation.Transitions;
-using Rectangle = RayWrapper.Base.Rectangle;
+using RayWrapper.Base.GameBox;
+using RayWrapper.LegacyUI.Animation;
+using RayWrapper.LegacyUI.Animation.SinglePurposeObjects;
+using RayWrapper.LegacyUI.Animation.Transitions;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapperTester.Animations;
 

@@ -1,4 +1,4 @@
-using RayWrapper.Objs;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 
 namespace RayWrapperTester.Examples;
@@ -16,7 +16,7 @@ public class PercentSliders : Example
         RegisterGameObj(pb, slider);
     }
 
-    protected override void UpdateCall()
+    protected override void UpdateCall(float dt)
     {
         _percent += .005f;
         _percent %= 1;

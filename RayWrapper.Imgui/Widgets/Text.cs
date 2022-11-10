@@ -1,11 +1,11 @@
 using System.Numerics;
 using ImGuiNET;
 using Raylib_CsLo;
-using RayWrapper.Imgui.Widgets.Base;
+using RayWrapper.Base.GameObject;
 
 namespace RayWrapper.Imgui.Widgets;
 
-public class Text : Widget
+public class Text : GameObject
 {
     public enum Format
     {
@@ -70,13 +70,13 @@ public partial class CompoundWidgetBuilder
 {
     public CompoundWidgetBuilder AddText(string text, Color? color = null, Text.Format format = Text.Format.Normal)
     {
-        RegisterWidget(new Text(text, color, format));
+        RegisterGameObj(new Text(text, color, format));
         return this;
     }
 
     public CompoundWidgetBuilder AddText(string text, string fmt)
     {
-        RegisterWidget(new Text(text, fmt));
+        RegisterGameObj(new Text(text, fmt));
         return this;
     }
 }

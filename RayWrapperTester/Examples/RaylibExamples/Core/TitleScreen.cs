@@ -1,9 +1,9 @@
 using System.Numerics;
 using RayWrapper.Base.GameObject;
-using RayWrapper.Objs;
+using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 using static Raylib_CsLo.Raylib;
-using static RayWrapper.GameBox;
+using static RayWrapper.Base.GameBox.GameBox;
 
 namespace RayWrapperTester.Examples.RaylibExamples.Core;
 

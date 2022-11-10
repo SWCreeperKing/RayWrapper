@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -16,20 +16,20 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.1</PackageVersion>
-        <PackageReleaseNotes>-initial release</PackageReleaseNotes>
+        <PackageVersion>0.1.1</PackageVersion>
+        <PackageReleaseNotes>-wrapped more features</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="ImGui.NET" Version="1.88.0" />
-      <PackageReference Include="RayWrapper" Version="0.6.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Widgets\Base" />
+      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
     </ItemGroup>
 
 </Project>
