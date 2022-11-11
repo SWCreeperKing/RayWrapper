@@ -18,6 +18,7 @@
 
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text;
 using ImGuiNET;
 using Raylib_CsLo;
 using RayWrapper.Base.GameBox;
@@ -35,12 +36,14 @@ public static class RlImgui
     public static readonly Vector4 V4MinValue = new(float.MinValue, float.MinValue, float.MinValue, float.MinValue);
 
     public static nint imGuiContext = nint.Zero;
+
+    private const int StackAllocationSizeLimit = 2048;
     private static ImGuiMouseCursor _currentMouseCursor = ImGuiMouseCursor.COUNT;
     private static Dictionary<ImGuiMouseCursor, MouseCursor> _mouseCursorMap;
     private static KeyboardKey[] _keyEnumMap;
     private static Texture _fontTexture;
 
-    [GameBoxWedge(PlacerType.AfterInit)] public static void Setup() => Setup(true);
+    [GameBoxWedge(PlacerType.BeforeInit)] public static void Setup() => Setup(true);
 
     public static void Setup(bool darkTheme)
     {
@@ -398,4 +401,87 @@ public static class RlImgui
         Vector2 p2 = new(pos2.X, pos1.Y);
         ptr.AddBezierCubic(pos1, p2, p1, pos2, color, thickness);
     }
+
+    public static bool IsInRange(this Range range, int i) => range.Start.Value <= i && i < range.End.Value;
+
+    public static bool Equals(this Range range1, Range range2)
+    {
+        return range1.Start.Value == range2.Start.Value && range1.End.Value == range2.End.Value;
+    }
+
+    public static bool Intercept(this Range range1, Range range2)
+    {
+        return range1.IsInRange(range2.Start.Value) || range1.IsInRange(range2.End.Value) ||
+               range2.IsInRange(range1.Start.Value) || range2.IsInRange(range1.End.Value);
+    }
+
+    public static void AddText(this ImDrawListPtr drawPtr, Vector2 pos, uint col, Span<char> text_begin)
+    {
+        unsafe
+        {
+            var text_begin_byteCount = Encoding.UTF8.GetByteCount(text_begin);
+            var native_text_begin = stackalloc byte[text_begin_byteCount + 1];
+            fixed (char* text_begin_ptr = text_begin)
+            {
+                var native_text_begin_offset = Encoding.UTF8.GetBytes(text_begin_ptr, text_begin.Length,
+                    native_text_begin, text_begin_byteCount);
+                native_text_begin[native_text_begin_offset] = 0;
+            }
+
+            byte* native_text_end = null;
+            ImGuiNative.ImDrawList_AddText_Vec2(drawPtr.NativePtr, pos, col, native_text_begin, native_text_end);
+        }
+    }
+
+    public static Vector2 CalcTextSpan(Span<char> text, int start = 0, int? length = null,
+        bool hideTextAfterDoubleHash = false, float wrapWidth = -1.0f)
+    {
+        unsafe
+        {
+            Vector2 ret;
+            byte* nativeTextStart = null;
+            byte* nativeTextEnd = null;
+            var textByteCount = 0;
+            if (text != null)
+            {
+                var textToCopyLen = length.HasValue ? length.Value : text.Length;
+                textByteCount = CalcSizeInUtf8(text, start, textToCopyLen);
+                if (textByteCount > StackAllocationSizeLimit) nativeTextStart = Allocate(textByteCount + 1);
+                else
+                {
+                    var nativeTextStackBytes = stackalloc byte[textByteCount + 1];
+                    nativeTextStart = nativeTextStackBytes;
+                }
+
+                var nativeTextOffset = GetUtf8(text, start, textToCopyLen, nativeTextStart, textByteCount);
+                nativeTextStart[nativeTextOffset] = 0;
+                nativeTextEnd = nativeTextStart + nativeTextOffset;
+            }
+
+            ImGuiNative.igCalcTextSize(&ret, nativeTextStart, nativeTextEnd, *(byte*) &hideTextAfterDoubleHash,
+                wrapWidth);
+            if (textByteCount > StackAllocationSizeLimit) Free(nativeTextStart);
+
+            return ret;
+        }
+    }
+
+    private static int CalcSizeInUtf8(Span<char> s, int start, int length)
+    {
+        unsafe
+        {
+            if (start < 0 || length < 0 || start + length > s.Length) throw new ArgumentOutOfRangeException();
+            fixed (char* utf16Ptr = s) return Encoding.UTF8.GetByteCount(utf16Ptr + start, length);
+        }
+    }
+
+    private static unsafe int GetUtf8(Span<char> s, int start, int length, byte* utf8Bytes, int utf8ByteCount)
+    {
+        if (start < 0 || length < 0 || start + length > s.Length) throw new ArgumentOutOfRangeException();
+        fixed (char* utf16Ptr = s) return Encoding.UTF8.GetBytes(utf16Ptr + start, length, utf8Bytes, utf8ByteCount);
+    }
+
+    private static unsafe byte* Allocate(int byteCount) => (byte*) Marshal.AllocHGlobal(byteCount);
+
+    private static unsafe void Free(byte* ptr) => Marshal.FreeHGlobal((IntPtr) ptr);
 }
