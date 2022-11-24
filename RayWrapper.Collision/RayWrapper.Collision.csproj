@@ -29,4 +29,8 @@
     <ItemGroup>
       <PackageReference Include="RayWrapper" Version="0.6.1" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
+    </ItemGroup>
 </Project>

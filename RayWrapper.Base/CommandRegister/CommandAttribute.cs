@@ -1,4 +1,4 @@
-﻿namespace RayWrapper.LegacyUI.GameConsole;
+﻿namespace RayWrapper.Base.CommandRegister;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class CommandAttribute : Attribute

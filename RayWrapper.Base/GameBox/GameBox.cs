@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Reflection;
 using Raylib_CsLo;
+using RayWrapper.Base.CommandRegister;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Base.Primitives;
 using RayWrapper.Base.SaveSystem;
@@ -117,7 +118,6 @@ public class GameBox
         _hasInit = true;
         Logger.Init();
         AttributeManager.Init();
-        AttributeManager.ExtraRunner(BeforeInit);
         Input.Init(WindowSize);
         InitWindow((int) WindowSize.X, (int) WindowSize.Y, "Loading...");
         Input.processPositions = v2 =>
@@ -125,8 +125,10 @@ public class GameBox
             float Calc(float m, int s, float w) => (m - (s - w * scale) * 0.5f) / scale;
             return new Vector2(Calc(v2.X, GetScreenWidth(), WindowSize.X), Calc(v2.Y, GetScreenHeight(), WindowSize.Y));
         };
+        AttributeManager.ExtraRunner(BeforeInit);
         SceneManager.InitScene("main");
         AttributeManager.ExtraRunner(AfterInit);
+        CommandRegister.CommandRegister.RegisterCommand<DefaultCommands>();
 
         _target = LoadRenderTexture((int) WindowSize.X, (int) WindowSize.Y);
     }

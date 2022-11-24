@@ -26,8 +26,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+      <PackageReference Include="DiscordRichPresence" Version="1.1.1.14" />
       <PackageReference Include="RayWrapper" Version="0.6.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
     </ItemGroup>
 
 </Project>

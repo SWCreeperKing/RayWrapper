@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Raylib_CsLo;
 using RayWrapper.Base.GameBox;
 using RayWrapper.Base.SaveSystem;
-using RayWrapper.LegacyUI.TreeView;
 using RayWrapper.LegacyUI.UI;
 using RayWrapperTester.Example_Setup;
 
@@ -31,7 +29,7 @@ namespace RayWrapperTester
             //     }
             // }
             //
-            // Console.WriteLine($"biggest in font: [{biggest}]");
+            // Logger.Log($"biggest in font: [{biggest}]");
 
             SaveExt.InitSaveSystem("SW_CreeperKing", "SaveTesting");
 

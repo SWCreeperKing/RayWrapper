@@ -15,6 +15,7 @@ public static class Logger
         Debug,
         Special,
         Warning,
+        SoftError,
         Error,
         Other
     }
@@ -77,7 +78,7 @@ public static class Logger
             Info => ConsoleColor.DarkGreen,
             Debug => ConsoleColor.DarkCyan,
             Warning => ConsoleColor.Yellow,
-            Error => ConsoleColor.Red,
+            Error or SoftError => ConsoleColor.Red,
             Other => ConsoleColor.Blue,
             Special => ConsoleColor.Cyan,
             _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)

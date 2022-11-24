@@ -1,15 +1,14 @@
 ﻿using DiscordRPC;
-using RayWrapper.Base;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Vars;
-using static RayWrapper.GameConsole.CommandLineColor;
-using static RayWrapper.GameConsole.CommandRegister;
-using static RayWrapper.GameConsole.GameConsole;
-using static RayWrapper.Base.Logger.Level;
+using static RayWrapper.Base.GameBox.AttributeManager;
+using static RayWrapper.Base.GameBox.AttributeManager.PlacerType;
+using static RayWrapper.Base.GameBox.Logger.Level;
 
 namespace RayWrapper.Discord;
 
 /// <summary>
-/// the following is recommended to put in an the <see cref="GameLoop.Init()"/> method of the <see cref="GameLoop"/>
+/// the following is recommended to put in an the <see cref="Vars.GameLoop.Init()"/> method of the <see cref="Vars.GameLoop"/>
 /// <list type="numer">
 /// <listheader>
 /// How to use discord integration:
@@ -45,7 +44,6 @@ public static class DiscordIntegration
         DiscordIntegration.discordAppId = discordAppId;
         if (discordAppId != string.Empty) CheckDiscord(discordAppId);
         GameBox.AddScheduler(new Scheduler(100, UpdateActivity));
-        RegisterCommand<DiscordCommands>();
         now = DateTime.UtcNow;
     }
 
@@ -81,26 +79,25 @@ public static class DiscordIntegration
 
             discord.SetPresence(rp);
             UpdateActivity();
-            WriteToConsole($"{CYAN}Discord Connected");
+            Logger.Log(Info, "Discord Connected");
         }
         catch (Exception e)
         {
-            Logger.Log(Warning, $"DISCORD ERR: {e}");
-            WriteToConsole($"{RED}Discord Failed to connect");
+            Logger.Log(Warning, $"DISCORD FAILED TO CONNECT: {e}");
             discordAlive = false;
 
             if (retry)
             {
-                WriteToConsole($"{YELLOW}Retrying Discord connection");
                 Logger.Log(Debug, "RETRYING TO CHECK IF FLUKE");
                 CheckDiscord(appId, false);
             }
-            else WriteToConsole($"{DARKRED}Retry failed, use the 'discord' command to retry again");
+            else Logger.Log(Debug, "Retry failed, use the 'discord' command to retry again");
         }
     }
 
     public static void UpdateActivity()
     {
+        
         try
         {
             if (!discordAlive) return;
@@ -112,12 +109,12 @@ public static class DiscordIntegration
         }
         catch (Exception e)
         {
-            Logger.Log(Warning, $"DISCORD ERR: {e}");
-            WriteToConsole($"{RED}Discord connection threw error");
+            Logger.Log(Warning, $"DISCORD CONNECTION ERR: {e}");
             discordAlive = false;
         }
     }
 
+    [GameBoxWedge(AfterDispose)]
     public static void Dispose()
     {
         if (discordAlive) discord.Dispose();

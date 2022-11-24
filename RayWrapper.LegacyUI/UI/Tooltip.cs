@@ -65,7 +65,7 @@ public class DefaultTooltip : Tooltip
     {
         var mousePos = Input.MousePosition.currentPosition;
         var text = string.Join("\n", data);
-        var defFont = Text.Style.DefaultFont ?? Raylib.GetFontDefault();
+        var defFont = Text.defaultStyle.Font;
         var textSize = defFont.MeasureText(text);
         Vector2 pos = new(mousePos.X - ((int) screenQuad % 2 != 0 ? textSize.X : 0),
             mousePos.Y - ((int) screenQuad > 2 ? textSize.Y : -33));
@@ -83,8 +83,8 @@ public static class TooltipController
     public static ColorModule baseTooltipBackColor = new Color(0, 0, 0, 200);
     public static ColorModule baseTooltipColor = new Color(170, 170, 255, 220);
 
-    [GameBoxWedge(PlacerType.BeforeUpdate, 9999999)]
-    public static void UpdateTooltip(float dt)
+    [GameBoxWedge(PlacerType.AfterRender, 99999999)]
+    public static void RenderUpdate()
     {
         if (!tooltips.Any()) return;
         var mousePos = Input.MousePosition.currentPosition;

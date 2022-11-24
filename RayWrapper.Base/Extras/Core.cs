@@ -32,14 +32,14 @@ public static class Core
     /// </summary>
     /// <param name="image">the <see cref="Raylib_CsLo.Image"/> to get the size of</param>
     /// <returns>the size of an <see cref="Raylib_CsLo.Image"/></returns>
-    public static Vector2 Size(this Raylib_CsLo.Image image) => image.Texture().Size();
+    public static Vector2 Size(this Image image) => image.Texture().Size();
 
     /// <summary>
     /// gets the size of a <see cref="Texture"/> as a <see cref="Vector2"/>
     /// </summary>
     /// <param name="texture">the <see cref="Texture"/> to get the size of</param>
     /// <returns>the size of a <see cref="Texture"/></returns>
-    public static Vector2 Size(this Raylib_CsLo.Texture texture) => new(texture.width, texture.height);
+    public static Vector2 Size(this Texture texture) => new(texture.width, texture.height);
 
     /// <summary>
     /// gets text from the user's clipboard
@@ -228,7 +228,7 @@ public static class Core
     /// </summary>
     /// <param name="i">the <see cref="Raylib_CsLo.Image"/> to get the <see cref="Texture"/> from</param>
     /// <returns>the <see cref="Texture"/> from <paramref name="i"/></returns>
-    public static Raylib_CsLo.Texture Texture(this Raylib_CsLo.Image i) => LoadTextureFromImage(i);
+    public static Texture Texture(this Image i) => LoadTextureFromImage(i);
 
     /// <summary>
     /// draws a given <see cref="Texture"/>
@@ -238,7 +238,7 @@ public static class Core
     /// <param name="tint"><see cref="Color"/> tint of <see cref="Texture"/> (white should be default)</param>
     /// <param name="rot">rotation of <see cref="Texture"/></param>
     /// <param name="scale">scale of <see cref="Texture"/></param>
-    public static void Draw(this Raylib_CsLo.Texture t, Vector2 pos, Color tint, float rot = 0, float scale = 1)
+    public static void Draw(this Texture t, Vector2 pos, Color tint, float rot = 0, float scale = 1)
     {
         DrawTextureEx(t, pos, rot, scale, tint);
     }
@@ -249,7 +249,7 @@ public static class Core
     /// <param name="t"><see cref="Texture"/> to draw</param>
     /// <param name="pos">where to draw <see cref="Texture"/></param>
     /// <param name="rotation">rotation of <see cref="Texture"/></param>
-    public static void DrawPro(this Raylib_CsLo.Texture t, Vector2 pos, int rotation = 0)
+    public static void DrawPro(this Texture t, Vector2 pos, int rotation = 0)
     {
         DrawTexturePro(t, new Raylib_CsLo.Rectangle(0, 0, t.width, t.height),
             new Raylib_CsLo.Rectangle(pos.X, pos.Y, t.width, t.height),
@@ -594,7 +594,7 @@ public static class Core
     }
 
     public static bool IsMouseIn(this Raylib_CsLo.Rectangle rect) => rect.IsV2In(Input.MousePosition.currentPosition);
-    public static bool IsV2In(this Raylib_CsLo.Rectangle rect, Vector2 pos) => Raylib.CheckCollisionPointRec(pos, rect);
+    public static bool IsV2In(this Raylib_CsLo.Rectangle rect, Vector2 pos) => CheckCollisionPointRec(pos, rect);
     public static Vector2 Center(this Vector2 p1, Vector2 p2) => (p1 + p2) / 2;
     public static Vector2 Center(this Vector2[] poses) => poses.Aggregate((v1, v2) => v1 + v2) / poses.Length;
     public static double Distance(this Vector2 p1, Vector2 p2) => Vector2.Distance(p1, p2);

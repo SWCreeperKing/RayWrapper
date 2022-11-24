@@ -4,7 +4,6 @@ using RayWrapper.Base.Extras;
 using RayWrapper.Base.GameBox;
 using RayWrapper.Base.GameObject;
 using RayWrapper.Base.Primitives;
-using RayWrapper.LegacyUI.Animation.SinglePurposeObjects;
 using RayWrapper.LegacyUI.UI;
 using static RayWrapper.Base.GameBox.AttributeManager;
 using static RayWrapper.Base.GameBox.AttributeManager.PlacerType;

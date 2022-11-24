@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
-using RayWrapper.Base;
-using Rectangle = RayWrapper.Base.Rectangle;
+using RayWrapper.Base.Primitives;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Collision;
 

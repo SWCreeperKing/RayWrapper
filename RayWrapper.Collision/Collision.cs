@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
-using RayWrapper.GameConsole;
+using static RayWrapper.Base.GameBox.AttributeManager;
+using static RayWrapper.Base.GameBox.Logger;
 using static RayWrapper.GameBox;
-using static RayWrapper.Base.Logger;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Collision;
 
@@ -29,6 +29,7 @@ public static class Collision
     private static long _lastPhysicTick;
     private static bool _runPhysics = true;
 
+    [GameBoxWedge(PlacerType.AfterInit)]
     public static void InitPhysics(int sectorsX = 4, int sectorsY = 3)
     {
         Log(Level.Info, "RayWrapper.Collision: Init");
@@ -109,8 +110,6 @@ public static class Collision
                 Log(Level.Error, $"RayWrapper.Collision: {e}");
             }
         }, ct);
-
-        CommandRegister.RegisterCommand<CollisionCommands>();
     }
 
     public static async Task PhysicUpdate()
@@ -180,10 +179,4 @@ public static class Collision
     public static void AddObject(Collider c) => _collisionObjectsAdd.Add(c);
     public static void RemoveObject(Collider c) => _collisionObjectsRemove.Add(c);
     public static long CountColliders() => _collisionObjects.Count;
-}
-
-public class CollisionCommands : ICommandModule
-{
-    [Command("count"), Help("Counts the amount of colliders")]
-    public static string Count(string[] args) => $"There are [{Collision.CountColliders()}] colliders";
 }

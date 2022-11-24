@@ -1,10 +1,13 @@
 ﻿using System.Numerics;
+using System.Text.RegularExpressions;
 using ImGuiNET;
 using Raylib_CsLo;
 using RayWrapper.Base.GameBox;
 using RayWrapper.Imgui.Extras;
 using RayWrapper.Imgui.Widgets;
+using RayWrapperTesterImgui.Testing;
 using static ImGuiNET.ImGuiTableFlags;
+using Group = RayWrapper.Imgui.Widgets.Group;
 using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 new GameBox(new RayWrapperTesterImgui.Program(), new Vector2(1280, 800));
@@ -69,10 +72,15 @@ namespace RayWrapperTesterImgui
                 .AddProgressBar(() => i / 1000f, new Vector2(250, 25))
                 .AddSlider("slider", new SliderFloat(50, f => Logger.Log($"Slider: {f}")))
                 .ToWindow("test 2");
+
+            var te = new TextEditor("editor");
+
+            // new Regex("(\\$|)\"(.|\\n)*?(?<!\\\\)\"");
             
             RegisterGameObj(w1, w2, new ExampleWindow("example window"),
-                new ExampleDrawWindow("draw window", ImGuiWindowFlags.None), /*new TextEditor("editor"),*/
-                new FileExplorer());
+                new ExampleDrawWindow("draw window", ImGuiWindowFlags.None),
+                te,
+                new FileExplorer(te.OpenFile), new ImGuiConsole());
         }
 
         public override void UpdateLoop(float dt)

@@ -1,7 +1,9 @@
 using System.Numerics;
 using ImGuiNET;
 using Raylib_CsLo;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Imgui.Widgets;
+using static RayWrapper.Base.GameBox.Logger.Level;
 
 namespace RayWrapper.Imgui.Extras;
 
@@ -16,15 +18,18 @@ public class FileExplorer : WindowBase
     }
 
     public string path;
-    public string included;
-    public string excluded;
+    public SelectType typeSelect;
 
+    private Pattern included;
+    private Pattern excluded;
     private string _prevLoadedDir;
     private string _selected;
     private string _selectedWarn;
     private string[] _folders;
     private string[] _files;
     private string[] _names;
+    private Action<string> _ok;
+    private Action _cancle;
 
     /// <summary>
     /// include/exclude:
@@ -33,12 +38,16 @@ public class FileExplorer : WindowBase
     /// , or
     /// & and
     /// </summary>
-    public FileExplorer(string startingPath = "C:/", string included = "", string excluded = "") : base("File Explorer",
-        ImGuiWindowFlags.None)
+    public FileExplorer(Action<string> ok, Action cancle = null, string startingPath = "C:/",
+        SelectType typeSelect = SelectType.File, string included = "",
+        string excluded = "") : base("File Explorer", ImGuiWindowFlags.None)
     {
         path = startingPath;
-        this.included = included;
-        this.excluded = excluded;
+        this.typeSelect = typeSelect;
+        this.included = included == "" ? null : new Pattern(included);
+        this.excluded = excluded == "" ? null : new Pattern(excluded);
+        _ok = ok;
+        _cancle = cancle;
     }
 
     protected override void WindowRender()
@@ -92,9 +101,18 @@ public class FileExplorer : WindowBase
         ImGui.Separator();
         ImGui.SameLine(wSize.X - 100);
         ImGui.BeginGroup();
-        ImGui.Button("Ok");
-        ImGui.SameLine();
-        ImGui.Button("Close");
+        if (ImGui.Button("Ok"))
+        {
+            var file = $"{path}/{_selected}";
+            if (typeSelect is not SelectType.File || File.Exists(file)) _ok(file);
+        }
+
+        if (_cancle is not null)
+        {
+            ImGui.SameLine();
+            if (ImGui.Button("Close")) _cancle();
+        }
+
         ImGui.EndGroup();
     }
 
@@ -103,12 +121,10 @@ public class FileExplorer : WindowBase
         try
         {
             _folders = Directory.GetDirectories(path);
-            _files = Directory.GetFiles(path);
+            _files = typeSelect is SelectType.File ? Directory.GetFiles(path) : Array.Empty<string>();
 
-            // if (included != "")
-            // {
-            //     _files = _files.Where()
-            // }
+            if (included is not null) _files = _files.Where(f => included.contains(f)).ToArray();
+            if (excluded is not null) _files = _files.Where(f => !excluded.contains(f)).ToArray();
 
             _names = _folders.Select(s => "> " + s.Replace("\\", "/").Split("/")[^1])
                 .Union(_files.Select(s => s.Replace("\\", "/").Split("/")[^1])).ToArray();
@@ -126,8 +142,48 @@ public class FileExplorer : WindowBase
         _prevLoadedDir = path;
     }
 
-    // public bool FollowsPattern(string s, string pattern)
-    // {
-    //     
-    // }
+    /// <summary>
+    /// include/exclude:
+    /// ^ start with
+    /// * end with
+    /// , or
+    /// & and
+    /// </summary>
+    public class Pattern
+    {
+        public readonly (string starting, string ending)[] patterns;
+
+        public Pattern(string pattern)
+        {
+            List<(string, string)> patterns = new();
+            foreach (var andPattern in pattern.Split(","))
+            {
+                var andSplit = andPattern.Split("&").ToList();
+                if (andPattern.Length > 2 || andPattern.Count(c => c == '^') > 1 ||
+                    andPattern.Count(c => c == '*') > 1)
+                {
+                    Logger.Log(Warning, $"Pattern Error: [{andPattern}] does not match pattern minimum requirements");
+                    continue;
+                }
+
+                var startingIndex = andSplit.IndexOf(andSplit.First(s => s.StartsWith('^')));
+                var endingIndex = andSplit.IndexOf(andSplit.First(s => s.StartsWith('*')));
+
+                patterns.Add((startingIndex == -1 ? "" : andSplit[startingIndex],
+                    endingIndex == -1 ? "" : andSplit[endingIndex]));
+            }
+
+            this.patterns = patterns.ToArray();
+        }
+
+        public bool contains(string s)
+        {
+            return patterns.Any(p =>
+            {
+                var start = p.starting == "" || s.StartsWith(p.starting);
+                var end = p.ending == "" || s.EndsWith(p.ending);
+                return start || end;
+            });
+        }
+    }
 }

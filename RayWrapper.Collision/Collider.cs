@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using RayWrapper.Base.GameObject;
 using static RayWrapper.Collision.Collision;
-using Rectangle = RayWrapper.Base.Rectangle;
+using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Collision;
 

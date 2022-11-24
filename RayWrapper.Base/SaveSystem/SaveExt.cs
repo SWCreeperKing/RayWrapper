@@ -67,7 +67,7 @@ public static class SaveExt
         var path = GetSavePath;
         if (!Directory.Exists(path)) return;
         var file = $"{path}/{saveList.First(s => s.FileName() == name).FileName()}.RaySaveWrap";
-        Console.WriteLine($"> DELETED {file} <");
+        Logger.Log("Save System: Files deleted");
         if (!File.Exists(file)) return;
         File.Delete(file);
     }

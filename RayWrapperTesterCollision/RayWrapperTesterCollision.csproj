@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\RayWrapper.Collision\RayWrapper.Collision.csproj" />
+        <ProjectReference Include="..\RayWrapper.LegacyUI\RayWrapper.LegacyUI.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -45,10 +46,6 @@
 
     <ItemGroup>
         <None Remove="obj\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="RayWrapper" Version="0.6.1" />
     </ItemGroup>
 
 </Project>
