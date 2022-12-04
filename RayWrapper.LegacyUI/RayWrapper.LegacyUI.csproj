@@ -4,11 +4,29 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>RayWrapper.LegacyUI</PackageId>
+        <Authors>SW_CreeperKing</Authors>
+        <Description>This is the Imgui addon to RayWrapper</Description>
+        <PackageTags>raywrapper raylib raylib-cslo wrapper</PackageTags>
+        <PackageProjectUrl>https://github.com/SWCreeperKing/RayWrapper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SWCreeperKing/RayWrapper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <AppxSymbolPackageEnabled>true</AppxSymbolPackageEnabled>
+        <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.1</PackageVersion>
+        <PackageReleaseNotes>- Initial Release
+            - .net7
+            - RayWrapper 0.6.2</PackageReleaseNotes>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
+      <PackageReference Include="RayWrapper" Version="0.6.2" />
     </ItemGroup>
 
 </Project>

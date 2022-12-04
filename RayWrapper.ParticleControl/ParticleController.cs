@@ -1,8 +1,9 @@
 ﻿using System.Numerics;
+using RayWrapper.Base.Extras;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Base.GameObject;
 using ZimonIsHimUtils.ExtensionMethods;
 using Rectangle = RayWrapper.Base.Primitives.Rectangle;
-using static RayWrapper.Base.Extras.Core;
 
 namespace RayWrapper.ParticleControl;
 

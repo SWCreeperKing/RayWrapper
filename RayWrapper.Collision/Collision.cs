@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
 using static RayWrapper.Base.GameBox.AttributeManager;
+using static RayWrapper.Base.GameBox.GameBox;
 using static RayWrapper.Base.GameBox.Logger;
-using static RayWrapper.GameBox;
 using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Collision;
@@ -28,6 +28,7 @@ public static class Collision
     private static Rectangle[] _collisionSectors = null!;
     private static long _lastPhysicTick;
     private static bool _runPhysics = true;
+    private static CancellationTokenSource _ts;
 
     [GameBoxWedge(PlacerType.AfterInit)]
     public static void InitPhysics(int sectorsX = 4, int sectorsY = 3)
@@ -50,25 +51,8 @@ public static class Collision
             _collisionSectors[sectorsX * y + x] = new Rectangle(sectorSize * new Vector2(x, y), sectorSize);
         }
 
-        var ts = new CancellationTokenSource();
-        var ct = ts.Token;
-
-        StaticRender += () =>
-        {
-            foreach (var c in _collisionObjects)
-            {
-                try
-                {
-                    c.Value.Render();
-                }
-                catch (KeyNotFoundException)
-                {
-                    // ignore the list modification error
-                }
-            }
-        };
-
-        StaticDispose += () => ts.Cancel();
+        _ts = new CancellationTokenSource();
+        var ct = _ts.Token;
 
         Task.Run(async () =>
         {
@@ -117,6 +101,22 @@ public static class Collision
         var delta = GetTimeMs() - _lastPhysicTick;
         _lastPhysicTick = GetTimeMs();
         foreach (var c in _collisionObjects) c.Value.PhysicUpdate(delta);
+    }
+
+    [GameBoxWedge(PlacerType.BeforeRender)]
+    public static void PhysicsRender()
+    {
+        foreach (var c in _collisionObjects)
+        {
+            try
+            {
+                c.Value.Render();
+            }
+            catch (KeyNotFoundException)
+            {
+                // ignore the list modification error
+            }
+        }
     }
 
     public static async Task CollisionDetect()
@@ -179,4 +179,7 @@ public static class Collision
     public static void AddObject(Collider c) => _collisionObjectsAdd.Add(c);
     public static void RemoveObject(Collider c) => _collisionObjectsRemove.Add(c);
     public static long CountColliders() => _collisionObjects.Count;
+
+    [GameBoxWedge(PlacerType.BeforeDispose)]
+    public static void Dispose() => _ts.Cancel();
 }

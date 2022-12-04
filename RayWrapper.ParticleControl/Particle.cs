@@ -1,7 +1,8 @@
 using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base.Extras;
-using RayWrapper.Objs;
+using RayWrapper.Base.GameBox;
+using RayWrapper.LegacyUI.UI;
 
 namespace RayWrapper.ParticleControl;
 

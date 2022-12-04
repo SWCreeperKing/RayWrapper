@@ -10,22 +10,30 @@ public class RichText : GameObject
     public static Text.Style defaultStyle = new();
 
     private static readonly Regex RegEx = new(@"\[#([0-9a-fA-F]{6})\]", RegexOptions.Compiled);
-    private static readonly Regex RegExPlain = new(@"\[![a-zA-Z]+\]", RegexOptions.Compiled);
+    private static readonly Regex RegExPlain = new(@"\[!\w+?\]", RegexOptions.Compiled);
 
     public string PureText { get; private set; }
 
     public Text.Style style = defaultStyle.Copy();
 
     private PrintData[] _data;
+    private string _text;
+    private bool _needsToUpdate = true;
 
     public RichText(string text, Vector2 pos)
     {
         this.pos = pos;
-        UpdateText(text);
+        _text = text;
     }
-    
+
     protected override void RenderCall()
     {
+        if (_needsToUpdate)
+        {
+            UpdateText(_text);
+            _needsToUpdate = false;
+        }
+
         if (_data is null) return;
         foreach (var (pos, txt, clr) in _data)
         {
@@ -40,7 +48,7 @@ public class RichText : GameObject
         while (RegExPlain.IsMatch(txt))
         {
             var match = RegExPlain.Match(txt).Value;
-            txt = txt.Replace(match, ColorIndex.ColorDict[match]);
+            txt = txt.Replace(match, ColorIndex.ColorDict[match.ToLower()]);
         }
 
         return txt.Replace("\r", "");
@@ -137,7 +145,7 @@ public static class ColorIndex
         { "[!darkorchid]", "[#9932CC]" }, { "[!orangered]", "[#FF4500]" }, { "[!darkred]", "[#8B0000]" },
         { "[!orchid]", "[#DA70D6]" }, { "[!darksalmon]", "[#E9967A]" }, { "[!palegoldenrod]", "[#EEE8AA]" },
         { "[!darkseagreen]", "[#8FBC8F]" }, { "[!palegreen]", "[#98FB98]" }, { "[!darkslateblue]", "[#483D8B]" },
-        { "[!paleturquoise]", "[#AFEEEE]" }, { "[!darkslategray]", "[#2F4F4F]" },
+        { "[!paleturquoise]", "[#AFEEEE]" }, { "[!darkslategray]", "[#2F4F4F]" }, { "[!darkyellow]", "[#8B8000]" },
         { "[!darkslategrey]", "[#2F4F4F]" }, { "[!palevioletred]", "[#DB7093]" },
         { "[!darkturquoise]", "[#00CED1]" }, { "[!papayawhip]", "[#FFEFD5]" }, { "[!darkviolet]", "[#9400D3]" },
         { "[!peachpuff]", "[#FFDAB9]" }, { "[!deeppink]", "[#FF1493]" }, { "[!peru]", "[#CD853F]" },

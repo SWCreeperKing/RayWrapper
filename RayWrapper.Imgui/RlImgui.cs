@@ -177,8 +177,7 @@ public static class RlImgui
                 : _mouseCursorMap[imguiCursor]);
         }
     }
-
-
+    
     private static void FrameEvents()
     {
         var io = ImGui.GetIO();
@@ -314,7 +313,7 @@ public static class RlImgui
         if (sourceRect.width < 0)
         {
             uv0.X = -(sourceRect.x / image.width);
-            uv1.X = (uv0.X - Math.Abs(sourceRect.width) / image.width);
+            uv1.X = uv0.X - Math.Abs(sourceRect.width) / image.width;
         }
         else
         {
@@ -325,7 +324,7 @@ public static class RlImgui
         if (sourceRect.height < 0)
         {
             uv0.Y = -(sourceRect.y / image.height);
-            uv1.Y = (uv0.Y - Math.Abs(sourceRect.height) / image.height);
+            uv1.Y = uv0.Y - Math.Abs(sourceRect.height) / image.height;
         }
         else
         {

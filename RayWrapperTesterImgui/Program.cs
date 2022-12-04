@@ -27,7 +27,7 @@ namespace RayWrapperTesterImgui
         private TreeNode _treeNode;
         private Group _group;
         private Rectangle rect = new(10, 10, 50, 50);
-
+        
         public override void Init()
         {
             var r = GameBox.Random;
@@ -75,12 +75,9 @@ namespace RayWrapperTesterImgui
 
             var te = new TextEditor("editor");
 
-            // new Regex("(\\$|)\"(.|\\n)*?(?<!\\\\)\"");
-            
             RegisterGameObj(w1, w2, new ExampleWindow("example window"),
-                new ExampleDrawWindow("draw window", ImGuiWindowFlags.None),
-                te,
-                new FileExplorer(te.OpenFile), new ImGuiConsole());
+                new ExampleDrawWindow("draw window", ImGuiWindowFlags.None), te, new FileExplorer(te.OpenFile),
+                new ImGuiConsole());
         }
 
         public override void UpdateLoop(float dt)
@@ -95,13 +92,14 @@ namespace RayWrapperTesterImgui
 
         public override void RenderLoop()
         {
+            ImGui.Text("HELLO");
             rect.Draw(Raylib.BLUE);
             if (rect.IsMouseIn() && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_RIGHT))
             {
                 ImGui.OpenPopup("tooltip menu");
             }
             else if (rect.IsMouseIn() && !ImGui.IsPopupOpen("tooltip menu")) _tooltip.Render();
-
+            
             _treeNode.Render();
             _tooltipMenu.Render();
             _group.Render();

@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\RayWrapper.LegacyUI\RayWrapper.LegacyUI.csproj" />
-        <ProjectReference Include="..\RayWrapper\RayWrapper.csproj" />
     </ItemGroup>
 
     <ItemGroup>

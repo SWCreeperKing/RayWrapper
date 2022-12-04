@@ -16,10 +16,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.6.1</PackageVersion>
-        <PackageReleaseNotes>-updated to base 0.2.3.1
-            -using base's input system
-        </PackageReleaseNotes>
+        <PackageVersion>0.6.2</PackageVersion>
+        <PackageReleaseNotes>- .net7
+- updated base to 0.2.4</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -27,14 +26,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+        <PackageReference Include="RayWrapper.Base" Version="0.2.4" />
     </ItemGroup>
 
     <ItemGroup Label="Resources">
         <EmbeddedResource Include="Resources/**/*.*" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
     </ItemGroup>
 </Project>

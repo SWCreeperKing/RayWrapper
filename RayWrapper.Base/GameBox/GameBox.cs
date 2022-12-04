@@ -81,6 +81,7 @@ public class GameBox
     public static ColorModule letterboxColor = new(20);
     public static TextureFilter targetTextureFilter = TEXTURE_FILTER_POINT;
 
+    private static bool _running = true;
     private static bool _hasInit;
     private static bool _isDrawing;
     private static int _maxFps;
@@ -139,7 +140,7 @@ public class GameBox
         {
             _lastTick = GetTimeMs();
 
-            while (!WindowShouldClose())
+            while (!WindowShouldClose() && _running)
             {
                 var currentTick = GetTimeMs();
                 scale = Math.Min(GetScreenWidth() / WindowSize.X, GetScreenHeight() / WindowSize.Y);
@@ -252,7 +253,7 @@ public class GameBox
     }
 
     public static long GetTimeMs() => TimeVar.GetTimeMs();
-
+    public static void Shutdown() => _running = false;
     public static void RegisterSaveItem<T>(T obj, string fileName) => SaveList.Add(new SaveItem<T>(obj, fileName));
     public static void DeRegisterSaveItem(string fileName) => SaveList.RemoveAll(m => m.FileName() == fileName);
 }

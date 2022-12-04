@@ -17,8 +17,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.2.1</PackageVersion>
-        <PackageReleaseNotes>-updated dependencies</PackageReleaseNotes>
+        <PackageVersion>0.2.2</PackageVersion>
+        <PackageReleaseNotes>- .net7
+- RayWrapper 0.6.2</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -27,11 +28,7 @@
 
     <ItemGroup>
       <PackageReference Include="DiscordRichPresence" Version="1.1.1.14" />
-      <PackageReference Include="RayWrapper" Version="0.6.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
+      <PackageReference Include="RayWrapper" Version="0.6.2" />
     </ItemGroup>
 
 </Project>

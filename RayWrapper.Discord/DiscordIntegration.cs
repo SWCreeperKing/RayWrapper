@@ -1,6 +1,6 @@
 ﻿using DiscordRPC;
 using RayWrapper.Base.GameBox;
-using RayWrapper.Vars;
+using RayWrapper.Base.Primitives;
 using static RayWrapper.Base.GameBox.AttributeManager;
 using static RayWrapper.Base.GameBox.AttributeManager.PlacerType;
 using static RayWrapper.Base.GameBox.Logger.Level;
@@ -8,7 +8,7 @@ using static RayWrapper.Base.GameBox.Logger.Level;
 namespace RayWrapper.Discord;
 
 /// <summary>
-/// the following is recommended to put in an the <see cref="Vars.GameLoop.Init()"/> method of the <see cref="Vars.GameLoop"/>
+/// the following is recommended to put in an the <see cref="GameLoop.Init()"/> method of the <see cref="GameLoop"/>
 /// <list type="numer">
 /// <listheader>
 /// How to use discord integration:
@@ -43,7 +43,7 @@ public static class DiscordIntegration
         _initDiscord = true;
         DiscordIntegration.discordAppId = discordAppId;
         if (discordAppId != string.Empty) CheckDiscord(discordAppId);
-        GameBox.AddScheduler(new Scheduler(100, UpdateActivity));
+        SchedulerSetup.AddScheduler(new Scheduler(100, UpdateActivity));
         now = DateTime.UtcNow;
     }
 

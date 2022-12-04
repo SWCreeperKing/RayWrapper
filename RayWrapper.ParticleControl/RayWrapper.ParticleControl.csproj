@@ -17,8 +17,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.2</PackageVersion>
-        <PackageReleaseNotes>-update dependencies</PackageReleaseNotes>
+        <PackageVersion>0.2.1</PackageVersion>
+        <PackageReleaseNotes>- .net7
+- RayWrapper.LegacyUI 0.1</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -26,11 +27,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RayWrapper" Version="0.6.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\RayWrapper.Base\RayWrapper.Base.csproj" />
+      <PackageReference Include="RayWrapper.LegacyUI" Version="0.1.0" />
     </ItemGroup>
 
 </Project>

@@ -19,9 +19,9 @@
         <License>https://github.com/SWCreeperKing/RayWrapper/blob/master/LICENSE</License>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.2.3.1</PackageVersion>
-        <PackageReleaseNotes>-fixed minmax error
--rectangle.ismousein</PackageReleaseNotes>
+        <PackageVersion>0.2.4</PackageVersion>
+        <PackageReleaseNotes>- .net7
+- many tweaks</PackageReleaseNotes>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>

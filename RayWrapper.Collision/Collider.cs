@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Base.GameObject;
 using static RayWrapper.Collision.Collision;
 using Rectangle = RayWrapper.Base.Primitives.Rectangle;
