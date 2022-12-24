@@ -1,95 +1,57 @@
-﻿using System.Numerics;
-using RayWrapper.Base.GameBox;
+using System.Numerics;
 using RayWrapper.Base.GameObject;
-using static RayWrapper.Collision.Collision;
-using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Collision;
 
-public abstract class Collider : GameObject
+public abstract class Collider : GameObject, IDisposable
 {
-    public static long id;
-    public Vector2 velocity = Vector2.Zero;
+    public static int ColliderCount;
+    // public string tag = "default";
 
-    public long currentId;
-    public string tag = "def";
+    protected Collider()
+    {
+        ColliderCount++;
+    }
 
     /// <summary>
-    /// if true, will delete object when it reaches the out of bounds of the screen
-    /// true by default
+    /// Get highest axis position
     /// </summary>
-    public bool removeWhenOutOfBounds = true;
+    public abstract float GetFurthestMostPointOnAxis(bool returnXAxis);
 
-    private readonly List<Collider> _buffer = new();
-    private readonly List<Collider> _backBuffer = new();
+    /// <summary>
+    /// Get lowest axis position
+    /// </summary>
+    public abstract float GetFurthestLeastPointOnAxis(bool returnXAxis);
 
-    protected Collider(Vector2 pos)
-    {
-        (this.pos, currentId) = (pos, id);
-        AddObject(this);
-        id++;
-    }
+    public abstract Vector2 GetCenter();
+    public abstract Vector2 GetClosestPointTo(Vector2 pos);
+    public abstract bool IsClosestPointIn(Vector2 pos);
 
-    public void PhysicUpdate(float dt) => pos += velocity * dt;
-
-    public void DoCollision(Collider c, bool chain = true)
-    {
-        if (!CheckCollision(c)) return;
-        if (!_buffer.Contains(c)) _buffer.Add(c);
-        if (chain) c.DoCollision(this, false);
-    }
-
-    public void PostCollision()
-    {
-        foreach (var c in _buffer)
-        {
-            if (_buffer.Contains(c) && !_backBuffer.Contains(c)) FirstCollision(c);
-            if (_buffer.Contains(c) && _backBuffer.Contains(c)) InCollision(c);
-        }
-
-        foreach (var c in _backBuffer)
-        {
-            // to reduce mem allow, as `Where` will cause like 100mb of extra ram xd
-            if (!_buffer.Contains(c) && _backBuffer.Contains(c)) ExitCollision(c);
-        }
-
-        _backBuffer.Clear();
-        foreach (var c in _buffer) _backBuffer.Add(c);
-        _buffer.Clear();
-
-        if (!removeWhenOutOfBounds) return;
-        if (Position.X >= 0 && Position.Y >= 0 && Position.X <= GameBox.WindowSize.X &&
-            Position.Y <= GameBox.WindowSize.Y) return;
-
-        DestoryObject();
-    }
-
-    protected override void RenderCall() => RenderShape(Position);
-    public abstract bool CheckCollision(Collider c);
-    public abstract bool SampleCollision(Rectangle c);
-    public abstract void RenderShape(Vector2 pos);
-
-    public virtual void FirstCollision(Collider c)
+    public virtual void OnCollisionEnter(Collider c)
     {
     }
 
-    public virtual void InCollision(Collider c)
+    // todo: later down the line
+    // public virtual void OnCollisionContinue(Collider c)
+    // {
+    // }
+    //
+    // public virtual void OnCollisionExit(Collider c)
+    // {
+    // }
+
+    public virtual bool ToDestroy()
+    {
+        return false;
+    }
+
+    public virtual void OnDestroy()
     {
     }
 
-    public virtual void ExitCollision(Collider c)
+    ~Collider()
     {
+        ColliderCount--;
+        OnDestroy();
     }
-
-    public virtual void Dispose()
-    {
-    }
-
-    public void DestoryObject()
-    {
-        Dispose();
-        RemoveObject(this);
-    }
-
-    ~Collider() => DestoryObject();
 }

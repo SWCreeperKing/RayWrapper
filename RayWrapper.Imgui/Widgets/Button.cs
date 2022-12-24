@@ -10,7 +10,7 @@ public class Button : GameObject
     private enum ButtonType
     {
         Normal,
-        Image,
+        // Image, todo: fix errors
         Arrow,
         Small,
         Radio,
@@ -69,19 +69,19 @@ public class Button : GameObject
         _type = ButtonType.Color;
     }
 
-    public Button(nint texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null, Vector2? uv1 = null,
-        int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
-    {
-        _texture = texture;
-        this.clicked = clicked;
-        _maxSize = maxSize ?? Vector2.Zero;
-        _uv0 = uv0;
-        _uv1 = uv1;
-        _framePadding = framePadding;
-        _backgroundColor = backgroundColor?.ToV4();
-        _tint = tint?.ToV4();
-        _type = ButtonType.Image;
-    }
+    // public Button(nint texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null, Vector2? uv1 = null,
+    //     int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
+    // {
+    //     _texture = texture;
+    //     this.clicked = clicked;
+    //     _maxSize = maxSize ?? Vector2.Zero;
+    //     _uv0 = uv0;
+    //     _uv1 = uv1;
+    //     _framePadding = framePadding;
+    //     _backgroundColor = backgroundColor?.ToV4();
+    //     _tint = tint?.ToV4();
+    //     _type = ButtonType.Image;
+    // }
 
     protected override void RenderCall()
     {
@@ -92,7 +92,7 @@ public class Button : GameObject
         _type switch
         {
             ButtonType.Normal => ImGui.Button(label, _maxSize),
-            ButtonType.Image => ImageButton(),
+            // ButtonType.Image => ImageButton(),
             ButtonType.Arrow => ImGui.ArrowButton(label, _dir),
             ButtonType.Small => ImGui.SmallButton(label),
             ButtonType.Radio => RadioButton(),
@@ -107,24 +107,24 @@ public class Button : GameObject
     }
 
     // idk how the overloading methods act :p
-    private bool ImageButton()
-    {
-        if (_uv0 is null) return ImGui.ImageButton(_texture, _maxSize);
-        if (_uv1 is null) return ImGui.ImageButton(_texture, _maxSize, _uv0.Value);
-        if (_framePadding == int.MinValue) return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value);
-        if (_backgroundColor is null)
-        {
-            return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value, _framePadding);
-        }
-
-        if (_tint is null)
-        {
-            return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value, _framePadding, _backgroundColor.Value);
-        }
-
-        return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value, _framePadding, _backgroundColor.Value,
-            _tint.Value);
-    }
+    // private bool ImageButton()
+    // {
+    //     if (_uv0 is null) return ImGui.ImageButton(_texture, _maxSize);
+    //     if (_uv1 is null) return ImGui.ImageButton(_texture, _maxSize, _uv0.Value);
+    //     if (_framePadding == int.MinValue) return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value);
+    //     if (_backgroundColor is null)
+    //     {
+    //         return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value, _framePadding);
+    //     }
+    //
+    //     if (_tint is null)
+    //     {
+    //         return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value, _framePadding, _backgroundColor.Value);
+    //     }
+    //
+    //     return ImGui.ImageButton(_texture, _maxSize, _uv0.Value, _uv1.Value, _framePadding, _backgroundColor.Value,
+    //         _tint.Value);
+    // }
 }
 
 public partial class CompoundWidgetBuilder
@@ -154,10 +154,10 @@ public partial class CompoundWidgetBuilder
         return this;
     }
 
-    public CompoundWidgetBuilder AddButton(nint texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null,
-        Vector2? uv1 = null, int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
-    {
-        RegisterGameObj(new Button(texture, clicked, maxSize, uv0, uv1, framePadding, backgroundColor, tint));
-        return this;
-    }
+    // public CompoundWidgetBuilder AddButton(nint texture, Action clicked, Vector2? maxSize = null, Vector2? uv0 = null,
+    //     Vector2? uv1 = null, int framePadding = int.MinValue, Color? backgroundColor = null, Color? tint = null)
+    // {
+    //     RegisterGameObj(new Button(texture, clicked, maxSize, uv0, uv1, framePadding, backgroundColor, tint));
+    //     return this;
+    // }
 }

@@ -1,25 +1,59 @@
-﻿using System.Numerics;
-using Raylib_CsLo;
+using System.Numerics;
 using RayWrapper.Base.Primitives;
-using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Collision;
 
 public abstract class CircleCollider : Collider
 {
-    public float radius;
+    public Circle circle;
 
-    protected CircleCollider(Circle circle) : base(circle.position) => radius = circle.radius;
+    protected CircleCollider(Circle circle) => this.circle = circle;
 
-    public override bool CheckCollision(Collider c) =>
-        c switch
-        {
-            CircleCollider cc => Raylib.CheckCollisionCircles(Position, radius, cc.Position, cc.radius),
-            RectCollider rc => Raylib.CheckCollisionCircleRec(Position, radius, rc.rect),
-            _ => false
-        };
+    public override float GetFurthestMostPointOnAxis(bool returnXAxis)
+    {
+        return (returnXAxis ? circle.position.X : circle.position.Y) + circle.radius;
+    }
 
-    protected override Vector2 GetSize() => new(radius * 2);
-    protected override void UpdateSize(Vector2 newSize) => radius = newSize.X;
-    public override bool SampleCollision(Rectangle c) => Raylib.CheckCollisionCircleRec(Position, radius, c);
+    public override float GetFurthestLeastPointOnAxis(bool returnXAxis)
+    {
+        return (returnXAxis ? circle.position.X : circle.position.Y) - circle.radius;
+    }
+
+    public override Vector2 GetCenter() => circle.position;
+
+    public override Vector2 GetClosestPointTo(Vector2 pos)
+    {
+        if (!IsPositionInside(pos)) return pos;
+        
+        var dx = pos.X - circle.position.X;
+        var dy = pos.Y - circle.position.Y;
+        var angle = MathF.Atan2(dy, dx);
+        var dxx = circle.radius * MathF.Cos(angle);
+        var dyy = circle.radius * MathF.Sin(angle);
+
+        var x = circle.position.X + dxx;
+        var y = circle.position.Y + dyy;
+        return new Vector2(x, y);
+    }
+
+    public override bool IsClosestPointIn(Vector2 pos) => DistanceCheck(pos);
+
+    public bool DistanceCheck(Vector2 pos) // narrow phase
+    {
+        var deltaX = pos.X - circle.position.X;
+        var deltaY = pos.Y - circle.position.Y;
+        var rad = circle.radius;
+        return deltaX * deltaX + deltaY * deltaY <= rad * rad;
+    }
+    
+    public bool IsPositionInside(Vector2 pos) // narrow phase
+    {
+        var deltaX = pos.X - circle.position.X;
+        var deltaY = pos.Y - circle.position.Y;
+        var rad = circle.radius;
+        return deltaX * deltaX + deltaY * deltaY >= rad * rad;
+    }
+
+    protected override Vector2 GetPosition() => circle.position;
+    protected override void UpdatePosition(Vector2 newPos) => circle.position = newPos;
 }
