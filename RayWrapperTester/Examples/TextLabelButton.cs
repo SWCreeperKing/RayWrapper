@@ -14,6 +14,7 @@ public class TextLabelButtonExample : Example
 {
     private int _buttonInc;
     private Label _testLabel;
+    private RichText richTextTest;
 
     public TextLabelButtonExample(string tabName) : base(tabName)
     {
@@ -46,16 +47,17 @@ public class TextLabelButtonExample : Example
         // Testing [#fF0a0a]rich
         //  [!aqua]text [!gold]test
         // """, new Vector2(12, 500));
-        RichText richTextTest = new("""
+        richTextTest = new("""
         [!green]Goblin Titan[!white] (Elite)[!white]
         Spawn Weight: [1]
 
         Tags: [[!darkgray]goblin[!white], [!darkgray]humanoid[!white], [!darkgray]titan[!white]][!white]
         Max Hp: [!red]100[!white] | defense: [!gray]10[!white] | Attack: [!blue]10[!white]
         Speed: 0.5 (+0.25/other turn)
+
         Description: 
         A rare powerful goblin]
-        """, new Vector2(12, 500));
+        """, new Vector2(12, 450));
 
         KeyButton kb = new(new Vector2(12, 400), KeyboardKey.KEY_C)
         {

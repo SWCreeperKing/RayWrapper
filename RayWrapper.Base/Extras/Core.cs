@@ -76,6 +76,19 @@ public static class Core
     {
         return MeasureTextEx(font, text, fontSize, spacing);
     }
+    
+    /// <summary>
+    /// measures a given text with a given <see cref="Font"/>
+    /// </summary>
+    /// <param name="font"><see cref="Font"/> to measure with</param>
+    /// <param name="character">character to measure</param>
+    /// <param name="fontSize">size of the text</param>
+    /// <param name="spacing">spacing of the characters</param>
+    /// <returns>the size of the text with a given <see cref="Font"/></returns>
+    public static Vector2 MeasureText(this Font font, char character, float fontSize = 24f, float spacing = 1.5f)
+    {
+        return MeasureTextEx(font, $"{character}", fontSize, spacing);
+    }
 
     /// <summary>
     /// converts <see cref="KeyboardKey"/> into a more readable string

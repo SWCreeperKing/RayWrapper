@@ -1,7 +1,11 @@
-﻿using System.Numerics;
+﻿using System.Collections;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using Raylib_CsLo;
+using RayWrapper.Base.Extras;
+using RayWrapper.Base.GameBox;
 using RayWrapper.Base.GameObject;
+using RayWrapper.Base.Primitives;
 
 namespace RayWrapper.LegacyUI.UI;
 
@@ -9,109 +13,128 @@ public class RichText : GameObject
 {
     public static Text.Style defaultStyle = new();
 
-    private static readonly Regex RegEx = new(@"\[#([0-9a-fA-F]{6})\]", RegexOptions.Compiled);
+    private static readonly Regex RegEx = new(@"\[#([0-9a-fA-F]{6}|r)\]", RegexOptions.Compiled);
     private static readonly Regex RegExPlain = new(@"\[!\w+?\]", RegexOptions.Compiled);
-
-    public string PureText { get; private set; }
+    private static readonly Dictionary<int, Glyph> GlyphCache = new();
+    private static readonly Dictionary<char, int> CodepointCache = new();
+    private static readonly Dictionary<string, Color> ColorCache = new();
 
     public Text.Style style = defaultStyle.Copy();
+    public Actionable<string?> text;
 
-    private PrintData[] _data;
-    private string _text;
-    private bool _needsToUpdate = true;
+    private string _textCache;
+    private List<Glyph> _displayText = new();
 
-    public RichText(string text, Vector2 pos)
+    public RichText(Actionable<string?> text, Vector2 pos)
     {
-        this.pos = pos;
-        _text = text;
+        Position = pos;
+        this.text = text;
+    }
+
+    protected override void UpdateCall(float dt)
+    {
+        if (text is null) return;
+        var txt = (string?) text;
+        if (txt is null) return;
+        if (txt == _textCache) return;
+        UpdateText(txt);
     }
 
     protected override void RenderCall()
     {
-        if (_needsToUpdate)
-        {
-            UpdateText(_text);
-            _needsToUpdate = false;
-        }
-
-        if (_data is null) return;
-        foreach (var (pos, txt, clr) in _data)
-        {
-            style.color = clr;
-            style.Draw(txt, pos);
-        }
-    }
-
-    public string CorrectString(string text)
-    {
-        var txt = text;
-        while (RegExPlain.IsMatch(txt))
-        {
-            var match = RegExPlain.Match(txt).Value;
-            txt = txt.Replace(match, ColorIndex.ColorDict[match.ToLower()]);
-        }
-
-        return txt.Replace("\r", "");
+        _displayText.ForEach(g => g.Draw(style));
     }
 
     public void UpdateText(string text)
     {
-        PureText = RegExPlain.Replace(RegEx.Replace(text, ""), "");
-        List<PrintData> datas = new();
+        _textCache = text;
+        _displayText.Clear();
+        var colorDict = ProcessString(text, out _textCache);
+        var split = _textCache.Split('\n');
 
-        var position = pos;
-        var color = Raylib.RAYWHITE;
-        string mText;
-
-        foreach (var split in CorrectString(text).Split("\n"))
+        var yOffset = Position.Y;
+        var xOffset = Position.X;
+        var overallIndex = 0;
+        var color = colorDict[overallIndex];
+        
+        for (var y = 0; y < split.Length; y++, overallIndex++)
         {
-            var addedY = 0f;
-            mText = split;
-            while (RegEx.IsMatch(mText))
+            var yOffsetAdded = 0f;
+            var line = split[y];
+
+            for (var x = 0; x < line.Length; x++, overallIndex++)
             {
-                var match = RegEx.Match(mText).Value;
-                var index = mText.IndexOf(match, StringComparison.Ordinal);
+                if (colorDict.ContainsKey(overallIndex)) color = colorDict[overallIndex];
 
-                var txt = mText[..index];
-                datas.Add(new PrintData(position, txt, color));
-                var measure = style.MeasureText(txt);
-                position.X += measure.X + style.spacing;
-                addedY = Math.Max(addedY, measure.Y);
-                mText = mText[(index + 9)..];
-
-                color = new Color(ParseHex(match[2..4]), ParseHex(match[4..6]), ParseHex(match[6..8]), 255);
+                var glyph = GetGlyphFromChar(line[x]) with
+                {
+                    Pos = new Vector2(x + xOffset, y + yOffset), Color = color
+                };
+                yOffsetAdded = Math.Max(yOffsetAdded, glyph.CharSize.Y);
+                xOffset += glyph.CharSize.X + style.spacing;
+                _displayText.Add(glyph);
             }
 
-            datas.Add(new PrintData(position, mText, color));
-            position.Y += addedY;
-            position.X = pos.X;
+            xOffset = Position.X;
+            yOffset += yOffsetAdded + style.spacing;
         }
-
-        _data = datas.ToArray();
     }
 
-    public int ParseHex(string hex) => Convert.ToInt32(hex, 16);
-
-    public readonly struct PrintData
+    private Dictionary<int, Color> ProcessString(string text, out string cleaned)
     {
-        public readonly Vector2 pos;
-        public readonly string text;
-        public readonly Color color;
+        var inText = text.Replace('\r', ' ');
+        Dictionary<int, Color> colorDict = new() { [0] = Raylib.WHITE };
+        Stack<Color> colorStack = new();
+        colorStack.Push(Raylib.WHITE);
 
-        public PrintData(Vector2 pos, string text, Color color)
+        while (RegExPlain.IsMatch(inText))
         {
-            this.pos = pos;
-            this.text = text;
-            this.color = color;
+            var match = RegExPlain.Match(inText).Value;
+            inText = inText.Replace(match, ColorIndex.ColorDict[match.ToLower()]);
         }
 
-        public void Deconstruct(out Vector2 pos, out string text, out Color color)
+        while (RegEx.IsMatch(inText))
         {
-            pos = this.pos;
-            text = this.text;
-            color = this.color;
+            var rawMatch = RegEx.Match(inText);
+            var match = rawMatch.Groups[1].Value;
+            var index = inText.IndexOf(rawMatch.Value, StringComparison.Ordinal);
+
+            if (match is "r" && colorStack.Count > 1) colorStack.Pop();
+            else if (match is not "r") colorStack.Push(ParseColorHex(match));
+
+            colorDict[index] = colorStack.Peek();
+            inText = inText.Remove(index, rawMatch.Value.Length);
         }
-    };
+
+        cleaned = inText;
+        return colorDict;
+    }
+
+    private Color ParseColorHex(string colorHex)
+    {
+        if (ColorCache.ContainsKey(colorHex)) return ColorCache[colorHex];
+        return ColorCache[colorHex] =
+            new Color(StringToHex(colorHex[..2]), StringToHex(colorHex[2..4]), StringToHex(colorHex[4..6]), 255);
+    }
+
+    private int StringToHex(string hex) => Math.Clamp(Convert.ToInt32(hex, 16), 0, 255);
+
+    private Glyph GetGlyphFromChar(char c)
+    {
+        if (CodepointCache.ContainsKey(c)) return GlyphCache[CodepointCache[c]];
+        var codepoint = Raylib.GetCodepoint(c, out _);
+        CodepointCache[c] = codepoint;
+        return GlyphCache[codepoint] = new Glyph(codepoint, Vector2.Zero,
+            style.Font.MeasureText($"{c}", style.fontSize, style.spacing), Raylib.WHITE);
+    }
+
+    private record Glyph(int Codepoint, Vector2 Pos, Vector2 CharSize, Color Color)
+    {
+        public void Draw(Text.Style style)
+        {
+            Raylib.DrawTextCodepoint(style.Font, Codepoint, Pos, style.fontSize, Color);
+        }
+    }
 }
 
 public static class ColorIndex
@@ -122,10 +145,10 @@ public static class ColorIndex
     {
         { "[!aliceblue]", "[#F0F8FF]" }, { "[!lightsalmon]", "[#FFA07A]" }, { "[!antiquewhite]", "[#FAEBD7]" },
         { "[!lightseagreen]", "[#20B2AA]" }, { "[!aqua]", "[#00FFFF]" }, { "[!lightskyblue]", "[#87CEFA]" },
-        { "[!aquamarine]", "[#7FFFD4]" }, { "[!lightslategray]", "[#778899]" },
+        { "[!aquamarine]", "[#7FFFD4]" }, { "[!lightslategray]", "[#778899]" }, { "[!w]", "[#FFFFFF]" },
         { "[!lightslategrey]", "[#778899]" }, { "[!azure]", "[#F0FFFF]" }, { "[!lightsteelblue]", "[#B0C4DE]" },
         { "[!beige]", "[#F5F5DC]" }, { "[!lightyellow]", "[#FFFFE0]" }, { "[!bisque]", "[#FFE4C4]" },
-        { "[!lime]", "[#00FF00]" }, { "[!black]", "[#000000]" }, { "[!limegreen]", "[#32CD32]" },
+        { "[!lime]", "[#00FF00]" }, { "[!black]", "[#000000]" }, { "[!limegreen]", "[#32CD32]" }, { "[!r]", "[#r]" },
         { "[!blanchedalmond]", "[#FFEBCD]" }, { "[!linen]", "[#FAF0E6]" }, { "[!blue]", "[#0000FF]" },
         { "[!magenta]", "[#FF00FF]" }, { "[!blueviolet]", "[#8A2BE2]" }, { "[!maroon]", "[#800000]" },
         { "[!brown]", "[#A52A2A]" }, { "[!mediumaquamarine]", "[#66CDAA]" }, { "[!burlywood]", "[#DEB887]" },
