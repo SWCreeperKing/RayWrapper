@@ -19,6 +19,7 @@ namespace RayWrapperTesterImgui
         public int i;
         private string[] items = { "as", "b", "b", "c", "e", "d", "f", "x", "y", "m", "z" };
         private float[] vals = { 53.3f, 35.6f, 34, 23, 74 };
+        private float num = 40;
         private (float, float, float)[] arrayFloats;
         private Func<int> w1Out, w2Out;
         private Table _table;
@@ -62,6 +63,7 @@ namespace RayWrapperTesterImgui
                 .AddInputBox("input", new InputHint("", Logger.Log, "Hint"))
                 .AddInputBox("int3 input",
                     new InputInts(new[] { 3, 5, 6, 9 }, arr => Logger.Log($"{arr[0]}, {arr[1]}, {arr[2]}, {arr[3]}")))
+                .AddNumberDrag("number", new DragFloat(num, f => num = f))
                 .ToWindow("test 1");
 
             var w2 = new CompoundWidgetBuilder()

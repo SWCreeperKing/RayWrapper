@@ -154,47 +154,44 @@ public class InputDouble : NumberInputType<double>
 
 public abstract class VectorInputType<T> : InputTypeBase<T>
 {
-    protected string format;
-
-    protected VectorInputType(T inVar, Action<T> outVar, string format = "") : base(inVar, outVar)
+    protected VectorInputType(T inVar, Action<T> outVar) : base(inVar, outVar)
     {
-        this.format = format;
     }
 }
 
 public class InputVector2 : VectorInputType<Vector2>
 {
-    public InputVector2(Vector2 inVar, Action<Vector2> outVar, string format = "") : base(inVar, outVar, format)
+    public InputVector2(Vector2 inVar, Action<Vector2> outVar) : base(inVar, outVar)
     {
     }
 
     public override bool Render(string label, ImGuiInputTextFlags flags)
     {
-        return ImGui.InputFloat2(label, ref inVar, format, flags);
+        return ImGui.InputFloat2(label, ref inVar, null, flags);
     }
 }
 
 public class InputVector3 : VectorInputType<Vector3>
 {
-    public InputVector3(Vector3 inVar, Action<Vector3> outVar, string format = "") : base(inVar, outVar, format)
+    public InputVector3(Vector3 inVar, Action<Vector3> outVar) : base(inVar, outVar)
     {
     }
 
     public override bool Render(string label, ImGuiInputTextFlags flags)
     {
-        return ImGui.InputFloat3(label, ref inVar, format, flags);
+        return ImGui.InputFloat3(label, ref inVar, null, flags);
     }
 }
 
 public class InputVector4 : VectorInputType<Vector4>
 {
-    public InputVector4(Vector4 inVar, Action<Vector4> outVar, string format = "") : base(inVar, outVar, format)
+    public InputVector4(Vector4 inVar, Action<Vector4> outVar) : base(inVar, outVar)
     {
     }
 
     public override bool Render(string label, ImGuiInputTextFlags flags)
     {
-        return ImGui.InputFloat4(label, ref inVar, format, flags);
+        return ImGui.InputFloat4(label, ref inVar, null, flags);
     }
 }
 

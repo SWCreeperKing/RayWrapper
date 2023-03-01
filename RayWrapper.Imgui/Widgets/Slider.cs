@@ -6,7 +6,7 @@ namespace RayWrapper.Imgui.Widgets;
 
 public interface ISlider
 {
-    public bool Render(string label, string format, ImGuiSliderFlags flags);
+    public bool Render(string label, ImGuiSliderFlags flags);
     public void Invoke();
 }
 
@@ -25,7 +25,7 @@ public abstract class SliderBase<T, TA> : ISlider
         this.max = max;
     }
 
-    public abstract bool Render(string label, string format, ImGuiSliderFlags flags);
+    public abstract bool Render(string label, ImGuiSliderFlags flags);
     public virtual void Invoke() => action?.Invoke(inVar);
 }
 
@@ -36,9 +36,9 @@ public class SliderAngle : SliderBase<float, float>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.SliderAngle(label, ref inVar, min, max, format, flags);
+        return ImGui.SliderAngle(label, ref inVar, min, max, null, flags);
     }
 }
 
@@ -49,9 +49,9 @@ public class SliderFloat : SliderBase<float, float>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.SliderFloat(label, ref inVar, min, max, format, flags);
+        return ImGui.SliderFloat(label, ref inVar, min, max, null, flags);
     }
 }
 
@@ -63,9 +63,9 @@ public class SliderVector2 : SliderBase<Vector2, float>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.SliderFloat2(label, ref inVar, min, max, format, flags);
+        return ImGui.SliderFloat2(label, ref inVar, min, max, null, flags);
     }
 }
 
@@ -77,9 +77,9 @@ public class SliderVector3 : SliderBase<Vector3, float>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.SliderFloat3(label, ref inVar, min, max, format, flags);
+        return ImGui.SliderFloat3(label, ref inVar, min, max, null, flags);
     }
 }
 
@@ -91,9 +91,9 @@ public class SliderVector4 : SliderBase<Vector4, float>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.SliderFloat4(label, ref inVar, min, max, format, flags);
+        return ImGui.SliderFloat4(label, ref inVar, min, max, null, flags);
     }
 }
 
@@ -103,9 +103,9 @@ public class SliderInt : SliderBase<int, int>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.SliderInt(label, ref inVar, min, max, format, flags);
+        return ImGui.SliderInt(label, ref inVar, min, max, null, flags);
     }
 }
 
@@ -116,13 +116,13 @@ public class SliderInts : SliderBase<int[], int>
         if (inVar.Length is < 2 or > 4) throw new ArgumentException("InputInts array must be of length: 2, 3, or 4");
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
         return inVar.Length switch
         {
-            2 => ImGui.SliderInt2(label, ref inVar[0], min, max, format, flags),
-            3 => ImGui.SliderInt3(label, ref inVar[0], min, max, format, flags),
-            4 => ImGui.SliderInt4(label, ref inVar[0], min, max, format, flags),
+            2 => ImGui.SliderInt2(label, ref inVar[0], min, max, null, flags),
+            3 => ImGui.SliderInt3(label, ref inVar[0], min, max, null, flags),
+            4 => ImGui.SliderInt4(label, ref inVar[0], min, max, null, flags),
         };
     }
 }
@@ -145,9 +145,9 @@ public class VSliderFloat : VSliderBase<float>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.VSliderFloat(label, size, ref inVar, min, max, format, flags);
+        return ImGui.VSliderFloat(label, size, ref inVar, min, max, null, flags);
     }
 }
 
@@ -159,9 +159,9 @@ public class VSliderInt : VSliderBase<int>
     {
     }
 
-    public override bool Render(string label, string format, ImGuiSliderFlags flags)
+    public override bool Render(string label, ImGuiSliderFlags flags)
     {
-        return ImGui.VSliderInt(label, size, ref inVar, min, max, format, flags);
+        return ImGui.VSliderInt(label, size, ref inVar, min, max, null, flags);
     }
 }
 
@@ -169,29 +169,26 @@ public class Slider : GameObject
 {
     private string _label;
     private ISlider _type;
-    private string _format;
     private ImGuiSliderFlags _flags;
 
-    public Slider(string label, ISlider type, string format = "", ImGuiSliderFlags flags = ImGuiSliderFlags.None)
+    public Slider(string label, ISlider type, ImGuiSliderFlags flags = ImGuiSliderFlags.None)
     {
         _label = label;
         _type = type;
-        _format = format;
         _flags = flags;
     }
 
     protected override void RenderCall()
     {
-        if (_type.Render(_label, _format, _flags)) _type.Invoke();
+        if (_type.Render(_label, _flags)) _type.Invoke();
     }
 }
 
 public partial class CompoundWidgetBuilder
 {
-    public CompoundWidgetBuilder AddSlider(string label, ISlider type, string format = "",
-        ImGuiSliderFlags flags = ImGuiSliderFlags.None)
+    public CompoundWidgetBuilder AddSlider(string label, ISlider type, ImGuiSliderFlags flags = ImGuiSliderFlags.None)
     {
-        RegisterGameObj(new Slider(label, type, format, flags));
+        RegisterGameObj(new Slider(label, type, flags));
         return this;
     }
 }
