@@ -5,7 +5,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Raylib_CsLo;
 using RayWrapper.Base.GameBox;
-using ZimonIsHimUtils.ExtensionMethods;
 using static System.Numerics.Vector2;
 using static Raylib_CsLo.Raylib;
 using static RayWrapper.Base.GameBox.Logger.Level;
@@ -473,13 +472,12 @@ public static class Core
                     endLine = endLine < 1 ? i : endLine;
                     if (i == endLine) endLine -= codepointByteCount;
                     if (startLine + codepointByteCount == endLine) endLine = i - codepointByteCount;
-
-                    state.Flip();
+                    state = !state;
                 }
                 else if (i + 1 == length)
                 {
                     endLine = i;
-                    state.Flip();
+                    state = !state;
                 }
                 else if (codepoint == '\n') state = !state;
 
@@ -543,7 +541,7 @@ public static class Core
                     glyphWidth = 0;
                     selectStart += lastk - k;
                     k = lastk;
-                    state.Flip();
+                    state = !state;
                 }
             }
 

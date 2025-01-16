@@ -1,5 +1,4 @@
 using System.Reflection;
-using ZimonIsHimUtils.ExtensionMethods;
 using static RayWrapper.Base.GameBox.Logger.Level;
 
 namespace RayWrapper.Base.GameBox;
@@ -38,7 +37,7 @@ public static class AttributeManager
             return;
         }
 
-        methods.Each(AddMethodInfo);
+        methods.ForEach(AddMethodInfo);
 
         foreach (var k in ExtraRunners.Keys)
         {
@@ -93,9 +92,9 @@ public static class AttributeManager
         if (!ExtraRunners.ContainsKey(type)) return;
         if (type is PlacerType.BeforeUpdate or PlacerType.AfterUpdate)
         {
-            ExtraRunners[type].Each(m => InvokeMethod(type, m, parameters: new object[] { dt }));
+            ExtraRunners[type].ForEach(m => InvokeMethod(type, m, parameters: new object[] { dt }));
         }
-        else ExtraRunners[type].Each(m => InvokeMethod(type, m));
+        else ExtraRunners[type].ForEach(m => InvokeMethod(type, m));
     }
 
     private static void InvokeMethod(PlacerType type, MethodInfo mi, object? obj = null, object?[]? parameters = null)

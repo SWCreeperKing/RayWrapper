@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using Raylib_CsLo;
-using ZimonIsHimUtils.ExtensionMethods;
 using static Raylib_CsLo.TraceLogLevel;
 using static RayWrapper.Base.GameBox.Logger.Level;
 using static RayWrapper.Base.GameBox.Logger.LoggingLogger.Native;
@@ -26,7 +25,7 @@ public static class Logger
 
     public static bool showDebugLogs = true;
 
-    private static IList<Action<Level, string>> _listeners = new List<Action<Level, string>>();
+    private static List<Action<Level, string>> _listeners = new();
     private static IList<string> _log = new List<string>();
     private static bool _hasError;
 
@@ -86,7 +85,7 @@ public static class Logger
         Console.WriteLine($"[{time}]: [{text}]");
         Console.ForegroundColor = ConsoleColor.White;
         _log.Add($"[{level}] [{time}] [\"{text}\"]");
-        _listeners.Each(a => a(level, text));
+        _listeners.ForEach(a => a(level, text));
     }
 
     public static void Log(Level level, object text) => Log(level, text.ToString());

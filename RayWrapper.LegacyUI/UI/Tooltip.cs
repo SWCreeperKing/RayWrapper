@@ -90,7 +90,7 @@ public static class TooltipController
         var mousePos = Input.MousePosition.currentPosition;
         var quad = mousePos.X > WindowSize.X / 2 ? 1 : 2;
         if (mousePos.Y > WindowSize.Y / 2) quad += 2;
-
+        
         foreach (var tt in tooltips.GetRange(tooltips.Count - tooltipLayers, tooltipLayers))
         {
             tt.RenderTooltip((Tooltip.ScreenQuadrant) quad);

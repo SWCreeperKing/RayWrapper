@@ -10,8 +10,11 @@ public class Cooldown
     public long durationMs;
     public long lastTick;
 
-    public Cooldown(long durationMs, bool startWithCooldown = false) =>
-        (this.durationMs, lastTick) = (durationMs, GetTimeMs() - (startWithCooldown ? 0 : durationMs));
+    public Cooldown(long durationMs, bool startWithCooldown = false)
+    {
+        this.durationMs = durationMs;
+        lastTick = GetTimeMs() - (startWithCooldown ? 0 : durationMs);
+    }
 
     /// <summary>
     /// update the cooldown and return if it's ready

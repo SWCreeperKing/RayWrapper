@@ -1,5 +1,3 @@
-using ZimonIsHimUtils.ExtensionMethods;
-
 namespace RayWrapper.Base.GameBox;
 
 public static class SceneManager
@@ -53,6 +51,6 @@ public static class SceneManager
 
     public static void DisposeAllScenes()
     {
-        HasInit.Where(kv => kv.Value).Select(kv => kv.Key).Each(DisposeScene);
+        HasInit.Where(kv => kv.Value).Select(kv => kv.Key).ToList().ForEach(DisposeScene);
     }
 }

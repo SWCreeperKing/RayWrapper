@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using Raylib_CsLo;
 using RayWrapper.Base.Primitives;
-using ZimonIsHimUtils.ExtensionMethods;
 using Rectangle = RayWrapper.Base.Primitives.Rectangle;
 
 namespace RayWrapper.Base.GameObject;
@@ -71,9 +70,9 @@ public abstract class GameObject : TypeRegister<IGameObject>, IGameObject
     protected virtual void UpdatePosition(Vector2 newPos) => pos = newPos;
     protected virtual void UpdateSize(Vector2 newSize) => size = newSize;
 
-    public void UpdateReg(float dt) => register.Each(o => o.Update(dt));
-    public void RenderReg() => register.Each(o => o.Render());
-    public void DisposeReg() => register.Each(o => o.Dispose());
+    public void UpdateReg(float dt) => register.ForEach(o => o.Update(dt));
+    public void RenderReg() => register.ForEach(o => o.Render());
+    public void DisposeReg() => register.ForEach(o => o.Dispose());
     public Raylib_CsLo.Rectangle GetRawRect() => new(Position.X, Position.Y, Size.X, Size.Y);
     public Rectangle GetRect() => new(Position, Size);
     public void ReserveV2() => _freezeV2 = new Vector2(Position.X, Position.Y);
